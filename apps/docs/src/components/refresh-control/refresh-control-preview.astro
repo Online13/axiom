@@ -1,0 +1,479 @@
+---
+// An inbox screen driven by the same logic as useRefreshControl.
+// Drag the list down: the indicator fills up to the threshold, releasing past it refreshes and adds a message.
+// The footer mirrors what the hook returns: status, progress and distance.
+import TokenFrame from '@/components/tokens/token-frame.astro';
+import { roleColor, type ColorScheme } from '@/lib/tokens';
+
+const threshold = 64;
+const maxDistance = 160;
+
+const schemeVars = (scheme: ColorScheme) => ({
+  '--screen': roleColor(scheme, 'background', 'default'),
+  '--subtle': roleColor(scheme, 'background', 'subtle'),
+  '--text': roleColor(scheme, 'content', 'default'),
+  '--muted': roleColor(scheme, 'content', 'muted'),
+  '--divider': roleColor(scheme, 'border', 'subtle'),
+  '--border': roleColor(scheme, 'border', 'default'),
+  '--accent': roleColor(scheme, 'content', 'link'),
+  '--new': roleColor(scheme, 'feedback', 'infoSubtle'),
+});
+
+const colors = { light: schemeVars('light'), dark: schemeVars('dark') };
+const initialStyle = Object.entries(colors.light)
+  .map(([name, value]) => `${name}:${value}`)
+  .join(';');
+
+const messages = [
+  { from: 'Grace Hopper', text: 'Found the bug. It was a moth.' },
+  { from: 'Alan Turing', text: 'Can a machine think? Lunch first.' },
+  { from: 'Katherine Johnson', text: 'Trajectory numbers attached.' },
+  { from: 'Linus Torvalds', text: 'Just a hobby, won’t be big.' },
+  { from: 'Margaret Hamilton', text: 'Priority alarms are fine.' },
+];
+
+// Arc of the progress ring: r = 9, circumference ≈ 56.55.
+const ring = 2 * Math.PI * 9;
+---
+
+<TokenFrame>
+  <div
+    class="refresh-preview"
+    data-colors={JSON.stringify(colors)}
+    data-threshold={threshold}
+    data-max={maxDistance}
+    data-status="idle"
+    data-guides="false"
+    style={`${initialStyle};--ring:${ring}`}
+  >
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b px-4 py-3">
+      <div class="inline-flex border p-0.5 text-xs" role="group" aria-label="Options">
+        <button type="button" class="toggle-button px-3 py-1" data-toggle="guides" aria-pressed="false">Guides</button>
+        <button type="button" class="action-button px-3 py-1" data-refresh>refresh()</button>
+      </div>
+      <div class="inline-flex border p-0.5 text-xs" role="group" aria-label="Color scheme">
+        <button type="button" class="toggle-button px-3 py-1" data-scheme="light" aria-pressed="true">Light</button>
+        <button type="button" class="toggle-button px-3 py-1" data-scheme="dark" aria-pressed="false">Dark</button>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="iphone">
+        <div class="screen">
+          <div class="status-bar" aria-hidden="true">
+            <span>9:41</span>
+            <span class="island"></span>
+            <svg width="44" height="12" viewBox="0 0 44 12" fill="currentColor">
+              <rect x="0" y="7" width="3" height="4" rx="1" /><rect x="4.5" y="5" width="3" height="6" rx="1" />
+              <rect x="9" y="3" width="3" height="8" rx="1" /><rect x="13.5" y="1" width="3" height="10" rx="1" />
+              <rect x="21" y="1" width="20" height="10" rx="3" fill="none" stroke="currentColor" stroke-opacity="0.4" />
+              <rect x="23" y="3" width="14" height="6" rx="1.5" /><rect x="42" y="4" width="1.5" height="4" rx="0.75" opacity="0.4" />
+            </svg>
+          </div>
+          <div class="header">Inbox</div>
+
+          <div class="viewport" data-viewport>
+            <div class="indicator" data-indicator aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" fill="none" stroke="var(--divider)" stroke-width="2" />
+                <circle class="ring" cx="12" cy="12" r="9" fill="none" stroke-width="2" stroke-linecap="round" data-ring />
+                <path class="arrow" d="M12 8v8M8.5 12.5L12 16l3.5-3.5" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+
+            <div class="guide" style={`top:${threshold}px`}><span>threshold {threshold}</span></div>
+            <div class="guide max" style={`top:${maxDistance}px`}><span>maxDistance {maxDistance}</span></div>
+
+            <ul class="list" data-list>
+              {
+                messages.map(({ from, text }) => (
+                  <li class="row">
+                    <span class="avatar">{from[0]}</span>
+                    <span class="flex min-w-0 flex-col">
+                      <span class="name">{from}</span>
+                      <span class="snippet">{text}</span>
+                    </span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t px-4 py-3 font-mono text-xs">
+      <span class="text-fd-muted-foreground">status </span><span data-out="status">idle</span>
+      <span class="text-fd-muted-foreground"> · progress </span><span data-out="progress">0.00</span>
+      <span class="text-fd-muted-foreground"> · distance </span><span data-out="distance">0</span>
+    </div>
+  </div>
+</TokenFrame>
+
+<style>
+  .toggle-button[aria-pressed='true'] {
+    background: var(--color-fd-foreground);
+    color: var(--color-fd-background);
+  }
+
+  .toggle-button[aria-pressed='false'],
+  .action-button {
+    color: var(--color-fd-muted-foreground);
+  }
+
+  .action-button:disabled {
+    opacity: 0.5;
+  }
+
+  /* Only the top half of the phone is shown: the stage cuts it at mid-height. */
+  .stage {
+    display: flex;
+    justify-content: center;
+    height: 346px;
+    padding: 32px 16px 0;
+    overflow: hidden;
+  }
+
+  /* iPhone 15 shell at its real ratio (393 × 852 pt screen): dark bezel, Dynamic Island and status bar. */
+  .iphone {
+    flex: none;
+    align-self: flex-start;
+    width: 300px;
+    max-width: 100%;
+    padding: 10px;
+    border-radius: 50px;
+    background: #1c1c1e;
+    box-shadow:
+      inset 0 0 0 1.5px #3a3a3c,
+      0 20px 40px -20px rgb(0 0 0 / 0.5);
+  }
+
+  .screen {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 393 / 852;
+    overflow: hidden;
+    border-radius: 40px;
+    background: var(--screen);
+    font-family: system-ui, sans-serif;
+    text-align: left;
+    transition: background-color 250ms ease;
+  }
+
+  .status-bar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 44px;
+    padding: 0 22px 0 30px;
+    background: var(--screen);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .island {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    width: 84px;
+    height: 24px;
+    border-radius: 999px;
+    background: #000;
+    transform: translateX(-50%);
+  }
+
+  .header {
+    position: relative;
+    z-index: 2;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--divider);
+    background: var(--screen);
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .viewport {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    background: var(--subtle);
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .viewport:active {
+    cursor: grabbing;
+  }
+
+  .indicator {
+    position: absolute;
+    inset: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--distance, 0px);
+    overflow: hidden;
+  }
+
+  .ring {
+    stroke: var(--muted);
+    stroke-dasharray: var(--ring);
+    stroke-dashoffset: calc(var(--ring) * (1 - var(--progress, 0)));
+    transform: rotate(-90deg);
+    transform-origin: center;
+  }
+
+  .arrow {
+    stroke: var(--muted);
+    transform-origin: center;
+    transition: transform 150ms ease;
+  }
+
+  .refresh-preview[data-status='armed'] .ring,
+  .refresh-preview[data-status='armed'] .arrow {
+    stroke: var(--text);
+  }
+
+  .refresh-preview[data-status='armed'] .arrow {
+    transform: rotate(180deg);
+  }
+
+  .refresh-preview[data-status='refreshing'] .ring {
+    stroke: var(--accent);
+    stroke-dashoffset: calc(var(--ring) * 0.7);
+    animation: spin 700ms linear infinite;
+  }
+
+  .refresh-preview[data-status='refreshing'] .arrow,
+  .refresh-preview[data-status='settling'] .arrow {
+    opacity: 0;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(270deg);
+    }
+  }
+
+  .list {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--screen);
+    transform: translateY(var(--distance, 0px));
+  }
+
+  .refresh-preview:not([data-dragging]) .list,
+  .refresh-preview:not([data-dragging]) .indicator {
+    transition:
+      transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      height 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--divider);
+    transition: background-color 800ms ease;
+  }
+
+  .row[data-new] {
+    background: var(--new);
+  }
+
+  .avatar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: var(--subtle);
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .name {
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .snippet {
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 13px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .guide {
+    position: absolute;
+    inset-inline: 0;
+    z-index: 3;
+    display: none;
+    border-top: 1.5px dashed #3b82f6;
+    pointer-events: none;
+  }
+
+  .guide.max {
+    border-color: #a855f7;
+  }
+
+  .guide span {
+    position: absolute;
+    right: 6px;
+    top: 2px;
+    font: 10px ui-monospace, monospace;
+    color: #3b82f6;
+  }
+
+  .guide.max span {
+    color: #a855f7;
+  }
+
+  .refresh-preview[data-guides='true'] .guide {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .refresh-preview .list,
+    .refresh-preview .indicator,
+    .row {
+      transition: none !important;
+    }
+
+    .refresh-preview[data-status='refreshing'] .ring {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  type Status = 'idle' | 'pulling' | 'armed' | 'refreshing' | 'settling';
+
+  const incoming = [
+    { from: 'Ada Lovelace', text: 'Notes on the engine, part G.' },
+    { from: 'Dennis Ritchie', text: 'hello, world' },
+    { from: 'Barbara Liskov', text: 'About that substitution…' },
+    { from: 'Edsger Dijkstra', text: 'Goto considered harmful.' },
+  ];
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('.refresh-preview').forEach((preview) => {
+      const colors = JSON.parse(preview.dataset.colors ?? '{}') as Record<string, Record<string, string>>;
+      const threshold = Number(preview.dataset.threshold);
+      const max = Number(preview.dataset.max);
+      const viewport = preview.querySelector<HTMLElement>('[data-viewport]')!;
+      const list = preview.querySelector<HTMLUListElement>('[data-list]')!;
+      const refreshButton = preview.querySelector<HTMLButtonElement>('[data-refresh]')!;
+      const out = (key: string) => preview.querySelector<HTMLElement>(`[data-out="${key}"]`)!;
+      const schemeButtons = preview.querySelectorAll<HTMLButtonElement>('[data-scheme]');
+
+      let status: Status = 'idle';
+      let startY = 0;
+      let next = 0;
+
+      const setStatus = (value: Status) => {
+        status = value;
+        preview.dataset.status = value;
+        out('status').textContent = value;
+        refreshButton.disabled = value === 'refreshing' || value === 'settling';
+      };
+
+      const setDistance = (distance: number) => {
+        const progress = Math.min(distance / threshold, 1);
+        preview.style.setProperty('--distance', `${distance}px`);
+        preview.style.setProperty('--progress', String(progress));
+        out('distance').textContent = String(Math.round(distance));
+        out('progress').textContent = progress.toFixed(2);
+      };
+
+      // Rubber band: the list follows the finger less and less, and never goes past maxDistance.
+      const resist = (drag: number) => (drag * max) / (drag + max);
+
+      const settle = () => {
+        setStatus('settling');
+        setDistance(0);
+        setTimeout(() => status === 'settling' && setStatus('idle'), 300);
+      };
+
+      const refresh = () => {
+        setStatus('refreshing');
+        setDistance(threshold);
+        // Fake request, held for at least minDuration so the spinner doesn't flash.
+        setTimeout(() => {
+          const message = incoming[next++ % incoming.length];
+          const row = list.firstElementChild!.cloneNode(true) as HTMLLIElement;
+          row.querySelector('.avatar')!.textContent = message.from[0];
+          row.querySelector('.name')!.textContent = message.from;
+          row.querySelector('.snippet')!.textContent = message.text;
+          row.dataset.new = '';
+          list.prepend(row);
+          list.lastElementChild?.remove();
+          setTimeout(() => delete row.dataset.new, 900);
+          settle();
+        }, 1200);
+      };
+
+      viewport.addEventListener('pointerdown', (event) => {
+        if (status !== 'idle') return;
+        startY = event.clientY;
+        viewport.setPointerCapture(event.pointerId);
+        preview.dataset.dragging = '';
+        setStatus('pulling');
+      });
+
+      viewport.addEventListener('pointermove', (event) => {
+        if (status !== 'pulling' && status !== 'armed') return;
+        const distance = resist(Math.max(0, event.clientY - startY));
+        setDistance(distance);
+        setStatus(distance >= threshold ? 'armed' : 'pulling');
+      });
+
+      const release = () => {
+        if (status !== 'pulling' && status !== 'armed') return;
+        delete preview.dataset.dragging;
+        if (status === 'armed') refresh();
+        else settle();
+      };
+
+      viewport.addEventListener('pointerup', release);
+      viewport.addEventListener('pointercancel', release);
+
+      refreshButton.addEventListener('click', () => status === 'idle' && refresh());
+
+      preview.querySelectorAll<HTMLButtonElement>('[data-toggle]').forEach((button) =>
+        button.addEventListener('click', () => {
+          const key = button.dataset.toggle!;
+          const on = preview.dataset[key] !== 'true';
+          preview.dataset[key] = String(on);
+          button.setAttribute('aria-pressed', String(on));
+        }),
+      );
+
+      schemeButtons.forEach((button) =>
+        button.addEventListener('click', () => {
+          for (const [name, value] of Object.entries(colors[button.dataset.scheme ?? 'light'])) preview.style.setProperty(name, value);
+          schemeButtons.forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+        }),
+      );
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

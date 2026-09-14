@@ -1,0 +1,16 @@
+---
+// Exposes every semantic color as `--ax-<role>-<key>` on the component previews, for both schemes.
+// Rendered once per page; PhonePreview switches between the two blocks with `data-scheme`.
+import { colorRoles, roleColor, type ColorRole, type ColorScheme } from '@/lib/tokens';
+
+const kebab = (value: string) => value.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
+
+const block = (scheme: ColorScheme) =>
+  (Object.keys(colorRoles) as ColorRole[])
+    .flatMap((role) => Object.keys(colorRoles[role]).map((key) => `--ax-${role}-${kebab(key)}:${roleColor(scheme, role, key as never)};`))
+    .join('');
+
+const css = `[data-ax-preview][data-scheme='light']{color-scheme:light;${block('light')}}[data-ax-preview][data-scheme='dark']{color-scheme:dark;${block('dark')}}`;
+---
+
+<style is:global set:html={css}></style>

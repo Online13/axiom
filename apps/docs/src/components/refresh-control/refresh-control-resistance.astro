@@ -1,0 +1,62 @@
+---
+// Finger drag against list distance with the default rubber band: distance = drag × max / (drag + max).
+// The dashed lines mark threshold (where the pull arms) and maxDistance (the limit the list never reaches).
+import TokenFrame from '@/components/tokens/token-frame.astro';
+
+const threshold = 64;
+const max = 160;
+const maxDrag = 400;
+
+const width = 560;
+const height = 240;
+const pad = { left: 44, right: 16, top: 16, bottom: 36 };
+
+const x = (drag: number) => pad.left + (drag / maxDrag) * (width - pad.left - pad.right);
+const y = (distance: number) => height - pad.bottom - (distance / (max + 16)) * (height - pad.top - pad.bottom);
+const resist = (drag: number) => (drag * max) / (drag + max);
+
+const curve = Array.from({ length: 81 }, (_, i) => (i / 80) * maxDrag)
+  .map((drag, i) => `${i === 0 ? 'M' : 'L'}${x(drag).toFixed(1)},${y(resist(drag)).toFixed(1)}`)
+  .join(' ');
+
+// Drag needed to reach threshold: solve threshold = drag × max / (drag + max).
+const armDrag = (threshold * max) / (max - threshold);
+const xTicks = [0, 100, 200, 300, 400];
+const yTicks = [0, threshold, max];
+---
+
+<TokenFrame>
+  <div class="min-w-[32rem] p-4">
+    <svg viewBox={`0 0 ${width} ${height}`} class="w-full text-fd-foreground" role="img" aria-label="Resistance curve of the pull">
+      {yTicks.map((tick) => (
+        <g>
+          <text x={pad.left - 8} y={y(tick) + 4} text-anchor="end" class="fill-fd-muted-foreground font-mono text-[11px]">{tick}</text>
+        </g>
+      ))}
+      {xTicks.map((tick) => (
+        <text x={x(tick)} y={height - pad.bottom + 16} text-anchor="middle" class="fill-fd-muted-foreground font-mono text-[11px]">{tick}</text>
+      ))}
+
+      <line x1={pad.left} y1={height - pad.bottom} x2={width - pad.right} y2={height - pad.bottom} stroke="currentColor" stroke-opacity="0.2" />
+      <line x1={pad.left} y1={pad.top} x2={pad.left} y2={height - pad.bottom} stroke="currentColor" stroke-opacity="0.2" />
+
+      <line x1={x(0)} y1={y(0)} x2={x(max + 16)} y2={y(max + 16)} stroke="currentColor" stroke-opacity="0.25" stroke-dasharray="2 4" />
+      <text x={x(max + 16) + 6} y={y(max + 16) + 12} class="fill-fd-muted-foreground text-[11px]">no resistance</text>
+
+      <line x1={pad.left} y1={y(max)} x2={width - pad.right} y2={y(max)} stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5 4" />
+      <text x={width - pad.right} y={y(max) - 6} text-anchor="end" class="font-mono text-[11px]" fill="#a855f7">maxDistance {max}</text>
+
+      <line x1={pad.left} y1={y(threshold)} x2={width - pad.right} y2={y(threshold)} stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="5 4" />
+      <text x={width - pad.right} y={y(threshold) - 6} text-anchor="end" class="font-mono text-[11px]" fill="#3b82f6">threshold {threshold}</text>
+
+      <line x1={x(armDrag)} y1={y(threshold)} x2={x(armDrag)} y2={height - pad.bottom} stroke="#3b82f6" stroke-opacity="0.5" stroke-dasharray="2 3" />
+
+      <path d={curve} fill="none" stroke="currentColor" stroke-width="2" />
+      <circle cx={x(armDrag)} cy={y(threshold)} r="4" fill="#3b82f6" />
+      <text x={x(armDrag) + 8} y={y(threshold) + 16} class="fill-fd-foreground font-mono text-[11px]">armed after {Math.round(armDrag)}pt of drag</text>
+
+      <text x={(pad.left + width - pad.right) / 2} y={height - 4} text-anchor="middle" class="fill-fd-muted-foreground text-[11px]">finger drag (pt)</text>
+      <text x={12} y={(pad.top + height - pad.bottom) / 2} text-anchor="middle" transform={`rotate(-90 12 ${(pad.top + height - pad.bottom) / 2})`} class="fill-fd-muted-foreground text-[11px]">distance (pt)</text>
+    </svg>
+  </div>
+</TokenFrame>

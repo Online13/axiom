@@ -1,0 +1,22 @@
+---
+import TokenFrame from './token-frame.astro';
+import { typography } from '@/lib/tokens';
+---
+
+<TokenFrame>
+  <div class="divide-y min-w-[32rem]">
+    {
+      Object.entries(typography).map(([key, style]) => (
+        <div class="grid items-baseline gap-4 px-4 py-3" style="grid-template-columns: 7rem 1fr 6rem;">
+          <div class="font-mono text-xs">{key}</div>
+          <div class="truncate" style={`font-size:${style.fontSize}px;line-height:${style.lineHeight}px;font-weight:${style.fontWeight}`}>
+            Your changes are saved
+          </div>
+          <div class="font-mono text-xs text-fd-muted-foreground text-right">
+            {style.fontSize}/{style.lineHeight} · {style.fontWeight}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</TokenFrame>

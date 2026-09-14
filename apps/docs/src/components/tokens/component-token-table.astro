@@ -1,0 +1,38 @@
+---
+// Every token of one component: the semantic color it reads and the resulting value in each scheme.
+import TokenFrame from './token-frame.astro';
+import { flattenComponent, refColor, type ComponentName } from '@/lib/tokens';
+
+interface Props {
+  component: ComponentName;
+}
+
+const { component } = Astro.props;
+const rows = flattenComponent(component);
+const schemes = ['light', 'dark'] as const;
+---
+
+<TokenFrame>
+  <div class="min-w-[42rem] divide-y">
+    <div class="grid gap-4 px-4 py-2 font-mono text-[0.7rem] text-fd-muted-foreground" style="grid-template-columns: 17rem 1fr 6.5rem 6.5rem;">
+      <div>token</div>
+      <div>reads</div>
+      <div>light</div>
+      <div>dark</div>
+    </div>
+    {
+      rows.map(({ path, ref, state }) => (
+        <div class:list={['grid items-center gap-4 px-4 py-2.5', { 'text-fd-muted-foreground': state !== 'default' }]} style="grid-template-columns: 17rem 1fr 6.5rem 6.5rem;">
+          <div class="font-mono text-xs text-fd-foreground">{path}</div>
+          <div class="font-mono text-xs">{ref}</div>
+          {schemes.map((scheme) => (
+            <div class="flex items-center gap-2">
+              <div class="size-6 shrink-0 border" style={`background:${refColor(scheme, ref)}`} />
+              <span class="font-mono text-[0.65rem]">{refColor(scheme, ref)}</span>
+            </div>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</TokenFrame>

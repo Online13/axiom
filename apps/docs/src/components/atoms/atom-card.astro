@@ -1,0 +1,420 @@
+---
+// Link card for the component indexes: a small schematic above its name and description.
+// Illustrations use the docs palette only, so they follow the light / dark theme.
+
+interface Props {
+  title: string;
+  href: string;
+  preview: string;
+}
+
+const { title, href, preview } = Astro.props;
+
+const line = 'block h-1.5 rounded-full bg-fd-muted-foreground/30';
+const fg = 'bg-fd-foreground';
+const box = 'border border-fd-border bg-fd-background';
+---
+
+<a
+  href={href}
+  class="group flex flex-col border bg-fd-card text-fd-card-foreground transition-colors hover:border-fd-ring hover:bg-fd-accent/40"
+>
+  <div class="flex h-28 items-center justify-center overflow-hidden border-b bg-fd-muted/60 px-4" aria-hidden="true">
+    {preview === 'button' && (
+      <div class="flex items-center gap-2">
+        <span class={`rounded-[6px] ${fg} px-3 py-1.5 text-[10px] font-semibold text-fd-background`}>Save</span>
+        <span class={`rounded-[6px] ${box} px-3 py-1.5 text-[10px] font-semibold`}>Cancel</span>
+      </div>
+    )}
+
+    {preview === 'icon-button' && (
+      <div class="flex items-center gap-2">
+        <span class={`flex size-8 items-center justify-center rounded-full ${fg} text-fd-background`}>
+          <svg width="14" height="14" viewBox="0 0 20 20"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /></svg>
+        </span>
+        <span class={`flex size-8 items-center justify-center rounded-full ${box}`}>
+          <svg width="14" height="14" viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+        </span>
+      </div>
+    )}
+
+    {preview === 'button-group' && (
+      <div class="flex overflow-hidden rounded-[6px] border border-fd-border bg-fd-background text-[10px] font-semibold">
+        <span class="bg-fd-foreground px-3 py-1.5 text-fd-background">Day</span>
+        <span class="border-l border-fd-border px-3 py-1.5">Week</span>
+        <span class="border-l border-fd-border px-3 py-1.5">Month</span>
+      </div>
+    )}
+
+    {preview === 'input' && (
+      <div class="flex w-36 flex-col gap-1">
+        <span class="text-[9px] text-fd-muted-foreground">Email</span>
+        <span class={`flex h-7 items-center rounded-[6px] ${box} px-2 text-[10px]`}>ada@mail.com<span class="ml-px h-3 w-px bg-fd-foreground" /></span>
+      </div>
+    )}
+
+    {preview === 'input-group' && (
+      <div class="flex h-7 w-40 overflow-hidden rounded-[6px] border border-fd-border bg-fd-background text-[10px]">
+        <span class="flex items-center border-r border-fd-border bg-fd-muted px-2 text-fd-muted-foreground">https://</span>
+        <span class="flex items-center px-2">axiom.dev</span>
+      </div>
+    )}
+
+    {preview === 'input-otp' && (
+      <div class="flex gap-1">
+        {['4', '2', '7', ''].map((digit, i) => (
+          <span class={`flex size-7 items-center justify-center rounded-[6px] border bg-fd-background text-xs font-semibold ${i === 3 ? 'border-fd-foreground' : 'border-fd-border'}`}>{digit}</span>
+        ))}
+      </div>
+    )}
+
+    {preview === 'text-area' && (
+      <div class={`flex h-16 w-36 flex-col gap-1.5 rounded-[6px] ${box} p-2`}>
+        <span class={`${line} w-full`} />
+        <span class={`${line} w-5/6`} />
+        <span class={`${line} w-2/5`} />
+      </div>
+    )}
+
+    {preview === 'switch' && (
+      <div class="flex items-center gap-3">
+        <span class="flex h-5 w-9 items-center rounded-full bg-fd-foreground p-0.5"><span class="ml-auto size-4 rounded-full bg-fd-background" /></span>
+        <span class="flex h-5 w-9 items-center rounded-full bg-fd-muted-foreground/30 p-0.5"><span class="size-4 rounded-full bg-fd-background" /></span>
+      </div>
+    )}
+
+    {preview === 'checkbox' && (
+      <div class="flex items-center gap-2">
+        <span class={`flex size-5 items-center justify-center rounded-[4px] ${fg} text-fd-background`}>
+          <svg width="12" height="12" viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </span>
+        <span class={`flex size-5 items-center justify-center rounded-[4px] ${fg}`}><span class="h-0.5 w-2.5 bg-fd-background" /></span>
+        <span class={`size-5 rounded-[4px] ${box}`} />
+      </div>
+    )}
+
+    {preview === 'radio' && (
+      <div class="flex flex-col gap-2">
+        {[true, false].map((selected) => (
+          <span class="flex items-center gap-2">
+            <span class={`flex size-4 items-center justify-center rounded-full border-2 ${selected ? 'border-fd-foreground' : 'border-fd-border'} bg-fd-background`}>
+              {selected && <span class="size-1.5 rounded-full bg-fd-foreground" />}
+            </span>
+            <span class={`${line} w-12`} />
+          </span>
+        ))}
+      </div>
+    )}
+
+    {preview === 'slider' && (
+      <div class="relative flex h-4 w-36 items-center">
+        <span class="h-1 w-full rounded-full bg-fd-muted-foreground/30" />
+        <span class="absolute left-[20%] h-1 w-[45%] rounded-full bg-fd-foreground" />
+        <span class="absolute left-[20%] size-4 -translate-x-1/2 rounded-full border-2 border-fd-foreground bg-fd-background" />
+        <span class="absolute left-[65%] size-4 -translate-x-1/2 rounded-full border-2 border-fd-foreground bg-fd-background" />
+      </div>
+    )}
+
+    {preview === 'segmented-control' && (
+      <div class="flex rounded-[8px] bg-fd-muted-foreground/20 p-0.5 text-[10px] font-medium">
+        <span class="rounded-[6px] bg-fd-background px-3 py-1 shadow-sm">List</span>
+        <span class="px-3 py-1 text-fd-muted-foreground">Grid</span>
+        <span class="px-3 py-1 text-fd-muted-foreground">Map</span>
+      </div>
+    )}
+
+    {preview === 'item' && (
+      <div class={`flex w-40 items-center gap-2 rounded-[6px] ${box} p-2`}>
+        <span class="size-6 rounded-full bg-fd-muted-foreground/30" />
+        <span class="flex flex-1 flex-col gap-1"><span class="block h-1.5 w-14 rounded-full bg-fd-foreground/70" /><span class={`${line} w-10`} /></span>
+        <svg width="10" height="10" viewBox="0 0 20 20" class="text-fd-muted-foreground"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" /></svg>
+      </div>
+    )}
+
+    {preview === 'option-item' && (
+      <div class={`flex w-40 flex-col rounded-[6px] ${box}`}>
+        {[false, true].map((selected, i) => (
+          <span class={`flex items-center gap-2 px-2 py-1.5 ${i ? 'border-t border-fd-border' : ''}`}>
+            <span class={`${line} flex-1`} />
+            {selected ? (
+              <svg width="12" height="12" viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            ) : (
+              <span class="size-3" />
+            )}
+          </span>
+        ))}
+      </div>
+    )}
+
+    {preview === 'accordion' && (
+      <div class={`flex w-40 flex-col rounded-[6px] ${box} text-fd-muted-foreground`}>
+        <span class="flex items-center justify-between px-2 py-1.5">
+          <span class="block h-1.5 w-16 rounded-full bg-fd-foreground/70" />
+          <svg width="10" height="10" viewBox="0 0 20 20"><path d="M4 13l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" /></svg>
+        </span>
+        <span class="flex flex-col gap-1 px-2 pb-2"><span class={`${line} w-full`} /><span class={`${line} w-3/4`} /></span>
+        <span class="flex items-center justify-between border-t border-fd-border px-2 py-1.5">
+          <span class="block h-1.5 w-12 rounded-full bg-fd-foreground/70" />
+          <svg width="10" height="10" viewBox="0 0 20 20"><path d="M4 7l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" /></svg>
+        </span>
+      </div>
+    )}
+
+    {preview === 'avatar' && (
+      <div class="flex -space-x-2">
+        <span class="flex size-9 items-center justify-center rounded-full border-2 border-fd-muted bg-fd-foreground text-[11px] font-semibold text-fd-background">AL</span>
+        <span class="flex size-9 items-center justify-center rounded-full border-2 border-fd-muted bg-fd-muted-foreground/40 text-[11px] font-semibold">GH</span>
+        <span class="flex size-9 items-end justify-center overflow-hidden rounded-full border-2 border-fd-muted bg-fd-background">
+          <svg width="26" height="26" viewBox="0 0 20 20" class="text-fd-muted-foreground/60"><circle cx="10" cy="7" r="3.5" fill="currentColor" /><path d="M3 20c0-4 3-7 7-7s7 3 7 7z" fill="currentColor" /></svg>
+        </span>
+      </div>
+    )}
+
+    {preview === 'badge' && (
+      <div class="flex items-center gap-2">
+        <span class="rounded-full bg-fd-foreground px-2 py-0.5 text-[10px] font-semibold text-fd-background">New</span>
+        <span class="rounded-full border border-fd-border bg-fd-background px-2 py-0.5 text-[10px] font-semibold">Draft</span>
+        <span class="relative">
+          <svg width="20" height="20" viewBox="0 0 20 20"><path d="M5 8a5 5 0 0110 0v4l2 2H3l2-2z M8 16a2 2 0 004 0" fill="none" stroke="currentColor" stroke-width="1.6" /></svg>
+          <span class="absolute -top-1.5 -right-2 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-1 text-[8px] font-bold text-white">3</span>
+        </span>
+      </div>
+    )}
+
+    {preview === 'chip' && (
+      <div class="flex items-center gap-1.5 text-[10px] font-medium">
+        <span class="rounded-full bg-fd-foreground px-2.5 py-1 text-fd-background">Design</span>
+        <span class="flex items-center gap-1 rounded-full border border-fd-border bg-fd-background px-2.5 py-1">
+          Mobile
+          <svg width="8" height="8" viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" /></svg>
+        </span>
+      </div>
+    )}
+
+    {preview === 'card' && (
+      <div class="flex w-32 flex-col overflow-hidden rounded-[8px] border border-fd-border bg-fd-background shadow-sm">
+        <span class="h-8 bg-fd-muted-foreground/25" />
+        <span class="flex flex-col gap-1 p-2"><span class="block h-1.5 w-16 rounded-full bg-fd-foreground/70" /><span class={`${line} w-full`} /><span class={`${line} w-2/3`} /></span>
+      </div>
+    )}
+
+    {preview === 'icon' && (
+      <div class="flex items-center gap-3">
+        <svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 17s-6-3.5-6-8a3.5 3.5 0 016-2.4A3.5 3.5 0 0116 9c0 4.5-6 8-6 8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" /></svg>
+        <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="9" cy="9" r="5" fill="none" stroke="currentColor" stroke-width="1.6" /><path d="M13 13l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+        <svg width="20" height="20" viewBox="0 0 20 20" class="text-fd-muted-foreground"><path d="M3 9l7-6 7 6v8H3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" /></svg>
+      </div>
+    )}
+
+    {preview === 'separator' && (
+      <div class="flex w-36 flex-col gap-2">
+        <span class={`${line} w-2/3`} />
+        <span class="h-px w-full bg-fd-border" />
+        <span class="flex h-4 items-center gap-2"><span class={`${line} w-8`} /><span class="h-full w-px bg-fd-border" /><span class={`${line} w-8`} /></span>
+      </div>
+    )}
+
+    {preview === 'empty' && (
+      <div class="flex flex-col items-center gap-1.5">
+        <span class="flex size-8 items-center justify-center rounded-full bg-fd-muted-foreground/20 text-fd-muted-foreground">
+          <svg width="14" height="14" viewBox="0 0 20 20"><path d="M3 11l3-7h8l3 7v5H3zM3 11h4l1 2h4l1-2h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" /></svg>
+        </span>
+        <span class="block h-1.5 w-14 rounded-full bg-fd-foreground/70" />
+        <span class={`${line} w-20`} />
+      </div>
+    )}
+
+    {preview === 'calendar' && (
+      <div class="grid grid-cols-7 gap-0.5">
+        {Array.from({ length: 21 }, (_, i) => (
+          <span
+            class={`size-3.5 rounded-[3px] ${
+              i === 9 || i === 12 ? 'bg-fd-foreground' : i > 9 && i < 12 ? 'bg-fd-foreground/25' : 'bg-fd-muted-foreground/15'
+            }`}
+          />
+        ))}
+      </div>
+    )}
+
+    {preview === 'carousel' && (
+      <div class="flex flex-col items-center gap-2">
+        <div class="flex items-center gap-1.5">
+          <span class="h-12 w-4 rounded-r-[6px] bg-fd-muted-foreground/20" />
+          <span class="h-14 w-24 rounded-[6px] bg-fd-muted-foreground/40" />
+          <span class="h-12 w-4 rounded-l-[6px] bg-fd-muted-foreground/20" />
+        </div>
+        <span class="flex gap-1"><span class="h-1 w-3 rounded-full bg-fd-foreground" /><span class="size-1 rounded-full bg-fd-muted-foreground/40" /><span class="size-1 rounded-full bg-fd-muted-foreground/40" /></span>
+      </div>
+    )}
+
+    {preview === 'spinner' && (
+      <svg width="28" height="28" viewBox="0 0 24 24" class="animate-spin motion-reduce:animate-none">
+        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-opacity="0.15" stroke-width="2.5" />
+        <path d="M21 12a9 9 0 00-9-9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+      </svg>
+    )}
+
+    {preview === 'skeleton' && (
+      <div class="flex w-36 animate-pulse items-center gap-2 motion-reduce:animate-none">
+        <span class="size-8 shrink-0 rounded-full bg-fd-muted-foreground/25" />
+        <span class="flex flex-1 flex-col gap-1.5"><span class="h-2 w-full rounded-full bg-fd-muted-foreground/25" /><span class="h-2 w-2/3 rounded-full bg-fd-muted-foreground/25" /></span>
+      </div>
+    )}
+
+    {preview === 'alert' && (
+      <div class="flex w-40 items-start gap-2 rounded-[6px] border border-amber-500/40 bg-amber-500/10 p-2 text-amber-600 dark:text-amber-400">
+        <svg width="12" height="12" viewBox="0 0 20 20" class="mt-px shrink-0"><path d="M10 3l8 14H2z M10 8v4 M10 14.5v.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" /></svg>
+        <span class="flex flex-1 flex-col gap-1"><span class="block h-1.5 w-14 rounded-full bg-current opacity-70" /><span class="block h-1.5 w-full rounded-full bg-current opacity-30" /></span>
+      </div>
+    )}
+
+    {preview === 'toast' && (
+      <div class="flex w-40 flex-col items-center">
+        <span class={`z-10 flex w-full items-center gap-2 rounded-[8px] ${box} p-2 shadow-md`}>
+          <span class="flex size-4 items-center justify-center rounded-full bg-emerald-500 text-white">
+            <svg width="8" height="8" viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" /></svg>
+          </span>
+          <span class="block h-1.5 w-20 rounded-full bg-fd-foreground/70" />
+        </span>
+        <span class={`-mt-1.5 h-3 w-[90%] rounded-b-[8px] ${box}`} />
+        <span class={`-mt-1.5 h-3 w-[80%] rounded-b-[8px] ${box} opacity-60`} />
+      </div>
+    )}
+
+    {preview === 'snackbar' && (
+      <div class={`flex h-20 w-32 flex-col justify-end rounded-t-[10px] border border-b-0 border-fd-border bg-fd-background p-1.5`}>
+        <span class="flex items-center justify-between rounded-[6px] bg-fd-foreground px-2 py-1.5 text-[9px] font-semibold text-fd-background">
+          <span class="block h-1.5 w-12 rounded-full bg-fd-background/60" />
+          Undo
+        </span>
+      </div>
+    )}
+
+    {preview === 'bottom-sheet' && (
+      <div class="flex h-20 w-32 flex-col justify-end overflow-hidden rounded-t-[10px] border border-b-0 border-fd-border bg-fd-muted-foreground/25">
+        <span class="flex h-12 flex-col items-center gap-1.5 rounded-t-[10px] bg-fd-background px-2 pt-1.5">
+          <span class="h-1 w-6 rounded-full bg-fd-muted-foreground/40" />
+          <span class={`${line} w-full`} />
+          <span class={`${line} w-3/4 self-start`} />
+        </span>
+      </div>
+    )}
+
+    {preview === 'menu' && (
+      <div class={`flex w-28 flex-col rounded-[8px] ${box} py-1 text-[10px] shadow-md`}>
+        <span class="px-2 py-1">Copy</span>
+        <span class="bg-fd-muted px-2 py-1">Share</span>
+        <span class="border-t border-fd-border px-2 py-1 text-red-500">Delete</span>
+      </div>
+    )}
+
+    {preview === 'dialog' && (
+      <div class="flex h-20 w-32 items-center justify-center rounded-[10px] bg-fd-foreground/20">
+        <span class={`flex w-24 flex-col items-center gap-1 rounded-[8px] ${box} p-2 shadow-md`}>
+          <span class="block h-1.5 w-12 rounded-full bg-fd-foreground/70" />
+          <span class={`${line} w-16`} />
+          <span class="mt-1 flex w-full gap-1"><span class="h-3 flex-1 rounded-[3px] border border-fd-border" /><span class="h-3 flex-1 rounded-[3px] bg-fd-foreground" /></span>
+        </span>
+      </div>
+    )}
+
+    {preview === 'search-bar' && (
+      <div class={`flex h-8 w-40 items-center gap-2 rounded-full ${box} px-3 text-fd-muted-foreground`}>
+        <svg width="12" height="12" viewBox="0 0 20 20" class="shrink-0"><circle cx="8.5" cy="8.5" r="5" fill="none" stroke="currentColor" stroke-width="1.8" /><path d="M12.5 12.5L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+        <span class="text-[10px]">Search</span>
+      </div>
+    )}
+
+    {preview === 'attachment' && (
+      <div class={`flex w-40 items-center gap-2 rounded-[8px] ${box} p-2`}>
+        <span class="flex size-8 shrink-0 items-center justify-center rounded-[6px] bg-fd-muted text-fd-muted-foreground">
+          <svg width="14" height="14" viewBox="0 0 20 20"><path d="M7 10.5l4.6-4.6a2.4 2.4 0 013.4 3.4l-6.1 6.1a4 4 0 01-5.7-5.7l6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+        </span>
+        <span class="flex min-w-0 flex-1 flex-col gap-1.5">
+          <span class="block h-1.5 w-16 rounded-full bg-fd-foreground/70" />
+          <span class="h-1 w-full overflow-hidden rounded-full bg-fd-muted-foreground/20"><span class="block h-full w-2/3 bg-fd-foreground" /></span>
+        </span>
+        <svg width="10" height="10" viewBox="0 0 20 20" class="shrink-0 text-fd-muted-foreground"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+      </div>
+    )}
+
+    {preview === 'date-picker' && (
+      <div class="flex h-20 w-32 flex-col justify-end overflow-hidden rounded-t-[10px] border border-b-0 border-fd-border bg-fd-muted-foreground/20">
+        <span class="flex h-16 flex-col rounded-t-[10px] bg-fd-background p-2">
+          <span class="mb-1.5 flex items-center justify-between"><span class="text-[9px] font-semibold">September</span><span class="text-[9px] text-fd-muted-foreground">‹  ›</span></span>
+          <span class="grid grid-cols-7 gap-0.5">
+            {Array.from({ length: 21 }, (_, i) => (
+              <span class={`size-2.5 rounded-[2px] ${i === 11 ? 'bg-fd-foreground' : 'bg-fd-muted-foreground/15'}`} />
+            ))}
+          </span>
+        </span>
+      </div>
+    )}
+
+    {preview === 'passcode' && (
+      <div class="flex flex-col items-center gap-3">
+        <span class="flex gap-2">
+          {[true, true, false, false].map((filled) => (
+            <span class={`size-2.5 rounded-full ${filled ? 'bg-fd-foreground' : 'border border-fd-border bg-fd-background'}`} />
+          ))}
+        </span>
+        <span class="grid grid-cols-3 gap-x-4 gap-y-1.5">
+          {Array.from({ length: 9 }, (_, i) => (
+            <span class={`flex size-4 items-center justify-center rounded-full ${box} text-[8px]`}>{i + 1}</span>
+          ))}
+        </span>
+      </div>
+    )}
+
+    {preview === 'app-bar' && (
+      <div class={`flex h-12 w-40 items-center justify-between rounded-[6px] ${box} px-2`}>
+        <svg width="12" height="12" viewBox="0 0 20 20"><path d="M13 4l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <span class="text-[10px] font-semibold">Settings</span>
+        <span class="size-3 rounded-full bg-fd-muted-foreground/30" />
+      </div>
+    )}
+
+    {preview === 'bottom-tab-bar' && (
+      <div class={`flex h-16 w-40 items-end rounded-t-[8px] ${box} p-2`}>
+        <span class="flex w-full items-center justify-around">
+          {[true, false, false].map((selected) => (
+            <span class="flex flex-col items-center gap-1">
+              <span class={`size-3 rounded-[3px] ${selected ? 'bg-fd-foreground' : 'bg-fd-muted-foreground/30'}`} />
+              <span class={`h-1 w-5 rounded-full ${selected ? 'bg-fd-foreground/70' : 'bg-fd-muted-foreground/20'}`} />
+            </span>
+          ))}
+        </span>
+      </div>
+    )}
+
+    {preview === 'tab' && (
+      <div class={`flex w-40 flex-col rounded-[6px] ${box} px-2 pt-2 text-[9px]`}>
+        <span class="flex justify-around"><span class="font-semibold">Recent</span><span class="text-fd-muted-foreground">Popular</span><span class="text-fd-muted-foreground">Saved</span></span>
+        <span class="mt-2 ml-1 h-0.5 w-10 bg-fd-foreground" />
+      </div>
+    )}
+
+    {preview === 'tool-bar' && (
+      <div class={`flex h-9 w-40 items-center justify-around rounded-full ${box} px-2 shadow-sm`}>
+        {[0, 1, 2, 3].map((item) => (
+          <span class="flex size-5 items-center justify-center text-fd-muted-foreground">
+            {item === 0 ? <span class="h-2.5 w-3 rounded-[2px] border border-current" /> : item === 1 ? <span class="h-3 w-px bg-current" /> : item === 2 ? <span class="size-2.5 rounded-full border border-current" /> : <span class="flex gap-0.5"><span class="size-0.5 rounded-full bg-current" /><span class="size-0.5 rounded-full bg-current" /><span class="size-0.5 rounded-full bg-current" /></span>}
+          </span>
+        ))}
+      </div>
+    )}
+
+    {preview === 'scaffold' && (
+      <div class={`flex h-20 w-32 flex-col overflow-hidden rounded-[8px] ${box}`}>
+        <span class="flex h-5 items-center justify-between border-b border-fd-border px-2"><span class="size-2 rounded-full bg-fd-muted-foreground/30" /><span class="h-1 w-8 rounded-full bg-fd-foreground/70" /><span class="size-2 rounded-full bg-fd-muted-foreground/30" /></span>
+        <span class="flex flex-1 flex-col gap-1 p-2"><span class={`${line} w-2/3`} /><span class={`${line} w-full`} /><span class={`${line} w-4/5`} /></span>
+        <span class="flex h-4 items-center justify-around border-t border-fd-border"><span class="size-1.5 rounded-full bg-fd-foreground" /><span class="size-1.5 rounded-full bg-fd-muted-foreground/30" /><span class="size-1.5 rounded-full bg-fd-muted-foreground/30" /></span>
+      </div>
+    )}
+  </div>
+
+  <div class="flex flex-col gap-1 p-3">
+    <span class="text-sm font-medium">{title}</span>
+    <div class="text-xs text-fd-muted-foreground"><slot /></div>
+  </div>
+</a>

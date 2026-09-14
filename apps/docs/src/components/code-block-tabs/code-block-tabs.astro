@@ -1,0 +1,85 @@
+---
+// Static replacement for fumadocs' React CodeBlockTabs. MDX components render without hydration
+// in Astro, so the React version loses its tabs context; switching is handled by the script below.
+interface Props {
+  defaultValue?: string;
+  groupId?: string;
+}
+
+const { defaultValue, groupId } = Astro.props;
+---
+
+<div
+  class="code-block-tabs not-prose my-4 bg-fd-card rounded-xl border"
+  data-default={defaultValue}
+  data-group={groupId}
+>
+  <slot />
+</div>
+
+<style is:global>
+  /* Until the script picks a tab, only the first panel is visible (avoids a flash of all four). */
+  .code-block-tabs:not([data-active]) [role='tabpanel'] ~ [role='tabpanel'] {
+    display: none;
+  }
+  .code-block-tabs [role='tabpanel'] > figure {
+    margin: 0;
+    border-width: 1px 0 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+</style>
+
+<script>
+  const storageKey = (group: string) => `code-block-tabs:${group}`;
+
+  function read(group: string): string | null {
+    try {
+      return localStorage.getItem(storageKey(group));
+    } catch {
+      return null;
+    }
+  }
+
+  function select(container: HTMLElement, value: string) {
+    const panels = container.querySelectorAll<HTMLElement>(':scope > [role="tabpanel"]');
+    if (![...panels].some((panel) => panel.dataset.value === value)) return;
+
+    container.dataset.active = value;
+    for (const panel of panels) panel.hidden = panel.dataset.value !== value;
+    for (const trigger of container.querySelectorAll<HTMLElement>(':scope > [role="tablist"] > [role="tab"]')) {
+      const active = trigger.dataset.value === value;
+      trigger.setAttribute('aria-selected', String(active));
+      if (active) trigger.dataset.selected = '';
+      else delete trigger.dataset.selected;
+    }
+  }
+
+  function init() {
+    for (const container of document.querySelectorAll<HTMLElement>('.code-block-tabs')) {
+      const group = container.dataset.group;
+      const value = (group && read(group)) || container.dataset.default;
+      if (value) select(container, value);
+    }
+  }
+
+  document.addEventListener('click', (event) => {
+    const trigger = (event.target as Element).closest<HTMLElement>('.code-block-tabs [role="tab"]');
+    const container = trigger?.closest<HTMLElement>('.code-block-tabs');
+    const value = trigger?.dataset.value;
+    if (!container || !value) return;
+
+    const group = container.dataset.group;
+    if (!group) return select(container, value);
+
+    try {
+      localStorage.setItem(storageKey(group), value);
+    } catch {}
+    for (const other of document.querySelectorAll<HTMLElement>('.code-block-tabs')) {
+      if (other.dataset.group === group) select(other, value);
+    }
+  });
+
+  init();
+  document.addEventListener('astro:page-load', init);
+</script>

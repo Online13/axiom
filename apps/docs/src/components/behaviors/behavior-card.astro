@@ -1,0 +1,353 @@
+---
+// Card for the behaviors page: a small phone-screen schematic, the behavior name and its status.
+// "available" links to the component or hook, "spec" to a planned pattern page, "planned" has no page yet.
+// Illustrations use the docs palette only, so they follow the light / dark theme.
+
+import Glyph from '@/components/preview/glyph.astro';
+
+type Status = 'available' | 'spec' | 'planned';
+
+interface Props {
+  title: string;
+  preview: string;
+  status: Status;
+  href?: string;
+}
+
+const { title, preview, status, href } = Astro.props;
+
+const statusLabel: Record<Status, string> = { available: 'Available', spec: 'Spec', planned: 'Planned' };
+const statusClass: Record<Status, string> = {
+  available: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
+  spec: 'bg-sky-500/15 text-sky-700 dark:text-sky-400',
+  planned: 'bg-fd-muted-foreground/15 text-fd-muted-foreground',
+};
+
+const Tag = href ? 'a' : 'div';
+const line = 'block h-1 rounded-full bg-fd-muted-foreground/30';
+const strong = 'block h-1 rounded-full bg-fd-foreground/70';
+const row = 'flex items-center gap-1 px-1.5 py-1';
+const dot = 'size-2.5 shrink-0 rounded-full bg-fd-muted-foreground/30';
+const box = 'border border-fd-border bg-fd-background';
+const accent = 'text-fd-foreground';
+---
+
+<Tag
+  href={href}
+  class:list={[
+    'group flex flex-col border bg-fd-card text-fd-card-foreground',
+    href && 'transition-colors hover:border-fd-ring hover:bg-fd-accent/40',
+  ]}
+>
+  <div class="flex h-32 items-center justify-center overflow-hidden border-b bg-fd-muted/60" aria-hidden="true">
+    <div class={`relative flex h-[88px] w-[60px] scale-[1.2] flex-col leading-none overflow-hidden rounded-[8px] ${box} text-fd-muted-foreground`}>
+      {/* Scroll */}
+      {preview === 'pull-to-refresh' && (
+        <>
+          <span class="flex h-6 items-center justify-center"><Glyph name="refresh" size={11} class={accent} strokeWidth={2.4} /></span>
+          <span class="flex flex-col gap-1 border-t border-fd-border p-1.5"><span class={`${strong} w-3/4`} /><span class={line} /><span class={`${line} w-2/3`} /></span>
+          <Glyph name="arrow-down" size={10} class="absolute right-1 top-1 opacity-60" />
+        </>
+      )}
+      {preview === 'hide-on-scroll' && (
+        <>
+          <span class="h-3 -translate-y-1.5 border-b border-dashed border-fd-border bg-fd-muted opacity-60" />
+          <span class="flex flex-1 flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /><span class={line} /></span>
+          <span class="flex h-3.5 translate-y-1.5 items-center justify-around border-t border-dashed border-fd-border bg-fd-muted opacity-60"><span class="size-1 rounded-full bg-current" /><span class="size-1 rounded-full bg-current" /></span>
+          <Glyph name="arrow-up" size={10} class={`absolute right-1 top-1/2 -translate-y-1/2 ${accent}`} />
+        </>
+      )}
+      {preview === 'collapsible-header' && (
+        <>
+          <span class="flex h-9 flex-col justify-end gap-1 bg-fd-muted-foreground/20 p-1.5"><span class={`${strong} w-3/4 h-1.5`} /></span>
+          <span class="flex h-3 items-center justify-center text-fd-foreground"><Glyph name="chevron-up" size={9} strokeWidth={2.6} /></span>
+          <span class="flex flex-col gap-1 px-1.5"><span class={line} /><span class={`${line} w-2/3`} /></span>
+        </>
+      )}
+      {preview === 'scroll-to-top' && (
+        <>
+          <span class="flex flex-1 flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /><span class={line} /><span class={`${line} w-1/2`} /></span>
+          <span class="absolute bottom-1.5 right-1.5 flex size-4 items-center justify-center rounded-full bg-fd-foreground text-fd-background"><Glyph name="arrow-up" size={9} strokeWidth={2.8} /></span>
+        </>
+      )}
+      {preview === 'scroll-aware-app-bar' && (
+        <>
+          <span class="flex h-4 items-center justify-center border-b border-fd-border shadow-sm"><span class={`${strong} w-6`} /></span>
+          <span class="flex flex-1 flex-col gap-1 p-1.5 opacity-70"><span class={line} /><span class={`${line} w-2/3`} /><span class={line} /></span>
+        </>
+      )}
+
+      {/* Gestures */}
+      {preview === 'long-press' && (
+        <>
+          <span class="flex flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /></span>
+          <span class="relative mx-1 flex items-center gap-1 rounded-[4px] bg-fd-muted-foreground/20 p-1"><span class={dot} /><span class={`${strong} flex-1`} /></span>
+          <span class="absolute left-1/2 top-[52%] size-5 -translate-x-1/2 rounded-full border-2 border-fd-foreground/60" />
+          <span class="absolute left-1/2 top-[52%] size-3 -translate-x-1/2 translate-y-1 rounded-full bg-fd-foreground/40" />
+        </>
+      )}
+      {preview === 'swipe-actions' && (
+        <>
+        <span class={`${row} mt-1`}><span class={dot} /><span class={`${line} flex-1`} /></span>
+        <span class="flex h-5 overflow-hidden border-y border-fd-border">
+          <span class="flex w-9 -translate-x-3 items-center gap-1 bg-fd-background px-1"><span class={dot} /><span class={`${line} flex-1`} /></span>
+          <span class="flex flex-1 items-center justify-center bg-amber-500 text-white"><Glyph name="archive" size={9} strokeWidth={2.4} /></span>
+          <span class="flex flex-1 items-center justify-center bg-sky-500 text-white"><Glyph name="pin" size={9} strokeWidth={2.4} /></span>
+        </span>
+        <span class={row}><span class={dot} /><span class={`${line} flex-1`} /></span>
+        <span class={row}><span class={dot} /><span class={`${line} w-2/3`} /></span>
+        </>
+      )}
+      {preview === 'swipe-to-delete' && (
+        <>
+          <span class={`${row} mt-1`}><span class={dot} /><span class={`${line} flex-1`} /></span>
+          <span class="flex h-5 overflow-hidden border-y border-fd-border">
+            <span class="flex w-7 -translate-x-2 items-center gap-1 bg-fd-background px-1"><span class={dot} /></span>
+            <span class="flex flex-1 items-center justify-end bg-red-500 pr-1.5 text-white"><Glyph name="trash" size={9} strokeWidth={2.4} /></span>
+          </span>
+          <span class="mx-1 mt-auto mb-1 flex items-center justify-between rounded-[3px] bg-fd-foreground px-1 py-0.5 text-[6px] font-semibold text-fd-background">
+            <span class="block h-0.5 w-4 rounded-full bg-fd-background/60" />Undo
+          </span>
+        </>
+      )}
+      {preview === 'drag-to-reorder' && (
+        <span class="flex flex-col gap-1 p-1.5">
+          {[0, 1, 2].map((i) => (
+            <span class:list={['flex items-center gap-1 rounded-[3px] px-1 py-0.5', i === 1 ? 'translate-x-1 bg-fd-background shadow-md ring-1 ring-fd-foreground/40' : '']}>
+              <span class={`${i === 1 ? strong : line} flex-1`} />
+              <Glyph name="menu" size={7} strokeWidth={2.6} class={i === 1 ? accent : ''} />
+            </span>
+          ))}
+        </span>
+      )}
+      {preview === 'pull-to-dismiss' && (
+        <>
+          <span class="absolute inset-0 bg-fd-foreground/15" />
+          <span class={`absolute inset-x-0 bottom-0 flex h-[62px] translate-y-2 flex-col items-center gap-1 rounded-t-[6px] ${box} pt-1`}>
+            <span class="h-0.5 w-4 rounded-full bg-fd-muted-foreground/60" />
+            <Glyph name="arrow-down" size={10} class={accent} strokeWidth={2.4} />
+            <span class={`${line} w-3/4`} />
+          </span>
+        </>
+      )}
+
+      {/* Contextual UI */}
+      {preview === 'context-menu' && (
+        <>
+          <span class="flex flex-col gap-1 p-1.5 opacity-50"><span class={line} /><span class={`${line} w-2/3`} /></span>
+          <span class={`mx-1.5 flex flex-col rounded-[4px] ${box} py-0.5 text-[6px] shadow-md`}>
+            <span class="px-1 py-px text-fd-foreground">Copy</span>
+            <span class="bg-fd-muted px-1 py-px text-fd-foreground">Share</span>
+            <span class="border-t border-fd-border px-1 py-px text-red-500">Delete</span>
+          </span>
+        </>
+      )}
+      {preview === 'selection-mode' && (
+        <>
+          <span class="flex h-4 items-center gap-1 bg-fd-foreground px-1 text-fd-background"><Glyph name="close" size={7} strokeWidth={2.8} /><span class="text-[6px] font-semibold">2</span><Glyph name="trash" size={7} strokeWidth={2.4} class="ml-auto" /></span>
+          {[true, false, true].map((checked) => (
+            <span class={row}>
+              <span class:list={['size-2 shrink-0 rounded-[2px]', checked ? 'bg-fd-foreground' : 'border border-fd-border']} />
+              <span class={`${line} flex-1`} />
+            </span>
+          ))}
+        </>
+      )}
+      {preview === 'dynamic-toolbar' && (
+        <>
+          <span class="flex flex-1 flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /></span>
+          <span class={`mx-1 mb-1.5 flex h-4 items-center justify-around rounded-full ${box} shadow-sm`}>
+            <Glyph name="copy" size={7} strokeWidth={2.4} /><Glyph name="share" size={7} strokeWidth={2.4} /><Glyph name="more" size={7} strokeWidth={3} />
+          </span>
+        </>
+      )}
+      {preview === 'floating-action-menu' && (
+        <>
+          <span class="absolute inset-0 bg-fd-foreground/10" />
+          <span class="absolute bottom-1.5 right-1.5 flex flex-col items-end gap-1">
+            <span class={`flex size-3 items-center justify-center rounded-full ${box}`}><Glyph name="camera" size={6} strokeWidth={2.6} /></span>
+            <span class={`flex size-3 items-center justify-center rounded-full ${box}`}><Glyph name="edit" size={6} strokeWidth={2.6} /></span>
+            <span class="flex size-4 items-center justify-center rounded-full bg-fd-foreground text-fd-background"><Glyph name="close" size={8} strokeWidth={2.8} /></span>
+          </span>
+        </>
+      )}
+
+      {/* Navigation UI */}
+      {preview === 'bottom-tab-bar' && (
+        <>
+          <span class="flex flex-1 flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /></span>
+          <span class="flex h-4 items-center justify-around border-t border-fd-border">
+            <Glyph name="home" size={8} class={accent} strokeWidth={2.4} /><Glyph name="search" size={8} strokeWidth={2.4} /><Glyph name="user" size={8} strokeWidth={2.4} />
+          </span>
+        </>
+      )}
+      {preview === 'floating-tab-bar' && (
+        <>
+          <span class="flex flex-1 flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /></span>
+          <span class={`mx-1.5 mb-1.5 flex h-4 items-center justify-around rounded-full ${box} shadow-md`}>
+            <Glyph name="home" size={7} class={accent} strokeWidth={2.4} /><Glyph name="search" size={7} strokeWidth={2.4} /><Glyph name="user" size={7} strokeWidth={2.4} />
+          </span>
+        </>
+      )}
+      {preview === 'primary-fab' && (
+        <>
+          <span class="flex flex-1 flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /></span>
+          <span class="absolute bottom-6 left-1/2 flex size-5 -translate-x-1/2 items-center justify-center rounded-full bg-fd-foreground text-fd-background shadow-md"><Glyph name="plus" size={10} strokeWidth={2.8} /></span>
+          <span class="flex h-4 items-center justify-between border-t border-fd-border px-2"><span class="size-1 rounded-full bg-current" /><span class="size-1 rounded-full bg-current" /></span>
+        </>
+      )}
+      {preview === 'top-tabs' && (
+        <>
+          <span class="flex items-end justify-around border-b border-fd-border pt-2 text-[6px]">
+            <span class="border-b border-fd-foreground pb-0.5 font-semibold text-fd-foreground">All</span><span class="pb-0.5">New</span><span class="pb-0.5">Saved</span>
+          </span>
+          <span class="flex flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /></span>
+        </>
+      )}
+      {preview === 'nav-hub' && (
+        <span class="grid grid-cols-2 gap-1 p-1.5">
+          {(['user', 'bell', 'lock', 'settings'] as const).map((name) => (
+            <span class="flex h-4 items-center justify-center rounded-[3px] bg-fd-muted-foreground/15"><Glyph name={name} size={8} strokeWidth={2.2} /></span>
+          ))}
+          <span class={`${line} col-span-2 mt-1`} />
+          <span class={`${line} col-span-2 w-2/3`} />
+        </span>
+      )}
+
+      {/* Application states */}
+      {preview === 'empty' && (
+        <span class="flex flex-1 flex-col items-center justify-center gap-1">
+          <span class="flex size-5 items-center justify-center rounded-full bg-fd-muted-foreground/20"><Glyph name="inbox" size={10} strokeWidth={2} /></span>
+          <span class={`${strong} w-7`} />
+          <span class="mt-0.5 rounded-[3px] bg-fd-foreground px-1.5 py-0.5 text-[5px] font-semibold text-fd-background">Create</span>
+        </span>
+      )}
+      {preview === 'no-results' && (
+        <>
+          <span class={`m-1 flex h-3 items-center gap-0.5 rounded-full ${box} px-1`}><Glyph name="search" size={6} strokeWidth={2.6} /><span class="text-[5px] text-fd-foreground">xyzq</span></span>
+          <span class="flex flex-1 flex-col items-center justify-center gap-1">
+            <Glyph name="search" size={12} strokeWidth={2} />
+            <span class={`${strong} w-8`} />
+            <span class={`${line} w-6`} />
+          </span>
+        </>
+      )}
+      {preview === 'loading' && (
+        <span class="flex flex-1 items-center justify-center">
+          <svg width="16" height="16" viewBox="0 0 24 24" class={`animate-spin motion-reduce:animate-none ${accent}`}>
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-opacity="0.15" stroke-width="3" />
+            <path d="M21 12a9 9 0 00-9-9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+          </svg>
+        </span>
+      )}
+      {preview === 'error' && (
+        <span class="flex flex-1 flex-col items-center justify-center gap-1 text-red-500">
+          <Glyph name="alert" size={13} strokeWidth={2} />
+          <span class="block h-1 w-8 rounded-full bg-fd-foreground/70" />
+          <span class={`${line} w-10`} />
+        </span>
+      )}
+      {preview === 'offline' && (
+        <>
+          <span class="flex h-3 items-center justify-center gap-0.5 bg-fd-foreground text-[5px] font-semibold text-fd-background"><Glyph name="wifi-off" size={6} strokeWidth={2.6} />Offline</span>
+          <span class="flex flex-1 flex-col gap-1 p-1.5 opacity-50"><span class={line} /><span class={`${line} w-2/3`} /><span class={line} /></span>
+        </>
+      )}
+      {preview === 'retry' && (
+        <span class="flex flex-1 flex-col items-center justify-center gap-1">
+          <Glyph name="circle-x" size={12} strokeWidth={2} />
+          <span class={`${line} w-9`} />
+          <span class="mt-0.5 flex items-center gap-0.5 rounded-[3px] border border-fd-foreground px-1 py-0.5 text-[5px] font-semibold text-fd-foreground"><Glyph name="refresh" size={5} strokeWidth={3} />Retry</span>
+        </span>
+      )}
+
+      {/* Search */}
+      {preview === 'search-bar' && (
+        <>
+          <span class={`m-1 flex h-3.5 items-center gap-0.5 rounded-full ${box} px-1`}><Glyph name="search" size={6} strokeWidth={2.6} /><span class="text-[5px]">Search</span></span>
+          <span class="flex flex-col gap-1 p-1.5 opacity-60"><span class={line} /><span class={`${line} w-2/3`} /></span>
+        </>
+      )}
+      {preview === 'search-experience' && (
+        <>
+          <span class={`m-1 flex h-3.5 items-center gap-0.5 rounded-full ${box} px-1 ring-1 ring-fd-foreground/40`}><Glyph name="search" size={6} strokeWidth={2.6} /><span class="text-[5px] text-fd-foreground">sho</span></span>
+          {[0, 1, 2].map(() => (
+            <span class={row}><span class="size-2.5 shrink-0 rounded-[2px] bg-fd-muted-foreground/30" /><span class="flex flex-1 flex-col gap-0.5"><span class={`${strong} w-3/4`} /><span class={`${line} w-1/2`} /></span></span>
+          ))}
+        </>
+      )}
+      {preview === 'search-history' && (
+        <>
+          <span class={`m-1 flex h-3.5 items-center gap-0.5 rounded-full ${box} px-1`}><Glyph name="search" size={6} strokeWidth={2.6} /></span>
+          {[0, 1, 2].map(() => (
+            <span class={row}><Glyph name="clock" size={6} strokeWidth={2.6} /><span class={`${line} flex-1`} /><Glyph name="close" size={5} strokeWidth={2.6} /></span>
+          ))}
+        </>
+      )}
+      {preview === 'recent-searches' && (
+        <>
+          <span class={`m-1 flex h-3.5 items-center gap-0.5 rounded-full ${box} px-1`}><Glyph name="search" size={6} strokeWidth={2.6} /></span>
+          <span class="flex flex-wrap gap-0.5 px-1 text-[5px]">
+            {['shoes', 'bag', 'red', 'sale'].map((term) => (
+              <span class="rounded-full border border-fd-border px-1 py-px text-fd-foreground">{term}</span>
+            ))}
+          </span>
+        </>
+      )}
+      {preview === 'cancel' && (
+        <>
+          <span class="m-1 flex items-center gap-1">
+            <span class={`flex h-3.5 flex-1 items-center gap-0.5 rounded-full ${box} px-1 ring-1 ring-fd-foreground/40`}><Glyph name="search" size={6} strokeWidth={2.6} /></span>
+            <span class="text-[5px] font-semibold text-fd-foreground">Cancel</span>
+          </span>
+          <span class="flex flex-col gap-1 p-1.5 opacity-50"><span class={line} /><span class={`${line} w-2/3`} /></span>
+        </>
+      )}
+      {preview === 'debounce' && (
+        <>
+          <span class={`m-1 flex h-3.5 items-center gap-0.5 rounded-full ${box} px-1`}><Glyph name="search" size={6} strokeWidth={2.6} /><span class="text-[5px] text-fd-foreground">shoe</span></span>
+          <span class="flex flex-1 flex-col justify-center gap-1 px-1.5">
+            <span class="flex items-end gap-0.5">
+              {['s', 'h', 'o', 'e'].map((key) => (
+                <span class="flex size-2.5 items-center justify-center rounded-[2px] border border-fd-border text-[5px]">{key}</span>
+              ))}
+            </span>
+            <span class="flex items-center gap-0.5"><span class="h-px flex-1 border-t border-dashed border-fd-muted-foreground/60" /><Glyph name="clock" size={7} strokeWidth={2.6} class={accent} /></span>
+            <span class="self-end rounded-[2px] bg-fd-foreground px-1 text-[5px] font-semibold text-fd-background">1 call</span>
+          </span>
+        </>
+      )}
+
+      {/* Async content */}
+      {preview === 'pagination' && (
+        <>
+          <span class="flex flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /><span class={line} /><span class={`${line} w-1/2`} /></span>
+          <span class="mt-auto flex items-center justify-center pb-1.5">
+            <svg width="9" height="9" viewBox="0 0 24 24" class={`animate-spin motion-reduce:animate-none ${accent}`}>
+              <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-opacity="0.15" stroke-width="3.5" />
+              <path d="M21 12a9 9 0 00-9-9" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" />
+            </svg>
+          </span>
+        </>
+      )}
+      {preview === 'skeleton' && (
+        <span class="flex animate-pulse flex-col gap-1.5 p-1.5 motion-reduce:animate-none">
+          {[0, 1, 2].map(() => (
+            <span class="flex items-center gap-1"><span class="size-3 shrink-0 rounded-full bg-fd-muted-foreground/25" /><span class="flex flex-1 flex-col gap-0.5"><span class="h-1 rounded-full bg-fd-muted-foreground/25" /><span class="h-1 w-2/3 rounded-full bg-fd-muted-foreground/25" /></span></span>
+          ))}
+        </span>
+      )}
+      {preview === 'end-of-list' && (
+        <>
+          <span class="flex flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /><span class={line} /></span>
+          <span class="mt-auto flex items-center gap-1 px-1.5 pb-2"><span class="h-px flex-1 bg-fd-border" /><Glyph name="check" size={7} strokeWidth={2.8} class={accent} /><span class="h-px flex-1 bg-fd-border" /></span>
+        </>
+      )}
+    </div>
+  </div>
+
+  <div class="flex items-start justify-between gap-2 p-3">
+    <span class="text-sm font-medium">{title}</span>
+    <span class={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium ${statusClass[status]}`}>{statusLabel[status]}</span>
+  </div>
+</Tag>

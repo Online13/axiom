@@ -1,0 +1,15 @@
+---
+import AtomCard from '@/components/atoms/atom-card.astro';
+
+interface Props {
+  title: string;
+  href: string;
+  preview: string;
+}
+
+const props = Astro.props;
+---
+
+<AtomCard {...props}>
+  <slot />
+</AtomCard>

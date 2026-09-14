@@ -1,0 +1,17 @@
+---
+interface Props {
+  value: string;
+}
+
+const { value } = Astro.props;
+---
+
+<button
+  type="button"
+  role="tab"
+  data-value={value}
+  class="relative group inline-flex text-sm font-medium text-nowrap items-center transition-colors gap-2 px-2 py-1.5 hover:text-fd-accent-foreground data-selected:text-fd-primary"
+>
+  <div class="absolute inset-x-2 bottom-0 h-px group-data-selected:bg-fd-primary"></div>
+  <slot />
+</button>

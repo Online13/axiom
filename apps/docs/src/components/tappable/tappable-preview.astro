@@ -1,0 +1,273 @@
+---
+// A small screen with an IconButton and two Buttons, all built on Tappable.
+// Pressing an element applies its `pressed` component tokens, the toolbar shows the touch areas or disables everything.
+// The footer mirrors the state Tappable hands to the component it wraps.
+import TokenFrame from '@/components/tokens/token-frame.astro';
+import { metrics, refColor, roleColor, type ColorScheme } from '@/lib/tokens';
+
+const schemeVars = (scheme: ColorScheme) => ({
+  '--screen': roleColor(scheme, 'background', 'default'),
+  '--text': roleColor(scheme, 'content', 'default'),
+  '--muted': roleColor(scheme, 'content', 'muted'),
+  '--divider': roleColor(scheme, 'border', 'subtle'),
+  '--icon-pressed': refColor(scheme, 'background.subtle'),
+  '--icon-disabled': refColor(scheme, 'content.disabled'),
+  '--solid-bg': refColor(scheme, 'background.inverse'),
+  '--solid-fg': refColor(scheme, 'content.inverse'),
+  '--solid-pressed-bg': refColor(scheme, 'content.muted'),
+  '--solid-disabled-bg': refColor(scheme, 'border.default'),
+  '--solid-disabled-fg': refColor(scheme, 'content.disabled'),
+  '--outline-bg': refColor(scheme, 'background.default'),
+  '--outline-fg': refColor(scheme, 'content.default'),
+  '--outline-border': refColor(scheme, 'border.default'),
+  '--outline-pressed-bg': refColor(scheme, 'background.subtle'),
+  '--outline-disabled-fg': refColor(scheme, 'content.disabled'),
+  '--outline-disabled-border': refColor(scheme, 'border.subtle'),
+});
+
+const colors = { light: schemeVars('light'), dark: schemeVars('dark') };
+const initialStyle = [
+  ...Object.entries(colors.light).map(([name, value]) => `${name}:${value}`),
+  `--target:${metrics.touchTarget}px`,
+].join(';');
+---
+
+<TokenFrame>
+  <div class="tappable-preview" data-colors={JSON.stringify(colors)} data-areas="false" data-disabled="false" style={initialStyle}>
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b px-4 py-3">
+      <div class="inline-flex border p-0.5 text-xs" role="group" aria-label="Options">
+        <button type="button" class="toggle-button px-3 py-1" data-toggle="areas" aria-pressed="false">Touch areas</button>
+        <button type="button" class="toggle-button px-3 py-1" data-toggle="disabled" aria-pressed="false">Disabled</button>
+      </div>
+      <div class="inline-flex border p-0.5 text-xs" role="group" aria-label="Color scheme">
+        <button type="button" class="toggle-button px-3 py-1" data-scheme="light" aria-pressed="true">Light</button>
+        <button type="button" class="toggle-button px-3 py-1" data-scheme="dark" aria-pressed="false">Dark</button>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="screen">
+        <div class="header">
+          <button type="button" class="tappable icon-button" data-name="IconButton" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </button>
+          <span style="color:var(--text);font-size:17px;font-weight:600">Edit profile</span>
+          <span class="w-[44px]"></span>
+        </div>
+
+        <div class="flex flex-col gap-3 px-4 py-5">
+          <div class="field">
+            <span style="color:var(--muted);font-size:12px">Name</span>
+            <span style="color:var(--text);font-size:15px">Ada Lovelace</span>
+          </div>
+          <div class="field">
+            <span style="color:var(--muted);font-size:12px">Username</span>
+            <span style="color:var(--text);font-size:15px">@ada</span>
+          </div>
+        </div>
+
+        <div class="flex gap-2 px-4 pb-4">
+          <button type="button" class="tappable button outline" data-name="Button outline">Cancel</button>
+          <button type="button" class="tappable button solid" data-name="Button solid">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t px-4 py-3 font-mono text-xs">
+      <span class="text-fd-muted-foreground" data-target>Press an element</span>
+      <span class="text-fd-muted-foreground"> → pressed </span>
+      <span data-pressed>false</span>
+      <span class="text-fd-muted-foreground"> · onPress </span>
+      <span data-count>0</span>
+    </div>
+  </div>
+</TokenFrame>
+
+<style>
+  .toggle-button[aria-pressed='true'] {
+    background: var(--color-fd-foreground);
+    color: var(--color-fd-background);
+  }
+
+  .toggle-button[aria-pressed='false'] {
+    color: var(--color-fd-muted-foreground);
+  }
+
+  .stage {
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+
+  .screen {
+    width: 300px;
+    max-width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--outline-border);
+    border-radius: 20px;
+    background: var(--screen);
+    font-family: system-ui, sans-serif;
+    text-align: left;
+    transition: background-color 250ms ease;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--divider);
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--divider);
+  }
+
+  .tappable {
+    position: relative;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  /* The icon is 20px, the pressable area is the 44px square around it. */
+  .icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--target);
+    height: var(--target);
+    border-radius: 999px;
+    color: var(--text);
+  }
+
+  .icon-button[data-pressed='true'] {
+    background: var(--icon-pressed);
+  }
+
+  .button {
+    flex: 1;
+    height: var(--target);
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .solid {
+    background: var(--solid-bg);
+    color: var(--solid-fg);
+  }
+
+  .solid[data-pressed='true'] {
+    background: var(--solid-pressed-bg);
+  }
+
+  .outline {
+    background: var(--outline-bg);
+    color: var(--outline-fg);
+    box-shadow: inset 0 0 0 1px var(--outline-border);
+  }
+
+  .outline[data-pressed='true'] {
+    background: var(--outline-pressed-bg);
+  }
+
+  .tappable-preview[data-disabled='true'] .tappable {
+    cursor: not-allowed;
+  }
+
+  .tappable-preview[data-disabled='true'] .icon-button {
+    color: var(--icon-disabled);
+  }
+
+  .tappable-preview[data-disabled='true'] .solid {
+    background: var(--solid-disabled-bg);
+    color: var(--solid-disabled-fg);
+  }
+
+  .tappable-preview[data-disabled='true'] .outline {
+    color: var(--outline-disabled-fg);
+    box-shadow: inset 0 0 0 1px var(--outline-disabled-border);
+  }
+
+  /* Touch areas: a dashed outline exactly on the pressable bounds. */
+  .tappable-preview[data-areas='true'] .tappable::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1.5px dashed #3b82f6;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .tappable,
+  .screen * {
+    transition:
+      background-color 100ms ease,
+      color 250ms ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tappable,
+    .screen * {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('.tappable-preview').forEach((preview) => {
+      const colors = JSON.parse(preview.dataset.colors ?? '{}') as Record<string, Record<string, string>>;
+      const schemeButtons = preview.querySelectorAll<HTMLButtonElement>('[data-scheme]');
+      const targetLabel = preview.querySelector<HTMLElement>('[data-target]')!;
+      const pressedLabel = preview.querySelector<HTMLElement>('[data-pressed]')!;
+      const countLabel = preview.querySelector<HTMLElement>('[data-count]')!;
+      let count = 0;
+
+      schemeButtons.forEach((button) =>
+        button.addEventListener('click', () => {
+          for (const [name, value] of Object.entries(colors[button.dataset.scheme ?? 'light'])) preview.style.setProperty(name, value);
+          schemeButtons.forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+        }),
+      );
+
+      preview.querySelectorAll<HTMLButtonElement>('[data-toggle]').forEach((button) =>
+        button.addEventListener('click', () => {
+          const key = button.dataset.toggle!;
+          const on = preview.dataset[key] !== 'true';
+          preview.dataset[key] = String(on);
+          button.setAttribute('aria-pressed', String(on));
+        }),
+      );
+
+      preview.querySelectorAll<HTMLButtonElement>('.tappable').forEach((tappable) => {
+        const setPressed = (pressed: boolean) => {
+          tappable.dataset.pressed = String(pressed);
+          targetLabel.textContent = tappable.dataset.name ?? '';
+          pressedLabel.textContent = String(pressed);
+        };
+
+        tappable.addEventListener('pointerdown', () => {
+          if (preview.dataset.disabled !== 'true') setPressed(true);
+        });
+        tappable.addEventListener('pointerup', () => {
+          if (tappable.dataset.pressed !== 'true') return;
+          setPressed(false);
+          countLabel.textContent = String(++count);
+        });
+        // Sliding off the element cancels the press: no onPress.
+        tappable.addEventListener('pointerleave', () => tappable.dataset.pressed === 'true' && setPressed(false));
+        tappable.addEventListener('pointercancel', () => tappable.dataset.pressed === 'true' && setPressed(false));
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>
