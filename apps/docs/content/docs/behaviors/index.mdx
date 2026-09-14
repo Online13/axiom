@@ -1,0 +1,101 @@
+---
+title: Behaviors
+description: "Recurring mobile behaviors, grouped by topic."
+---
+
+Axiom doesn't stop at components. Over time, it covers the behaviors every mobile app needs. Some already exist as components or hooks; the rest are planned.
+
+Each card shows its status:
+
+- **Available**: a component or hook you can install today. The card links to it.
+- **Spec**: the pattern has a page describing it, but no implementation yet.
+- **Planned**: on the list, with no page yet.
+
+## Scroll
+
+How the screen reacts while the user scrolls a list.
+
+<BehaviorGrid>
+  <BehaviorCard title="Pull-to-refresh" preview="pull-to-refresh" status="available" href="/hooks/use-refresh-control" />
+  <BehaviorCard title="Hide-on-scroll" preview="hide-on-scroll" status="planned" />
+  <BehaviorCard title="Collapsible header" preview="collapsible-header" status="planned" />
+  <BehaviorCard title="Scroll-to-top" preview="scroll-to-top" status="planned" />
+  <BehaviorCard title="Scroll-aware AppBar" preview="scroll-aware-app-bar" status="available" href="/templates/app-bar" />
+</BehaviorGrid>
+
+## Gestures
+
+Actions triggered by touch rather than a visible button.
+
+<BehaviorGrid>
+  <BehaviorCard title="Long press" preview="long-press" status="planned" />
+  <BehaviorCard title="Swipe actions" preview="swipe-actions" status="spec" href="/patterns/swipe-actions" />
+  <BehaviorCard title="Swipe-to-delete" preview="swipe-to-delete" status="spec" href="/patterns/swipe-actions#swipe-to-delete" />
+  <BehaviorCard title="Drag-to-reorder" preview="drag-to-reorder" status="planned" />
+  <BehaviorCard title="Pull-to-dismiss" preview="pull-to-dismiss" status="planned" />
+</BehaviorGrid>
+
+## Contextual UI
+
+Actions that appear only when they apply to what the user is doing.
+
+<BehaviorGrid>
+  <BehaviorCard title="Context menu" preview="context-menu" status="available" href="/atoms/menu" />
+  <BehaviorCard title="Contextual action mode" preview="selection-mode" status="spec" href="/patterns/selection-mode" />
+  <BehaviorCard title="Dynamic toolbar" preview="dynamic-toolbar" status="available" href="/templates/tool-bar" />
+  <BehaviorCard title="Floating action menu" preview="floating-action-menu" status="spec" href="/patterns/floating-action-menu" />
+</BehaviorGrid>
+
+## Navigation UI
+
+How the user moves between the main sections of the app.
+
+<BehaviorGrid>
+  <BehaviorCard title="BottomTabBar" preview="bottom-tab-bar" status="available" href="/templates/bottom-tab-bar" />
+  <BehaviorCard title="Floating BottomTabBar" preview="floating-tab-bar" status="planned" />
+  <BehaviorCard title="Primary floating action" preview="primary-fab" status="planned" />
+  <BehaviorCard title="Top tabs" preview="top-tabs" status="available" href="/templates/tab" />
+  <BehaviorCard title="Page-based navigation hub" preview="nav-hub" status="planned" />
+</BehaviorGrid>
+
+## Application states
+
+What a screen shows when it has nothing ready to display.
+
+<BehaviorGrid>
+  <BehaviorCard title="First-time empty state" preview="empty" status="spec" href="/patterns/first-time-empty-state" />
+  <BehaviorCard title="No-results state" preview="no-results" status="planned" />
+  <BehaviorCard title="Loading state" preview="loading" status="planned" />
+  <BehaviorCard title="Error state" preview="error" status="planned" />
+  <BehaviorCard title="Offline state" preview="offline" status="planned" />
+  <BehaviorCard title="Retry state" preview="retry" status="planned" />
+</BehaviorGrid>
+
+## Search
+
+The full search flow, from the field to the results.
+
+<BehaviorGrid>
+  <BehaviorCard title="SearchBar" preview="search-bar" status="available" href="/molecules/search-bar" />
+  <BehaviorCard title="SearchExperience" preview="search-experience" status="spec" href="/patterns/search-experience" />
+  <BehaviorCard title="Search history" preview="search-history" status="planned" />
+  <BehaviorCard title="Recent searches" preview="recent-searches" status="planned" />
+  <BehaviorCard title="Cancel" preview="cancel" status="planned" />
+  <BehaviorCard title="Debounce" preview="debounce" status="planned" />
+  <BehaviorCard title="No-results behavior" preview="no-results" status="planned" />
+</BehaviorGrid>
+
+## Async content
+
+Every step of a list that loads from the network. See [async content state](/patterns/async-content-state) for how they fit together.
+
+<BehaviorGrid>
+  <BehaviorCard title="Initial loading" preview="loading" status="planned" />
+  <BehaviorCard title="Pagination" preview="pagination" status="planned" />
+  <BehaviorCard title="Pull-to-refresh" preview="pull-to-refresh" status="available" href="/hooks/use-refresh-control" />
+  <BehaviorCard title="Skeleton" preview="skeleton" status="available" href="/atoms/skeleton" />
+  <BehaviorCard title="Empty" preview="empty" status="available" href="/atoms/empty" />
+  <BehaviorCard title="Error" preview="error" status="planned" />
+  <BehaviorCard title="Retry" preview="retry" status="planned" />
+  <BehaviorCard title="End-of-list" preview="end-of-list" status="planned" />
+</BehaviorGrid>
