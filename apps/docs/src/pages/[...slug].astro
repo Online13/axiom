@@ -1,0 +1,126 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import { Docs } from "@/components/docs";
+import defaultMdxComponents from "fumadocs-ui/mdx";
+import CodeBlockTabs from "@/components/code-block-tabs/code-block-tabs.astro";
+import CodeBlockTabsList from "@/components/code-block-tabs/code-block-tabs-list.astro";
+import CodeBlockTabsTrigger from "@/components/code-block-tabs/code-block-tabs-trigger.astro";
+import CodeBlockTab from "@/components/code-block-tabs/code-block-tab.astro";
+import PaletteGrid from "@/components/tokens/palette-grid.astro";
+import SpacingScale from "@/components/tokens/spacing-scale.astro";
+import RadiusScale from "@/components/tokens/radius-scale.astro";
+import TypeScale from "@/components/tokens/type-scale.astro";
+import SizesScale from "@/components/tokens/sizes-scale.astro";
+import MetricsPreview from "@/components/tokens/metrics-preview.astro";
+import ColorRoleTable from "@/components/tokens/color-role-table.astro";
+import RolePreview from "@/components/tokens/role-preview.astro";
+import TokenChain from "@/components/tokens/token-chain.astro";
+import ComponentTokenPreview from "@/components/tokens/component-token-preview.astro";
+import ComponentTokenTable from "@/components/tokens/component-token-table.astro";
+import OverlayPreview from "@/components/overlay/overlay-preview.astro";
+import OverlayLayers from "@/components/overlay/overlay-layers.astro";
+import AtomGrid from "@/components/atoms/atom-grid.astro";
+import BehaviorGrid from "@/components/behaviors/behavior-grid.astro";
+import BehaviorCard from "@/components/behaviors/behavior-card.astro";
+import AtomCard from "@/components/atoms/atom-card.astro";
+import ComponentGrid from "@/components/catalog/component-grid.astro";
+import ComponentCard from "@/components/catalog/component-card.astro";
+import TappablePreview from "@/components/tappable/tappable-preview.astro";
+import TappableHitSlop from "@/components/tappable/tappable-hit-slop.astro";
+import RefreshControlPreview from "@/components/refresh-control/refresh-control-preview.astro";
+import RefreshControlStates from "@/components/refresh-control/refresh-control-states.astro";
+import RefreshControlResistance from "@/components/refresh-control/refresh-control-resistance.astro";
+import PhonePreview from "@/components/preview/phone-preview.astro";
+import Glyph from "@/components/preview/glyph.astro";
+import ScaffoldAnatomy from "@/components/scaffold/scaffold-anatomy.astro";
+import PreviewTheme from "@/components/preview/preview-theme.astro";
+import "@/styles/global.css";
+import "@/styles/preview.css";
+import { source } from "@/lib/source";
+import { getPageImageUrl } from "@/lib/shared";
+import Layout from "@/components/layout.astro";
+import type { TOCItemType } from "fumadocs-core/toc";
+
+interface Props {
+  page: CollectionEntry<"docs">;
+}
+
+export async function getStaticPaths() {
+  return source.getPages().map((page) => ({
+    params: { slug: page.slugs.length > 0 ? page.slugs.join("/") : undefined },
+    props: { page: page.data._raw },
+  }));
+}
+
+const { page } = Astro.props;
+const { Content, headings } = await render(page);
+const slugs = typeof Astro.params.slug === "string" ? Astro.params.slug.split("/") : [];
+const docsPage = source.getPage(slugs)!;
+const image = getPageImageUrl(docsPage).url;
+// Pages that only have frontmatter so far show a placeholder instead of a blank screen.
+const isEmpty = !page.body?.trim();
+const Callout = defaultMdxComponents.Callout;
+
+const toc: TOCItemType[] = headings.map((heading) => ({
+  depth: heading.depth,
+  title: heading.text,
+  url: "#" + heading.slug,
+}));
+---
+
+<Layout>
+  <PreviewTheme />
+  <title>{page.data.title}</title>
+  <meta name="title" content={page.data.title} />
+  <meta name="description" content={page.data.description} />
+  <meta property="og:image" content={image} />
+  <Docs
+    tree={source.getPageTree()}
+    pathname={Astro.url.pathname}
+    params={Astro.params}
+    page={{ toc }}
+    client:load
+  >
+    <h1 class="font-semibold text-3xl">{page.data.title}</h1>
+    <p class="text-lg text-fd-muted-foreground mb-8">{page.data.description}</p>
+    <div class="prose flex-1">
+      {isEmpty && <Callout title="Available soon">This page is still being written.</Callout>}
+      <Content
+        components={{
+          ...defaultMdxComponents,
+          CodeBlockTabs,
+          CodeBlockTabsList,
+          CodeBlockTabsTrigger,
+          CodeBlockTab,
+          PaletteGrid,
+          SpacingScale,
+          RadiusScale,
+          TypeScale,
+          SizesScale,
+          MetricsPreview,
+          ColorRoleTable,
+          RolePreview,
+          TokenChain,
+          ComponentTokenPreview,
+          ComponentTokenTable,
+          OverlayPreview,
+          OverlayLayers,
+          AtomGrid,
+          BehaviorGrid,
+          BehaviorCard,
+          AtomCard,
+          ComponentGrid,
+          ComponentCard,
+          TappablePreview,
+          TappableHitSlop,
+          RefreshControlPreview,
+          RefreshControlStates,
+          RefreshControlResistance,
+          PhonePreview,
+          Glyph,
+          ScaffoldAnatomy,
+        }}
+      />
+    </div>
+  </Docs>
+</Layout>

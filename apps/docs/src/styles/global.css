@@ -1,0 +1,94 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+/* Match the landing page: near-black ground, grey lines, square corners, Inter + JetBrains Mono. */
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+}
+
+.dark {
+  --color-fd-background: #0a0a0a;
+  --color-fd-foreground: #f5f5f5;
+  --color-fd-muted: #141414;
+  --color-fd-muted-foreground: #8a8a8a;
+  --color-fd-popover: #0f0f0f;
+  --color-fd-popover-foreground: #f5f5f5;
+  --color-fd-card: #0f0f0f;
+  --color-fd-card-foreground: #f5f5f5;
+  --color-fd-border: #262626;
+  --color-fd-primary: #f5f5f5;
+  --color-fd-primary-foreground: #0a0a0a;
+  --color-fd-secondary: #141414;
+  --color-fd-secondary-foreground: #f5f5f5;
+  --color-fd-accent: #1a1a1a;
+  --color-fd-accent-foreground: #f5f5f5;
+  --color-fd-ring: #525252;
+}
+
+.dark #nd-sidebar {
+  --color-fd-muted: #141414;
+  --color-fd-secondary: #1a1a1a;
+  --color-fd-muted-foreground: #8a8a8a;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+.passcode-use-case {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  margin-block: 1.5rem;
+  align-items: start;
+}
+
+.passcode-use-case > * {
+  min-width: 0;
+  margin-block: 0;
+}
+
+@media (min-width: 1024px) {
+  .passcode-use-case {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Leave breathing room below the last block instead of ending flush with the scroll. */
+#nd-page {
+  padding-bottom: 25vh;
+}
+
+/* Page titles use the landing's tight headline tracking. */
+h1,
+h2,
+h3 {
+  letter-spacing: -0.03em;
+}
+
+/* Sidebar separators read like the landing's mono eyebrows. */
+#nd-sidebar p {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+html > body[data-scroll-locked] {
+  margin-right: 0px !important;
+  --removed-body-scroll-bar-size: 0px !important;
+}
