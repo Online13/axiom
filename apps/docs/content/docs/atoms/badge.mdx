@@ -1,0 +1,121 @@
+---
+title: Badge
+description: "Status or counter pill."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<PhonePreview>
+  <div class="ax-appbar"><span class="ax-appbar-title" style={{ textAlign: 'left', paddingLeft: '8px' }}>Deployments</span><span class="ax-anchor"><span class="ax-icon-btn"><Glyph name="bell" /></span><span class="ax-badge" data-kind="count" style={{ top: '4px', right: '4px' }}>3</span></span><span class="ax-anchor"><span class="ax-avatar" data-size="sm" data-photo="1" style={{ margin: '0 6px' }}>A</span><span class="ax-badge" data-kind="dot" style={{ top: '0px', right: '6px' }} /></span></div>
+  <div class="ax-list" data-variant="plain">
+    <div class="ax-item"><div class="ax-item-content"><span class="ax-item-title">web · main</span><span class="ax-item-desc">2 min ago</span></div><span class="ax-badge" data-variant="success"><span class="ax-badge-dot" />Ready</span></div>
+    <div class="ax-item"><div class="ax-item-content"><span class="ax-item-title">api · fix/auth</span><span class="ax-item-desc">Building for 48s</span></div><span class="ax-badge" data-variant="info"><span class="ax-badge-dot" />Building</span></div>
+    <div class="ax-item"><div class="ax-item-content"><span class="ax-item-title">docs · next</span><span class="ax-item-desc">Queued</span></div><span class="ax-badge" data-variant="warning">Queued</span></div>
+    <div class="ax-item"><div class="ax-item-content"><span class="ax-item-title">app · release</span><span class="ax-item-desc">Failed after 3m</span></div><span class="ax-badge" data-variant="error">Error</span></div>
+    <div class="ax-item"><div class="ax-item-content"><span class="ax-item-title">worker · v1</span><span class="ax-item-desc">Last week</span></div><span class="ax-badge">Archived</span></div>
+    <div class="ax-item"><div class="ax-item-content"><span class="ax-item-title">edge · beta</span><span class="ax-item-desc">Preview</span></div><span class="ax-badge" data-variant="outline">Preview</span></div>
+  </div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add badge
+```
+
+## Usage
+
+```tsx title="Conceptual"
+import { Badge } from '@/components/ui/badge';
+
+<Badge variant="success" dot>Ready</Badge>
+<Badge count={3} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | — | The label. One or two words. |
+| `variant` | `'neutral' \| 'info' \| 'success' \| 'warning' \| 'error' \| 'outline' \| 'inverse'` | `'neutral'` | Color from the theme's feedback colors: subtle background with a saturated label. `outline` and `inverse` are neutral alternatives. |
+| `dot` | `boolean` | `false` | Small dot before the label in the label color, to reinforce a status. |
+| `icon` | `IconName \| ReactNode` | — | Icon before the label. Replaces `dot`. |
+| `count` | `number` | — | Renders a round counter instead of a label, in `feedback.error`. `0` hides the badge. |
+| `max` | `number` | `99` | Above this, the counter shows `99+`. |
+| `size` | `'sm' \| 'md'` | `'md'` | Height: 18 or 22pt. |
+| `accessibilityLabel` | `string` | — | For counters, what is counted: `"3 unread notifications"`. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the pill. |
+
+### Badge.Anchor
+
+Positions a count or dot badge on the corner of another element.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | — | The element to decorate: an [IconButton](/atoms/icon-button), an [Avatar](/atoms/avatar). |
+| `badge` | `ReactElement<BadgeProps>` | — | The badge to place. Use `count` or `dot`. |
+| `placement` | `'top-right' \| 'bottom-right'` | `'top-right'` | Corner. The badge gets a ring in the background color so it detaches from the element. |
+| `invisible` | `boolean` | `false` | Hides the badge with an animation, without unmounting. |
+
+Badges don't handle presses. If the user can tap it to filter or remove it, use a [Chip](/atoms/chip).
+
+## Use cases
+
+### Unread counter on an icon
+
+`Badge.Anchor` with `count` on a navigation icon. The accessibility label says what the number means.
+
+<PhonePreview size="sm">
+  <div class="ax-appbar" data-border><span class="ax-icon-btn"><Glyph name="menu" /></span><span class="ax-appbar-title">Home</span><span class="ax-anchor"><span class="ax-icon-btn"><Glyph name="inbox" /></span><span class="ax-badge" data-kind="count" style={{ top: '4px', right: '2px' }}>12</span></span></div>
+  <div class="ax-body"><div class="ax-placeholder-block" style={{ height: '120px' }} /><div class="ax-placeholder-block" style={{ height: '80px' }} /></div>
+</PhonePreview>
+
+```tsx
+<Badge.Anchor badge={<Badge count={unread} accessibilityLabel={`${unread} unread messages`} />}>
+  <IconButton icon="inbox" accessibilityLabel="Inbox" onPress={openInbox} />
+</Badge.Anchor>
+```
+
+### Order status
+
+The variant carries meaning: success for delivered, warning for delayed. Keep the text, color alone isn't enough.
+
+<PhonePreview size="sm">
+  <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Orders</div>
+  <div class="ax-list" data-variant="plain">
+    <div class="ax-item"><div class="ax-item-content"><span class="ax-item-title">#10482</span><span class="ax-item-desc">3 items · $88.90</span></div><span class="ax-badge" data-variant="warning" style={{ height: '24px' }}><Glyph name="clock" size={14} />Delayed</span></div>
+    <div class="ax-item"><div class="ax-item-content"><span class="ax-item-title">#10431</span><span class="ax-item-desc">1 item · $32.00</span></div><span class="ax-badge" data-variant="success" style={{ height: '24px' }}><Glyph name="check" size={14} />Delivered</span></div>
+    <div class="ax-item"><div class="ax-item-content"><span class="ax-item-title">#10388</span><span class="ax-item-desc">2 items · $19.50</span></div><span class="ax-badge" data-variant="error" style={{ height: '24px' }}>Refunded</span></div>
+  </div>
+</PhonePreview>
+
+```tsx
+const statusBadge = {
+  delayed: <Badge variant="warning" icon="clock">Delayed</Badge>,
+  delivered: <Badge variant="success" icon="check">Delivered</Badge>,
+  refunded: <Badge variant="error">Refunded</Badge>,
+};
+```
+
+### Label on a card
+
+A neutral or inverse badge on top of media to tag the content: "New", "Live", "Pro".
+
+<PhonePreview size="sm">
+  <div class="ax-body" style={{ paddingTop: '16px' }}>
+    <div class="ax-card">
+      <div class="ax-media" data-tone="6" style={{ height: '170px', position: 'relative', alignItems: 'flex-start', justifyContent: 'flex-start', padding: '12px' }}><span class="ax-badge" data-variant="error" style={{ background: '#FF3B30', color: '#fff' }}><span class="ax-badge-dot" />LIVE</span></div>
+      <div class="ax-card-content ax-stack" data-gap="4"><div class="ax-row"><span class="ax-headline ax-grow">Launch keynote</span><span class="ax-badge" data-variant="inverse">Pro</span></div><span class="ax-subhead ax-muted">12.4k watching</span></div>
+    </div>
+  </div>
+</PhonePreview>
+
+```tsx
+<Badge variant="error" dot>LIVE</Badge>
+<Badge variant="inverse">Pro</Badge>
+```
+
+## Related
+
+- [Chip](/atoms/chip)
+- [BottomTabBar](/templates/bottom-tab-bar), which shows badges on tabs

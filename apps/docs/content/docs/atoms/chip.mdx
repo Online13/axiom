@@ -1,0 +1,122 @@
+---
+title: Chip
+description: "Tag that can be selectable, removable or used as a filter."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<PhonePreview>
+  <div class="ax-row" style={{ padding: '4px 16px 8px' }}><div class="ax-searchbar"><Glyph name="search" size={18} /><span class="ax-value">coffee</span></div></div>
+  <div class="ax-chips" style={{ paddingBottom: '12px' }}><span class="ax-chip"><Glyph name="sliders" size={16} />Filters<span class="ax-badge" data-kind="count" style={{ height: '18px', minWidth: '18px', background: 'var(--ax-content-link)' }}>2</span></span><span class="ax-chip" data-selected>Open now</span><span class="ax-chip" data-selected>$$</span><span class="ax-chip">Rating 4+<Glyph name="chevron-down" size={14} /></span></div>
+  <div class="ax-body" style={{ gap: '16px' }}>
+    <div class="ax-stack" data-gap="8"><span class="ax-footnote ax-muted">Removable</span><div class="ax-row" data-wrap><span class="ax-chip" data-variant="filled">Paris<Glyph name="close" size={14} /></span><span class="ax-chip" data-variant="filled">Outdoor seating<Glyph name="close" size={14} /></span></div></div>
+    <div class="ax-stack" data-gap="8"><span class="ax-footnote ax-muted">With an avatar · small · disabled</span><div class="ax-row" data-wrap><span class="ax-chip"><span class="ax-avatar" data-size="xs" data-photo="2">A</span>Ada</span><span class="ax-chip" data-size="sm">Wi‑Fi</span><span class="ax-chip" data-state="disabled">Delivery</span></div></div>
+  </div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add chip
+```
+
+Also copies: [`tappable`](/core/tappable).
+
+## Usage
+
+```tsx title="Conceptual"
+import { Chip } from '@/components/ui/chip';
+
+<Chip selected={onlyUnread} onPress={toggleUnread}>Unread</Chip>
+<Chip onRemove={() => removeTag('travel')}>Travel</Chip>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | — | The label. |
+| `selected` | `boolean` | — | Selected state, drawn with the inverse colors. Setting it makes the chip a toggle (`accessibilityRole="togglebutton"`). |
+| `onPress` | `() => void` | — | Called when the chip is pressed. Usually toggles `selected` or opens a picker. |
+| `onRemove` | `() => void` | — | Shows a close icon on the right. Pressing it calls `onRemove`; the icon has its own 44pt touch area. |
+| `variant` | `'outline' \| 'filled'` | `'outline'` | `outline` for filters, `filled` for tags and entered values. |
+| `size` | `'sm' \| 'md'` | `'md'` | Height: 28 or 34pt. The touch area stays 44pt. |
+| `leading` | `IconName \| ReactNode` | — | Icon or [Avatar](/atoms/avatar) before the label. |
+| `trailing` | `IconName \| ReactNode` | — | Icon after the label, like a chevron for a chip that opens a menu. Ignored with `onRemove`. |
+| `disabled` | `boolean` | `false` | Blocks presses and dims the chip. |
+| `accessibilityLabel` | `string` | label text | Override when the label alone is unclear. The remove button is announced as `"Remove <label>"`. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the chip. |
+
+### Chip.Group
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | — | `Chip` elements. |
+| `layout` | `'wrap' \| 'scroll'` | `'wrap'` | `wrap` flows onto several lines, `scroll` keeps one horizontal line that scrolls with screen margins. |
+| `gap` | `SpacingToken` | `2` | Space between chips. |
+
+## Use cases
+
+### Filter bar under a search
+
+A horizontal `Chip.Group layout="scroll"`. Each chip toggles one filter; the list updates right away.
+
+<PhonePreview size="sm">
+  <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Inbox</div>
+  <div class="ax-chips" style={{ paddingBottom: '8px' }}><span class="ax-chip" data-size="sm" data-selected>Unread</span><span class="ax-chip" data-size="sm">Flagged</span><span class="ax-chip" data-size="sm">Attachments</span><span class="ax-chip" data-size="sm">To me</span></div>
+  <div class="ax-list" data-variant="plain">
+    <div class="ax-item"><span class="ax-badge" data-kind="dot" style={{ background: 'var(--ax-content-link)' }} /><div class="ax-item-content"><span class="ax-item-title ax-semibold">Grace Hopper</span><span class="ax-item-desc">Compiler notes</span></div></div>
+    <div class="ax-item"><span class="ax-badge" data-kind="dot" style={{ background: 'var(--ax-content-link)' }} /><div class="ax-item-content"><span class="ax-item-title ax-semibold">Alan Turing</span><span class="ax-item-desc">Re: lunch</span></div></div>
+  </div>
+</PhonePreview>
+
+```tsx
+<Chip.Group layout="scroll">
+  {filters.map((f) => (
+    <Chip key={f.id} size="sm" selected={active.has(f.id)} onPress={() => toggle(f.id)}>
+      {f.label}
+    </Chip>
+  ))}
+</Chip.Group>
+```
+
+### Tags entered by the user
+
+Each value becomes a removable chip next to the input.
+
+<PhonePreview size="sm">
+  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="close" /></span><span class="ax-appbar-title">New post</span><span class="ax-link ax-semibold" style={{ padding: '0 8px' }}>Publish</span></div>
+  <div class="ax-body" style={{ gap: '12px' }}>
+    <div class="ax-field"><span class="ax-label">Topics</span><div class="ax-textarea" data-state="focused" style={{ minHeight: '0px', display: 'flex', flexWrap: 'wrap', gap: '6px', padding: '8px' }}><span class="ax-chip" data-size="sm" data-variant="filled">react-native<Glyph name="close" size={12} /></span><span class="ax-chip" data-size="sm" data-variant="filled">design<Glyph name="close" size={12} /></span><span class="ax-caret" style={{ padding: '3px 4px' }}>anima</span></div><span class="ax-helper">Up to 5 topics.</span></div>
+    <div class="ax-row" data-wrap><span class="ax-footnote ax-muted">Suggested:</span><span class="ax-chip" data-size="sm"><Glyph name="plus" size={12} />animation</span><span class="ax-chip" data-size="sm"><Glyph name="plus" size={12} />animals</span></div>
+  </div>
+</PhonePreview>
+
+```tsx
+<Chip.Group>
+  {tags.map((t) => (
+    <Chip key={t} variant="filled" size="sm" onRemove={() => removeTag(t)}>{t}</Chip>
+  ))}
+</Chip.Group>
+```
+
+### Filter that opens a picker
+
+A chevron and a value in the label: the chip opens a [BottomSheet](/atoms/bottom-sheet) instead of toggling.
+
+<PhonePreview half="bottom" size="sm">
+  <div class="ax-chips" style={{ paddingTop: '12px' }}><span class="ax-chip" data-selected>Price: $$<Glyph name="chevron-down" size={14} /></span><span class="ax-chip">Cuisine<Glyph name="chevron-down" size={14} /></span></div>
+  <div class="ax-scrim" />
+  <div class="ax-sheet"><span class="ax-handle" /><div class="ax-sheet-header"><span class="ax-title3">Price</span><span class="ax-link">Clear</span></div><div class="ax-row" style={{ padding: '12px 0 20px' }}><span class="ax-chip ax-grow" style={{ justifyContent: 'center' }}>$</span><span class="ax-chip ax-grow" data-selected style={{ justifyContent: 'center' }}>$$</span><span class="ax-chip ax-grow" style={{ justifyContent: 'center' }}>$$$</span><span class="ax-chip ax-grow" style={{ justifyContent: 'center' }}>$$$$</span></div><span class="ax-btn" data-size="lg" data-block>Apply</span></div>
+</PhonePreview>
+
+```tsx
+<Chip selected={price != null} trailing="chevron-down" onPress={openPriceSheet}>
+  {price ? `Price: ${price}` : 'Price'}
+</Chip>
+```
+
+## Related
+
+- [Badge](/atoms/badge)
+- [Search experience](/patterns/search-experience)

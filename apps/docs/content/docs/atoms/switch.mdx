@@ -1,0 +1,123 @@
+---
+title: Switch
+description: "Themed toggle."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<PhonePreview grouped>
+  <div class="ax-appbar"><span class="ax-appbar-back"><Glyph name="chevron-left" />Settings</span><span class="ax-appbar-title" style={{ marginLeft: '-80px' }}>Notifications</span><span class="ax-icon-btn" /></div>
+  <div class="ax-section">Alerts</div>
+  <div class="ax-list" data-inset>
+    <div class="ax-item"><span class="ax-tile" data-color="red"><Glyph name="bell" size={18} /></span><span class="ax-item-title ax-grow">Allow notifications</span><span class="ax-switch" data-checked /></div>
+    <div class="ax-item"><span class="ax-tile" data-color="purple"><Glyph name="moon" size={18} /></span><span class="ax-item-title ax-grow">Quiet hours</span><span class="ax-switch" /></div>
+    <div class="ax-item"><span class="ax-tile" data-color="gray"><Glyph name="mail" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Email digest</span><span class="ax-item-desc">Requires a verified email</span></div><span class="ax-switch" data-disabled /></div>
+  </div>
+  <div class="ax-footnote-block">Quiet hours mute alerts from 22:00 to 07:00.</div>
+  <div class="ax-section">Sizes</div>
+  <div class="ax-list"><div class="ax-item"><span class="ax-item-title ax-grow">Medium · small</span><span class="ax-switch" data-checked /><span class="ax-switch" data-size="sm" data-checked /><span class="ax-switch" data-size="sm" /></div></div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add switch
+```
+
+## Usage
+
+```tsx title="Conceptual"
+import { Switch } from '@/components/ui/switch';
+
+<Switch value={enabled} onValueChange={setEnabled} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `boolean` | — | Whether the switch is on. Use with `onValueChange` for a controlled switch. |
+| `defaultValue` | `boolean` | `false` | Initial value when the switch manages its own state. |
+| `onValueChange` | `(value: boolean) => void` | — | Called with the new value when the user flips the switch. |
+| `disabled` | `boolean` | `false` | Blocks changes and dims the switch with the `disabled` tokens. |
+| `size` | `'sm' \| 'md'` | `'md'` | `md` matches the iOS system switch (51×31pt), `sm` is 40×24pt for dense rows. The touch area stays 44pt. |
+| `accessibilityLabel` | `string` | — | What the switch controls. Not needed when the switch sits in an [OptionItem](/atoms/option-item), which labels it. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the track. |
+
+Track and thumb colors come from `switch.default.{default,checked,disabled}.{track,thumb}` in the [component tokens](/foundations/component-tokens). The on/off logic and the thumb animation live in `use-switch.ts`, shared by every styling variant.
+
+## Use cases
+
+### Settings that apply immediately
+
+A switch means the change takes effect right away, with no Save button. Label the row, not the switch.
+
+<PhonePreview size="sm" grouped>
+  <div class="ax-large-heading" style={{ paddingTop: '12px' }}>Privacy</div>
+  <div class="ax-list">
+    <div class="ax-item"><span class="ax-item-title ax-grow">Show online status</span><span class="ax-switch" data-checked /></div>
+    <div class="ax-item"><span class="ax-item-title ax-grow">Read receipts</span><span class="ax-switch" /></div>
+    <div class="ax-item"><span class="ax-item-title ax-grow">Share usage data</span><span class="ax-switch" /></div>
+  </div>
+  <div class="ax-footnote-block">If you turn off read receipts, you won't see them from others either.</div>
+</PhonePreview>
+
+```tsx
+<OptionItem
+  label="Read receipts"
+  trailing={<Switch value={settings.readReceipts} onValueChange={(v) => update({ readReceipts: v })} />}
+/>
+```
+
+### Revealing dependent options
+
+Turning the switch on shows the options that only make sense when the feature is on.
+
+<PhonePreview size="sm" grouped>
+  <div class="ax-section" style={{ paddingTop: '12px' }}>Downtime</div>
+  <div class="ax-list">
+    <div class="ax-item"><span class="ax-item-title ax-grow">Scheduled</span><span class="ax-switch" data-checked /></div>
+    <div class="ax-item"><span class="ax-item-title ax-grow">From</span><span class="ax-badge" style={{ height: '30px', fontSize: '15px', padding: '0 10px' }}>22:00</span></div>
+    <div class="ax-item"><span class="ax-item-title ax-grow">To</span><span class="ax-badge" style={{ height: '30px', fontSize: '15px', padding: '0 10px' }}>07:00</span></div>
+  </div>
+  <div class="ax-section">Allowed</div>
+  <div class="ax-list"><div class="ax-item"><span class="ax-item-title ax-grow">Calls from favorites</span><span class="ax-switch" data-checked /></div></div>
+</PhonePreview>
+
+```tsx
+<Switch value={scheduled} onValueChange={setScheduled} accessibilityLabel="Scheduled downtime" />
+{scheduled && (
+  <>
+    <OptionItem label="From" trailing={<TimeValue value={from} />} onPress={pickFrom} />
+    <OptionItem label="To" trailing={<TimeValue value={to} />} onPress={pickTo} />
+  </>
+)}
+```
+
+### Pending server change
+
+While the request runs, keep the new position and disable the switch. Revert it if the request fails.
+
+<PhonePreview size="sm" grouped>
+  <div class="ax-section" style={{ paddingTop: '12px' }}>Security</div>
+  <div class="ax-list">
+    <div class="ax-item"><span class="ax-tile" data-color="green"><Glyph name="lock" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Two-factor auth</span><span class="ax-item-desc">Turning on…</span></div><span class="ax-spinner" data-size="sm" style={{ color: 'var(--ax-content-muted)' }} /><span class="ax-switch" data-checked data-disabled /></div>
+  </div>
+  <div class="ax-float" style={{ bottom: '20px' }}><div class="ax-snackbar"><span class="ax-grow">Couldn't turn on two-factor auth.</span><span class="ax-snackbar-action">Retry</span></div></div>
+</PhonePreview>
+
+```tsx
+const [enabled, setEnabled] = useState(user.twoFactor);
+const mutation = useMutation({ mutationFn: setTwoFactor, onError: () => setEnabled((v) => !v) });
+
+<Switch
+  value={enabled}
+  disabled={mutation.isPending}
+  onValueChange={(v) => { setEnabled(v); mutation.mutate(v); }}
+/>
+```
+
+## Related
+
+- [Checkbox](/atoms/checkbox)
+- [OptionItem](/atoms/option-item), for a switch inside a settings row

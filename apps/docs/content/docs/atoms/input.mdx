@@ -1,0 +1,153 @@
+---
+title: Input
+description: "Generic text field with label, helper, error, prefix and suffix."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<PhonePreview>
+  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="close" /></span><span class="ax-appbar-title">Edit profile</span><span class="ax-icon-btn ax-link ax-semibold" style={{ width: 'auto', padding: '0 8px' }}>Done</span></div>
+  <div class="ax-body" style={{ gap: '16px' }}>
+    <div class="ax-field"><span class="ax-label">Name</span><div class="ax-control"><span class="ax-value">Katherine Johnson</span></div></div>
+    <div class="ax-field" data-state="focused"><span class="ax-label">Username</span><div class="ax-control"><span class="ax-affix">@</span><span class="ax-value ax-caret">kjohnson</span></div><span class="ax-helper">Letters, numbers and underscores.</span></div>
+    <div class="ax-field" data-state="invalid"><span class="ax-label">Website</span><div class="ax-control"><span class="ax-value">nasa gov</span><Glyph name="alert" size={20} class="ax-danger" /></div><span class="ax-helper">Enter a valid URL.</span></div>
+    <div class="ax-field" data-state="disabled"><span class="ax-label">Member since</span><div class="ax-control"><span class="ax-value">June 1953</span><Glyph name="lock" size={18} /></div></div>
+  </div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add input
+```
+
+## Usage
+
+```tsx title="Conceptual"
+import { Input } from '@/components/ui/input';
+
+<Input
+  label="Email"
+  helper="We'll never share it."
+  value={email}
+  onChangeText={setEmail}
+/>
+
+<Input label="Price" prefix="$" error="Enter a valid amount" />
+```
+
+## Props
+
+`Input` accepts every `TextInput` prop from React Native (`keyboardType`, `autoComplete`, `secureTextEntry`, `returnKeyType`…) on top of these:
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | — | Current text. Use with `onChangeText` for a controlled field. |
+| `onChangeText` | `(text: string) => void` | — | Called on every change. |
+| `label` | `string` | — | Visible label above the field. Also used as the accessibility label. |
+| `placeholder` | `string` | — | Hint shown while the field is empty, in `content.subtle`. Don't use it as the label. |
+| `helper` | `string` | — | Short guidance under the field. Hidden when `error` is set. |
+| `error` | `string \| boolean` | — | Puts the field in the `invalid` state: red border, and the message replaces `helper`. `true` changes the border only. |
+| `prefix` | `ReactNode` | — | Content before the text: an icon, a currency sign, a country code. |
+| `suffix` | `ReactNode` | — | Content after the text: a unit, a clear button, a visibility toggle. |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Height from the control tokens: 32, 44 or 52pt. |
+| `variant` | `'outline' \| 'filled'` | `'outline'` | `outline` has a border, `filled` a subtle background with no border. |
+| `disabled` | `boolean` | `false` | Makes the field read-only with the `disabled` tokens. Maps to `editable={false}`. |
+| `required` | `boolean` | `false` | Adds a marker to the label and sets the accessibility hint. It doesn't validate. |
+| `onFocus` / `onBlur` | `(event) => void` | — | Called when the field gains or loses focus. The focused border is handled for you. |
+| `ref` | `Ref<TextInput>` | — | Gives access to `focus()`, `blur()` and `clear()`, to chain fields on submit. |
+| `containerStyle` | `StyleProp<ViewStyle>` | — | Styles for the wrapper that holds label, field and helper. |
+
+## Use cases
+
+### Login form
+
+`autoComplete` and `keyboardType` give the right keyboard and password autofill; the eye button is a `suffix`.
+
+<PhonePreview size="sm">
+  <div class="ax-body" style={{ gap: '16px', paddingTop: '24px' }}>
+    <span class="ax-large-title">Welcome back</span>
+    <div class="ax-field"><span class="ax-label">Email</span><div class="ax-control"><span class="ax-value">katherine@nasa.gov</span></div></div>
+    <div class="ax-field" data-state="focused"><span class="ax-label">Password</span><div class="ax-control"><span class="ax-value ax-caret">••••••••</span><Glyph name="eye" size={20} /></div></div>
+    <span class="ax-btn" data-size="lg" data-block>Sign in</span>
+  </div>
+</PhonePreview>
+
+```tsx
+<Input label="Email" keyboardType="email-address" autoComplete="email" autoCapitalize="none" />
+<Input
+  label="Password"
+  secureTextEntry={!visible}
+  autoComplete="current-password"
+  suffix={<IconButton icon="eye" size="sm" accessibilityLabel="Show password" onPress={toggle} />}
+/>
+```
+
+### Validation on blur
+
+Show the error once the user leaves the field, not while they are still typing.
+
+<PhonePreview size="sm">
+  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Shipping</span><span class="ax-icon-btn" /></div>
+  <div class="ax-body" style={{ gap: '16px' }}>
+    <div class="ax-field"><span class="ax-label">Street</span><div class="ax-control"><span class="ax-value">221B Baker Street</span></div></div>
+    <div class="ax-field" data-state="invalid"><span class="ax-label">Postcode</span><div class="ax-control"><span class="ax-value">NW1</span></div><span class="ax-helper">Postcodes look like NW1 6XE.</span></div>
+    <div class="ax-field" data-state="focused"><span class="ax-label">City</span><div class="ax-control"><span class="ax-value ax-caret">Lon</span></div></div>
+  </div>
+</PhonePreview>
+
+```tsx
+<Input
+  label="Postcode"
+  value={postcode}
+  onChangeText={setPostcode}
+  onBlur={() => setTouched(true)}
+  error={touched && !isPostcode(postcode) ? 'Postcodes look like NW1 6XE.' : undefined}
+/>
+```
+
+### Amount with a prefix and a unit
+
+`prefix` and `suffix` hold what the user doesn't type. The value stays a plain number.
+
+<PhonePreview size="sm">
+  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="close" /></span><span class="ax-appbar-title">Send money</span><span class="ax-icon-btn" /></div>
+  <div class="ax-body" style={{ gap: '16px' }}>
+    <div class="ax-row"><span class="ax-avatar" data-photo="1">MH</span><div class="ax-item-content"><span class="ax-headline">Margaret Hamilton</span><span class="ax-footnote ax-muted">@mhamilton</span></div></div>
+    <div class="ax-field" data-state="focused"><span class="ax-label">Amount</span><div class="ax-control" data-size="lg"><span class="ax-affix">$</span><span class="ax-value ax-caret" style={{ fontSize: '22px', fontWeight: 600 }}>120.00</span><span class="ax-affix">USD</span></div><span class="ax-helper">Balance: $1,240.18</span></div>
+    <div class="ax-field"><span class="ax-label">Note</span><div class="ax-control"><span class="ax-placeholder">What's it for?</span></div></div>
+  </div>
+</PhonePreview>
+
+```tsx
+<Input label="Amount" size="lg" keyboardType="decimal-pad" prefix="$" suffix="USD" helper={`Balance: ${balance}`} />
+```
+
+### Chain fields with the return key
+
+`returnKeyType="next"` and a `ref` move focus to the next field, so the user never has to reach for it.
+
+<PhonePreview half="bottom" size="sm">
+  <div class="ax-body" style={{ gap: '12px' }}>
+    <div class="ax-field"><span class="ax-label">First name</span><div class="ax-control"><span class="ax-value">Dennis</span></div></div>
+    <div class="ax-field" data-state="focused"><span class="ax-label">Last name</span><div class="ax-control"><span class="ax-value ax-caret">Rit</span></div></div>
+  </div>
+  <div class="ax-fill" />
+  <div class="ax-keypad" data-variant="flat" style={{ gridTemplateColumns: 'repeat(10, 1fr)', gap: '5px' }}>
+    <span class="ax-key">q</span><span class="ax-key">w</span><span class="ax-key">e</span><span class="ax-key">r</span><span class="ax-key">t</span><span class="ax-key">y</span><span class="ax-key">u</span><span class="ax-key">i</span><span class="ax-key">o</span><span class="ax-key">p</span>
+    <span class="ax-key">a</span><span class="ax-key">s</span><span class="ax-key">d</span><span class="ax-key">f</span><span class="ax-key">g</span><span class="ax-key">h</span><span class="ax-key">j</span><span class="ax-key">k</span><span class="ax-key">l</span><span class="ax-key" style={{ background: 'var(--ax-content-link)', color: '#fff', fontSize: '15px' }}>next</span>
+  </div>
+</PhonePreview>
+
+```tsx
+const lastName = useRef<TextInput>(null);
+
+<Input label="First name" returnKeyType="next" onSubmitEditing={() => lastName.current?.focus()} />
+<Input ref={lastName} label="Last name" returnKeyType="done" />
+```
+
+## Related
+
+- [InputGroup](/atoms/input-group)
+- [TextArea](/atoms/text-area)
+- [SearchBar](/molecules/search-bar)

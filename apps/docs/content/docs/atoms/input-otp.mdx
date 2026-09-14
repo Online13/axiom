@@ -1,0 +1,111 @@
+---
+title: InputOTP
+description: "One-time code entry with separate cells."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<PhonePreview>
+  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title" /><span class="ax-icon-btn" /></div>
+  <div class="ax-body" style={{ gap: '20px', paddingTop: '8px' }}>
+    <div class="ax-stack" data-gap="8"><span class="ax-title1">Check your texts</span><span class="ax-subhead ax-muted">Enter the 6-digit code sent to +44 7700 900123.</span></div>
+    <div class="ax-otp"><span class="ax-otp-cell">4</span><span class="ax-otp-cell">8</span><span class="ax-otp-cell">1</span><span class="ax-otp-sep" /><span class="ax-otp-cell" data-state="active"></span><span class="ax-otp-cell"></span><span class="ax-otp-cell"></span></div>
+    <span class="ax-subhead ax-muted" style={{ textAlign: 'center' }}>Didn't get it? <span class="ax-link">Resend in 0:24</span></span>
+  </div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add input-otp
+```
+
+## Usage
+
+```tsx title="Conceptual"
+import { InputOTP } from '@/components/ui/input-otp';
+
+<InputOTP length={6} value={code} onChange={setCode} onComplete={verify} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `length` | `number` | `6` | Number of cells. |
+| `value` | `string` | — | The code typed so far. |
+| `onChange` | `(value: string) => void` | — | Called on every keystroke, paste or deletion. |
+| `onComplete` | `(value: string) => void` | — | Called once all cells are filled. Good place to submit. |
+| `type` | `'numeric' \| 'alphanumeric'` | `'numeric'` | Picks the keyboard and filters what can be typed or pasted. |
+| `groups` | `number[]` | — | Splits cells into groups with a separator, e.g. `[3, 3]` for `123–456`. |
+| `autoFocus` | `boolean` | `true` | Opens the keyboard on the first empty cell when the screen appears. |
+| `secure` | `boolean` | `false` | Shows dots instead of digits, for a PIN. |
+| `error` | `boolean` | `false` | Red borders and a shake. Clear the value to let the user retry. |
+| `disabled` | `boolean` | `false` | Blocks input, for example while the code is being verified. |
+| `size` | `'sm' \| 'md'` | `'md'` | Cell size: 40×48 or 48×56pt. |
+| `textContentType` | `'oneTimeCode'` | `'oneTimeCode'` | Lets iOS suggest the code from Messages above the keyboard. Android uses `autoComplete="sms-otp"`. |
+
+Under the cells sits one hidden `TextInput`: it receives the system keyboard, paste and SMS autofill, and the cells only draw its value. This is why deleting and pasting behave like in any text field.
+
+## Use cases
+
+### Verifying a phone number
+
+Submit in `onComplete`, then show the result on the cells: green on success, red on failure.
+
+<PhonePreview size="sm">
+  <div class="ax-body" style={{ gap: '20px', paddingTop: '32px' }}>
+    <span class="ax-title2" style={{ textAlign: 'center' }}>Enter code</span>
+    <div class="ax-otp" data-size="sm"><span class="ax-otp-cell" data-state="success">4</span><span class="ax-otp-cell" data-state="success">8</span><span class="ax-otp-cell" data-state="success">1</span><span class="ax-otp-cell" data-state="success">9</span><span class="ax-otp-cell" data-state="success">0</span><span class="ax-otp-cell" data-state="success">2</span></div>
+    <div class="ax-row" data-justify="center"><Glyph name="circle-check" size={20} class="ax-success" /><span class="ax-subhead ax-success">Number verified</span></div>
+  </div>
+</PhonePreview>
+
+```tsx
+<InputOTP
+  length={6}
+  value={code}
+  onChange={setCode}
+  disabled={status === 'verifying'}
+  onComplete={async (value) => setStatus((await verify(value)) ? 'success' : 'error')}
+/>
+```
+
+### Wrong code
+
+`error` marks every cell. Clear the value so the next digit starts a new attempt.
+
+<PhonePreview size="sm">
+  <div class="ax-body" style={{ gap: '16px', paddingTop: '32px' }}>
+    <span class="ax-title2" style={{ textAlign: 'center' }}>Enter code</span>
+    <div class="ax-otp" data-size="sm"><span class="ax-otp-cell" data-state="invalid">4</span><span class="ax-otp-cell" data-state="invalid">8</span><span class="ax-otp-cell" data-state="invalid">1</span><span class="ax-otp-cell" data-state="invalid">9</span><span class="ax-otp-cell" data-state="invalid">0</span><span class="ax-otp-cell" data-state="invalid">7</span></div>
+    <span class="ax-subhead ax-danger" style={{ textAlign: 'center' }}>That code doesn't match. 2 attempts left.</span>
+    <span class="ax-btn" data-variant="ghost" data-block>Send a new code</span>
+  </div>
+</PhonePreview>
+
+```tsx
+<InputOTP value={code} onChange={(v) => { setError(false); setCode(v); }} error={error} />
+```
+
+### Grouped license key
+
+`type="alphanumeric"` with `groups` for codes people copy from somewhere else. Pasting fills every cell.
+
+<PhonePreview size="sm">
+  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="close" /></span><span class="ax-appbar-title">Redeem</span><span class="ax-icon-btn" /></div>
+  <div class="ax-body" style={{ gap: '16px' }}>
+    <span class="ax-subhead ax-muted">Enter the code printed on your gift card.</span>
+    <div class="ax-otp" data-size="sm"><span class="ax-otp-cell">K</span><span class="ax-otp-cell">7</span><span class="ax-otp-cell">Q</span><span class="ax-otp-sep" /><span class="ax-otp-cell">M</span><span class="ax-otp-cell">2</span><span class="ax-otp-cell" data-state="active"></span></div>
+    <div class="ax-row" data-justify="center"><span class="ax-chip" data-size="sm"><Glyph name="copy" size={14} />Paste from clipboard</span></div>
+  </div>
+</PhonePreview>
+
+```tsx
+<InputOTP length={6} groups={[3, 3]} type="alphanumeric" autoCapitalize="characters" value={code} onChange={setCode} />
+```
+
+## Related
+
+- [OTP verification pattern](/patterns/otp-verification)
+- [Passcode](/organisms/passcode), which uses an in-app keypad instead of the system keyboard

@@ -1,0 +1,166 @@
+---
+title: Empty
+description: "Composable empty state."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<PhonePreview>
+  <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Projects</div>
+  <div class="ax-center" style={{ gap: '8px', padding: '0 40px' }}>
+    <span class="ax-empty-media"><Glyph name="grid" size={30} /></span>
+    <span class="ax-title3" style={{ marginTop: '8px' }}>No projects yet</span>
+    <span class="ax-subhead ax-muted">Projects group your screens and components. Create one to get started.</span>
+    <div class="ax-stack" data-gap="4" style={{ marginTop: '12px', alignSelf: 'stretch' }}><span class="ax-btn" data-block><Glyph name="plus" size={20} />New project</span><span class="ax-btn" data-variant="ghost" data-block>Import from Figma</span></div>
+  </div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add empty
+```
+
+## Usage
+
+```tsx title="Conceptual"
+import { Empty } from '@/components/ui/empty';
+
+<Empty>
+  <Empty.Header>
+    <Empty.Media icon="grid" />
+    <Empty.Title>No projects yet</Empty.Title>
+    <Empty.Description>Create one to get started.</Empty.Description>
+  </Empty.Header>
+  <Empty.Content>
+    <Button onPress={createProject}>New project</Button>
+  </Empty.Content>
+</Empty>
+```
+
+## Props
+
+### Empty
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | — | `Empty.Header` and `Empty.Content`. |
+| `size` | `'sm' \| 'md'` | `'md'` | `md` for a full screen, `sm` for a section or a sheet: smaller media and tighter spacing. |
+| `fill` | `boolean` | `true` | Takes the remaining height and centers its content vertically. Set to `false` inside a scroll view that already sizes it. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the container. |
+
+### Empty.Media
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `icon` | `IconName` | — | Icon on a round `background.subtle` tile. |
+| `tone` | `'neutral' \| 'error'` | `'neutral'` | `error` tints the tile with `feedback.errorSubtle`, for failures. |
+| `children` | `ReactNode` | — | Custom media instead of `icon`: an illustration, a Lottie animation. |
+
+### Empty.Title, Empty.Description
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | — | Title: what is going on, in a few words. Description: why, and what the user can do about it. |
+
+### Empty.Content
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | — | Actions: one main [Button](/atoms/button), sometimes a secondary ghost button or a link. |
+
+## Use cases
+
+### No search results
+
+Repeat the query, suggest what to change, offer a way out.
+
+<PhonePreview size="sm">
+  <div class="ax-row" style={{ padding: '4px 16px 8px' }}><div class="ax-searchbar"><Glyph name="search" size={18} /><span class="ax-value">quantum teapot</span><span class="ax-search-clear"><Glyph name="close" size={12} strokeWidth={3} /></span></div><span class="ax-link">Cancel</span></div>
+  <div class="ax-center" style={{ gap: '6px', padding: '0 36px' }}><span class="ax-empty-media"><Glyph name="search" size={28} /></span><span class="ax-headline" style={{ marginTop: '6px' }}>No results for "quantum teapot"</span><span class="ax-subhead ax-muted">Check the spelling or try a broader term.</span><span class="ax-btn" data-size="sm" data-variant="outline" style={{ marginTop: '10px' }}>Clear filters</span></div>
+</PhonePreview>
+
+```tsx
+<Empty>
+  <Empty.Header>
+    <Empty.Media icon="search" />
+    <Empty.Title>No results for "{query}"</Empty.Title>
+    <Empty.Description>Check the spelling or try a broader term.</Empty.Description>
+  </Empty.Header>
+  {hasFilters && (
+    <Empty.Content>
+      <Button size="sm" variant="outline" onPress={clearFilters}>Clear filters</Button>
+    </Empty.Content>
+  )}
+</Empty>
+```
+
+### Error with retry
+
+`tone="error"` and a retry button. Say what failed in plain words, not the error code.
+
+<PhonePreview size="sm">
+  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Statements</span><span class="ax-icon-btn" /></div>
+  <div class="ax-center" style={{ gap: '6px', padding: '0 36px' }}><span class="ax-empty-media" data-tone="error"><Glyph name="alert" size={28} /></span><span class="ax-headline" style={{ marginTop: '6px' }}>Couldn't load statements</span><span class="ax-subhead ax-muted">The server didn't respond. Your data is safe.</span><span class="ax-btn" data-size="sm" style={{ marginTop: '10px' }}><Glyph name="refresh" size={16} />Try again</span></div>
+</PhonePreview>
+
+```tsx
+if (query.isError) {
+  return (
+    <Empty>
+      <Empty.Header>
+        <Empty.Media icon="alert" tone="error" />
+        <Empty.Title>Couldn't load statements</Empty.Title>
+        <Empty.Description>The server didn't respond. Your data is safe.</Empty.Description>
+      </Empty.Header>
+      <Empty.Content>
+        <Button size="sm" leadingIcon="refresh" loading={query.isFetching} onPress={() => query.refetch()}>Try again</Button>
+      </Empty.Content>
+    </Empty>
+  );
+}
+```
+
+### Offline
+
+No action to take, only information. The screen will refresh on its own when the connection comes back.
+
+<PhonePreview size="sm">
+  <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Feed</div>
+  <div class="ax-center" style={{ gap: '6px', padding: '0 36px' }}><span class="ax-empty-media"><Glyph name="wifi-off" size={28} /></span><span class="ax-headline" style={{ marginTop: '6px' }}>You're offline</span><span class="ax-subhead ax-muted">New posts will show up when you're back online.</span></div>
+</PhonePreview>
+
+```tsx
+<Empty>
+  <Empty.Header>
+    <Empty.Media icon="wifi-off" />
+    <Empty.Title>You're offline</Empty.Title>
+    <Empty.Description>New posts will show up when you're back online.</Empty.Description>
+  </Empty.Header>
+</Empty>
+```
+
+### Small empty section
+
+`size="sm"` inside a screen that has other content.
+
+<PhonePreview size="sm" grouped>
+  <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Wallet</div>
+  <div class="ax-body" style={{ paddingTop: '0px' }}><div class="ax-card" style={{ padding: '16px', background: 'linear-gradient(135deg,#1c1c1e,#48484a)', color: '#fff', gap: '20px' }}><span class="ax-footnote" style={{ opacity: 0.7 }}>Balance</span><span class="ax-title1">$1,240.18</span></div></div>
+  <div class="ax-section">Recent</div>
+  <div class="ax-list"><div class="ax-center" style={{ padding: '20px', gap: '4px' }}><Glyph name="clock" size={24} class="ax-subtle" /><span class="ax-subhead">No transactions this month</span></div></div>
+</PhonePreview>
+
+```tsx
+<Empty size="sm" fill={false}>
+  <Empty.Header>
+    <Empty.Media icon="clock" />
+    <Empty.Description>No transactions this month</Empty.Description>
+  </Empty.Header>
+</Empty>
+```
+
+## Related
+
+- [First-time empty state](/patterns/first-time-empty-state)
+- [Async content state](/patterns/async-content-state)

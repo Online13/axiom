@@ -1,0 +1,135 @@
+---
+title: Snackbar
+description: "Transient bar at the bottom of the screen, with an optional action."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<PhonePreview half="bottom">
+  <div class="ax-list" data-variant="plain">
+    <div class="ax-item" data-size="lg"><span class="ax-avatar" data-photo="1">GH</span><div class="ax-item-content"><span class="ax-item-title ax-semibold">Grace Hopper</span><span class="ax-item-desc">Compiler notes attached</span></div><span class="ax-footnote ax-muted">09:41</span></div>
+    <div class="ax-item" data-size="lg"><span class="ax-avatar" data-photo="4">LT</span><div class="ax-item-content"><span class="ax-item-title">Linus Torvalds</span><span class="ax-item-desc">Just a hobby, won't be big.</span></div><span class="ax-footnote ax-muted">Mon</span></div>
+    <div class="ax-item" data-size="lg"><span class="ax-avatar" data-photo="3">MH</span><div class="ax-item-content"><span class="ax-item-title">Margaret Hamilton</span><span class="ax-item-desc">Priority alarms are fine.</span></div><span class="ax-footnote ax-muted">Sun</span></div>
+  </div>
+  <div class="ax-fill" />
+  <div style={{ padding: '0 12px 12px' }}><div class="ax-snackbar"><span class="ax-grow">Conversation archived</span><span class="ax-snackbar-action">Undo</span></div></div>
+  <div class="ax-tabbar"><span class="ax-tabbar-item" data-active><Glyph name="inbox" size={26} />Inbox</span><span class="ax-tabbar-item"><Glyph name="users" size={26} />Contacts</span><span class="ax-tabbar-item"><Glyph name="settings" size={26} />Settings</span></div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add snackbar
+```
+
+Also copies: [`portal`](/core/portal).
+
+Installs: `react-native-reanimated`, `react-native-gesture-handler`.
+
+## Usage
+
+Mount `<SnackbarHost />` once at the root, then show snackbars from code.
+
+```tsx title="Conceptual"
+import { SnackbarHost, snackbar } from '@/components/ui/snackbar';
+
+snackbar.show({
+  message: 'Message archived',
+  action: { label: 'Undo', onPress: unarchive },
+});
+```
+
+## API
+
+### snackbar.show(options)
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `message` | `string` | — | One line, two at most. Describes what just happened. |
+| `action` | `{ label: string; onPress: () => void }` | — | One text action, usually "Undo" or "Retry". Pressing it also dismisses the snackbar. |
+| `duration` | `'short' \| 'long' \| 'indefinite' \| number` | `'short'` | `short` is 4s, `long` 8s (default when there is an action). `indefinite` stays until dismissed or replaced. |
+| `icon` | `IconName \| ReactNode` | — | Leading icon. Use sparingly: the message should be enough. |
+| `onDismiss` | `(reason: 'timeout' \| 'action' \| 'swipe' \| 'replaced') => void` | — | Called when the snackbar leaves, with the reason. Commit a destructive action here if it wasn't undone. |
+
+Only one snackbar is visible. Calling `show` while one is on screen replaces it: the current one slides out with reason `'replaced'`, the new one slides in.
+
+| Method | Description |
+| --- | --- |
+| `snackbar.dismiss()` | Hides the current snackbar. |
+
+### SnackbarHost
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `bottomOffset` | `number` | `0` | Extra space above the bottom safe area, to sit above a [BottomTabBar](/templates/bottom-tab-bar) or a [ToolBar](/templates/tool-bar). |
+| `swipeToDismiss` | `boolean` | `true` | Swipe down to dismiss. |
+
+The snackbar uses `background.inverse` and `content.inverse`, so it stands out in both light and dark. It is announced to screen readers when it appears, and its duration is extended when a screen reader is on.
+
+## Use cases
+
+### Undo a destructive action
+
+Delete right away, offer Undo, and only commit on the server when the snackbar leaves without it.
+
+<PhonePreview half="bottom" size="sm">
+  <div class="ax-list" data-variant="plain">
+    <div class="ax-item"><span class="ax-checkbox" data-checked><Glyph name="check" size={16} strokeWidth={3} /></span><span class="ax-item-title ax-grow ax-muted" style={{ textDecoration: 'line-through' }}>Book flights</span></div>
+    <div class="ax-item"><span class="ax-checkbox" /><span class="ax-item-title ax-grow">Renew passport</span></div>
+    <div class="ax-item"><span class="ax-checkbox" /><span class="ax-item-title ax-grow">Pack chargers</span></div>
+  </div>
+  <div class="ax-fill" />
+  <div style={{ padding: '0 12px 40px' }}><div class="ax-snackbar"><Glyph name="trash" size={20} /><span class="ax-grow">"Buy adapters" deleted</span><span class="ax-snackbar-action">Undo</span></div></div>
+</PhonePreview>
+
+```tsx
+function deleteTask(task: Task) {
+  hideLocally(task.id);
+  snackbar.show({
+    message: `"${task.title}" deleted`,
+    action: { label: 'Undo', onPress: () => restoreLocally(task.id) },
+    onDismiss: (reason) => reason !== 'action' && api.deleteTask(task.id),
+  });
+}
+```
+
+### Retry after a network error
+
+The action gives a way to try again without hunting for the button that failed.
+
+<PhonePreview half="bottom" size="sm">
+  <div class="ax-body" style={{ gap: '8px' }}>
+    <div class="ax-row" data-justify="end"><span class="ax-subhead" style={{ background: 'var(--ax-content-link)', color: '#fff', padding: '8px 12px', borderRadius: '18px' }}>See you at 7!</span></div>
+    <div class="ax-row" data-justify="end"><span class="ax-subhead" style={{ background: 'var(--ax-content-link)', color: '#fff', padding: '8px 12px', borderRadius: '18px', opacity: 0.5 }}>I'll bring the photos</span></div>
+  </div>
+  <div class="ax-fill" />
+  <div style={{ padding: '0 12px 12px' }}><div class="ax-snackbar"><span class="ax-grow">Message not sent</span><span class="ax-snackbar-action">Retry</span></div></div>
+  <div class="ax-row" style={{ padding: '8px 12px 40px', borderTop: '0.5px solid var(--ax-border-default)' }}><div class="ax-textarea ax-grow" style={{ minHeight: '0px', borderRadius: '18px', padding: '6px 12px', color: 'var(--ax-content-subtle)' }}>Message</div></div>
+</PhonePreview>
+
+```tsx
+sendMutation.mutate(message, {
+  onError: () =>
+    snackbar.show({ message: 'Message not sent', duration: 'indefinite', action: { label: 'Retry', onPress: () => sendMutation.mutate(message) } }),
+});
+```
+
+### Above a tab bar
+
+`bottomOffset` keeps the snackbar above the navigation, so it never covers the tabs.
+
+<PhonePreview half="bottom" size="sm">
+  <div class="ax-body"><div class="ax-placeholder-block" style={{ height: '150px' }} /></div>
+  <div class="ax-fill" />
+  <div style={{ padding: '0 12px 12px' }}><div class="ax-snackbar"><span class="ax-grow">Added to Favorites</span><span class="ax-snackbar-action">View</span></div></div>
+  <div class="ax-tabbar"><span class="ax-tabbar-item"><Glyph name="home" size={26} />Home</span><span class="ax-tabbar-item" data-active><Glyph name="search" size={26} />Search</span><span class="ax-tabbar-item"><Glyph name="heart" size={26} />Favorites</span></div>
+</PhonePreview>
+
+```tsx
+<SnackbarHost bottomOffset={tabBarHeight} />
+```
+
+## Related
+
+- [Toast](/atoms/toast)
+- [Undoable action](/patterns/undoable-action)

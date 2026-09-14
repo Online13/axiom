@@ -1,0 +1,114 @@
+---
+title: Separator
+description: "Horizontal or vertical divider."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<PhonePreview>
+  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Profile</span><span class="ax-icon-btn" /></div>
+  <div class="ax-body" style={{ gap: '16px' }}>
+    <div class="ax-row" data-gap="12"><span class="ax-avatar" data-size="lg" data-photo="3">MH</span><div class="ax-item-content"><span class="ax-title3">Margaret Hamilton</span><span class="ax-subhead ax-muted">Software engineering</span></div></div>
+    <div class="ax-row" style={{ justifyContent: 'space-around', alignItems: 'stretch' }}><div class="ax-stack" data-gap="4" style={{ alignItems: 'center' }}><span class="ax-headline">1.2k</span><span class="ax-footnote ax-muted">Posts</span></div><span class="ax-separator" data-orientation="vertical" /><div class="ax-stack" data-gap="4" style={{ alignItems: 'center' }}><span class="ax-headline">18k</span><span class="ax-footnote ax-muted">Followers</span></div><span class="ax-separator" data-orientation="vertical" /><div class="ax-stack" data-gap="4" style={{ alignItems: 'center' }}><span class="ax-headline">312</span><span class="ax-footnote ax-muted">Following</span></div></div>
+    <span class="ax-separator" />
+    <span class="ax-subhead ax-muted">Led the team that wrote the Apollo flight software. Coined "software engineering".</span>
+    <div class="ax-separator-label">or</div>
+    <span class="ax-btn" data-variant="outline" data-block>Message</span>
+  </div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add separator
+```
+
+## Usage
+
+```tsx title="Conceptual"
+import { Separator } from '@/components/ui/separator';
+
+<Separator />
+<Separator orientation="vertical" />
+<Separator label="or" />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | A horizontal separator fills the width; a vertical one stretches to the height of its row. |
+| `variant` | `'default' \| 'subtle'` | `'default'` | `border.default` between blocks, `border.subtle` inside a surface such as a card. |
+| `thickness` | `number` | `hairline` | Line thickness. Defaults to the `hairline` metric (1pt), which reads as one physical pixel on dense screens. |
+| `inset` | `SpacingToken \| { start?: SpacingToken; end?: SpacingToken }` | — | Space left empty at the start and end of the line, to align it with content instead of the screen edge. |
+| `spacing` | `SpacingToken` | `0` | Margin on both sides of the line, along the cross axis. |
+| `label` | `ReactNode` | — | Text centered in a horizontal separator, with a line on each side. |
+| `decorative` | `boolean` | `true` | Hides the separator from screen readers. Set to `false` when it marks a meaningful boundary. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the line. |
+
+No logic: a single file per styling variant.
+
+## Use cases
+
+### Inset dividers in a list
+
+The line starts after the leading icon, the iOS way: rows read as a group, icons as a column.
+
+<PhonePreview size="sm">
+  <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Files</div>
+  <div class="ax-stack" data-gap="4" style={{ gap: '0px' }}>
+    <div class="ax-item"><span class="ax-tile" data-color="subtle"><Glyph name="file" size={18} /></span><span class="ax-item-title ax-grow">Roadmap.pdf</span></div>
+    <span class="ax-separator" style={{ marginLeft: '58px' }} />
+    <div class="ax-item"><span class="ax-tile" data-color="subtle"><Glyph name="image" size={18} /></span><span class="ax-item-title ax-grow">Moodboard.png</span></div>
+    <span class="ax-separator" style={{ marginLeft: '58px' }} />
+    <div class="ax-item"><span class="ax-tile" data-color="subtle"><Glyph name="music" size={18} /></span><span class="ax-item-title ax-grow">Standup.m4a</span></div>
+  </div>
+</PhonePreview>
+
+```tsx
+<FlatList
+  data={files}
+  renderItem={renderFile}
+  ItemSeparatorComponent={() => <Separator inset={{ start: 14 }} />}
+/>
+```
+
+### Stats side by side
+
+Vertical separators between values in a row.
+
+<PhonePreview size="sm">
+  <div class="ax-body" style={{ paddingTop: '20px' }}>
+    <div class="ax-card" data-variant="outlined" style={{ padding: '16px 8px' }}><div class="ax-row" style={{ justifyContent: 'space-around', alignItems: 'stretch' }}><div class="ax-stack" data-gap="4" style={{ alignItems: 'center' }}><span class="ax-title3">5.2 km</span><span class="ax-footnote ax-muted">Distance</span></div><span class="ax-separator" data-orientation="vertical" data-variant="subtle" /><div class="ax-stack" data-gap="4" style={{ alignItems: 'center' }}><span class="ax-title3">28:14</span><span class="ax-footnote ax-muted">Time</span></div><span class="ax-separator" data-orientation="vertical" data-variant="subtle" /><div class="ax-stack" data-gap="4" style={{ alignItems: 'center' }}><span class="ax-title3">5'25"</span><span class="ax-footnote ax-muted">Pace</span></div></div></div>
+  </div>
+</PhonePreview>
+
+```tsx
+<View style={{ flexDirection: 'row' }}>
+  <Stat label="Distance" value="5.2 km" />
+  <Separator orientation="vertical" variant="subtle" />
+  <Stat label="Time" value="28:14" />
+</View>
+```
+
+### Alternative sign-in methods
+
+`label` splits two ways of doing the same thing.
+
+<PhonePreview size="sm">
+  <div class="ax-body" style={{ gap: '14px', paddingTop: '24px' }}>
+    <span class="ax-title1">Sign in</span>
+    <div class="ax-control"><span class="ax-placeholder">Email</span></div>
+    <span class="ax-btn" data-block>Continue</span>
+    <div class="ax-separator-label">or</div>
+    <span class="ax-btn" data-variant="outline" data-block><Glyph name="face" size={20} />Use Face ID</span>
+  </div>
+</PhonePreview>
+
+```tsx
+<Separator label="or" spacing={4} />
+```
+
+## Related
+
+- [Item](/atoms/item)

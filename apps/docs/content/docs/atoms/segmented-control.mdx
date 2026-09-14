@@ -1,0 +1,126 @@
+---
+title: SegmentedControl
+description: "iOS-style segmented selector with a sliding indicator."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<PhonePreview>
+  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Activity</span><span class="ax-icon-btn"><Glyph name="calendar" /></span></div>
+  <div class="ax-body" style={{ gap: '18px' }}>
+    <div class="ax-segmented"><span>Day</span><span data-active>Week</span><span>Month</span><span>Year</span></div>
+    <div class="ax-stack" data-gap="4"><span class="ax-footnote ax-muted">AVERAGE</span><span class="ax-title1">7,842 <span class="ax-subhead ax-muted">steps</span></span></div>
+    <div class="ax-row" style={{ alignItems: 'flex-end', height: '120px', gap: '12px' }}>
+      <span class="ax-grow" style={{ height: '45%', borderRadius: '6px', background: 'var(--ax-content-link)', opacity: 0.35 }} /><span class="ax-grow" style={{ height: '70%', borderRadius: '6px', background: 'var(--ax-content-link)', opacity: 0.35 }} /><span class="ax-grow" style={{ height: '55%', borderRadius: '6px', background: 'var(--ax-content-link)', opacity: 0.35 }} /><span class="ax-grow" style={{ height: '90%', borderRadius: '6px', background: 'var(--ax-content-link)' }} /><span class="ax-grow" style={{ height: '40%', borderRadius: '6px', background: 'var(--ax-content-link)', opacity: 0.35 }} /><span class="ax-grow" style={{ height: '65%', borderRadius: '6px', background: 'var(--ax-content-link)', opacity: 0.35 }} /><span class="ax-grow" style={{ height: '30%', borderRadius: '6px', background: 'var(--ax-content-link)', opacity: 0.35 }} />
+    </div>
+    <div class="ax-segmented" style={{ alignSelf: 'center', width: '180px' }}><span data-active><Glyph name="menu" size={18} /></span><span><Glyph name="grid" size={18} /></span></div>
+  </div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add segmented-control
+```
+
+Installs: `react-native-reanimated`.
+
+## Usage
+
+```tsx title="Conceptual"
+import { SegmentedControl } from '@/components/ui/segmented-control';
+
+<SegmentedControl
+  options={['List', 'Grid']}
+  value={layout}
+  onValueChange={setLayout}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `options` | `Array<string \| SegmentOption>` | — | The segments. A string is used as both value and label. `SegmentOption` is `{ value, label?, icon?, accessibilityLabel?, disabled? }`. |
+| `value` | `string` | — | Value of the selected segment. |
+| `defaultValue` | `string` | first option | Initial selection when the control manages its own state. |
+| `onValueChange` | `(value: string) => void` | — | Called when the user picks another segment. |
+| `size` | `'md' \| 'lg'` | `'md'` | Height: 32 or 40pt. |
+| `fullWidth` | `boolean` | `true` | Stretches to the parent width with equal segments. `false` sizes it to its content. |
+| `disabled` | `boolean` | `false` | Disables the whole control. |
+| `haptics` | `boolean` | `true` | Selection feedback when the indicator lands on a new segment. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the track. |
+
+The indicator slides on the UI thread with Reanimated and can be dragged from one segment to another. Keep it to 2–5 short options: past that, labels get truncated.
+
+## Use cases
+
+### Switching the view of the same data
+
+The segments change how the content is shown, not what it is. Icons are enough when they are standard.
+
+<PhonePreview size="sm">
+  <div class="ax-appbar"><span class="ax-appbar-title" style={{ textAlign: 'left', paddingLeft: '8px', fontSize: '28px', fontWeight: 700 }}>Photos</span><div class="ax-segmented" style={{ width: '110px' }}><span><Glyph name="menu" size={16} /></span><span data-active><Glyph name="grid" size={16} /></span></div></div>
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2px', padding: '8px 0' }}>
+    <span class="ax-media" data-tone="1" style={{ height: '128px' }} /><span class="ax-media" data-tone="2" style={{ height: '128px' }} /><span class="ax-media" data-tone="3" style={{ height: '128px' }} /><span class="ax-media" data-tone="4" style={{ height: '128px' }} /><span class="ax-media" data-tone="5" style={{ height: '128px' }} /><span class="ax-media" data-tone="6" style={{ height: '128px' }} />
+  </div>
+</PhonePreview>
+
+```tsx
+<SegmentedControl
+  fullWidth={false}
+  options={[
+    { value: 'list', icon: 'menu', accessibilityLabel: 'List' },
+    { value: 'grid', icon: 'grid', accessibilityLabel: 'Grid' },
+  ]}
+  value={layout}
+  onValueChange={setLayout}
+/>
+```
+
+### Filtering a list in place
+
+A short list of states above the content. Changing segment filters the list below without navigating.
+
+<PhonePreview size="sm">
+  <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Orders</div>
+  <div style={{ padding: '0 16px 8px' }}><div class="ax-segmented"><span>All</span><span data-active>Active</span><span>Delivered</span></div></div>
+  <div class="ax-list" data-variant="plain">
+    <div class="ax-item"><span class="ax-tile" data-color="orange"><Glyph name="bag" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">#10482 · 3 items</span><span class="ax-item-desc">Arriving tomorrow</span></div><span class="ax-badge" data-variant="warning">Shipped</span></div>
+    <div class="ax-item"><span class="ax-tile" data-color="blue"><Glyph name="bag" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">#10477 · 1 item</span><span class="ax-item-desc">Preparing</span></div><span class="ax-badge" data-variant="info">Paid</span></div>
+  </div>
+</PhonePreview>
+
+```tsx
+<SegmentedControl options={['All', 'Active', 'Delivered']} value={status} onValueChange={setStatus} />
+<FlatList data={orders.filter(byStatus(status))} renderItem={renderOrder} />
+```
+
+### Setting with few options
+
+A compact alternative to radios for 2–3 values that the user compares at a glance.
+
+<PhonePreview size="sm" grouped>
+  <div class="ax-section" style={{ paddingTop: '12px' }}>Appearance</div>
+  <div class="ax-list"><div class="ax-stack" style={{ padding: '16px' }}><div class="ax-segmented" data-size="lg"><span><Glyph name="sun" size={16} />Light</span><span data-active><Glyph name="moon" size={16} />Dark</span><span>Auto</span></div></div></div>
+  <div class="ax-footnote-block">Auto follows the system setting.</div>
+</PhonePreview>
+
+```tsx
+<SegmentedControl
+  size="lg"
+  options={[
+    { value: 'light', label: 'Light', icon: 'sun' },
+    { value: 'dark', label: 'Dark', icon: 'moon' },
+    { value: 'system', label: 'Auto' },
+  ]}
+  value={scheme}
+  onValueChange={setScheme}
+/>
+```
+
+## Related
+
+- [Tab](/templates/tab), for switching between content areas
+- [ButtonGroup](/atoms/button-group)
+- [Radio](/atoms/radio)

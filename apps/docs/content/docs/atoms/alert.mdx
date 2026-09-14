@@ -1,0 +1,117 @@
+---
+title: Alert
+description: "Inline feedback: info, success, warning or error."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<PhonePreview>
+  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Account</span><span class="ax-icon-btn" /></div>
+  <div class="ax-body" style={{ gap: '10px' }}>
+    <div class="ax-alert"><Glyph name="info" size={20} /><div class="ax-item-content"><span class="ax-alert-title">New sign-in method</span><span class="ax-alert-desc">You can now use passkeys.</span></div></div>
+    <div class="ax-alert" data-variant="success"><Glyph name="circle-check" size={20} /><div class="ax-item-content"><span class="ax-alert-title">Email verified</span></div></div>
+    <div class="ax-alert" data-variant="warning"><Glyph name="alert" size={20} /><div class="ax-item-content"><span class="ax-alert-title">Storage almost full</span><span class="ax-alert-desc">Free up space to keep syncing.</span><span class="ax-subhead ax-semibold" style={{ marginTop: '6px' }}>Manage storage</span></div><Glyph name="close" size={18} class="ax-muted" /></div>
+    <div class="ax-alert" data-variant="error"><Glyph name="circle-x" size={20} /><div class="ax-item-content"><span class="ax-alert-title">Payment failed</span><span class="ax-alert-desc">Your card was declined.</span></div></div>
+    <div class="ax-alert" data-variant="neutral"><Glyph name="clock" size={20} /><div class="ax-item-content"><span class="ax-alert-desc" style={{ color: 'var(--ax-content-default)' }}>Maintenance on Sunday, 02:00–03:00.</span></div></div>
+  </div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add alert
+```
+
+## Usage
+
+```tsx title="Conceptual"
+import { Alert } from '@/components/ui/alert';
+
+<Alert variant="warning" title="Storage almost full">
+  Free up space to keep syncing.
+</Alert>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `variant` | `'info' \| 'success' \| 'warning' \| 'error' \| 'neutral'` | `'info'` | Picks the subtle background and icon color from the feedback colors (`feedback.warningSubtle` + `feedback.warning`…). |
+| `title` | `ReactNode` | — | Short, bold summary. An alert can have only a title, only a description, or both. |
+| `children` | `ReactNode` | — | Description under the title, in `content.muted`. |
+| `icon` | `IconName \| ReactNode \| null` | per variant | Leading icon. Each variant has a default (`info`, `circle-check`, `alert`, `circle-x`); `null` removes it. |
+| `action` | `{ label: string; onPress: () => void }` | — | A text action under the description, such as "Manage storage" or "Retry". |
+| `onDismiss` | `() => void` | — | Shows a close button in the top-right corner. Hiding the alert is up to you. |
+| `accessibilityLiveRegion` | `'polite' \| 'assertive' \| 'none'` | `'polite'` for error | Announces the alert when it appears. `error` alerts are announced; others are read in order. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the container. |
+
+## Use cases
+
+### Form error summary
+
+Above a form, after a failed submit. Say what went wrong and what to do; the fields show the details.
+
+<PhonePreview size="sm">
+  <div class="ax-body" style={{ gap: '12px', paddingTop: '20px' }}>
+    <span class="ax-title1">Sign in</span>
+    <div class="ax-alert" data-variant="error"><Glyph name="circle-x" size={20} /><div class="ax-item-content"><span class="ax-alert-title">Wrong email or password</span><span class="ax-alert-desc">3 attempts left before a 15-minute lock.</span></div></div>
+    <div class="ax-field" data-state="invalid"><span class="ax-label">Email</span><div class="ax-control"><span class="ax-value">ada@analytical.engine</span></div></div>
+    <div class="ax-field" data-state="invalid"><span class="ax-label">Password</span><div class="ax-control"><span class="ax-value">••••••••</span></div></div>
+  </div>
+</PhonePreview>
+
+```tsx
+{error && (
+  <Alert variant="error" title="Wrong email or password">
+    {attemptsLeft} attempts left before a 15-minute lock.
+  </Alert>
+)}
+```
+
+### Warning with an action
+
+The action fixes the problem right there, without a trip to another screen first.
+
+<PhonePreview size="sm" grouped>
+  <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Settings</div>
+  <div class="ax-body" style={{ paddingTop: '0px' }}><div class="ax-alert" data-variant="warning" style={{ background: 'var(--ax-background-elevated)' }}><Glyph name="alert" size={20} /><div class="ax-item-content"><span class="ax-alert-title">Your plan ends in 3 days</span><span class="ax-alert-desc">You'll lose access to shared projects.</span><span class="ax-subhead ax-link ax-semibold" style={{ marginTop: '6px' }}>Renew now</span></div><Glyph name="close" size={18} class="ax-muted" /></div></div>
+  <div class="ax-list"><div class="ax-item"><span class="ax-item-title ax-grow">Profile</span><Glyph name="chevron-right" size={18} class="ax-subtle" /></div><div class="ax-item"><span class="ax-item-title ax-grow">Billing</span><Glyph name="chevron-right" size={18} class="ax-subtle" /></div></div>
+</PhonePreview>
+
+```tsx
+<Alert
+  variant="warning"
+  title="Your plan ends in 3 days"
+  action={{ label: 'Renew now', onPress: openBilling }}
+  onDismiss={() => setDismissed(true)}
+>
+  You'll lose access to shared projects.
+</Alert>
+```
+
+### Contextual information
+
+A neutral or info alert next to the content it explains, where a tooltip would be missed.
+
+<PhonePreview half="bottom" size="sm">
+  <div class="ax-body" style={{ gap: '12px' }}>
+    <span class="ax-title2">Transfer</span>
+    <div class="ax-field"><span class="ax-label">Amount</span><div class="ax-control" data-size="lg"><span class="ax-affix">€</span><span class="ax-value" style={{ fontSize: '22px', fontWeight: 600 }}>2,500.00</span></div></div>
+    <div class="ax-alert"><Glyph name="info" size={20} /><span class="ax-alert-desc" style={{ color: 'var(--ax-content-default)' }}>Transfers over €2,000 arrive the next business day.</span></div>
+  </div>
+  <div class="ax-fill" />
+  <div class="ax-body" style={{ paddingBottom: '40px' }}><span class="ax-btn" data-size="lg" data-block>Continue</span></div>
+</PhonePreview>
+
+```tsx
+{amount > 2000 && <Alert>Transfers over €2,000 arrive the next business day.</Alert>}
+```
+
+## When to use it
+
+Alert stays in the layout, next to the content it describes. For a message that appears and goes away, use [Toast](/atoms/toast) or [Snackbar](/atoms/snackbar).
+
+## Related
+
+- [Toast](/atoms/toast)
+- [Snackbar](/atoms/snackbar)
