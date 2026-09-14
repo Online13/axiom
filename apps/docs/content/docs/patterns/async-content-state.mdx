@@ -1,0 +1,29 @@
+---
+title: Async content state
+description: "A standard way to handle loading, content, empty, error and retry."
+---
+
+<Callout title="Planned">This pattern isn't available yet.</Callout>
+
+Almost every screen that loads data goes through the same states. This abstraction standardizes them so each screen doesn't reinvent the switch.
+
+```text
+loading → content
+        → empty
+        → error → retry → loading
+```
+
+## States
+
+- loading;
+- content;
+- empty;
+- error;
+- retry.
+
+## Related
+
+- [Skeleton](/atoms/skeleton)
+- [Empty](/atoms/empty)
+- [useRefreshControl](/hooks/use-refresh-control)
+- [Behaviors: async content](/behaviors#async-content)

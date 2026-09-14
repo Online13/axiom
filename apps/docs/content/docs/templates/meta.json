@@ -1,0 +1,10 @@
+{
+  "title": "Templates",
+  "pages": [
+    "scaffold",
+    "app-bar",
+    "bottom-tab-bar",
+    "tab",
+    "tool-bar"
+  ]
+}

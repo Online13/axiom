@@ -1,0 +1,16 @@
+{
+  "title": "Patterns",
+  "pages": [
+    "---Patterns---",
+    "otp-verification",
+    "swipe-actions",
+    "undoable-action",
+    "search-experience",
+    "first-time-empty-state",
+    "selection-mode",
+    "floating-action-menu",
+    "async-content-state",
+    "---Guidelines---",
+    "guidelines"
+  ]
+}

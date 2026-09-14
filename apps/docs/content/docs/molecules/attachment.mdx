@@ -1,0 +1,124 @@
+---
+title: Attachment
+description: "File attachment with preview, upload progress, removal and error state."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<PhonePreview>
+  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="close" /></span><span class="ax-appbar-title">Expense report</span><span class="ax-link ax-semibold" style={{ padding: '0 8px' }}>Submit</span></div>
+  <div class="ax-body" style={{ gap: '10px' }}>
+    <span class="ax-label">Receipts</span>
+    <div class="ax-attachment"><span class="ax-attachment-thumb" data-kind="pdf"><Glyph name="file" size={20} /></span><div class="ax-item-content"><span class="ax-subhead ax-semibold ax-truncate">hotel-lisbon.pdf</span><span class="ax-footnote ax-muted">1.2 MB</span></div><span class="ax-icon-btn" data-size="sm"><Glyph name="close" size={18} class="ax-muted" /></span></div>
+    <div class="ax-attachment"><span class="ax-attachment-thumb" data-kind="image"><Glyph name="image" size={20} /></span><div class="ax-item-content" style={{ gap: '6px' }}><div class="ax-row" data-justify="between"><span class="ax-subhead ax-semibold ax-truncate">taxi-receipt.jpg</span><span class="ax-footnote ax-muted">64%</span></div><div class="ax-progress"><span style={{ width: '64%' }} /></div></div><span class="ax-icon-btn" data-size="sm"><Glyph name="close" size={18} class="ax-muted" /></span></div>
+    <div class="ax-attachment" data-state="error"><span class="ax-attachment-thumb" data-kind="image"><Glyph name="image" size={20} /></span><div class="ax-item-content"><span class="ax-subhead ax-semibold ax-truncate">dinner.heic</span><span class="ax-footnote ax-danger">Upload failed · Tap to retry</span></div><span class="ax-icon-btn" data-size="sm"><Glyph name="refresh" size={18} class="ax-danger" /></span></div>
+    <div class="ax-row" data-gap="8"><div class="ax-tile-attachment"><span class="ax-media" data-tone="2" style={{ height: '100%' }} /><span class="ax-remove"><Glyph name="close" size={12} strokeWidth={3} /></span></div><div class="ax-tile-attachment"><span class="ax-media" data-tone="4" style={{ height: '100%' }} /><span class="ax-tile-progress"><span class="ax-spinner" /></span></div><div class="ax-tile-attachment" style={{ boxShadow: 'inset 0 0 0 1.5px var(--ax-border-default)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--ax-content-muted)' }}><Glyph name="plus" /></div></div>
+  </div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add attachment
+```
+
+Also copies: [`icon-button`](/atoms/icon-button), [`spinner`](/atoms/spinner).
+
+## Usage
+
+```tsx title="Conceptual"
+import { Attachment } from '@/components/ui/attachment';
+
+<Attachment
+  file={file}
+  progress={uploadProgress}
+  error={uploadError}
+  onRemove={() => removeFile(file.id)}
+  onRetry={() => upload(file)}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `file` | `{ name: string; size?: number; mimeType?: string; uri?: string }` | — | The file to show. `mimeType` picks the icon; image and video `uri`s render a thumbnail. |
+| `status` | `'idle' \| 'uploading' \| 'done' \| 'error'` | derived | Upload state. Derived from `progress` and `error` when not set. |
+| `progress` | `number` | — | Upload progress from 0 to 1. Shows a bar (row) or a ring (tile). |
+| `error` | `string \| boolean` | — | Error state: red border and the message instead of the size. |
+| `variant` | `'row' \| 'tile'` | `'row'` | `row` for documents with a name, `tile` for a square thumbnail in a grid of photos. |
+| `onPress` | `() => void` | — | Opens the file, for example in a preview. |
+| `onRemove` | `() => void` | — | Shows a remove button. While uploading, it's up to you to cancel the request. |
+| `onRetry` | `() => void` | — | In the error state, pressing the attachment or the retry icon calls it. |
+| `formatSize` | `(bytes: number) => string` | `1.2 MB` style | Custom size formatting. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the container. |
+
+Axiom handles the UI and its states. The upload itself stays in your app's code: pass `progress` and `error` from your upload logic.
+
+## Use cases
+
+### Attachments in a message composer
+
+Tiles above the input, each with its own upload state, before the message is sent.
+
+<PhonePreview half="bottom" size="sm">
+  <div class="ax-fill" />
+  <div class="ax-stack" data-gap="8" style={{ padding: '8px 12px 40px', borderTop: '0.5px solid var(--ax-border-default)' }}>
+    <div class="ax-row" data-gap="8"><div class="ax-tile-attachment" style={{ width: '64px', height: '64px' }}><span class="ax-media" data-tone="1" style={{ height: '100%' }} /><span class="ax-remove"><Glyph name="close" size={12} strokeWidth={3} /></span></div><div class="ax-tile-attachment" style={{ width: '64px', height: '64px' }}><span class="ax-media" data-tone="5" style={{ height: '100%' }} /><span class="ax-tile-progress"><span class="ax-spinner" data-size="sm" /></span></div><div class="ax-attachment" style={{ padding: '8px', flex: 1 }}><span class="ax-attachment-thumb" data-kind="pdf" style={{ width: '32px', height: '32px' }}><Glyph name="file" size={16} /></span><span class="ax-footnote ax-semibold ax-truncate">brief.pdf</span></div></div>
+    <div class="ax-row"><span class="ax-icon-btn" data-size="sm" data-variant="tinted"><Glyph name="paperclip" size={18} /></span><div class="ax-textarea ax-grow" style={{ minHeight: '0px', borderRadius: '18px', padding: '6px 12px' }}>Here are the shots</div><span class="ax-icon-btn" data-size="sm" data-variant="solid" style={{ background: 'var(--ax-content-link)', color: '#fff' }}><Glyph name="arrow-up" size={18} /></span></div>
+  </div>
+</PhonePreview>
+
+```tsx
+<ScrollView horizontal>
+  {drafts.map((d) => (
+    <Attachment key={d.id} variant={isMedia(d) ? 'tile' : 'row'} file={d.file} progress={d.progress} onRemove={() => removeDraft(d.id)} />
+  ))}
+</ScrollView>
+```
+
+### Documents required by a form
+
+A dashed placeholder to add a file, replaced by the attachment once picked.
+
+<PhonePreview size="sm">
+  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Verify identity</span><span class="ax-icon-btn" /></div>
+  <div class="ax-body" style={{ gap: '14px' }}>
+    <div class="ax-field"><span class="ax-label">Front of ID</span><div class="ax-attachment"><span class="ax-attachment-thumb" data-kind="image"><Glyph name="card" size={20} /></span><div class="ax-item-content"><span class="ax-subhead ax-semibold">id-front.jpg</span><span class="ax-footnote ax-success">Uploaded</span></div><span class="ax-icon-btn" data-size="sm"><Glyph name="trash" size={18} class="ax-muted" /></span></div></div>
+    <div class="ax-field"><span class="ax-label">Back of ID</span><div class="ax-row" data-justify="center" style={{ height: '72px', borderRadius: '10px', border: '1.5px dashed var(--ax-border-strong)', color: 'var(--ax-content-muted)' }}><Glyph name="camera" size={20} /><span class="ax-subhead">Take a photo or choose a file</span></div></div>
+  </div>
+</PhonePreview>
+
+```tsx
+{back ? (
+  <Attachment file={back.file} progress={back.progress} error={back.error} onRemove={() => setBack(null)} />
+) : (
+  <UploadPlaceholder icon="camera" label="Take a photo or choose a file" onPress={pickBack} />
+)}
+```
+
+### Upload failure
+
+The error replaces the size, and the whole attachment becomes a retry button.
+
+<PhonePreview size="sm">
+  <div class="ax-body" style={{ gap: '10px', paddingTop: '20px' }}>
+    <span class="ax-title3">Files</span>
+    <div class="ax-attachment" data-state="error"><span class="ax-attachment-thumb" data-kind="audio"><Glyph name="music" size={20} /></span><div class="ax-item-content"><span class="ax-subhead ax-semibold">interview.m4a</span><span class="ax-footnote ax-danger">File too large (max 25 MB)</span></div><span class="ax-icon-btn" data-size="sm"><Glyph name="close" size={18} class="ax-muted" /></span></div>
+    <div class="ax-attachment" data-state="error"><span class="ax-attachment-thumb"><Glyph name="file" size={20} /></span><div class="ax-item-content"><span class="ax-subhead ax-semibold">notes.txt</span><span class="ax-footnote ax-danger">Connection lost · Tap to retry</span></div><span class="ax-icon-btn" data-size="sm"><Glyph name="refresh" size={18} class="ax-danger" /></span></div>
+  </div>
+</PhonePreview>
+
+```tsx
+<Attachment
+  file={file}
+  error={error?.code === 'too_large' ? 'File too large (max 25 MB)' : 'Connection lost · Tap to retry'}
+  onRetry={error?.code === 'too_large' ? undefined : () => upload(file)}
+  onRemove={() => remove(file.id)}
+/>
+```
+
+## Related
+
+- [BottomSheet](/atoms/bottom-sheet), for a "Take photo / Choose file" picker
+- [Spinner](/atoms/spinner)

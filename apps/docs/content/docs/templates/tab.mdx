@@ -1,0 +1,116 @@
+---
+title: Tab
+description: "Presentational top tabs with controlled selection, badges and scrollable layouts."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<PhonePreview>
+  <div class="ax-appbar"><span class="ax-appbar-slot"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span></span><span class="ax-appbar-title">Activity</span><span class="ax-appbar-slot" data-side="end"><span class="ax-icon-btn"><Glyph name="filter" /></span></span></div>
+  <div class="ax-tabs"><span data-active>All</span><span>Mentions</span><span><span>Requests</span><span class="ax-badge" data-kind="count">2</span></span></div>
+  <div class="ax-list" data-variant="plain"><div class="ax-item"><span class="ax-avatar" data-photo="1" /><div class="ax-item-content"><span class="ax-item-title">Maya mentioned you</span><span class="ax-item-desc">In Launch checklist · 4m</span></div></div><div class="ax-item"><span class="ax-avatar" data-photo="3" /><div class="ax-item-content"><span class="ax-item-title">Jon completed a task</span><span class="ax-item-desc">Homepage review · 21m</span></div></div><div class="ax-item"><span class="ax-avatar" data-photo="5" /><div class="ax-item-content"><span class="ax-item-title">Nora requested access</span><span class="ax-item-desc">Brand assets · 1h</span></div></div></div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add tab
+```
+
+## Usage
+
+```tsx title="Conceptual"
+import { Tab } from '@/components/ui/tab';
+
+<Tab value={section} onValueChange={setSection}>
+  <Tab.Item value="all">All</Tab.Item>
+  <Tab.Item value="unread">Unread</Tab.Item>
+  <Tab.Item value="archived">Archived</Tab.Item>
+</Tab>
+```
+
+## Props
+
+### Tab
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | — | Value of the selected tab in controlled usage. |
+| `defaultValue` | `string` | — | Initial selection when the component owns its state. |
+| `onValueChange` | `(value: string) => void` | — | Called after an enabled tab is pressed. Use it to swap nearby content, not to push a new screen. |
+| `variant` | `'underline' \| 'pill'` | `'underline'` | Uses an indicator below the label or a filled capsule behind it. |
+| `scrollable` | `boolean` | `false` | Lets items keep their natural width and scroll horizontally. Use it when four or more labels do not fit. |
+| `indicatorTransition` | `Transition` | spring token | Animation used when the underline moves between items. |
+| `children` | `ReactNode` | — | Two or more `Tab.Item` elements. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the tab list. |
+
+### Tab.Item
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | — | Stable identifier returned through `onValueChange`. |
+| `children` | `ReactNode` | — | Short label. One or two words scan best. |
+| `icon` | `IconName \| ReactNode` | — | Optional icon before the label. Avoid icons when every tab is already clear in text. |
+| `badge` | `number \| string \| boolean` | — | Count, short status or dot next to the label. |
+| `disabled` | `boolean` | `false` | Blocks selection and exposes the disabled accessibility state. |
+| `accessibilityLabel` | `string` | label text | Spoken label when the visible text needs more context. |
+
+`Tab` sets the tab list, tab and selected accessibility roles. It does not mount or unmount the corresponding panels.
+
+## Use cases
+
+### Switching one data view
+
+Tabs work when the content changes but the screen purpose stays the same. Keep the filter state local to the screen.
+
+<PhonePreview size="sm">
+  <div class="ax-appbar"><span class="ax-appbar-slot"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span></span><span class="ax-appbar-title">Orders</span><span class="ax-appbar-slot" /></div>
+  <div class="ax-tabs"><span data-active>Active</span><span>Past</span></div>
+  <div class="ax-body"><div class="ax-card" data-variant="outlined"><div class="ax-card-content"><div class="ax-row" data-justify="between"><span class="ax-headline">Order #1842</span><span class="ax-badge" data-variant="success">Shipped</span></div><span class="ax-subhead ax-muted">Arrives Thursday · $88.90</span></div></div><div class="ax-card" data-variant="outlined"><div class="ax-card-content"><div class="ax-row" data-justify="between"><span class="ax-headline">Order #1831</span><span class="ax-badge" data-variant="info">Preparing</span></div><span class="ax-subhead ax-muted">3 items · $126.00</span></div></div></div>
+</PhonePreview>
+
+```tsx
+<Tab value={status} onValueChange={setStatus}>
+  <Tab.Item value="active">Active</Tab.Item>
+  <Tab.Item value="past">Past</Tab.Item>
+</Tab>
+```
+
+### Categories that need horizontal scrolling
+
+When labels cannot fit without shrinking, let the row scroll. The selected tab should be brought into view after selection.
+
+<PhonePreview size="sm">
+  <div class="ax-appbar"><span class="ax-appbar-slot" /><span class="ax-appbar-title">Discover</span><span class="ax-appbar-slot" data-side="end"><span class="ax-icon-btn"><Glyph name="search" /></span></span></div>
+  <div class="ax-tabs" data-scrollable><span>For you</span><span data-active>Technology</span><span>Design</span><span>Science</span><span>Culture</span></div>
+  <div class="ax-body"><div class="ax-media" data-tone="6" style={{ height: '140px', borderRadius: '14px' }}><Glyph name="bolt" size={48} /></div><span class="ax-title3">A smaller battery with a longer life</span><span class="ax-subhead ax-muted">8 min read</span></div>
+</PhonePreview>
+
+```tsx
+<Tab scrollable value={category} onValueChange={setCategory}>
+  {categories.map((item) => <Tab.Item key={item.id} value={item.id}>{item.label}</Tab.Item>)}
+</Tab>
+```
+
+### Compact mode switch with pills
+
+The pill variant works for a short, local mode switch. For two or three equally sized options inside a form, prefer [SegmentedControl](/atoms/segmented-control).
+
+<PhonePreview size="sm" grouped>
+  <div class="ax-appbar"><span class="ax-appbar-slot"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span></span><span class="ax-appbar-title">Saved</span><span class="ax-appbar-slot" /></div>
+  <div class="ax-tabs" data-variant="pill"><span data-active><Glyph name="grid" size={17} />Grid</span><span><Glyph name="map" size={17} />Map</span></div>
+  <div class="ax-body"><div class="ax-row" data-gap="12"><div class="ax-media ax-grow" data-tone="2" style={{ height: '122px', borderRadius: '14px' }}><Glyph name="pin" /></div><div class="ax-media ax-grow" data-tone="3" style={{ height: '122px', borderRadius: '14px' }}><Glyph name="heart" /></div></div><div class="ax-row" data-gap="12"><div class="ax-media ax-grow" data-tone="4" style={{ height: '122px', borderRadius: '14px' }}><Glyph name="map" /></div><div class="ax-media ax-grow" data-tone="5" style={{ height: '122px', borderRadius: '14px' }}><Glyph name="star" /></div></div></div>
+</PhonePreview>
+
+```tsx
+<Tab variant="pill" value={view} onValueChange={setView}>
+  <Tab.Item value="grid" icon="grid">Grid</Tab.Item>
+  <Tab.Item value="map" icon="map">Map</Tab.Item>
+</Tab>
+```
+
+## Related
+
+- [BottomTabBar](/templates/bottom-tab-bar), for top-level destinations
+- [SegmentedControl](/atoms/segmented-control), for compact form choices
+- [Badge](/atoms/badge)
