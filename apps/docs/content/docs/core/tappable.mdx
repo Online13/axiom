@@ -1,0 +1,140 @@
+---
+title: Tappable
+description: "Headless press primitive: pressed state, disabled state and a minimum touch target."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<TappablePreview />
+
+Press the close icon or a button. Each one changes its background while pressed, and slide your finger off before releasing to cancel the press. Turn on Touch areas: the icon is 20pt but its pressable area is 44pt.
+
+## Installation
+
+```npm
+npx axiom add tappable
+```
+
+## What it does
+
+`Tappable` is the press layer under [Button](/atoms/button) and [IconButton](/atoms/icon-button). It wraps React Native's `Pressable` and handles what every pressable element needs:
+
+- it tells the component it wraps whether it is pressed;
+- it blocks presses when disabled;
+- it extends the touch area of small elements to `touchTarget`;
+- it sets the accessibility role and state.
+
+`Tappable` draws nothing. The pressed color comes from the component that renders it, through its [component tokens](/foundations/component-tokens): `button.solid.pressed.background`, `button.outline.pressed.background`… That's why the solid and outline buttons above react differently while the press behavior is the same.
+
+You rarely render it yourself. Use it directly when you build your own pressable component, like a row, a tile or a card.
+
+## Usage
+
+```tsx title="Conceptual"
+import { Tappable } from '@/components/core/tappable';
+
+function Tile({ title, onPress, disabled }) {
+  const { components } = useTheme();
+
+  return (
+    <Tappable onPress={onPress} disabled={disabled} accessibilityLabel={title}>
+      {({ pressed }) => (
+        <View
+          style={{
+            backgroundColor: pressed
+              ? components.button.outline.pressed.background
+              : components.button.outline.default.background,
+          }}
+        >
+          <Text color={disabled ? 'disabled' : 'default'}>{title}</Text>
+        </View>
+      )}
+    </Tappable>
+  );
+}
+```
+
+`children` can be a function that receives `{ pressed }`, or a plain element when the look doesn't change on press. `style` accepts the same kind of function:
+
+```tsx
+<Tappable onPress={onPress} style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}>
+  <Text>Settings</Text>
+</Tappable>
+```
+
+## Pressed state
+
+| Step | What happens |
+| --- | --- |
+| Finger down | `onPressIn` fires and `pressed` becomes `true`. |
+| Finger up on the element | `pressed` becomes `false`, `onPressOut` then `onPress` fire. |
+| Finger slides off the element | `pressed` becomes `false` and `onPressOut` fires. `onPress` doesn't. |
+| Held for `delayLongPress` ms | `onLongPress` fires instead of `onPress`. |
+
+A press also cancels when the parent `ScrollView` starts scrolling, so scrolling a list doesn't press its rows.
+
+## Touch target
+
+<TappableHitSlop />
+
+A blue outline is the area that accepts the press. `Tappable` measures the element and adds `hitSlop` on each axis where it is smaller than [`touchTarget`](/foundations/tokens/metrics) (44pt):
+
+```ts
+hitSlop = Math.max(0, (touchTarget - size) / 2)
+```
+
+A 24pt icon gets `10` on each side. A 64×32 chip gets `6` above and below and nothing on the sides. A 44pt tall button gets nothing.
+
+`hitSlop` doesn't change the layout, so a small icon keeps its size and position. Keep enough space around it: when two touch areas overlap, the element rendered last gets the press.
+
+Pass `hitSlop` yourself to override the computed value, or `minTouchTarget={false}` to turn the behavior off, for example in a dense grid where the layout already gives each cell 44pt.
+
+## Disabled
+
+Turn on Disabled in the first preview: nothing reacts, and the colors come from the `disabled` component tokens.
+
+With `disabled`:
+
+- `onPress`, `onPressIn`, `onPressOut` and `onLongPress` don't fire;
+- `pressed` stays `false`;
+- screen readers announce the element as dimmed or disabled.
+
+A disabled element still takes up its touch area. A press on it does nothing and doesn't reach the element behind.
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `onPress` | `(event: GestureResponderEvent) => void` | — | Called when a press ends on the element. |
+| `onPressIn` | `(event: GestureResponderEvent) => void` | — | Called when the finger touches the element. |
+| `onPressOut` | `(event: GestureResponderEvent) => void` | — | Called when the finger lifts or leaves the element. |
+| `onLongPress` | `(event: GestureResponderEvent) => void` | — | Called after `delayLongPress` ms. Replaces `onPress` for that press. |
+| `delayLongPress` | `number` | `500` | Duration in ms before `onLongPress`. |
+| `disabled` | `boolean` | `false` | Blocks every press callback and the pressed state. |
+| `hitSlop` | `number \| Insets` | computed | Extra touch area around the element. Overrides the computed value. |
+| `minTouchTarget` | `boolean` | `true` | Computes `hitSlop` from `touchTarget` when `hitSlop` isn't set. |
+| `children` | `ReactNode \| ({ pressed }) => ReactNode` | — | Content, or a function of the pressed state. |
+| `style` | `StyleProp<ViewStyle> \| ({ pressed }) => StyleProp<ViewStyle>` | — | Style, or a function of the pressed state. |
+| `accessibilityRole` | `AccessibilityRole` | `'button'` | Role announced by screen readers. |
+| `accessibilityLabel` | `string` | — | Label announced by screen readers. Required when the content has no text. |
+
+Other `Pressable` props are passed through.
+
+## Accessibility
+
+- The role is `button` by default. Set `link`, `tab` or another role when the element is not a button.
+- `accessibilityState.disabled` follows `disabled`, so VoiceOver and TalkBack announce it.
+- An element with only an icon has nothing to read. Give it an `accessibilityLabel`. [IconButton](/atoms/icon-button) requires one.
+- The computed `hitSlop` helps people with motor impairments too, not only people with large fingers.
+
+## Used by
+
+- [Button](/atoms/button)
+- [IconButton](/atoms/icon-button)
+
+## Related
+
+- [Slot](/core/slot)
+- [Metrics](/foundations/tokens/metrics)
+- [Component tokens](/foundations/component-tokens)
+- [Mobile design guidelines](/patterns/guidelines#touch-target)

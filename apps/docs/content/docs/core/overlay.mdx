@@ -1,0 +1,140 @@
+---
+title: Overlay
+description: "Shared backdrop for everything that covers the screen."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+<OverlayPreview />
+
+Pick a component, then press the dimmed area to close it. The backdrop is the same in all three cases. Only the content above it changes.
+
+## Installation
+
+```npm
+npx axiom add overlay
+```
+
+Installs: `react-native-reanimated`.
+
+## What it does
+
+`Overlay` is the backdrop behind sheets, dialogs and menus. It dims the screen, fades in and out, and catches presses outside the content. Each overlay component renders one instead of drawing its own, so a sheet and a dialog dim the screen with the same color, opacity and timing.
+
+You rarely render it yourself. `BottomSheet`, `Menu` and `Dialog` already do. Use it directly when you build your own overlay component.
+
+## Usage
+
+```tsx title="Conceptual"
+import { Overlay } from '@/components/core/overlay';
+import { Portal } from '@/components/core/portal';
+
+function Popover({ open, onClose, children }) {
+  return (
+    <Portal>
+      <Overlay visible={open} onPress={onClose} />
+      {open && <PopoverContent>{children}</PopoverContent>}
+    </Portal>
+  );
+}
+```
+
+`Overlay` fills its parent with `StyleSheet.absoluteFill`. Put it in a [`Portal`](/core/portal) so the parent is the `PortalHost`, which covers the whole screen. Render the content after it, so the content sits on top.
+
+## Layers
+
+<OverlayLayers />
+
+An open sheet stacks four layers. Your screen is at the bottom. The `PortalHost` fills the screen above it and lets touches through while empty. `Overlay` comes next, then the sheet content.
+
+A press on the content goes to the content. A press anywhere else lands on `Overlay`, which calls `onPress`. Nothing reaches the screen while the overlay is visible.
+
+## Animation
+
+`visible` drives the animation.
+
+| Step | What happens |
+| --- | --- |
+| `visible` becomes `true` | `Overlay` mounts and fades from `0` to `opacity` in `duration` ms. It catches presses right away. |
+| `visible` becomes `false` | It stops catching presses, then fades back to `0`. |
+| Fade out ends | `onExited` fires and `Overlay` renders nothing. |
+
+Touches go back to the screen as soon as closing starts. A user who taps twice quickly reaches the list behind instead of hitting a backdrop that is still fading.
+
+Keep the content mounted until `onExited` if it has its own exit animation, so both finish together:
+
+```tsx
+const [mounted, setMounted] = useState(open);
+if (open && !mounted) setMounted(true);
+
+<Overlay visible={open} onPress={onClose} onExited={() => setMounted(false)} />
+{mounted && <DialogContent visible={open} />}
+```
+
+With Reduce Motion turned on in the system settings, there is no fade. The overlay appears and disappears at once, and `onExited` fires right after `visible` becomes `false`.
+
+## Following a gesture
+
+<OverlayPreview mode="progress" />
+
+Move the slider. The backdrop gets darker as the sheet rises.
+
+A sheet the user drags shouldn't fade on a timer. Pass `progress`, a Reanimated shared value from `0` (closed) to `1` (open), and the opacity follows it on the UI thread, with no React render per frame:
+
+```tsx title="Conceptual"
+const progress = useDerivedValue(() =>
+  interpolate(translateY.value, [closedY, openY], [0, 1], Extrapolation.CLAMP),
+);
+
+<Overlay visible={open} progress={progress} onPress={close} />
+```
+
+With `progress`, `visible` still decides whether the overlay catches presses, but `duration` is ignored. `BottomSheet` works this way.
+
+## Dismissal
+
+Without `onPress`, the overlay still blocks the screen but a press does nothing. Use it for a flow the user must finish, like a required choice or an action in progress:
+
+```tsx
+<Overlay visible={saving} />
+```
+
+`Overlay` doesn't handle the Android back button. The component that owns the overlay decides what back does, since a menu, a sheet with unsaved input and a blocking dialog each need something different.
+
+## Color and dark mode
+
+The default is black at `0.4` opacity, in both color schemes. Switch the first preview to Dark: the backdrop is barely visible on a black screen. That's expected. In dark mode the content stands out through [`background.elevated`](/foundations/colors), which is lighter than the screen, not through the backdrop.
+
+Change `color` and `opacity` only when a design calls for it. Changing them on one component makes it look different from the others, which is the thing `Overlay` exists to avoid.
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `visible` | `boolean` | — | Shows or hides the overlay, with the enter or exit animation. |
+| `onPress` | `() => void` | — | Called when the overlay is pressed. Without it, presses are blocked and ignored. |
+| `onExited` | `() => void` | — | Called when the exit animation ends. |
+| `progress` | `SharedValue<number>` | — | Drives opacity from `0` to `1` instead of the timed animation. |
+| `opacity` | `number` | `0.4` | Opacity when fully visible. |
+| `color` | `ColorValue` | `'#000000'` | Backdrop color. |
+| `duration` | `number` | `250` | Fade duration in ms. Ignored with `progress`. |
+| `accessibilityLabel` | `string` | `'Close'` | Label read by screen readers when `onPress` is set. |
+| `style` | `StyleProp<ViewStyle>` | — | Merged after `StyleSheet.absoluteFill`. |
+
+## Accessibility
+
+- With `onPress`, the overlay is a button labeled `accessibilityLabel`. VoiceOver and TalkBack users can reach it and close the overlay.
+- On iOS, the two-finger scrub gesture (`onAccessibilityEscape`) calls `onPress` too.
+- Without `onPress`, screen readers skip the overlay.
+- `Overlay` doesn't hide the screen behind it from screen readers. The content does that, with `accessibilityViewIsModal` on iOS. `BottomSheet`, `Menu` and `Dialog` set it for you. Set it yourself on a custom overlay component.
+
+## Used by
+
+- [BottomSheet](/atoms/bottom-sheet)
+- [Menu](/atoms/menu)
+- [Dialog](/atoms/dialog)
+
+## Related
+
+- [Portal / PortalHost](/core/portal)
+- [Colors](/foundations/colors)

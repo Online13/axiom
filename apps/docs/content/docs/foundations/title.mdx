@@ -1,0 +1,59 @@
+---
+title: Title
+description: "Headings wired to the theme's type scale."
+---
+
+<RolePreview role="title" />
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+## Installation
+
+```npm
+npx axiom add title
+```
+
+## Usage
+
+```tsx title="Conceptual"
+import { Title } from '@/components/ui/title';
+
+<Title variant="display">Settings</Title>
+<Title variant="heading">Notifications</Title>
+<Title variant="subheading" color="muted">Quiet hours</Title>
+```
+
+## Variants
+
+Each variant points to a [typography token](/foundations/tokens/typography). Pick the variant from the role of the heading on the screen, not from the size you want.
+
+| Variant | Token | Size / line height · weight | Use for |
+| --- | --- | --- | --- |
+| `display` | `largeTitle` | 34/41 · 700 | Screen title, large header |
+| `headingLg` | `title1` | 28/34 · 700 | Main section of a screen |
+| `heading` | `title2` | 22/28 · 700 | Section title (default) |
+| `headingSm` | `title3` | 20/25 · 600 | Card or sheet title |
+| `subheading` | `headline` | 17/22 · 600 | Group title, list header |
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `variant` | `'display' \| 'headingLg' \| 'heading' \| 'headingSm' \| 'subheading'` | `'heading'` | Typography style. See [Variants](#variants). |
+| `color` | `'default' \| 'muted' \| 'inverse'` | `'default'` | Content color from the theme. |
+| `align` | `'left' \| 'center' \| 'right'` | `'left'` | Text alignment. |
+| `numberOfLines` | `number` | — | Truncates with an ellipsis after this many lines. |
+| `asChild` | `boolean` | `false` | Passes the styles to the child instead of rendering a `Text`. See [Slot](/core/slot). |
+| `style` | `StyleProp<TextStyle>` | — | Extra styles, applied after the variant. |
+
+`Title` also accepts every React Native `Text` prop.
+
+## Accessibility
+
+- `accessibilityRole="header"` is set by default, so screen readers announce the text as a heading.
+- Font scaling stays on. Use `maxFontSizeMultiplier` to cap it on dense screens.
+
+## Related
+
+- [Text](/foundations/text)
+- [Typography tokens](/foundations/tokens/typography)

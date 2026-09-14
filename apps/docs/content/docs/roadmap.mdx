@@ -1,0 +1,43 @@
+---
+title: Roadmap
+description: "What ships first, and what comes after."
+---
+
+## Phase 1: the foundation
+
+### Styling variants
+
+1. `stylesheet` for every item in this phase, with the behavior / style split in place.
+2. `unistyles`.
+3. `tailwind` (NativeWind / Uniwind), once the split is proven on the first two.
+
+### Components
+
+| Group | Items |
+| --- | --- |
+| [Foundations](/foundations) | Tokens, ThemeColors, component tokens, Theme, `light` / `dark`, `components(colors)` |
+| [Core](/core) | Slot, Portal / PortalHost, Overlay, Tappable |
+| [Hooks](/hooks) | useRefreshControl |
+| Typography | [Title](/foundations/title), [Text](/foundations/text) |
+| [Atoms](/atoms) | All 32 atoms |
+| [Molecules](/molecules) | SearchBar, Attachment, DatePicker |
+| [Organisms](/organisms) | Passcode |
+| [Templates](/templates) | AppBar, BottomTabBar, Tab, ToolBar, Scaffold |
+
+### Tooling
+
+- `registry.json`
+- CLI (`init`, `add`)
+- Demo app: one screen per component, light / dark switch, side-by-side styling variants
+- Foundations screen: colors, typography, spacing, radius, icons, touch targets, states
+- CI: typecheck per variant, props parity between variants, lint, tests, builds
+
+## Phase 2: blocks
+
+Complete screens built with Axiom components, once the system is stable: [authentication](/blocks/authentication), [onboarding](/blocks/onboarding), [monetization](/blocks/monetization), [profile](/blocks/profile) and [commerce](/blocks/commerce).
+
+## Later
+
+- [Patterns](/patterns): swipe actions, selection mode, search experience, async content state…
+- More [hooks](/hooks): hide-on-scroll, collapsible header, keyboard-aware behavior…
+- CI on Android and iOS devices, screenshots, visual tests (including parity between styling variants), accessibility checks.

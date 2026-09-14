@@ -1,0 +1,26 @@
+{
+  "pages": [
+    "---Get Started---",
+    "index",
+    "installation",
+    "cli",
+    "configuration",
+    "styling",
+    "---System---",
+    "foundations",
+    "core",
+    "---Components---",
+    "atoms",
+    "molecules",
+    "organisms",
+    "templates",
+    "---Hooks---",
+    "...hooks",
+    "---Experience---",
+    "behaviors",
+    "patterns",
+    "blocks",
+    "---Project---",
+    "roadmap"
+  ]
+}

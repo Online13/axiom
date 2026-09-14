@@ -1,0 +1,214 @@
+---
+title: Component tokens
+description: "Per-component colors derived from the semantic colors."
+---
+
+<Callout title="Draft">The values and key names shown here are conceptual and may change.</Callout>
+
+`Components` is the last layer of the theme. It gives each component its own named colors: the background of a solid button, the border of a focused input, the track of a checked switch.
+
+Components read this layer, never [colors](/foundations/colors) or the [palette](/foundations/tokens/palette) directly.
+
+```text
+Tokens (palette)  →  ThemeColors  →  Components  →  Button, Input, Switch…
+blue.500             border.focus    input.default.focused.border
+```
+
+<TokenChain />
+
+## Why a separate layer
+
+Say a button reads a semantic color directly:
+
+```tsx
+backgroundColor: colors.background.inverse
+```
+
+Now you want blue buttons, and nothing else should change. You have two bad options:
+
+- change `background.inverse`: toasts, snackbars and tooltips turn blue too;
+- hardcode a color in the button file: dark mode stops following.
+
+With component tokens, the button reads `button.solid.default.background`. You point that one token to another semantic color, and only the button changes. Dark mode still works because the value still comes from `ThemeColors`.
+
+Switch between the default and the custom button below. The link, the checkbox and the focused input are blue in both cases; only the solid button follows the change.
+
+<ComponentTokenPreview />
+
+The layer also:
+
+- puts every component color in one file, instead of spread across dozens of components;
+- keeps the `stylesheet`, `unistyles` and `tailwind` variants identical, since all three read the same value.
+
+## What goes in
+
+Component tokens hold **colors only**: anything that changes between light and dark, or with your brand.
+
+| In `Components` | Elsewhere |
+| --- | --- |
+| Background, foreground, border, icon, placeholder, track, thumb | Heights, padding, radius, font sizes: read from [tokens](/foundations/tokens) |
+| One value per variant and state | Minimum tap target (44pt): [metrics](/foundations/tokens/metrics) |
+| | State logic, gestures, animation: [core](/core) and [hooks](/hooks) |
+
+## Structure
+
+Every token follows the same path:
+
+```text
+<component>.<variant>.<state>.<property>
+```
+
+| Segment | Rule | Examples |
+| --- | --- | --- |
+| `component` | camelCase, same name as in the registry | `button`, `iconButton`, `segmentedControl` |
+| `variant` | The values of the `variant` prop. Components without one use `default` | `solid`, `outline`, `ghost` |
+| `state` | A closed list, always starting with `default` | `default`, `pressed`, `focused`, `checked`, `invalid`, `disabled` |
+| `property` | A shared vocabulary | `background`, `foreground`, `border`, `placeholder`, `icon`, `indicator`, `track`, `thumb` |
+
+States other than `default` only list what changes. A missing property falls back to `default`: a pressed outline button keeps its border and text color and only changes its background.
+
+```ts title="Conceptual"
+export type Components = {
+  button: {
+    solid: ButtonStates;
+    outline: ButtonStates;
+    ghost: ButtonStates;
+  };
+  input: { default: InputStates };
+  switch: { default: SwitchStates };
+  checkbox: { default: CheckboxStates };
+  // one entry per component added to the project
+};
+
+type ButtonColors = { background?: string; foreground: string; border?: string };
+
+type ButtonStates = {
+  default: ButtonColors;
+  pressed?: Partial<ButtonColors>;
+  disabled?: Partial<ButtonColors>;
+};
+```
+
+## `components(colors)`
+
+Component tokens come from a single function. It takes the semantic colors and returns every component's values:
+
+```ts title="Conceptual"
+export const components = (colors: ThemeColors) =>
+  ({
+    button: {
+      solid: {
+        default: { background: colors.background.inverse, foreground: colors.content.inverse },
+        pressed: { background: colors.content.muted },
+        disabled: { background: colors.border.default, foreground: colors.content.disabled },
+      },
+      outline: {
+        default: { background: colors.background.default, foreground: colors.content.default, border: colors.border.default },
+        pressed: { background: colors.background.subtle },
+        disabled: { foreground: colors.content.disabled, border: colors.border.subtle },
+      },
+      ghost: {
+        default: { foreground: colors.content.default },
+        pressed: { background: colors.background.subtle },
+        disabled: { foreground: colors.content.disabled },
+      },
+    },
+    switch: {
+      default: {
+        default: { track: colors.border.default, thumb: colors.background.elevated },
+        checked: { track: colors.feedback.success },
+        disabled: { track: colors.border.subtle },
+      },
+    },
+    // …
+  }) satisfies Components;
+```
+
+It is called once per color scheme:
+
+```ts title="Conceptual"
+export const light = { tokens, colors: lightColors, components: components(lightColors) } satisfies Theme;
+export const dark = { tokens, colors: darkColors, components: components(darkColors) } satisfies Theme;
+```
+
+Rules:
+
+- The function is pure and only reads `colors`. Never write raw hex values or palette steps in it.
+- Never branch on the scheme (`if (dark)`). If a component needs a different value in dark mode, that difference belongs in `ThemeColors`.
+
+## Default values
+
+Each table lists a component's tokens, the semantic color they read and the result in both schemes. Grayed rows are states that override `default`.
+
+### Button
+
+<ComponentTokenTable component="button" />
+
+### Input
+
+<ComponentTokenTable component="input" />
+
+### Switch
+
+<ComponentTokenTable component="switch" />
+
+### Checkbox
+
+<ComponentTokenTable component="checkbox" />
+
+Other components get their entry when they are added: `npx axiom add <component>` adds its tokens to the copied theme.
+
+## In each styling variant
+
+The values are the same; only the way components read them changes.
+
+```tsx title="stylesheet"
+const theme = useTheme();
+
+<Pressable style={{ backgroundColor: theme.components.button.solid.default.background }} />
+```
+
+```tsx title="unistyles"
+const styles = StyleSheet.create((theme) => ({
+  solid: { backgroundColor: theme.components.button.solid.default.background },
+}));
+```
+
+```css title="tailwind"
+/* Each token becomes a CSS variable, one set per scheme */
+--button-solid-default-background: var(--background-inverse);
+```
+
+```tsx title="tailwind"
+<Pressable className="bg-button-solid-default-background active:bg-button-solid-pressed-background" />
+```
+
+## Customizing
+
+Edit the copied `components` function:
+
+```ts title="Blue solid buttons" {4-5}
+button: {
+  solid: {
+    default: {
+      background: colors.content.link,
+      foreground: colors.content.inverse,
+    },
+    pressed: { background: colors.content.link },
+  },
+},
+```
+
+Pick the layer that matches the scope of the change:
+
+| You want to change | Edit |
+| --- | --- |
+| One component | Its entry in `components(colors)` |
+| A role across the app (every border, every link) | [`ThemeColors`](/foundations/colors) |
+| The brand hue or a step everywhere | The [palette](/foundations/tokens/palette) |
+
+## Related
+
+- [Colors](/foundations/colors)
+- [Tokens](/foundations/tokens)
+- [Styling](/styling)

@@ -1,0 +1,67 @@
+---
+title: CLI
+description: "Initialize a project and add components with the axiom CLI."
+---
+
+<Callout title="Draft">The CLI is still in development. Commands and options on this page may change.</Callout>
+
+The CLI copies source files into your project. It is the only thing Axiom publishes, and it never becomes a runtime dependency of your app: once the files are copied, your app doesn't need it.
+
+## init
+
+```npm
+npx axiom init
+```
+
+Sets up a project for Axiom:
+
+1. Asks for the styling tool: `stylesheet`, `unistyles`, `nativewind` or `uniwind`.
+2. Copies the foundations (theme, tokens, `light` / `dark`) and the core primitives.
+3. Installs the styling dependency, if any.
+4. Writes `axiom.json`, with the copied foundations and core primitives listed in `items`.
+
+## add
+
+```npm
+npx axiom add bottom-sheet
+```
+
+Adds a component to your project. The CLI:
+
+- copies the variant that matches your configured styling;
+- copies missing internal dependencies (`portal`, `overlay`, `tappable`…);
+- installs third-party packages such as Reanimated or Gesture Handler;
+- never overwrites an existing file without asking;
+- adds the component and every internal dependency it copied to `items` in `axiom.json`.
+
+Internal dependencies are resolved as a graph. Adding `bottom-sheet` also brings in what it relies on, and skips anything already in your project:
+
+```text
+     bottom-sheet
+          │
+     ┌────┴────┐
+     ↓         ↓
+  portal    overlay
+```
+
+Names are plain component names, the same as the file you get:
+
+```npm
+npx axiom add button     # → components/ui/button.tsx
+```
+
+## fetch
+
+```npm
+npx axiom fetch
+```
+
+Copies every item listed in `items` in `axiom.json`. Use it to set up a project with the same items as another one, or to restore files that were deleted.
+
+For each item, `fetch` runs the same steps as `add`: it copies the variant for your `styling`, resolves internal dependencies, and installs missing npm packages. Files already in your project are skipped, so your changes are kept.
+
+`fetch` isn't an update command. To get a newer version of a component, run `add` again and confirm the overwrite.
+
+## Configuration
+
+The CLI reads and writes `axiom.json` at the root of your project: styling variant, aliases, and the list of copied items. See [Configuration](/configuration).

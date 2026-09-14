@@ -1,0 +1,9 @@
+{
+  "title": "Core",
+  "pages": [
+    "slot",
+    "portal",
+    "overlay",
+    "tappable"
+  ]
+}
