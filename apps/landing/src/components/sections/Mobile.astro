@@ -1,0 +1,148 @@
+---
+import Title from '../Title.astro';
+import Phone from '../Phone.astro';
+import InteractionScreen from '../InteractionScreen.astro';
+
+const interactions: { name: 'Press' | 'Drag' | 'Swipe' | 'Keyboard' | 'Gestures'; detail: string }[] = [
+	{ name: 'Press', detail: 'Feedback that lands under the thumb, not after it.' },
+	{ name: 'Drag', detail: 'Sheets and handles that follow the finger 1:1.' },
+	{ name: 'Swipe', detail: 'Rows, cards and pages with real velocity.' },
+	{ name: 'Keyboard', detail: 'Inputs that stay visible, always.' },
+	{ name: 'Gestures', detail: 'Pinch, long-press and composed gestures.' },
+];
+---
+
+<section class="section mobile" id="mobile">
+	<div class="container mobile__inner">
+		<div class="mobile__sticky">
+			<p class="eyebrow">08 / Mobile</p>
+			<Title>Built for fingers,<br />not cursors.</Title>
+			<ol class="mobile__index">
+				{interactions.map((it) => <li data-index={it.name}>{it.name}</li>)}
+			</ol>
+		</div>
+
+		<div class="mobile__scenes">
+			{
+				interactions.map((it) => (
+					<article class="mobile__scene" data-scene={it.name}>
+						<div class="mobile__visual">
+							<Phone label={`${it.name} interaction`}>
+									<InteractionScreen kind={it.name} />
+								</Phone>
+						</div>
+						<div class="mobile__caption">
+							<h3>{it.name}</h3>
+							<p>{it.detail}</p>
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<script>
+	const items = document.querySelectorAll<HTMLElement>('.mobile__index li');
+	const scenes = document.querySelectorAll<HTMLElement>('.mobile__scene');
+
+	const observer = new IntersectionObserver(
+		(entries) => {
+			entries.forEach((entry) => {
+				if (!entry.isIntersecting) return;
+				const name = (entry.target as HTMLElement).dataset.scene;
+				items.forEach((item) => item.classList.toggle('is-active', item.dataset.index === name));
+			});
+		},
+		{ rootMargin: '-45% 0px -45% 0px' },
+	);
+
+	scenes.forEach((scene) => observer.observe(scene));
+</script>
+
+<style>
+	.mobile__inner {
+		display: grid;
+		grid-template-columns: 1fr 1.2fr;
+		gap: 4rem;
+	}
+
+	.mobile__sticky {
+		position: sticky;
+		top: calc(var(--nav-h) + 40px);
+		height: var(--full-h);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 1.5rem;
+	}
+
+	.mobile__index {
+		list-style: none;
+		margin: 1rem 0 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		font-size: 1.125rem;
+		font-weight: 500;
+		color: var(--line);
+	}
+
+	.mobile__index li {
+		transition: color 0.2s;
+	}
+
+	.mobile__index li.is-active {
+		color: var(--fg);
+	}
+
+	.mobile__scene {
+		height: var(--full-h);
+		min-height: fit-content;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 1.5rem;
+	}
+
+	.mobile__visual {
+		height: clamp(420px, calc(var(--full-h) - 8rem), 720px);
+	}
+
+	.mobile__caption {
+		text-align: center;
+	}
+
+	.mobile__caption h3 {
+		font-size: 1.25rem;
+		font-weight: 500;
+	}
+
+	.mobile__caption p {
+		color: var(--muted);
+	}
+
+	@media (max-width: 900px) {
+		.mobile__inner {
+			grid-template-columns: 1fr;
+			gap: 0;
+		}
+
+		.mobile__sticky {
+			position: static;
+			height: auto;
+			padding-block: 6rem 0;
+		}
+
+		.mobile__index {
+			display: none;
+		}
+
+		.mobile__scene {
+			height: auto;
+			padding-block: 4rem;
+		}
+	}
+</style>

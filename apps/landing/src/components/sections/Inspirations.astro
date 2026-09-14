@@ -1,0 +1,108 @@
+---
+import Title from '../Title.astro';
+
+const inspirations = [
+	{ name: 'shadcn/ui', note: 'Copy-paste ownership', href: 'https://ui.shadcn.com' },
+	{ name: 'gluestack-ui', note: 'Universal components', href: 'https://gluestack.io' },
+	{ name: 'Radix UI', note: 'Accessible primitives', href: 'https://www.radix-ui.com' },
+	{ name: 'React Native Reusables', note: 'shadcn for native', href: 'https://reactnativereusables.com' },
+	{ name: 'Tamagui', note: 'Styling & tokens', href: 'https://tamagui.dev' },
+	{ name: 'Expo', note: 'Developer experience', href: 'https://expo.dev' },
+];
+---
+
+<section class="section inspirations" id="inspirations">
+	<div class="container inspirations__inner">
+		<div class="inspirations__copy">
+			<p class="eyebrow">10 / Inspirations</p>
+			<Title>Inspired by<br />great work.</Title>
+		</div>
+
+		<ul class="inspirations__grid">
+			{
+				inspirations.map((item) => (
+					<li>
+						<a href={item.href} target="_blank" rel="noopener noreferrer">
+							<span>{item.name}</span>
+							<small>{item.note}</small>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.inspirations {
+		padding-block: 6rem;
+	}
+
+	.inspirations__inner {
+		display: grid;
+		grid-template-columns: 1fr 1.4fr;
+		gap: 4rem;
+		align-items: start;
+	}
+
+	.inspirations__copy {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.inspirations__grid {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 0.5rem;
+	}
+
+	.inspirations__grid a {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 2rem;
+		height: 100%;
+		min-height: 8rem;
+		padding: 1.25rem;
+		border: 1px solid var(--line);
+		transition: border-color 0.2s;
+	}
+
+	.inspirations__grid a:hover {
+		border-color: color-mix(in srgb, var(--fg) 30%, var(--line));
+	}
+
+	.inspirations__grid a:focus-visible {
+		outline: 2px solid var(--fg);
+		outline-offset: 2px;
+	}
+
+	.inspirations__grid span {
+		font-size: 1.125rem;
+		font-weight: 500;
+		letter-spacing: -0.02em;
+	}
+
+	.inspirations__grid small {
+		color: var(--muted);
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+	}
+
+	@media (max-width: 900px) {
+		.inspirations__inner {
+			grid-template-columns: 1fr;
+			gap: 2.5rem;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.inspirations__grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+</style>

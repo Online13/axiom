@@ -1,0 +1,699 @@
+---
+// The four lenses of the Experience section, each a real screen built from
+// Axiom pieces. Rendered inside <Phone>; the section script toggles `hidden`.
+
+const threads = [
+	{ name: 'Maya Laurent', text: 'Pushed the new sheet snap points', time: '9:38', unread: 2, tone: '#ff5a1f' },
+	{ name: 'Design review', text: 'Tokens v2 is ready for a pass', time: '9:12', unread: 1, tone: '#111' },
+	{ name: 'Sam Okafor', text: 'Keyboard avoiding looks perfect now', time: 'Tue', tone: '#6d8b74' },
+	{ name: 'Release bot', text: 'axiom@0.4.0 published to registry', time: 'Mon', tone: '#4f6bed' },
+	{ name: 'Lina Park', text: 'Can we reuse the Passcode block?', time: 'Sun', tone: '#c2185b' },
+];
+
+const activity = [
+	{ title: 'Checkout flow', meta: '12 screens · updated 2m ago' },
+	{ title: 'Onboarding', meta: '5 screens · updated 1h ago' },
+];
+
+const perks = ['Every block, every pattern', 'Priority registry updates', 'Figma source files'];
+---
+
+<!-- 01 Components -->
+<div class="scr" data-screen="Components">
+	<div class="bar">
+		<h4 class="bar__title">Inbox</h4>
+		<span class="round">
+			<svg viewBox="0 0 24 24" class="ic"><path d="M12 5v14M5 12h14" /></svg>
+		</span>
+	</div>
+	<div class="search">
+		<svg viewBox="0 0 24 24" class="ic"><circle cx="11" cy="11" r="6" /><path d="m20 20-4.2-4.2" /></svg>
+		<span>Search messages</span>
+	</div>
+	<div class="chips">
+		<span class="chip is-on">All</span>
+		<span class="chip">Unread <b>3</b></span>
+		<span class="chip">Flagged</span>
+		<span class="chip">Files</span>
+	</div>
+	<ul class="list">
+		{
+			threads.map((t) => (
+				<li class="row">
+					<span class="avatar" style={`--tone:${t.tone}`}>
+						{t.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
+					</span>
+					<span class="row__body">
+						<strong>{t.name}</strong>
+						<span>{t.text}</span>
+					</span>
+					<span class="row__side">
+						<small>{t.time}</small>
+						{t.unread && <b class="badge">{t.unread}</b>}
+					</span>
+				</li>
+			))
+		}
+	</ul>
+	<nav class="tabbar">
+		<span class="is-on"><svg viewBox="0 0 24 24" class="ic"><path d="M4 7h16v11H4zM4 7l8 6 8-6" /></svg>Inbox</span>
+		<span><svg viewBox="0 0 24 24" class="ic"><circle cx="11" cy="11" r="6" /><path d="m20 20-4.2-4.2" /></svg>Search</span>
+		<span><svg viewBox="0 0 24 24" class="ic"><circle cx="12" cy="9" r="3.5" /><path d="M5 20c1-4 13-4 14 0" /></svg>Profile</span>
+	</nav>
+</div>
+
+<!-- 02 Behaviors -->
+<div class="scr" data-screen="Behaviors" hidden>
+	<div class="bar bar--compact">
+		<svg viewBox="0 0 24 24" class="ic"><path d="m15 5-7 7 7 7" /></svg>
+		<h4>Projects</h4>
+		<svg viewBox="0 0 24 24" class="ic"><circle cx="5" cy="12" r="1" /><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /></svg>
+	</div>
+	<div class="refresh">
+		<i class="spinner"></i>
+		<span>Pull-to-refresh</span>
+	</div>
+	<ul class="cards">
+		{
+			activity.map((a, i) => (
+				<li class:list={['card', { 'card--swiped': i === 1 }]}>
+					{i === 1 && (
+						<span class="card__actions">
+							<b class="act act--muted">Archive</b>
+							<b class="act">Delete</b>
+						</span>
+					)}
+					<span class="card__face">
+						<span class="thumb" />
+						<span class="row__body">
+							<strong>{a.title}</strong>
+							<span>{a.meta}</span>
+						</span>
+					</span>
+				</li>
+			))
+		}
+		<li class="card card--skeleton" aria-hidden="true">
+			<span class="card__face">
+				<span class="sk sk--thumb"></span>
+				<span class="row__body">
+					<span class="sk" style="width:60%"></span>
+					<span class="sk" style="width:85%"></span>
+				</span>
+			</span>
+		</li>
+		<li class="card card--skeleton" aria-hidden="true">
+			<span class="card__face">
+				<span class="sk sk--thumb"></span>
+				<span class="row__body">
+					<span class="sk" style="width:45%"></span>
+					<span class="sk" style="width:70%"></span>
+				</span>
+			</span>
+		</li>
+	</ul>
+	<div class="tags">
+		<span>hide-on-scroll</span>
+		<span>swipe actions</span>
+		<span>skeleton</span>
+	</div>
+	<span class="fab"><svg viewBox="0 0 24 24" class="ic"><path d="M12 5v14M5 12h14" /></svg></span>
+</div>
+
+<!-- 03 Patterns -->
+<div class="scr" data-screen="Patterns" hidden>
+	<div class="bar bar--compact">
+		<svg viewBox="0 0 24 24" class="ic"><path d="m15 5-7 7 7 7" /></svg>
+		<h4></h4>
+		<span></span>
+	</div>
+	<div class="otp">
+		<h4 class="otp__title">Enter the code</h4>
+		<p class="otp__sub">Sent to +33 6 •• •• 42 18</p>
+		<div class="otp__cells">
+			{['4', '8', '1', '9', '', ''].map((d, i) => <span class:list={['cell', { 'is-focus': i === 4 }]}>{d}</span>)}
+		</div>
+		<p class="otp__resend">Resend code in <b>0:24</b></p>
+		<span class="btn-s">Verify</span>
+	</div>
+	<div class="keypad">
+		{['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', '⌫'].map((k) => <span>{k}</span>)}
+	</div>
+</div>
+
+<!-- 04 Blocks -->
+<div class="scr" data-screen="Blocks" hidden>
+	<div class="bar bar--compact">
+		<svg viewBox="0 0 24 24" class="ic"><path d="M6 6l12 12M18 6 6 18" /></svg>
+		<h4></h4>
+		<small class="muted">Restore</small>
+	</div>
+	<div class="pay">
+		<div class="pay__art" aria-hidden="true">
+			<i></i><i></i><i></i>
+		</div>
+		<h4 class="pay__title">Axiom Pro</h4>
+		<ul class="pay__perks">
+			{
+				perks.map((p) => (
+					<li>
+						<svg viewBox="0 0 24 24" class="ic"><path d="m5 12 4.5 4.5L19 7" /></svg>
+						{p}
+					</li>
+				))
+			}
+		</ul>
+		<div class="plans">
+			<span class="plan is-on">
+				<b class="plan__save">−40%</b>
+				<small>Yearly</small>
+				<strong>€59</strong>
+				<small>€4.92 / mo</small>
+			</span>
+			<span class="plan">
+				<small>Monthly</small>
+				<strong>€8</strong>
+				<small>Cancel anytime</small>
+			</span>
+		</div>
+		<span class="btn-s">Start free trial</span>
+		<small class="pay__legal">7 days free, then €59/year</small>
+	</div>
+</div>
+
+<style>
+	.scr {
+		position: relative;
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.9em;
+		padding: 0.4em 1.2em 0;
+	}
+	.scr[hidden] {
+		display: none;
+	}
+
+	.ic {
+		width: 1.35em;
+		height: 1.35em;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.8;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		flex: none;
+	}
+
+	.muted {
+		color: var(--s-muted);
+	}
+
+	/* AppBar */
+	.bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.bar__title {
+		font-size: 2em;
+		font-weight: 700;
+		letter-spacing: -0.03em;
+	}
+	.bar--compact h4 {
+		font-size: 1.05em;
+		font-weight: 600;
+	}
+	.round {
+		display: grid;
+		place-items: center;
+		width: 2.4em;
+		height: 2.4em;
+		border-radius: 50%;
+		background: var(--s-fg);
+		color: var(--s-bg);
+	}
+
+	/* SearchBar / Chip */
+	.search {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		padding: 0.65em 0.8em;
+		border-radius: 0.8em;
+		background: var(--s-surface);
+		color: var(--s-muted);
+	}
+	.chips {
+		display: flex;
+		gap: 0.4em;
+		overflow: hidden;
+	}
+	.chip {
+		flex: none;
+		padding: 0.35em 0.8em;
+		border-radius: 999px;
+		border: 1px solid var(--s-line);
+		background: var(--s-surface);
+		font-size: 0.85em;
+		font-weight: 500;
+	}
+	.chip b {
+		color: var(--accent);
+	}
+	.chip.is-on {
+		background: var(--s-fg);
+		border-color: var(--s-fg);
+		color: var(--s-bg);
+	}
+
+	/* Item list */
+	.list {
+		list-style: none;
+		margin: 0;
+		padding: 0.2em 0.9em;
+		border-radius: 1em;
+		background: var(--s-surface);
+	}
+	.row {
+		display: flex;
+		align-items: center;
+		gap: 0.7em;
+		padding: 0.62em 0;
+	}
+	.row + .row {
+		border-top: 1px solid var(--s-line);
+	}
+	.avatar {
+		display: grid;
+		place-items: center;
+		width: 2.5em;
+		height: 2.5em;
+		flex: none;
+		border-radius: 50%;
+		background: var(--tone);
+		color: #fff;
+		font-size: 0.85em;
+		font-weight: 600;
+	}
+	.row__body {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.2em;
+	}
+	.row__body strong {
+		font-size: 0.95em;
+		font-weight: 600;
+	}
+	.row__body span {
+		font-size: 0.82em;
+		color: var(--s-muted);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.row__side {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 0.3em;
+		color: var(--s-muted);
+		font-size: 0.78em;
+	}
+	.badge {
+		min-width: 1.6em;
+		padding: 0.1em 0.4em;
+		border-radius: 999px;
+		background: var(--accent);
+		color: #fff;
+		text-align: center;
+	}
+
+	/* BottomTabBar */
+	.tabbar {
+		margin: auto -1.2em 0;
+		padding: 0.7em 1.2em 2em;
+		display: flex;
+		justify-content: space-around;
+		border-top: 1px solid var(--s-line);
+		background: var(--s-surface);
+		color: var(--s-muted);
+		font-size: 0.72em;
+	}
+	.tabbar span {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.25em;
+	}
+	.tabbar .ic {
+		width: 1.9em;
+		height: 1.9em;
+	}
+	.tabbar .is-on {
+		color: var(--s-fg);
+		font-weight: 600;
+	}
+
+	/* Behaviors */
+	.refresh {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.4em;
+		padding-block: 0.4em;
+		color: var(--s-muted);
+		font-family: var(--font-mono);
+		font-size: 0.72em;
+	}
+	.spinner {
+		width: 1.8em;
+		height: 1.8em;
+		border-radius: 50%;
+		border: 0.22em solid var(--s-line);
+		border-top-color: var(--accent);
+		animation: spin 0.9s linear infinite;
+	}
+	.cards {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.6em;
+	}
+	.card {
+		position: relative;
+		border-radius: 1em;
+		overflow: hidden;
+		background: var(--accent);
+	}
+	.card__face {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 0.8em;
+		padding: 0.9em;
+		background: var(--s-surface);
+		border-radius: 1em;
+	}
+	.card--swiped .card__face {
+		animation: swipe 3.2s cubic-bezier(0.3, 0.7, 0.2, 1) infinite;
+	}
+	.card--skeleton {
+		background: transparent;
+	}
+	.card__actions {
+		position: absolute;
+		inset: 0 0 0 auto;
+		display: flex;
+	}
+	.act {
+		display: grid;
+		place-items: center;
+		width: 5em;
+		color: #fff;
+		font-size: 0.8em;
+		font-weight: 600;
+	}
+	.act--muted {
+		background: #111;
+	}
+	.thumb {
+		width: 2.8em;
+		height: 2.8em;
+		flex: none;
+		border-radius: 0.7em;
+		background: linear-gradient(135deg, var(--accent), #ffb38f);
+	}
+	.sk {
+		display: block;
+		height: 0.7em;
+		border-radius: 0.35em;
+		background: linear-gradient(90deg, var(--s-line) 30%, #f7f7f5 50%, var(--s-line) 70%);
+		background-size: 300% 100%;
+		animation: shimmer 1.6s linear infinite;
+	}
+	.sk--thumb {
+		width: 2.8em;
+		height: 2.8em;
+		flex: none;
+		border-radius: 0.7em;
+	}
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35em;
+		font-family: var(--font-mono);
+		font-size: 0.68em;
+	}
+	.tags span {
+		padding: 0.3em 0.6em;
+		border-radius: 0.4em;
+		border: 1px dashed var(--accent);
+		color: var(--accent);
+	}
+	.fab {
+		position: absolute;
+		right: 1.2em;
+		bottom: 2.2em;
+		display: grid;
+		place-items: center;
+		width: 3.4em;
+		height: 3.4em;
+		border-radius: 1.1em;
+		background: var(--s-fg);
+		color: var(--s-bg);
+		box-shadow: 0 0.6em 1.4em -0.4em rgb(0 0 0 / 0.4);
+	}
+
+	/* Patterns — OTP */
+	.otp {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		gap: 0.6em;
+		padding-top: 1em;
+	}
+	.otp__title {
+		font-size: 1.6em;
+		font-weight: 700;
+		letter-spacing: -0.03em;
+	}
+	.otp__sub,
+	.otp__resend {
+		color: var(--s-muted);
+		font-size: 0.88em;
+	}
+	.otp__resend b {
+		color: var(--s-fg);
+		font-weight: 600;
+	}
+	.otp__cells {
+		display: grid;
+		grid-template-columns: repeat(6, 1fr);
+		gap: 0.4em;
+		width: 100%;
+		margin-block: 1em 0.4em;
+	}
+	.cell {
+		display: grid;
+		place-items: center;
+		aspect-ratio: 4 / 5;
+		border-radius: 0.6em;
+		border: 1px solid var(--s-line);
+		background: var(--s-surface);
+		font-size: 1.3em;
+		font-weight: 600;
+	}
+	.cell.is-focus {
+		border: 0.12em solid var(--accent);
+	}
+	.cell.is-focus::after {
+		content: '';
+		width: 0.08em;
+		height: 1em;
+		background: var(--accent);
+		animation: blink 1s steps(1) infinite;
+	}
+	.btn-s {
+		align-self: stretch;
+		display: grid;
+		place-items: center;
+		margin-top: 0.8em;
+		padding: 0.9em;
+		border-radius: 0.9em;
+		background: var(--accent);
+		color: #fff;
+		font-weight: 600;
+	}
+	.keypad {
+		margin: auto -1.2em 0;
+		padding: 0.6em 0.6em 2.2em;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 0.35em;
+		background: #d9d9d6;
+	}
+	.keypad span {
+		display: grid;
+		place-items: center;
+		height: 2.6em;
+		border-radius: 0.5em;
+		background: #fff;
+		font-size: 1.1em;
+		font-weight: 500;
+	}
+	.keypad span:empty {
+		background: transparent;
+	}
+
+	/* Blocks — Paywall */
+	.pay {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.8em;
+		padding-bottom: 2.2em;
+	}
+	.pay__art {
+		position: relative;
+		width: 7em;
+		height: 5.4em;
+	}
+	.pay__art i {
+		position: absolute;
+		border-radius: 1.2em;
+	}
+	.pay__art i:nth-child(1) {
+		inset: 0.8em 2.8em 0 0;
+		background: #111;
+		transform: rotate(-10deg);
+	}
+	.pay__art i:nth-child(2) {
+		inset: 0 1.4em 0.8em 1.4em;
+		background: var(--accent);
+		z-index: 1;
+	}
+	.pay__art i:nth-child(3) {
+		inset: 0.8em 0 0 2.8em;
+		background: #ffb38f;
+		transform: rotate(10deg);
+	}
+	.pay__title {
+		font-size: 1.7em;
+		font-weight: 700;
+		letter-spacing: -0.03em;
+	}
+	.pay__perks {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		align-self: stretch;
+		display: flex;
+		flex-direction: column;
+		gap: 0.45em;
+		font-size: 0.9em;
+	}
+	.pay__perks li {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+	}
+	.pay__perks .ic {
+		color: var(--accent);
+	}
+	.plans {
+		align-self: stretch;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.5em;
+		margin-top: auto;
+	}
+	.plan {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 0.1em;
+		padding: 0.8em;
+		border-radius: 0.9em;
+		border: 1px solid var(--s-line);
+		background: var(--s-surface);
+	}
+	.plan.is-on {
+		border: 0.14em solid var(--accent);
+	}
+	.plan small {
+		color: var(--s-muted);
+		font-size: 0.75em;
+	}
+	.plan strong {
+		font-size: 1.3em;
+	}
+	.plan__save {
+		position: absolute;
+		top: -0.7em;
+		right: 0.6em;
+		padding: 0.1em 0.45em;
+		border-radius: 999px;
+		background: var(--accent);
+		color: #fff;
+		font-size: 0.7em;
+	}
+	.pay .btn-s {
+		margin-top: 0;
+	}
+	.pay__legal {
+		color: var(--s-muted);
+		font-size: 0.72em;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(1turn);
+		}
+	}
+	@keyframes shimmer {
+		from {
+			background-position: 100% 0;
+		}
+		to {
+			background-position: -50% 0;
+		}
+	}
+	@keyframes swipe {
+		0%,
+		15% {
+			transform: translateX(0);
+		}
+		40%,
+		80% {
+			transform: translateX(-10em);
+		}
+		100% {
+			transform: translateX(0);
+		}
+	}
+	@keyframes blink {
+		50% {
+			opacity: 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.spinner,
+		.sk,
+		.cell.is-focus::after {
+			animation: none;
+		}
+		.card--swiped .card__face {
+			animation: none;
+			transform: translateX(-10em);
+		}
+	}
+</style>

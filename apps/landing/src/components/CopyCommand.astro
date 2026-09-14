@@ -1,0 +1,77 @@
+---
+interface Props {
+	command: string;
+	class?: string;
+}
+
+const { command, class: className } = Astro.props;
+---
+
+<button type="button" class:list={['cli', 'copy-cmd', className]} aria-label="Copy command">
+	<code class="copy-cmd__text">{command}</code>
+	<span class="copy-cmd__status" aria-live="polite">Copy</span>
+</button>
+
+<script>
+	// The command is read at click time, so callers can rewrite the text (see Registry).
+	document.querySelectorAll<HTMLButtonElement>('.copy-cmd').forEach((button) => {
+		const text = button.querySelector('.copy-cmd__text');
+		const status = button.querySelector('.copy-cmd__status');
+		let reset: number | undefined;
+
+		button.addEventListener('click', async () => {
+			if (!text?.textContent || !status) return;
+			try {
+				await navigator.clipboard.writeText(text.textContent);
+				status.textContent = 'Copied';
+			} catch {
+				status.textContent = 'Failed';
+			}
+			button.classList.add('is-copied');
+			clearTimeout(reset);
+			reset = window.setTimeout(() => {
+				status.textContent = 'Copy';
+				button.classList.remove('is-copied');
+			}, 1600);
+		});
+	});
+</script>
+
+<style>
+	.copy-cmd {
+		max-width: 100%;
+		background: none;
+		color: var(--fg);
+		cursor: pointer;
+		white-space: normal;
+		text-align: left;
+		transition: border-color 0.2s;
+	}
+
+	.copy-cmd:hover,
+	.copy-cmd.is-copied {
+		border-color: var(--fg);
+	}
+
+	.copy-cmd:focus-visible {
+		outline: 2px solid var(--fg);
+		outline-offset: 2px;
+	}
+
+	.copy-cmd__text {
+		font: inherit;
+		overflow-wrap: anywhere;
+	}
+
+	.copy-cmd__status {
+		flex: none;
+		padding-left: 0.75rem;
+		border-left: 1px solid var(--line);
+		font-size: 0.75rem;
+		color: var(--muted);
+	}
+
+	.copy-cmd.is-copied .copy-cmd__status {
+		color: var(--fg);
+	}
+</style>

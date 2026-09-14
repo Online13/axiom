@@ -1,0 +1,615 @@
+---
+// One looping interaction per scene of the Mobile section. Rendered inside
+// <Phone>; the orange circles show where the finger is.
+interface Props {
+	kind: 'Press' | 'Drag' | 'Swipe' | 'Keyboard' | 'Gestures';
+}
+
+const { kind } = Astro.props;
+
+const mails = [
+	{ from: 'Maya Laurent', text: 'Snap points feel right now' },
+	{ from: 'Release bot', text: 'axiom@0.4.0 is live' },
+	{ from: 'Sam Okafor', text: 'Can you review the sheet?' },
+	{ from: 'Lina Park', text: 'Passcode block shipped' },
+];
+const keys = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
+---
+
+<div class:list={['ix', `ix--${kind.toLowerCase()}`]}>
+	{
+		kind === 'Press' && (
+			<>
+				<h4 class="ix__title">Checkout</h4>
+				<div class="ix__panel">
+					<div class="ix__line">
+						<span>Subtotal</span>
+						<span>€84.00</span>
+					</div>
+					<div class="ix__line">
+						<span>Shipping</span>
+						<span>Free</span>
+					</div>
+					<div class="ix__line ix__line--total">
+						<span>Total</span>
+						<span>€84.00</span>
+					</div>
+				</div>
+				<div class="press">
+					<span class="press__btn">Pay €84.00</span>
+					<i class="touch touch--press" />
+				</div>
+				<p class="ix__hint">Scale 0.97 · haptic · 44pt target</p>
+			</>
+		)
+	}
+
+	{
+		kind === 'Drag' && (
+			<>
+				<div class="map" aria-hidden="true">
+					<i />
+					<i />
+					<i />
+					<b />
+				</div>
+				<div class="sheet">
+					<span class="sheet__handle" />
+					<h4>Pickup in 4 min</h4>
+					<p>Rue de Rivoli, 75001</p>
+					<div class="sheet__row">
+						<span class="avatar">JD</span>
+						<span>
+							<strong>Jules D.</strong>
+							<small>Model 3 · AB-123-CD</small>
+						</span>
+					</div>
+					<span class="press__btn">Contact driver</span>
+					<i class="touch touch--drag" />
+				</div>
+			</>
+		)
+	}
+
+	{
+		kind === 'Swipe' && (
+			<>
+				<h4 class="ix__title">Mail</h4>
+				<ul class="mails">
+					{mails.map((m, i) => (
+						<li class:list={['mail', { 'mail--swiped': i === 1 }]}>
+							{i === 1 && (
+								<span class="mail__actions">
+									<b class="mail__archive">Archive</b>
+									<b>Delete</b>
+								</span>
+							)}
+							<span class="mail__face">
+								<strong>{m.from}</strong>
+								<span>{m.text}</span>
+							</span>
+							{i === 1 && <i class="touch touch--swipe" />}
+						</li>
+					))}
+				</ul>
+				<p class="ix__hint">Velocity-based · threshold · undo</p>
+			</>
+		)
+	}
+
+	{
+		kind === 'Keyboard' && (
+			<>
+				<h4 class="ix__title ix__title--sm">Sam Okafor</h4>
+				<div class="chat">
+					<p class="bubble">Is the input still hidden by the keyboard?</p>
+					<p class="bubble bubble--me">Not anymore. It follows it frame by frame.</p>
+				</div>
+				<div class="composer">
+					<span class="composer__field">
+						Looks great<i class="caret" />
+					</span>
+					<span class="composer__send">↑</span>
+				</div>
+				<div class="kb">
+					{keys.map((row) => (
+						<div class="kb__row">
+							{row.split('').map((k) => (
+								<span>{k}</span>
+							))}
+						</div>
+					))}
+					<div class="kb__row">
+						<span class="kb__wide">123</span>
+						<span class="kb__space">space</span>
+						<span class="kb__wide">return</span>
+					</div>
+				</div>
+			</>
+		)
+	}
+
+	{
+		kind === 'Gestures' && (
+			<>
+				<h4 class="ix__title ix__title--sm">Photo</h4>
+				<div class="photo">
+					<div class="photo__img">
+						<i />
+						<i />
+						<i />
+					</div>
+					<i class="touch touch--pinch-a" />
+					<i class="touch touch--pinch-b" />
+				</div>
+				<div class="menu">
+					<span>Copy</span>
+					<span>Share</span>
+					<span class="menu__danger">Delete</span>
+				</div>
+				<p class="ix__hint">Pinch · pan · long-press menu</p>
+			</>
+		)
+	}
+</div>
+
+<style>
+	.ix {
+		--accent: #ff5a1f;
+		position: relative;
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
+		padding: 0.6em 1.4em 2.4em;
+	}
+
+	.ix__title {
+		font-size: 2em;
+		font-weight: 700;
+		letter-spacing: -0.03em;
+	}
+	.ix__title--sm {
+		font-size: 1.1em;
+		text-align: center;
+	}
+	.ix__hint {
+		margin-top: auto;
+		color: var(--s-muted);
+		font-family: var(--font-mono);
+		font-size: 0.72em;
+		text-align: center;
+	}
+
+	.touch {
+		position: absolute;
+		width: 3.2em;
+		height: 3.2em;
+		margin: -1.6em 0 0 -1.6em;
+		border-radius: 50%;
+		background: color-mix(in srgb, var(--accent) 35%, transparent);
+		box-shadow: 0 0 0 0.15em var(--accent);
+		pointer-events: none;
+		z-index: 4;
+	}
+
+	/* Press */
+	.ix__panel {
+		display: flex;
+		flex-direction: column;
+		gap: 0.7em;
+		padding: 1em;
+		border-radius: 1em;
+		background: var(--s-surface);
+	}
+	.ix__line {
+		display: flex;
+		justify-content: space-between;
+		color: var(--s-muted);
+	}
+	.ix__line--total {
+		padding-top: 0.7em;
+		border-top: 1px solid var(--s-line);
+		color: var(--s-fg);
+		font-weight: 600;
+	}
+	.press {
+		position: relative;
+		margin-top: auto;
+	}
+	.press__btn {
+		display: grid;
+		place-items: center;
+		padding: 1em;
+		border-radius: 1em;
+		background: var(--accent);
+		color: #fff;
+		font-weight: 600;
+	}
+	.ix--press .press__btn {
+		animation: press 2s ease-in-out infinite;
+	}
+	.touch--press {
+		left: 55%;
+		top: 50%;
+		animation: tap 2s ease-in-out infinite;
+	}
+	.ix--press .ix__hint {
+		margin-top: 0;
+	}
+
+	/* Drag */
+	.ix--drag {
+		padding: 0;
+	}
+	.map {
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(90deg, transparent 48%, #e2e2de 48% 52%, transparent 52%) 0 0 / 6em 6em,
+			linear-gradient(0deg, transparent 48%, #e2e2de 48% 52%, transparent 52%) 0 0 / 6em 6em,
+			#ecebe6;
+	}
+	.map i {
+		position: absolute;
+		border-radius: 0.8em;
+		background: #dcdcd6;
+	}
+	.map i:nth-child(1) { inset: 8% 55% 70% 10%; background: #d5e3d0; }
+	.map i:nth-child(2) { inset: 20% 12% 55% 55%; }
+	.map i:nth-child(3) { inset: 45% 40% 38% 18%; background: #cfdde6; }
+	.map b {
+		position: absolute;
+		left: 48%;
+		top: 30%;
+		width: 1.2em;
+		height: 1.2em;
+		border-radius: 50%;
+		background: var(--accent);
+		box-shadow: 0 0 0 0.5em color-mix(in srgb, var(--accent) 25%, transparent);
+	}
+	.sheet {
+		position: absolute;
+		inset: auto 0 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.6em;
+		padding: 0.7em 1.4em 2.6em;
+		border-radius: 1.6em 1.6em 0 0;
+		background: var(--s-surface);
+		box-shadow: 0 -1em 2em -1em rgb(0 0 0 / 0.2);
+		animation: sheet 3.6s cubic-bezier(0.3, 0.7, 0.2, 1) infinite;
+		z-index: 2;
+	}
+	.sheet__handle {
+		align-self: center;
+		width: 3em;
+		height: 0.35em;
+		border-radius: 999px;
+		background: var(--s-line);
+	}
+	.sheet h4 {
+		font-size: 1.4em;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+	}
+	.sheet p {
+		color: var(--s-muted);
+	}
+	.sheet__row {
+		display: flex;
+		align-items: center;
+		gap: 0.7em;
+		padding-block: 0.6em;
+		border-block: 1px solid var(--s-line);
+	}
+	.sheet__row span:last-child {
+		display: flex;
+		flex-direction: column;
+	}
+	.sheet__row small {
+		color: var(--s-muted);
+	}
+	.avatar {
+		display: grid;
+		place-items: center;
+		width: 2.6em;
+		height: 2.6em;
+		border-radius: 50%;
+		background: #111;
+		color: #fff;
+		font-size: 0.85em;
+		font-weight: 600;
+	}
+	.touch--drag {
+		left: 50%;
+		top: 0.9em;
+	}
+
+	/* Swipe */
+	.mails {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-radius: 1em;
+		overflow: hidden;
+		background: var(--s-surface);
+	}
+	.mail {
+		position: relative;
+		background: var(--accent);
+	}
+	.mail + .mail {
+		border-top: 1px solid var(--s-line);
+	}
+	.mail__face {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 0.2em;
+		padding: 0.9em 1em;
+		background: var(--s-surface);
+	}
+	.mail__face span {
+		color: var(--s-muted);
+		font-size: 0.88em;
+	}
+	.mail__actions {
+		position: absolute;
+		inset: 0 0 0 auto;
+		display: flex;
+	}
+	.mail__actions b {
+		display: grid;
+		place-items: center;
+		width: 4.7em;
+		color: #fff;
+		font-size: 0.85em;
+	}
+	.mail__archive {
+		background: #111;
+	}
+	.mail--swiped .mail__face {
+		animation: swipe 3s cubic-bezier(0.3, 0.7, 0.2, 1) infinite;
+	}
+	.touch--swipe {
+		top: 50%;
+		animation: swipe-finger 3s cubic-bezier(0.3, 0.7, 0.2, 1) infinite;
+	}
+
+	/* Keyboard */
+	.ix--keyboard {
+		padding-inline: 0;
+		padding-bottom: 0;
+		gap: 0;
+	}
+	.chat {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		gap: 0.5em;
+		padding: 1em 1.2em;
+	}
+	.bubble {
+		max-width: 78%;
+		padding: 0.6em 0.9em;
+		border-radius: 1.1em 1.1em 1.1em 0.3em;
+		background: var(--s-surface);
+		font-size: 0.9em;
+	}
+	.bubble--me {
+		align-self: flex-end;
+		border-radius: 1.1em 1.1em 0.3em 1.1em;
+		background: var(--accent);
+		color: #fff;
+	}
+	.composer {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		padding: 0.6em 1em;
+		border-top: 1px solid var(--s-line);
+		background: var(--s-surface);
+		animation: lift 3.6s cubic-bezier(0.3, 0.7, 0.2, 1) infinite;
+	}
+	.composer__field {
+		flex: 1;
+		padding: 0.55em 0.9em;
+		border-radius: 999px;
+		border: 0.12em solid var(--accent);
+	}
+	.caret {
+		display: inline-block;
+		width: 0.1em;
+		height: 1em;
+		margin-left: 0.1em;
+		vertical-align: middle;
+		background: var(--accent);
+		animation: blink 1s steps(1) infinite;
+	}
+	.composer__send {
+		display: grid;
+		place-items: center;
+		width: 2.2em;
+		height: 2.2em;
+		border-radius: 50%;
+		background: var(--accent);
+		color: #fff;
+		font-weight: 700;
+	}
+	.kb {
+		display: flex;
+		flex-direction: column;
+		gap: 0.45em;
+		padding: 0.6em 0.3em 2.4em;
+		background: #d4d4d0;
+		animation: keyboard 3.6s cubic-bezier(0.3, 0.7, 0.2, 1) infinite;
+	}
+	.kb__row {
+		display: flex;
+		justify-content: center;
+		gap: 0.25em;
+	}
+	.kb__row span {
+		flex: 0 0 8.6%;
+		display: grid;
+		place-items: center;
+		height: 2.4em;
+		border-radius: 0.4em;
+		background: #fff;
+		color: #111;
+		font-size: 0.9em;
+	}
+	.kb__row .kb__wide {
+		flex-basis: 22%;
+		background: #b8b8b3;
+		font-size: 0.75em;
+	}
+	.kb__row .kb__space {
+		flex-basis: 48%;
+		color: #8a8a8a;
+		font-size: 0.75em;
+	}
+
+	/* Gestures */
+	.photo {
+		position: relative;
+		flex: 1;
+		border-radius: 1em;
+		overflow: hidden;
+		background: #111;
+	}
+	.photo__img {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(160deg, #ffb38f, var(--accent) 45%, #3b1a0c);
+		animation: zoom 3.4s ease-in-out infinite;
+	}
+	.photo__img i {
+		position: absolute;
+		border-radius: 50%;
+	}
+	.photo__img i:nth-child(1) {
+		left: 58%;
+		top: 14%;
+		width: 3.4em;
+		height: 3.4em;
+		background: #fff3e6;
+	}
+	.photo__img i:nth-child(2) {
+		left: -20%;
+		right: 30%;
+		bottom: -30%;
+		height: 60%;
+		background: #1f0e06;
+	}
+	.photo__img i:nth-child(3) {
+		left: 30%;
+		right: -30%;
+		bottom: -40%;
+		height: 65%;
+		background: #2d140a;
+	}
+	.touch--pinch-a {
+		animation: pinch-a 3.4s ease-in-out infinite;
+	}
+	.touch--pinch-b {
+		animation: pinch-b 3.4s ease-in-out infinite;
+	}
+	.menu {
+		display: flex;
+		flex-direction: column;
+		border-radius: 1em;
+		overflow: hidden;
+		background: var(--s-surface);
+	}
+	.menu span {
+		padding: 0.7em 1em;
+	}
+	.menu span + span {
+		border-top: 1px solid var(--s-line);
+	}
+	.menu__danger {
+		color: #e5372b;
+	}
+	.ix--gestures .ix__hint {
+		margin-top: 0;
+	}
+
+	@keyframes press {
+		0%, 30%, 60%, 100% { transform: scale(1); filter: none; }
+		40%, 50% { transform: scale(0.97); filter: brightness(0.9); }
+	}
+	@keyframes tap {
+		0%, 25% { opacity: 0; transform: scale(1.4); }
+		40%, 50% { opacity: 1; transform: scale(1); }
+		65%, 100% { opacity: 0; transform: scale(1.6); }
+	}
+	@keyframes sheet {
+		0%, 15% { transform: translateY(0); }
+		45%, 70% { transform: translateY(45%); }
+		100% { transform: translateY(0); }
+	}
+	@keyframes swipe {
+		0%, 15% { transform: translateX(0); }
+		45%, 80% { transform: translateX(-8em); }
+		100% { transform: translateX(0); }
+	}
+	@keyframes swipe-finger {
+		0% { left: 80%; opacity: 0; }
+		15% { left: 80%; opacity: 1; }
+		45% { left: 30%; opacity: 1; }
+		55%, 100% { left: 30%; opacity: 0; }
+	}
+	@keyframes keyboard {
+		0%, 10% { transform: translateY(100%); }
+		35%, 85% { transform: translateY(0); }
+		100% { transform: translateY(100%); }
+	}
+	@keyframes lift {
+		0%, 10% { transform: translateY(var(--kb-h, 13em)); }
+		35%, 85% { transform: translateY(0); }
+		100% { transform: translateY(var(--kb-h, 13em)); }
+	}
+	@keyframes zoom {
+		0%, 15% { transform: scale(1); }
+		50%, 70% { transform: scale(1.45); }
+		100% { transform: scale(1); }
+	}
+	@keyframes pinch-a {
+		0%, 15% { left: 40%; top: 45%; }
+		50%, 70% { left: 22%; top: 30%; }
+		100% { left: 40%; top: 45%; }
+	}
+	@keyframes pinch-b {
+		0%, 15% { left: 60%; top: 55%; }
+		50%, 70% { left: 78%; top: 70%; }
+		100% { left: 60%; top: 55%; }
+	}
+	@keyframes blink {
+		50% { opacity: 0; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.ix *,
+		.ix--press .press__btn {
+			animation: none !important;
+		}
+		.mail--swiped .mail__face {
+			transform: translateX(-8em);
+		}
+		.touch--swipe {
+			left: 30%;
+		}
+		.touch--pinch-a {
+			left: 30%;
+			top: 38%;
+		}
+		.touch--pinch-b {
+			left: 70%;
+			top: 62%;
+		}
+	}
+</style>

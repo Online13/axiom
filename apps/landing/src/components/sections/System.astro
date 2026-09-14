@@ -1,0 +1,462 @@
+---
+import Title from '../Title.astro';
+const layers = [
+	{ name: 'Foundations', detail: 'Tokens · color · type · spacing · radius' },
+	{ name: 'Atoms', detail: 'Button · Switch · Checkbox · Badge · Avatar' },
+	{ name: 'Molecules', detail: 'SearchBar · Attachment · DatePicker' },
+	{ name: 'Organisms', detail: 'Passcode' },
+	{ name: 'Templates', detail: 'AppBar · BottomTabBar · ToolBar · Scaffold' },
+	{ name: 'Blocks', detail: 'Login · Onboarding · Paywall · Checkout' },
+];
+
+const swatches = ['#f5f5f5', '#8a8a8a', '#262626', '#0a0a0a', '#ff5a1f'];
+const blocks = ['Login', 'Onboarding', 'Paywall', 'Profile', 'Checkout'];
+---
+
+<section class="section section--full system" id="system">
+	<div class="container system__inner">
+		<header class="system__header">
+			<p class="eyebrow">05 / System</p>
+			<Title>Start with a system.</Title>
+		</header>
+
+		<ol class="system__stack">
+			{
+				layers.map((layer, i) => (
+					<li class="system__layer" style={`--i: ${i}`}>
+						<div class="system__label">
+							<span class="eyebrow">0{i + 1}</span>
+							<h3>{layer.name}</h3>
+							<p>{layer.detail}</p>
+						</div>
+						<div class="system__block" aria-hidden="true">
+							{i === 0 && (
+								<>
+									<span class="swatches">
+										{swatches.map((c) => (
+											<i style={`--c:${c}`} />
+										))}
+									</span>
+									<span class="type">
+										<b>Aa</b>
+										<span>Inter · 600</span>
+									</span>
+									<span class="spacing">
+										{[4, 8, 12, 16, 24].map((s) => (
+											<i style={`--s:${s}`} />
+										))}
+									</span>
+									<code>radius.lg = 16</code>
+								</>
+							)}
+							{i === 1 && (
+								<>
+									<span class="s-btn">Continue</span>
+									<span class="s-btn s-btn--ghost">Cancel</span>
+									<span class="s-switch" />
+									<span class="s-check">
+										<svg viewBox="0 0 24 24">
+											<path d="m5 12 4.5 4.5L19 7" />
+										</svg>
+									</span>
+									<span class="s-badge">New</span>
+									<span class="s-avatar">AC</span>
+								</>
+							)}
+							{i === 2 && (
+								<>
+									<span class="s-search">
+										<svg viewBox="0 0 24 24">
+											<circle cx="11" cy="11" r="6" />
+											<path d="m20 20-4.2-4.2" />
+										</svg>
+										Search components
+									</span>
+									<span class="s-file">
+										<b>PDF</b>
+										invoice-0412.pdf
+									</span>
+									<span class="s-date">
+										<b>12</b> Sep 2026
+									</span>
+								</>
+							)}
+							{i === 3 && (
+								<>
+									<span class="s-dots">
+										{[1, 1, 1, 0].map((on) => (
+											<i class:list={{ on }} />
+										))}
+									</span>
+									<span class="s-keys">
+										{['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Face ID', '0', '⌫'].map((k) => (
+											<i>{k}</i>
+										))}
+									</span>
+								</>
+							)}
+							{i === 4 && (
+								<>
+									<span class="s-appbar">
+										<i>‹</i>
+										<b>Settings</b>
+										<i>⋯</i>
+									</span>
+									<span class="s-scaffold">
+										<i />
+										<i />
+										<i />
+									</span>
+									<span class="s-tabbar">
+										<i class="on" />
+										<i />
+										<i />
+										<i />
+									</span>
+								</>
+							)}
+							{i === 5 &&
+								blocks.map((b) => (
+									<span class="s-screen">
+										<i />
+										<i />
+										<i />
+										<b>{b}</b>
+									</span>
+								))}
+						</div>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>
+
+<style>
+	.system__inner {
+		display: flex;
+		flex-direction: column;
+		gap: 3.5rem;
+	}
+
+	.system__header {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.system__stack {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.system__layer {
+		display: grid;
+		grid-template-columns: 17rem 1fr;
+		align-items: center;
+		gap: 2rem;
+	}
+
+	.system__label {
+		display: grid;
+		grid-template-columns: 2rem 1fr;
+		column-gap: 0.75rem;
+		align-items: baseline;
+	}
+
+	.system__label h3 {
+		font-size: 1.25rem;
+		font-weight: 500;
+	}
+
+	.system__label p {
+		grid-column: 2;
+		color: var(--muted);
+		font-size: 0.85rem;
+	}
+
+	/* Each layer grows wider as it builds on the previous one. */
+	.system__block {
+		--accent: #ff5a1f;
+		height: 3.75rem;
+		width: calc(40% + var(--i) * 12%);
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 0 1rem;
+		overflow: hidden;
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		font-size: 0.8rem;
+		white-space: nowrap;
+	}
+
+	.system__block svg {
+		width: 1rem;
+		height: 1rem;
+		flex: none;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	/* Foundations */
+	.swatches {
+		display: flex;
+	}
+	.swatches i {
+		width: 1.5rem;
+		height: 1.5rem;
+		margin-right: -0.35rem;
+		border-radius: 50%;
+		background: var(--c);
+		box-shadow: 0 0 0 2px var(--bg);
+	}
+	.type {
+		display: flex;
+		align-items: baseline;
+		gap: 0.5rem;
+		color: var(--muted);
+	}
+	.type b {
+		color: var(--fg);
+		font-size: 1.4rem;
+		font-weight: 600;
+		letter-spacing: -0.03em;
+	}
+	.spacing {
+		display: flex;
+		align-items: flex-end;
+		gap: 3px;
+		height: 1.5rem;
+	}
+	.spacing i {
+		width: 4px;
+		height: calc(var(--s) * 1px);
+		background: var(--accent);
+	}
+	.system__block code {
+		font-family: var(--font-mono);
+		color: var(--muted);
+	}
+
+	/* Atoms */
+	.s-btn {
+		padding: 0.5rem 0.9rem;
+		border-radius: 999px;
+		background: var(--accent);
+		color: #fff;
+		font-weight: 600;
+	}
+	.s-btn--ghost {
+		background: none;
+		border: 1px solid var(--line);
+		color: var(--fg);
+	}
+	.s-switch {
+		position: relative;
+		flex: none;
+		width: 2.4rem;
+		height: 1.4rem;
+		border-radius: 999px;
+		background: var(--accent);
+	}
+	.s-switch::after {
+		content: '';
+		position: absolute;
+		top: 0.15rem;
+		right: 0.15rem;
+		width: 1.1rem;
+		height: 1.1rem;
+		border-radius: 50%;
+		background: #fff;
+	}
+	.s-check {
+		display: grid;
+		place-items: center;
+		width: 1.4rem;
+		height: 1.4rem;
+		border-radius: 6px;
+		background: var(--fg);
+		color: var(--bg);
+	}
+	.s-badge {
+		padding: 0.15rem 0.5rem;
+		border-radius: 999px;
+		border: 1px solid var(--accent);
+		color: var(--accent);
+		font-weight: 600;
+	}
+	.s-avatar {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 50%;
+		background: var(--fg);
+		color: var(--bg);
+		font-weight: 600;
+	}
+
+	/* Molecules */
+	.s-search,
+	.s-file,
+	.s-date {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.45rem 0.8rem;
+		border: 1px solid var(--line);
+		border-radius: 8px;
+		color: var(--muted);
+	}
+	.s-search {
+		min-width: 13rem;
+	}
+	.s-file b {
+		padding: 0.1rem 0.3rem;
+		border-radius: 4px;
+		background: var(--accent);
+		color: #fff;
+		font-size: 0.65rem;
+	}
+	.s-date b {
+		color: var(--fg);
+		font-size: 1rem;
+	}
+
+	/* Organisms */
+	.s-dots {
+		display: flex;
+		gap: 0.5rem;
+	}
+	.s-dots i {
+		width: 0.7rem;
+		height: 0.7rem;
+		border-radius: 50%;
+		border: 1px solid var(--muted);
+	}
+	.s-dots i.on {
+		border-color: var(--accent);
+		background: var(--accent);
+	}
+	.s-keys {
+		display: flex;
+		gap: 0.35rem;
+	}
+	.s-keys i {
+		display: grid;
+		place-items: center;
+		min-width: 2rem;
+		height: 2rem;
+		padding: 0 0.4rem;
+		border: 1px solid var(--line);
+		border-radius: 50%;
+		font-style: normal;
+		font-family: var(--font-mono);
+	}
+	.s-keys i:nth-child(10) {
+		border-radius: 999px;
+		color: var(--muted);
+	}
+
+	/* Templates */
+	.s-appbar,
+	.s-tabbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.45rem 0.8rem;
+		border: 1px solid var(--line);
+		border-radius: 8px;
+	}
+	.s-appbar {
+		min-width: 12rem;
+	}
+	.s-appbar i {
+		font-style: normal;
+		color: var(--muted);
+	}
+	.s-scaffold {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 0.3rem;
+		min-width: 6rem;
+	}
+	.s-scaffold i {
+		height: 0.3rem;
+		border-radius: 999px;
+		background: var(--line);
+	}
+	.s-scaffold i:nth-child(2) {
+		width: 70%;
+	}
+	.s-scaffold i:nth-child(3) {
+		width: 45%;
+	}
+	.s-tabbar i {
+		width: 0.9rem;
+		height: 0.9rem;
+		border-radius: 4px;
+		border: 1px solid var(--muted);
+	}
+	.s-tabbar i.on {
+		border-color: var(--accent);
+		background: var(--accent);
+	}
+
+	/* Blocks */
+	.system__layer:last-child .system__block {
+		border-color: var(--fg);
+		gap: 0.5rem;
+	}
+	.s-screen {
+		position: relative;
+		flex: 1;
+		min-width: 5.5rem;
+		height: 2.6rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0.2rem;
+		padding: 0 0.5rem;
+		border: 1px solid var(--line);
+		border-radius: 6px;
+	}
+	.s-screen i {
+		height: 2px;
+		width: 40%;
+		background: var(--line);
+	}
+	.s-screen i:first-child {
+		width: 25%;
+		background: var(--accent);
+	}
+	.s-screen b {
+		position: absolute;
+		right: 0.5rem;
+		bottom: 0.3rem;
+		font-size: 0.7rem;
+		font-weight: 500;
+	}
+
+	@media (max-width: 900px) {
+		.system__layer {
+			grid-template-columns: 1fr;
+			gap: 0.75rem;
+		}
+
+		.system__block {
+			width: 100%;
+		}
+	}
+</style>

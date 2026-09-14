@@ -1,0 +1,396 @@
+---
+import Title from '../Title.astro';
+
+// The same Button in every styling variant (see docs/architecture/styling.md).
+// NativeWind and Uniwind share the tailwind code; only their setup differs.
+const stylesheet = `import { StyleSheet } from 'react-native';
+import { Text } from 'react-native';
+import { Tappable } from '@/components/core/tappable';
+import { useTheme } from '@/theme';
+
+export function Button({ label, variant = 'solid', ...props }: ButtonProps) {
+  const { button } = useTheme().components;
+  return (
+    <Tappable style={[styles.base, button[variant].container]} {...props}>
+      <Text style={[styles.label, button[variant].label]}>{label}</Text>
+    </Tappable>
+  );
+}
+
+const styles = StyleSheet.create({
+  base: { minHeight: 44, paddingHorizontal: 16, borderRadius: 12 },
+  label: { fontSize: 16, fontWeight: '600' },
+});`;
+
+const unistyles = `import { StyleSheet } from 'react-native-unistyles';
+import { Text } from 'react-native';
+import { Tappable } from '@/components/core/tappable';
+
+export function Button({ label, variant = 'solid', ...props }: ButtonProps) {
+  styles.useVariants({ variant });
+  return (
+    <Tappable style={styles.base} {...props}>
+      <Text style={styles.label}>{label}</Text>
+    </Tappable>
+  );
+}
+
+const styles = StyleSheet.create((theme) => ({
+  base: {
+    minHeight: 44, paddingHorizontal: theme.space[4], borderRadius: theme.radius.md,
+    variants: { variant: theme.components.button.container },
+  },
+  label: { ...theme.type.label, variants: { variant: theme.components.button.label } },
+}));`;
+
+const tailwind = `import { tv } from 'tailwind-variants';
+import { Text } from 'react-native';
+import { Tappable } from '@/components/core/tappable';
+
+const button = tv({
+  slots: { base: 'min-h-11 rounded-xl px-4', label: 'text-base font-semibold' },
+  variants: { variant: { solid: { base: 'bg-primary', label: 'text-on-primary' } } },
+});
+
+export function Button({ label, variant = 'solid', ...props }: ButtonProps) {
+  const styles = button({ variant });
+  return (
+    <Tappable className={styles.base()} {...props}>
+      <Text className={styles.label()}>{label}</Text>
+    </Tappable>
+  );
+}`;
+
+const variants = [
+	{ id: 'stylesheet', name: 'StyleSheet', code: stylesheet, note: 'No dependency. Theme through useTheme().' },
+	{ id: 'unistyles', name: 'Unistyles', code: unistyles, note: 'Adaptive themes and native variants.', soon: true },
+	{ id: 'nativewind', name: 'NativeWind', code: tailwind, note: 'Tokens exposed to your Tailwind config.', soon: true },
+	{ id: 'uniwind', name: 'Uniwind', code: tailwind, note: 'Same classes as NativeWind, different setup.', soon: true },
+];
+
+// A line is "shared" when every variant contains it: that is the behavior Axiom keeps identical.
+const sets = [stylesheet, unistyles, tailwind].map((code) => new Set(code.split('\n').map((l) => l.trim())));
+const isShared = (line: string) => line.trim() !== '' && sets.every((set) => set.has(line.trim()));
+
+const ownership = [
+	{ kind: 'Package', from: 'node_modules', to: 'black box' },
+	{ kind: 'Axiom', from: 'your repo', to: 'your code' },
+];
+---
+
+<section class="section styling" id="styling">
+	<div class="container styling__inner">
+		<div class="styling__copy">
+			<p class="eyebrow">07 / Ownership</p>
+			<Title>Your code.<br />Your styling.</Title>
+			<p class="styling__lede">
+				Components are copied as source, written for the styling tool you already use. Axiom handles
+				the behavior; the look stays in your hands.
+			</p>
+
+			<dl class="styling__own">
+				{
+					ownership.map((row) => (
+						<div class:list={{ 'is-axiom': row.kind === 'Axiom' }}>
+							<dt>{row.kind}</dt>
+							<dd>
+								{row.from} <span aria-hidden="true">→</span> {row.to}
+							</dd>
+						</div>
+					))
+				}
+			</dl>
+
+			<div class="prompt">
+				<p class="prompt__cmd"><span aria-hidden="true">$</span> npx axiom init</p>
+				<p class="prompt__question" id="styling-question">
+					<span aria-hidden="true">?</span> Styling
+				</p>
+				<div class="prompt__options" role="tablist" aria-labelledby="styling-question">
+					{
+						variants.map((v, i) => (
+							<button
+								type="button"
+								role="tab"
+								class="prompt__option"
+								id={`styling-tab-${v.id}`}
+								aria-controls={`styling-panel-${v.id}`}
+								aria-selected={i === 0 ? 'true' : 'false'}
+								tabindex={i === 0 ? 0 : -1}
+							>
+								<span class="prompt__cursor" aria-hidden="true">›</span>
+								{v.name}
+								{v.soon && <small>soon</small>}
+							</button>
+						))
+					}
+				</div>
+			</div>
+		</div>
+
+		<div class="code">
+			<div class="code__bar">
+				<span class="code__file">components/ui/button.tsx</span>
+				<span class="code__legend" aria-hidden="true">
+					<i class="is-shared"></i> shared <i></i> styling
+				</span>
+			</div>
+			{
+				variants.map((v, i) => (
+					<div
+						class="code__panel"
+						role="tabpanel"
+						id={`styling-panel-${v.id}`}
+						aria-labelledby={`styling-tab-${v.id}`}
+						hidden={i !== 0}
+					>
+						<pre><code>{v.code.split('\n').map((line) => (
+							<span class:list={['code__line', { 'is-shared': isShared(line), 'is-empty': line.trim() === '' }]}>{line || ' '}</span>
+						))}</code></pre>
+						<p class="code__note">{v.note}</p>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<script>
+	const tabs = [...document.querySelectorAll<HTMLButtonElement>('.prompt__option')];
+	const panels = document.querySelectorAll<HTMLElement>('.code__panel');
+
+	function select(tab: HTMLButtonElement) {
+		tabs.forEach((t) => {
+			const on = t === tab;
+			t.setAttribute('aria-selected', String(on));
+			t.tabIndex = on ? 0 : -1;
+		});
+		panels.forEach((p) => (p.hidden = p.id !== tab.getAttribute('aria-controls')));
+	}
+
+	tabs.forEach((tab, i) => {
+		tab.addEventListener('click', () => select(tab));
+		// Arrow keys move through the options, like the CLI prompt they mimic.
+		tab.addEventListener('keydown', (event) => {
+			const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[event.key];
+			if (!step) return;
+			event.preventDefault();
+			const next = tabs[(i + step + tabs.length) % tabs.length];
+			select(next);
+			next.focus();
+		});
+	});
+</script>
+
+<style>
+	.styling {
+		padding-block: 6rem;
+	}
+
+	.styling__inner {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+		align-items: center;
+		gap: 4rem;
+	}
+
+	.styling__copy {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1.5rem;
+	}
+
+	.styling__lede {
+		color: var(--muted);
+		font-size: 1.125rem;
+		max-width: 26rem;
+	}
+
+	/* Ownership: a package ends in a black box, Axiom ends in your code. */
+	.styling__own {
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: var(--muted);
+	}
+
+	.styling__own div {
+		display: grid;
+		grid-template-columns: 5rem 1fr;
+		gap: 1rem;
+	}
+
+	.styling__own dd {
+		margin: 0;
+	}
+
+	.styling__own dd span {
+		color: var(--line);
+	}
+
+	.styling__own .is-axiom {
+		color: var(--fg);
+	}
+
+	/* CLI prompt: its options are the tabs that switch the code panel. */
+	.prompt {
+		width: 100%;
+		max-width: 22rem;
+		padding: 1rem 1.25rem;
+		border: 1px solid var(--line);
+		background: var(--bg);
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+	}
+
+	.prompt__cmd span,
+	.prompt__question span {
+		color: var(--muted);
+	}
+
+	.prompt__question {
+		margin-top: 0.5rem;
+	}
+
+	.prompt__options {
+		display: flex;
+		flex-direction: column;
+		margin-top: 0.25rem;
+	}
+
+	.prompt__option {
+		display: flex;
+		align-items: baseline;
+		gap: 0.5rem;
+		padding: 0.2rem 0;
+		background: none;
+		border: 0;
+		color: var(--muted);
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+		transition: color 0.2s;
+	}
+
+	.prompt__option:hover,
+	.prompt__option[aria-selected='true'] {
+		color: var(--fg);
+	}
+
+	.prompt__option:focus-visible {
+		outline: 2px solid var(--fg);
+		outline-offset: 2px;
+	}
+
+	.prompt__cursor {
+		width: 1ch;
+		opacity: 0;
+		color: #ff5a1f;
+	}
+
+	.prompt__option[aria-selected='true'] .prompt__cursor {
+		opacity: 1;
+	}
+
+	.prompt__option small {
+		font-size: 0.6875rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--line);
+	}
+
+	/* Code window */
+	.code {
+		min-width: 0;
+		border: 1px solid var(--line);
+		background: var(--bg);
+	}
+
+	.code__bar {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 0.5rem 1rem;
+		padding: 0.75rem 1.25rem;
+		border-bottom: 1px solid var(--line);
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--muted);
+	}
+
+	.code__legend {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+	}
+
+	.code__legend i {
+		width: 2px;
+		height: 0.8rem;
+		margin-left: 0.5rem;
+		background: #ff5a1f;
+	}
+
+	.code__legend i.is-shared {
+		margin-left: 0;
+		background: var(--line);
+	}
+
+	.code__panel pre {
+		margin: 0;
+		padding: 1rem 0;
+		overflow-x: auto;
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		line-height: 1.7;
+	}
+
+	.code__panel code {
+		display: grid;
+		min-width: max-content;
+		counter-reset: line;
+	}
+
+	.code__line {
+		padding: 0 1.25rem 0 0;
+		border-left: 2px solid #ff5a1f;
+		color: var(--fg);
+		white-space: pre;
+		counter-increment: line;
+	}
+
+	.code__line::before {
+		content: counter(line);
+		display: inline-block;
+		width: 3rem;
+		padding-right: 1.25rem;
+		text-align: right;
+		color: var(--line);
+	}
+
+	.code__line.is-shared {
+		border-left-color: var(--line);
+		color: var(--muted);
+	}
+
+	.code__line.is-empty {
+		border-left-color: transparent;
+	}
+
+	.code__note {
+		padding: 0.75rem 1.25rem;
+		border-top: 1px solid var(--line);
+		font-size: 0.85rem;
+		color: var(--muted);
+	}
+
+	@media (max-width: 900px) {
+		.styling__inner {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

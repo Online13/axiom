@@ -1,0 +1,473 @@
+---
+import Principle from '../Principle.astro';
+
+// Each glyph reuses the shapes of the previous level: raw shapes become a
+// button, the button gains a touch, buttons become a list, lists become a screen.
+const steps = [
+	{ name: 'Primitive', note: 'Raw building block' },
+	{ name: 'Component', note: 'Reusable UI unit' },
+	{ name: 'Behavior', note: 'Interaction logic' },
+	{ name: 'Pattern', note: 'Recurring mobile solution' },
+	{ name: 'Experience', note: 'Complete user flow' },
+];
+---
+
+<Principle index="004" class="principle--composition">
+	<Fragment slot="title">Components are<br />only the beginning.</Fragment>
+	<Fragment slot="lede">
+		A component solves a local problem. A system composes components, behavior and patterns into complete
+		mobile experiences.
+	</Fragment>
+
+	<figure class="composition" aria-label="Primitive, Component, Behavior, Pattern, Experience">
+		<figcaption class="eyebrow composition__caption">Fig. 004 — Levels of composition</figcaption>
+
+		<div class="composition__track">
+			<i class="composition__rail" aria-hidden="true"></i>
+
+			<ol class="composition__steps">
+				{
+					steps.map((step, i) => (
+						<li class:list={['composition__step', { 'is-last': i === steps.length - 1 }]} style={`--i: ${i}`}>
+							<span class="composition__glyph" aria-hidden="true">
+								{i === 0 && (
+									<svg viewBox="0 0 80 80">
+										<rect x="0.5" y="34" width="12" height="12" pathLength="1" />
+										<circle cx="30" cy="40" r="6" pathLength="1" />
+										<line x1="46" y1="40" x2="64" y2="40" pathLength="1" />
+									</svg>
+								)}
+								{i === 1 && (
+									<svg viewBox="0 0 80 80">
+										<rect x="0.5" y="28" width="64" height="24" rx="12" pathLength="1" />
+										<circle cx="14" cy="40" r="5" pathLength="1" />
+										<line x1="26" y1="40" x2="50" y2="40" pathLength="1" />
+									</svg>
+								)}
+								{i === 2 && (
+									<svg viewBox="0 0 80 80">
+										<rect x="0.5" y="20" width="64" height="24" rx="12" pathLength="1" />
+										<circle cx="14" cy="32" r="5" pathLength="1" />
+										<line x1="26" y1="32" x2="50" y2="32" pathLength="1" />
+										<circle cx="48" cy="50" r="11" pathLength="1" class="is-soft" />
+										<circle cx="48" cy="50" r="3" class="is-fill" />
+									</svg>
+								)}
+								{i === 3 && (
+									<svg viewBox="0 0 80 80">
+										<rect x="14.5" y="14" width="64" height="15" rx="4" pathLength="1" />
+										<rect x="0.5" y="32.5" width="64" height="15" rx="4" pathLength="1" />
+										<rect x="68.5" y="32.5" width="10" height="15" rx="3" class="is-fill" />
+										<rect x="14.5" y="51" width="64" height="15" rx="4" pathLength="1" />
+										<line x1="22" y1="21.5" x2="50" y2="21.5" pathLength="1" />
+										<line x1="8" y1="40" x2="36" y2="40" pathLength="1" />
+										<line x1="22" y1="58.5" x2="44" y2="58.5" pathLength="1" />
+									</svg>
+								)}
+								{i === 4 && (
+									<svg viewBox="0 0 44 80">
+										<rect x="0.5" y="0.5" width="43" height="79" rx="7" pathLength="1" />
+										<line x1="17" y1="5" x2="27" y2="5" pathLength="1" />
+										<line x1="6" y1="14" x2="22" y2="14" pathLength="1" />
+										<rect x="6" y="21" width="32" height="9" rx="4.5" pathLength="1" />
+										<rect x="6" y="34" width="32" height="8" rx="2" pathLength="1" />
+										<rect x="6" y="45" width="32" height="8" rx="2" pathLength="1" />
+										<rect x="6" y="56" width="32" height="8" rx="2" pathLength="1" />
+										<line x1="0.5" y1="69" x2="43.5" y2="69" pathLength="1" />
+										<circle cx="11" cy="74" r="1.5" class="is-fill" />
+										<circle cx="22" cy="74" r="1.5" class="is-fill is-soft" />
+										<circle cx="33" cy="74" r="1.5" class="is-fill is-soft" />
+									</svg>
+								)}
+							</span>
+
+							<i class="composition__node" aria-hidden="true"></i>
+
+							<span class="composition__text">
+								<span class="composition__index">0{i + 1}</span>
+								<h3 class="composition__name">{step.name}</h3>
+								<span class="composition__note">{step.note}</span>
+							</span>
+						</li>
+					))
+				}
+			</ol>
+
+			<div class="composition__scopes" aria-hidden="true">
+				<span class="composition__scope composition__scope--kit"><b>UI kit</b></span>
+				<span class="composition__scope composition__scope--system"><b>Axiom</b></span>
+			</div>
+		</div>
+	</figure>
+</Principle>
+
+<script>
+	// The rail is drawn once, left to right; each level lights up when the rail reaches it.
+	const figure = document.querySelector<HTMLElement>('.composition');
+	const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	if (figure && !reduced && 'IntersectionObserver' in window) {
+		figure.dataset.state = 'idle';
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (!entry.isIntersecting) return;
+				figure.dataset.state = 'play';
+				observer.disconnect();
+			},
+			{ threshold: 0.45 },
+		);
+		observer.observe(figure);
+	}
+</script>
+
+<style>
+	.composition {
+		--glyph-h: 5rem;
+		--node: 7px;
+		--col-gap: clamp(1rem, 2.2vw, 2.25rem);
+		--step: 0.5s;
+		--start: 0.15s;
+
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 2.75rem;
+	}
+
+	.composition__caption {
+		font-size: 0.6875rem;
+	}
+
+	.composition__track {
+		position: relative;
+	}
+
+	.composition__steps {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		column-gap: var(--col-gap);
+	}
+
+	.composition__step {
+		display: grid;
+		grid-template-areas: 'glyph' 'node' 'text';
+		grid-template-rows: var(--glyph-h) auto auto;
+		row-gap: 1.75rem;
+		align-content: start;
+		align-items: center;
+	}
+
+	.composition__glyph {
+		grid-area: glyph;
+		display: block;
+		height: 100%;
+		color: var(--muted);
+	}
+
+	.composition__step.is-last .composition__glyph {
+		color: var(--fg);
+	}
+
+	.composition__glyph svg {
+		display: block;
+		height: 100%;
+		width: auto;
+		overflow: visible;
+	}
+
+	.composition__glyph :is(rect, circle, line) {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1;
+		vector-effect: non-scaling-stroke;
+		stroke-linecap: round;
+		stroke-dasharray: 1;
+		stroke-dashoffset: 0;
+	}
+
+	.composition__glyph .is-fill {
+		fill: currentColor;
+		stroke: none;
+	}
+
+	.composition__glyph .is-soft {
+		opacity: 0.4;
+	}
+
+	.composition__node {
+		grid-area: node;
+		position: relative;
+		z-index: 1;
+		width: var(--node);
+		height: var(--node);
+		border-radius: 50%;
+		border: 1px solid var(--fg);
+		background: var(--bg);
+	}
+
+	.composition__step.is-last .composition__node {
+		background: var(--fg);
+		box-shadow: 0 0 0 5px var(--bg), 0 0 0 6px var(--line);
+	}
+
+	.composition__text {
+		grid-area: text;
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+		min-width: 0;
+	}
+
+	.composition__index {
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
+		color: var(--muted);
+		margin-bottom: 0.35rem;
+	}
+
+	.composition__name {
+		font-size: clamp(1rem, 1.35vw, 1.1875rem);
+		font-weight: 500;
+		letter-spacing: -0.02em;
+		line-height: 1.2;
+	}
+
+	.composition__note {
+		font-size: 0.8125rem;
+		line-height: 1.4;
+		color: var(--muted);
+	}
+
+	/* Rail runs from the first node to the last one: four columns and four gaps. */
+	.composition__rail {
+		position: absolute;
+		top: calc(var(--glyph-h) + 1.75rem + var(--node) / 2);
+		left: calc(var(--node) / 2);
+		width: calc((100% - 4 * var(--col-gap)) / 5 * 4 + 4 * var(--col-gap));
+		height: 1px;
+		background: var(--line);
+	}
+
+	.composition__rail::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: var(--fg);
+		transform-origin: left;
+	}
+
+	/* Scope brackets: where a component library stops, and where Axiom does. */
+	.composition__scopes {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		column-gap: var(--col-gap);
+		row-gap: 1.25rem;
+		margin-top: 3rem;
+	}
+
+	.composition__scope {
+		position: relative;
+		height: 1px;
+		background: color-mix(in srgb, var(--muted) 45%, transparent);
+		transform-origin: left;
+	}
+
+	.composition__scope::before,
+	.composition__scope::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		width: 1px;
+		height: 6px;
+		background: inherit;
+	}
+
+	.composition__scope::before {
+		left: 0;
+	}
+
+	.composition__scope::after {
+		right: 0;
+	}
+
+	.composition__scope b {
+		position: absolute;
+		top: 0.6rem;
+		left: 0;
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
+		font-weight: 400;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		white-space: nowrap;
+		color: var(--muted);
+	}
+
+	.composition__scope--kit {
+		grid-column: 1 / 3;
+	}
+
+	.composition__scope--system {
+		grid-column: 1 / -1;
+		margin-top: 1.25rem;
+		background: var(--muted);
+	}
+
+	.composition__scope--system b {
+		color: var(--fg);
+	}
+
+	/* Motion: idle is the unbuilt state, play builds the chain in order. */
+	.composition[data-state='idle'] .composition__rail::after,
+	.composition[data-state='idle'] .composition__scope {
+		transform: scaleX(0);
+	}
+
+	.composition[data-state='idle'] .composition__glyph :is(rect, circle, line) {
+		stroke-dashoffset: 1;
+	}
+
+	.composition[data-state='idle'] .composition__glyph .is-fill {
+		opacity: 0;
+	}
+
+	.composition[data-state='idle'] .composition__node {
+		border-color: var(--line);
+	}
+
+	.composition[data-state='idle'] .composition__step.is-last .composition__node {
+		background: var(--bg);
+	}
+
+	.composition[data-state='idle'] .composition__text {
+		opacity: 0.3;
+	}
+
+	.composition[data-state='play'] .composition__rail::after {
+		transition: transform calc(var(--step) * 4) linear var(--start);
+	}
+
+	.composition[data-state='play'] .composition__step {
+		--at: calc(var(--start) + var(--i) * var(--step));
+	}
+
+	.composition[data-state='play'] .composition__glyph :is(rect, circle, line) {
+		transition: stroke-dashoffset 0.9s cubic-bezier(0.65, 0, 0.35, 1) var(--at);
+	}
+
+	.composition[data-state='play'] .composition__glyph .is-fill {
+		transition: opacity 0.4s ease calc(var(--at) + 0.6s);
+	}
+
+	.composition[data-state='play'] .composition__node {
+		transition:
+			border-color 0.2s ease var(--at),
+			background-color 0.3s ease var(--at);
+	}
+
+	.composition[data-state='play'] .composition__text {
+		transition: opacity 0.5s ease var(--at);
+	}
+
+	.composition[data-state='play'] .composition__scope--kit {
+		transition: transform calc(var(--step) * 2) cubic-bezier(0.65, 0, 0.35, 1) calc(var(--start) + var(--step));
+	}
+
+	.composition[data-state='play'] .composition__scope--system {
+		transition: transform calc(var(--step) * 4) cubic-bezier(0.65, 0, 0.35, 1) calc(var(--start) + var(--step) * 3);
+	}
+
+	/* Narrow screens: the chain reads top to bottom, scopes run down the right edge. */
+	@media (max-width: 700px) {
+		.composition {
+			--glyph-h: 4rem;
+			--row-gap: 1.75rem;
+		}
+
+		.composition__track {
+			padding-right: 3.5rem;
+		}
+
+		.composition__steps {
+			grid-template-columns: 1fr;
+			row-gap: var(--row-gap);
+		}
+
+		.composition__step {
+			grid-template-areas: 'node glyph text';
+			grid-template-columns: var(--node) 3.5rem 1fr;
+			grid-template-rows: var(--glyph-h);
+			column-gap: 1.25rem;
+		}
+
+		.composition__glyph svg {
+			margin-inline: auto;
+		}
+
+		.composition__rail {
+			top: calc(var(--glyph-h) / 2);
+			left: calc(var(--node) / 2);
+			width: 1px;
+			height: calc(4 * (var(--glyph-h) + var(--row-gap)));
+		}
+
+		.composition__rail::after {
+			transform-origin: top;
+		}
+
+		.composition__scopes {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			width: 2.5rem;
+			margin: 0;
+			display: block;
+		}
+
+		.composition__scope {
+			position: absolute;
+			top: 0;
+			width: 1px;
+			height: calc(2 * var(--glyph-h) + var(--row-gap));
+			transform-origin: top;
+		}
+
+		.composition__scope--kit {
+			right: 1.75rem;
+		}
+
+		.composition__scope--system {
+			right: 0;
+			height: 100%;
+			margin: 0;
+		}
+
+		.composition__scope::before,
+		.composition__scope::after {
+			left: auto;
+			right: 0;
+			width: 6px;
+			height: 1px;
+		}
+
+		.composition__scope::before {
+			top: 0;
+			bottom: auto;
+		}
+
+		.composition__scope b {
+			top: 0.5rem;
+			left: -0.65rem;
+			writing-mode: vertical-rl;
+		}
+
+		.composition[data-state='idle'] .composition__rail::after,
+		.composition[data-state='idle'] .composition__scope {
+			transform: scaleY(0);
+		}
+	}
+</style>

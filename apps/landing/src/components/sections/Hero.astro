@@ -1,0 +1,86 @@
+---
+import Title from '../Title.astro';
+import HeroPhone from '../HeroPhone.astro';
+import CopyCommand from '../CopyCommand.astro';
+---
+
+<section class="section hero">
+	<div class="container hero__grid">
+		<div class="hero__copy">
+			<p class="eyebrow">React Native · Expo</p>
+			<Title variant="headline" as="h1">The mobile UI kit for <br> React Native.</Title>
+			<p class="hero__lede">
+				Axiom gives you a theme, components, hooks, gestures, patterns and ready-made screens for
+				React Native and Expo. The CLI copies the source into your project, styled with the tool you
+				already use, so you own it and edit it like the rest of your code.
+			</p>
+			<div class="hero__actions">
+				<CopyCommand command="npx axiom init" />
+				<a href="#get-started" class="btn btn--ghost">Read the docs</a>
+			</div>
+		</div>
+
+		<div class="hero__visual">
+			<HeroPhone />
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero {
+		height: var(--full-h);
+		min-height: fit-content;
+		display: flex;
+		align-items: center;
+		padding-block: 3rem;
+	}
+
+	.hero__grid {
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+		align-items: center;
+		gap: 2rem;
+	}
+
+	.hero__copy {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+		max-width: 36rem;
+	}
+
+	.hero__lede {
+		color: var(--muted);
+		font-size: 1.125rem;
+		max-width: 28rem;
+	}
+
+	.hero__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+	}
+
+	.hero__visual {
+		position: relative;
+		height: calc(var(--full-h) - 8rem);
+		max-height: 680px;
+		display: grid;
+		place-items: center;
+	}
+
+	.hero__visual :global(.hero-phone) {
+		position: absolute;
+		inset: 0;
+	}
+
+	@media (max-width: 900px) {
+		.hero__grid {
+			grid-template-columns: 1fr;
+		}
+
+		.hero__visual {
+			height: min(60svh, 560px);
+		}
+	}
+</style>

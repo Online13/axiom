@@ -1,0 +1,172 @@
+---
+import Title from '../Title.astro';
+import Phone from '../Phone.astro';
+import ExperienceScreens from '../ExperienceScreens.astro';
+
+const categories = [
+	{ name: 'Components', note: 'AppBar, SearchBar, Chip, Item, Badge and BottomTabBar, composed into one inbox.' },
+	{ name: 'Behaviors', note: 'Pull-to-refresh, swipe actions, skeleton loading and a floating action, already wired.' },
+	{ name: 'Patterns', note: 'OTP verification: focus, paste, countdown, resend and validation in one piece.' },
+	{ name: 'Blocks', note: 'A complete paywall screen. Change the copy and prices, keep the structure.' },
+];
+---
+
+<section class="section section--full experience" id="experience">
+	<div class="container experience__inner">
+		<div class="experience__stage">
+			<div class="experience__side">
+				<header class="experience__header">
+					<p class="eyebrow">03 / Experience</p>
+					<Title>Real, complete<br />mobile UI.</Title>
+				</header>
+
+				<nav class="experience__tabs" role="tablist">
+					{
+						categories.map((cat, i) => (
+							<button
+								type="button"
+								role="tab"
+								class="experience__tab"
+								aria-selected={i === 0 ? 'true' : 'false'}
+								data-category={cat.name}
+								data-note={cat.note}
+							>
+								<span class="eyebrow">0{i + 1}</span>
+								{cat.name}
+							</button>
+						))
+					}
+				</nav>
+			</div>
+
+			<div class="experience__phone">
+				<Phone label="A mobile app built with Axiom">
+					<ExperienceScreens />
+				</Phone>
+			</div>
+
+			<div class="experience__aside">
+				<p class="eyebrow experience__lens">Lens / <span>{categories[0].name}</span></p>
+				<p class="experience__note">{categories[0].note}</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	const tabs = document.querySelectorAll<HTMLButtonElement>('.experience__tab');
+	const screens = document.querySelectorAll<HTMLElement>('.experience [data-screen]');
+	const lens = document.querySelector('.experience__lens span');
+	const note = document.querySelector('.experience__note');
+
+	tabs.forEach((tab) => {
+		tab.addEventListener('click', () => {
+			const category = tab.dataset.category;
+			tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+			screens.forEach((s) => (s.hidden = s.dataset.screen !== category));
+			if (lens) lens.textContent = category ?? '';
+			if (note) note.textContent = tab.dataset.note ?? '';
+		});
+	});
+</script>
+
+<style>
+	.experience__side {
+		display: flex;
+		flex-direction: column;
+		gap: 3rem;
+	}
+
+	.experience__header {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.experience__stage {
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+		align-items: center;
+		gap: 3rem;
+	}
+
+	.experience__tabs {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.experience__tab {
+		display: flex;
+		align-items: baseline;
+		gap: 1rem;
+		padding: 0.5rem 0;
+		background: none;
+		border: 0;
+		color: var(--muted);
+		font: inherit;
+		font-size: clamp(1.125rem, 1.8vw, 1.5rem);
+		font-weight: 500;
+		letter-spacing: -0.02em;
+		text-align: left;
+		cursor: pointer;
+		transition: color 0.2s;
+	}
+
+	.experience__tab:hover,
+	.experience__tab[aria-selected='true'] {
+		color: var(--fg);
+	}
+
+	.experience__phone {
+		height: clamp(520px, calc(var(--full-h) - 5rem), 860px);
+	}
+
+	.experience__aside {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		max-width: 18rem;
+		justify-self: end;
+	}
+
+	.experience__lens span {
+		color: var(--fg);
+	}
+
+	.experience__note {
+		color: var(--muted);
+	}
+
+	@media (max-width: 900px) {
+		.experience__stage {
+			grid-template-columns: 1fr;
+			justify-items: center;
+		}
+
+		.experience__side {
+			align-items: center;
+			text-align: center;
+		}
+
+		.experience__phone {
+			height: min(75svh, 640px);
+		}
+
+		.experience__tabs {
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 1.25rem;
+		}
+
+		.experience__tab {
+			font-size: 1.125rem;
+		}
+
+		.experience__aside {
+			justify-self: center;
+			text-align: center;
+		}
+	}
+</style>

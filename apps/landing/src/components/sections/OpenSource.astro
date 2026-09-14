@@ -1,0 +1,144 @@
+---
+import Title from '../Title.astro';
+// Counts come from the registry docs (docs/README.md): core, hooks,
+// typography, atoms, molecules, organisms and templates.
+const facts = [
+	{ value: '48', label: 'Components' },
+	{ value: '4', label: 'Core primitives' },
+	{ value: 'MIT', label: 'License' },
+];
+
+const tree = [
+	{ depth: 0, name: 'registry/' },
+	{ depth: 1, name: 'foundations/', note: 'theme · tokens' },
+	{ depth: 1, name: 'core/', note: 'Slot · Portal · Overlay · Tappable' },
+	{ depth: 1, name: 'atoms/', note: '32 components' },
+	{ depth: 2, name: 'stylesheet/ · unistyles/ · tailwind/', note: 'one folder per styling' },
+	{ depth: 1, name: 'molecules/', note: 'SearchBar · Attachment · DatePicker' },
+	{ depth: 1, name: 'organisms/', note: 'Passcode' },
+	{ depth: 1, name: 'templates/', note: 'AppBar · Scaffold · ToolBar' },
+	{ depth: 1, name: 'blocks/', note: 'phase 2', soon: true },
+	{ depth: 0, name: 'registry.json' },
+];
+---
+
+<section class="section section--solid open-source" id="open-source">
+	<div class="container open-source__inner">
+		<div class="open-source__copy">
+			<p class="eyebrow">09 / Open source</p>
+			<Title>Built in the open,<br />with the community.</Title>
+			<p class="open-source__lede">
+				Every component, behavior and block lives on GitHub. Read it, fork it, send a pull request.
+			</p>
+			<a href="#" class="btn btn--ghost">Star on GitHub</a>
+		</div>
+
+		<div class="open-source__aside">
+			<dl class="open-source__facts">
+				{
+					facts.map((f) => (
+						<div>
+							<dt class="eyebrow">{f.label}</dt>
+							<dd>{f.value}</dd>
+						</div>
+					))
+				}
+			</dl>
+			<ul class="open-source__tree" aria-label="Repository structure">
+				{
+					tree.map((node) => (
+						<li class:list={{ 'is-soon': node.soon }} style={`--depth:${node.depth}`}>
+							<span>{node.name}</span>
+							{node.note && <small>{node.note}</small>}
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</div>
+</section>
+
+<style>
+	.open-source {
+		min-height: 52vh;
+		display: flex;
+		align-items: center;
+		padding-block: 6rem;
+	}
+
+	.open-source__inner {
+		display: grid;
+		grid-template-columns: 1.2fr 1fr;
+		gap: 4rem;
+		align-items: center;
+	}
+
+	.open-source__copy {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1.5rem;
+	}
+
+	.open-source__lede {
+		color: var(--muted);
+		font-size: 1.125rem;
+		max-width: 28rem;
+	}
+
+	.open-source__aside {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	.open-source__facts {
+		margin: 0;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1rem;
+	}
+
+	.open-source__facts dd {
+		margin: 0.25rem 0 0;
+		font-size: 1.5rem;
+		font-weight: 600;
+	}
+
+	.open-source__tree {
+		list-style: none;
+		margin: 0;
+		padding: 1.25rem 0 0;
+		border-top: 1px solid var(--line);
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
+	}
+
+	.open-source__tree li {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.3rem 0 0.3rem calc(var(--depth) * 1.5rem);
+	}
+
+	.open-source__tree li[style*='--depth:1'] span::before {
+		content: '├ ';
+		color: var(--line);
+	}
+
+	.open-source__tree small {
+		color: var(--muted);
+		font-size: 0.75rem;
+		text-align: right;
+	}
+
+	.open-source__tree .is-soon {
+		opacity: 0.45;
+	}
+
+	@media (max-width: 900px) {
+		.open-source__inner {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

@@ -1,0 +1,205 @@
+---
+import Title from '../Title.astro';
+import CopyCommand from '../CopyCommand.astro';
+const components = [
+	'button', 'icon-button', 'tappable', 'text', 'icon', 'avatar',
+	'badge', 'chip', 'divider', 'item', 'list', 'section-header',
+	'app-bar', 'bottom-tab-bar', 'search-bar', 'text-field', 'textarea', 'checkbox',
+	'radio', 'switch', 'slider', 'stepper', 'segmented-control', 'select',
+	'date-picker', 'otp-input', 'progress', 'spinner', 'skeleton', 'toast',
+	'alert', 'dialog', 'bottom-sheet', 'action-sheet', 'menu', 'popover',
+	'tooltip', 'tabs', 'carousel', 'pull-to-refresh', 'swipeable', 'empty-state',
+];
+
+const initial = ['button', 'bottom-sheet'];
+---
+
+<section class="section section--solid registry" id="registry">
+	<div class="container registry__inner">
+		<div class="registry__copy">
+			<p class="eyebrow">06 / Registry</p>
+			<Title>Use only<br />what you need.</Title>
+			<p class="registry__lede">
+				Pick the pieces you want. Axiom resolves their dependencies and copies exactly what they
+				need, in your styling, nothing more.
+			</p>
+			<CopyCommand class="registry__cli" command={`npx axiom add ${initial.join(' ')}`} />
+		</div>
+
+		<div class="registry__browse">
+			<div class="picker" role="group" aria-label="Registry components">
+				{
+					components.map((name) => (
+						<button
+							type="button"
+							class="picker__item"
+							aria-pressed={initial.includes(name) ? 'true' : 'false'}
+							data-name={name}
+						>
+							<span class="picker__check" aria-hidden="true">
+								<svg viewBox="0 0 12 12">
+									<path d="M2.5 6.2 5 8.5l4.5-5" />
+								</svg>
+							</span>
+							<span class="picker__name">{name}</span>
+						</button>
+					))
+				}
+			</div>
+			<a href="#" class="btn btn--ghost registry__all">View all components</a>
+		</div>
+	</div>
+</section>
+
+<script>
+	const items = document.querySelectorAll<HTMLButtonElement>('.picker__item');
+	const cmd = document.querySelector('.registry__cli .copy-cmd__text');
+
+	function update() {
+		const names = [...items]
+			.filter((i) => i.getAttribute('aria-pressed') === 'true')
+			.map((i) => i.dataset.name);
+		if (cmd) cmd.textContent = `npx axiom add ${names.length ? names.join(' ') : '…'}`;
+	}
+
+	items.forEach((item) => {
+		item.addEventListener('click', () => {
+			item.setAttribute('aria-pressed', String(item.getAttribute('aria-pressed') !== 'true'));
+			update();
+		});
+	});
+</script>
+
+<style>
+	.registry__inner {
+		display: grid;
+		grid-template-columns: 1fr 1.4fr;
+		align-items: center;
+		gap: 4rem;
+	}
+
+	.registry__copy {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1.5rem;
+	}
+
+	.registry__lede {
+		color: var(--muted);
+		font-size: 1.125rem;
+		max-width: 26rem;
+	}
+
+	.registry {
+		padding-block: 5rem;
+	}
+
+	.registry__browse {
+		position: relative;
+		min-width: 0;
+	}
+
+	.picker {
+		/* Clipped on purpose: the grid hints at the catalog, the button opens it. */
+		max-height: 17rem;
+		overflow: hidden;
+		mask-image: linear-gradient(to bottom, #000 55%, transparent);
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+		gap: 0.5rem;
+	}
+
+	.picker__item {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		min-width: 0;
+		padding: 0.55rem 0.75rem;
+		background: none;
+		border: 1px solid var(--line);
+		color: var(--muted);
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+		transition:
+			border-color 0.2s,
+			background-color 0.2s,
+			color 0.2s;
+	}
+
+	.picker__item:hover {
+		border-color: color-mix(in srgb, var(--fg) 30%, var(--line));
+		color: var(--fg);
+	}
+
+	.picker__item:focus-visible {
+		outline: 2px solid var(--fg);
+		outline-offset: 2px;
+	}
+
+	.picker__item[aria-pressed='true'] {
+		border-color: var(--fg);
+		background: color-mix(in srgb, var(--fg) 6%, transparent);
+		color: var(--fg);
+	}
+
+	.picker__name {
+		overflow: hidden;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.picker__check {
+		flex: none;
+		display: grid;
+		place-items: center;
+		width: 0.875rem;
+		height: 0.875rem;
+		border: 1px solid var(--line);
+		transition:
+			background-color 0.2s,
+			border-color 0.2s;
+	}
+
+	.picker__check svg {
+		width: 0.625rem;
+		height: 0.625rem;
+		fill: none;
+		stroke: var(--bg);
+		stroke-width: 1.8;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		opacity: 0;
+	}
+
+	.picker__item[aria-pressed='true'] .picker__check {
+		background: var(--fg);
+		border-color: var(--fg);
+	}
+
+	.picker__item[aria-pressed='true'] .picker__check svg {
+		opacity: 1;
+	}
+
+	.registry__all {
+		position: absolute;
+		left: 50%;
+		bottom: 0.5rem;
+		transform: translateX(-50%);
+		background: var(--bg);
+		white-space: nowrap;
+	}
+
+	.registry__all:hover {
+		border-color: var(--fg);
+	}
+
+	@media (max-width: 900px) {
+		.registry__inner {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

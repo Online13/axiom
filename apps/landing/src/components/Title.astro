@@ -1,0 +1,33 @@
+---
+import type { HTMLTag } from 'astro/types';
+
+interface Props {
+	/** `display` for page-level statements (hero, closing CTA), `headline` for section titles. */
+	variant?: 'display' | 'headline';
+	as?: Extract<HTMLTag, 'h1' | 'h2' | 'h3' | 'p'>;
+	class?: string;
+}
+
+const { variant = 'headline', as: Tag = 'h2', class: className } = Astro.props;
+---
+
+<Tag class:list={['title', `title--${variant}`, className]}><slot /></Tag>
+
+<style>
+	.title {
+		margin: 0;
+		font-weight: 600;
+	}
+
+	.title--display {
+		font-size: clamp(2.25rem, 4.5vw, 4rem);
+		line-height: 1.02;
+		letter-spacing: -0.035em;
+	}
+
+	.title--headline {
+		font-size: clamp(1.75rem, 3vw, 2.75rem);
+		line-height: 1.08;
+		letter-spacing: -0.03em;
+	}
+</style>
