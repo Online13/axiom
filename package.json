@@ -1,0 +1,13 @@
+{
+  "name": "axiom-project",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "docs": "bun run --filter './apps/docs'",
+    "landing": "bun run --filter './apps/landing'"
+  }
+}
