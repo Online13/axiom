@@ -9,5 +9,8 @@
   "scripts": {
     "docs": "bun run --filter './apps/docs'",
     "landing": "bun run --filter './apps/landing'"
+  },
+  "devDependencies": {
+    "wrangler": "^4.131.2"
   }
 }
