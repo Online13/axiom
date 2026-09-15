@@ -5,22 +5,22 @@ description: "Recurring mobile behaviors, grouped by topic."
 
 Axiom doesn't stop at components. Over time, it covers the behaviors every mobile app needs. Some already exist as components or hooks; the rest are planned.
 
-Each card shows its status:
+Each card links to the behavior's page and shows its status:
 
-- **Available**: a component or hook you can install today. The card links to it.
-- **Spec**: the pattern has a page describing it, but no implementation yet.
-- **Planned**: on the list, with no page yet.
+- **Available**: a component or hook you can install today.
+- **Spec**: the pattern is described, but not implemented yet.
+- **Planned**: on the list, not described yet.
 
 ## Scroll
 
 How the screen reacts while the user scrolls a list.
 
 <BehaviorGrid>
-  <BehaviorCard title="Pull-to-refresh" preview="pull-to-refresh" status="available" href="/hooks/use-refresh-control" />
-  <BehaviorCard title="Hide-on-scroll" preview="hide-on-scroll" status="planned" />
-  <BehaviorCard title="Collapsible header" preview="collapsible-header" status="planned" />
-  <BehaviorCard title="Scroll-to-top" preview="scroll-to-top" status="planned" />
-  <BehaviorCard title="Scroll-aware AppBar" preview="scroll-aware-app-bar" status="available" href="/templates/app-bar" />
+  <BehaviorCard title="Pull-to-refresh" preview="pull-to-refresh" status="available" href="/behaviors/pull-to-refresh" />
+  <BehaviorCard title="Hide-on-scroll" preview="hide-on-scroll" status="spec" href="/behaviors/hide-on-scroll" />
+  <BehaviorCard title="Collapsible header" preview="collapsible-header" status="spec" href="/behaviors/collapsible-header" />
+  <BehaviorCard title="Scroll-to-top" preview="scroll-to-top" status="spec" href="/behaviors/scroll-to-top" />
+  <BehaviorCard title="Scroll-aware AppBar" preview="scroll-aware-app-bar" status="spec" href="/behaviors/scroll-aware-app-bar" />
 </BehaviorGrid>
 
 ## Gestures
@@ -28,11 +28,10 @@ How the screen reacts while the user scrolls a list.
 Actions triggered by touch rather than a visible button.
 
 <BehaviorGrid>
-  <BehaviorCard title="Long press" preview="long-press" status="planned" />
-  <BehaviorCard title="Swipe actions" preview="swipe-actions" status="spec" href="/patterns/swipe-actions" />
-  <BehaviorCard title="Swipe-to-delete" preview="swipe-to-delete" status="spec" href="/patterns/swipe-actions#swipe-to-delete" />
-  <BehaviorCard title="Drag-to-reorder" preview="drag-to-reorder" status="planned" />
-  <BehaviorCard title="Pull-to-dismiss" preview="pull-to-dismiss" status="planned" />
+  <BehaviorCard title="Long press" preview="long-press" status="available" href="/behaviors/long-press" />
+  <BehaviorCard title="Swipe actions" preview="swipe-actions" status="spec" href="/behaviors/swipe-actions" />
+  <BehaviorCard title="Swipe-to-delete" preview="swipe-to-delete" status="spec" href="/behaviors/swipe-to-delete" />
+  <BehaviorCard title="Drag-to-reorder" preview="drag-to-reorder" status="spec" href="/behaviors/drag-to-reorder" />
 </BehaviorGrid>
 
 ## Contextual UI
@@ -40,10 +39,10 @@ Actions triggered by touch rather than a visible button.
 Actions that appear only when they apply to what the user is doing.
 
 <BehaviorGrid>
-  <BehaviorCard title="Context menu" preview="context-menu" status="available" href="/atoms/menu" />
-  <BehaviorCard title="Contextual action mode" preview="selection-mode" status="spec" href="/patterns/selection-mode" />
-  <BehaviorCard title="Dynamic toolbar" preview="dynamic-toolbar" status="available" href="/templates/tool-bar" />
-  <BehaviorCard title="Floating action menu" preview="floating-action-menu" status="spec" href="/patterns/floating-action-menu" />
+  <BehaviorCard title="Context menu" preview="context-menu" status="available" href="/behaviors/context-menu" />
+  <BehaviorCard title="Contextual action mode" preview="selection-mode" status="spec" href="/behaviors/contextual-action-mode" />
+  <BehaviorCard title="Dynamic toolbar" preview="dynamic-toolbar" status="available" href="/behaviors/dynamic-toolbar" />
+  <BehaviorCard title="Floating action menu" preview="floating-action-menu" status="spec" href="/behaviors/floating-action-menu" />
 </BehaviorGrid>
 
 ## Navigation UI
@@ -51,11 +50,11 @@ Actions that appear only when they apply to what the user is doing.
 How the user moves between the main sections of the app.
 
 <BehaviorGrid>
-  <BehaviorCard title="BottomTabBar" preview="bottom-tab-bar" status="available" href="/templates/bottom-tab-bar" />
-  <BehaviorCard title="Floating BottomTabBar" preview="floating-tab-bar" status="planned" />
-  <BehaviorCard title="Primary floating action" preview="primary-fab" status="planned" />
-  <BehaviorCard title="Top tabs" preview="top-tabs" status="available" href="/templates/tab" />
-  <BehaviorCard title="Page-based navigation hub" preview="nav-hub" status="planned" />
+  <BehaviorCard title="BottomTabBar" preview="bottom-tab-bar" status="available" href="/behaviors/bottom-tab-bar" />
+  <BehaviorCard title="Floating BottomTabBar" preview="floating-tab-bar" status="planned" href="/behaviors/floating-bottom-tab-bar" />
+  <BehaviorCard title="Primary floating action" preview="primary-fab" status="planned" href="/behaviors/primary-floating-action" />
+  <BehaviorCard title="Top tabs" preview="top-tabs" status="available" href="/behaviors/top-tabs" />
+  <BehaviorCard title="Page-based navigation hub" preview="nav-hub" status="planned" href="/behaviors/navigation-hub" />
 </BehaviorGrid>
 
 ## Application states
@@ -63,12 +62,12 @@ How the user moves between the main sections of the app.
 What a screen shows when it has nothing ready to display.
 
 <BehaviorGrid>
-  <BehaviorCard title="First-time empty state" preview="empty" status="spec" href="/patterns/first-time-empty-state" />
-  <BehaviorCard title="No-results state" preview="no-results" status="planned" />
-  <BehaviorCard title="Loading state" preview="loading" status="planned" />
-  <BehaviorCard title="Error state" preview="error" status="planned" />
-  <BehaviorCard title="Offline state" preview="offline" status="planned" />
-  <BehaviorCard title="Retry state" preview="retry" status="planned" />
+  <BehaviorCard title="First-time empty state" preview="empty" status="spec" href="/behaviors/first-time-empty-state" />
+  <BehaviorCard title="No-results state" preview="no-results" status="planned" href="/behaviors/no-results-state" />
+  <BehaviorCard title="Loading state" preview="loading" status="planned" href="/behaviors/loading-state" />
+  <BehaviorCard title="Error state" preview="error" status="planned" href="/behaviors/error-state" />
+  <BehaviorCard title="Offline state" preview="offline" status="planned" href="/behaviors/offline-state" />
+  <BehaviorCard title="Retry state" preview="retry" status="planned" href="/behaviors/retry-state" />
 </BehaviorGrid>
 
 ## Search
@@ -76,13 +75,13 @@ What a screen shows when it has nothing ready to display.
 The full search flow, from the field to the results.
 
 <BehaviorGrid>
-  <BehaviorCard title="SearchBar" preview="search-bar" status="available" href="/molecules/search-bar" />
-  <BehaviorCard title="SearchExperience" preview="search-experience" status="spec" href="/patterns/search-experience" />
-  <BehaviorCard title="Search history" preview="search-history" status="planned" />
-  <BehaviorCard title="Recent searches" preview="recent-searches" status="planned" />
-  <BehaviorCard title="Cancel" preview="cancel" status="planned" />
-  <BehaviorCard title="Debounce" preview="debounce" status="planned" />
-  <BehaviorCard title="No-results behavior" preview="no-results" status="planned" />
+  <BehaviorCard title="SearchBar" preview="search-bar" status="available" href="/behaviors/search-bar" />
+  <BehaviorCard title="SearchExperience" preview="search-experience" status="spec" href="/behaviors/search-experience" />
+  <BehaviorCard title="Search history" preview="search-history" status="planned" href="/behaviors/search-history" />
+  <BehaviorCard title="Recent searches" preview="recent-searches" status="planned" href="/behaviors/recent-searches" />
+  <BehaviorCard title="Cancel" preview="cancel" status="planned" href="/behaviors/cancel" />
+  <BehaviorCard title="Debounce" preview="debounce" status="planned" href="/behaviors/debounce" />
+  <BehaviorCard title="No-results behavior" preview="no-results" status="planned" href="/behaviors/no-results-behavior" />
 </BehaviorGrid>
 
 ## Async content
@@ -90,12 +89,12 @@ The full search flow, from the field to the results.
 Every step of a list that loads from the network. See [async content state](/patterns/async-content-state) for how they fit together.
 
 <BehaviorGrid>
-  <BehaviorCard title="Initial loading" preview="loading" status="planned" />
-  <BehaviorCard title="Pagination" preview="pagination" status="planned" />
-  <BehaviorCard title="Pull-to-refresh" preview="pull-to-refresh" status="available" href="/hooks/use-refresh-control" />
-  <BehaviorCard title="Skeleton" preview="skeleton" status="available" href="/atoms/skeleton" />
-  <BehaviorCard title="Empty" preview="empty" status="available" href="/atoms/empty" />
-  <BehaviorCard title="Error" preview="error" status="planned" />
-  <BehaviorCard title="Retry" preview="retry" status="planned" />
-  <BehaviorCard title="End-of-list" preview="end-of-list" status="planned" />
+  <BehaviorCard title="Initial loading" preview="loading" status="planned" href="/behaviors/initial-loading" />
+  <BehaviorCard title="Pagination" preview="pagination" status="planned" href="/behaviors/pagination" />
+  <BehaviorCard title="Pull-to-refresh" preview="pull-to-refresh" status="available" href="/behaviors/async-pull-to-refresh" />
+  <BehaviorCard title="Skeleton" preview="skeleton" status="available" href="/behaviors/skeleton" />
+  <BehaviorCard title="Empty" preview="empty" status="available" href="/behaviors/empty" />
+  <BehaviorCard title="Error" preview="error" status="planned" href="/behaviors/error" />
+  <BehaviorCard title="Retry" preview="retry" status="planned" href="/behaviors/retry" />
+  <BehaviorCard title="End-of-list" preview="end-of-list" status="planned" href="/behaviors/end-of-list" />
 </BehaviorGrid>

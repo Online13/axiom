@@ -1,3 +1,112 @@
 ---
 title: "Pull-to-refresh"
+description: "Drag a list down from the top to reload its content."
 ---
+
+<Callout title="Draft">Specified, not implemented yet. The API is described in [useRefreshControl](/hooks/use-refresh-control) and may change.</Callout>
+
+<RefreshControlPreview />
+
+The user drags the list down while it is at the top. An indicator follows the finger. Releasing past a threshold reloads the content; releasing before it cancels.
+
+## When to use it
+
+- Lists that change on the server: inbox, feed, orders, notifications.
+- As a second way to refresh. The primary way must stay reachable without a gesture (see [Accessibility](#accessibility)).
+
+Don't use it on content that doesn't change, on a form, or on a list whose top is not the newest content (a chat thread loads older messages at the top).
+
+## How it works
+
+A pull goes through five statuses. Each frame below is drawn at real size, with the default `threshold` of 64pt.
+
+<RefreshControlStates />
+
+| Status | What the user sees | What the code does |
+| --- | --- | --- |
+| `idle` | The list at rest. | Waits for a drag down while the scroll offset is `0`. |
+| `pulling` | The indicator fills with the finger. | Updates `distance` and `progress` on the UI thread. |
+| `armed` | The indicator is full, the arrow flips. | Fires `onArmed` once (light haptic). |
+| `refreshing` | A spinner, the list held open. | Awaits `onRefresh`, for at least `minDuration`. |
+| `settling` | The list returns to its place. | Animates `distance` to `0`, ignores new pulls. |
+
+Going back under the threshold before releasing returns to `pulling`, so the user can change their mind.
+
+## Resistance
+
+The list doesn't follow the finger one to one. The further it goes, the harder it gets, and it never goes past `maxDistance`.
+
+<RefreshControlResistance />
+
+```ts
+distance = (drag * maxDistance) / (drag + maxDistance)
+progress = Math.min(distance / threshold, 1)
+```
+
+With the defaults (`threshold` 64, `maxDistance` 160), the user drags 107pt to arm the refresh.
+
+## Implementation
+
+Axiom implements it with one hook, `useRefreshControl`, built on:
+
+| Library | Used for |
+| --- | --- |
+| `react-native-reanimated` | `distance` and `progress` as shared values, so the indicator moves on the UI thread without a React render per frame. `useAnimatedScrollHandler` reads the scroll, `withTiming` animates the return. |
+| `react-native-gesture-handler` | The pull on Android, where lists don't bounce: a `Pan` gesture recognized together with the list's native scroll. |
+| React state | `status`, which changes a few times per pull. |
+
+### One pull, two platforms
+
+iOS and Android don't give the same signal, so the hook reads each one and converts it into the same `distance`:
+
+```text
+iOS: the list bounces                  Android: the list stops at 0
+contentOffset.y goes below 0           Pan gesture, active only when offset.y === 0
+drag = -contentOffset.y                drag = translationY
+          │                                        │
+          └──────────────► resistance ◄────────────┘
+                               │
+                    distance, progress, status
+                               │
+                        your indicator
+```
+
+- **iOS**: `useAnimatedScrollHandler` reads the overscroll. During `refreshing`, a top `contentInset` equal to `threshold` holds the list open.
+- **Android**: the `Pan` gesture runs alongside `Gesture.Native()` on the list. It turns off as soon as the list scrolls, and moves the content with an animated `translateY`.
+
+An indicator written once works on both.
+
+### On release
+
+```text
+release ─┬─ pulling ──► settling ──► idle
+         │
+         └─ armed ────► refreshing ──► settling ──► idle
+                        await onRefresh() and minDuration (500ms)
+```
+
+`minDuration` prevents the spinner from flashing when the request answers in 50ms. If `onRefresh` rejects, the list still settles; show the error with a [Toast](/atoms/toast).
+
+### In a screen
+
+```tsx title="Conceptual"
+const refresh = useRefreshControl({ onRefresh: refetch, onArmed: haptics.light });
+
+<PullIndicator control={refresh} />
+<Animated.FlatList data={data} renderItem={renderItem} {...refresh.scrollProps} />
+```
+
+`scrollProps` carries the scroll handler, the inset and the gesture. It works with `ScrollView`, `FlatList`, `SectionList` and `FlashList`. Options, return value and a custom indicator are documented in [useRefreshControl](/hooks/use-refresh-control).
+
+## Accessibility
+
+- Screen reader users can't pull. Keep a refresh button in the [AppBar](/templates/app-bar) or an `accessibilityActions` entry on the list, and call `refresh()` from it.
+- Announce the result when it matters ("3 new messages").
+- With Reduce Motion on, the list jumps back to `0` and the spinner is replaced by a static state.
+
+## Related
+
+- [useRefreshControl](/hooks/use-refresh-control)
+- [Async content state](/patterns/async-content-state)
+- [Spinner](/atoms/spinner)
+- [Skeleton](/atoms/skeleton)

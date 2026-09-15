@@ -1,0 +1,95 @@
+---
+title: useScrollToTop
+description: "Show a scroll-to-top button past a threshold and bring a list back to its top."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+The hook behind [Scroll-to-top](/behaviors/scroll-to-top). That page explains when the button shows, the jump before the animation, the other triggers and accessibility. This one covers the API.
+
+## Installation
+
+```npm
+npx axiom add use-scroll-to-top
+```
+
+Installs: `react-native-reanimated`.
+
+## Usage
+
+```tsx title="Conceptual"
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useScrollToTop } from '@/hooks/use-scroll-to-top';
+
+function News() {
+  const top = useScrollToTop({ showOn: 'scroll-up' });
+
+  return (
+    <View style={{ flex: 1 }}>
+      <Animated.FlatList data={articles} renderItem={renderArticle} {...top.scrollProps} />
+      {top.visible && (
+        <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.fab}>
+          <IconButton icon="arrow-up" variant="solid" accessibilityLabel="Scroll to top" onPress={top.scrollToTop} />
+        </Animated.View>
+      )}
+    </View>
+  );
+}
+```
+
+`visible` is React state. It changes when the offset crosses `threshold` or the scroll direction flips, not on every frame.
+
+### With your own list ref
+
+`scrollProps` includes a `ref`. If you already hold one, pass it in and the hook uses it:
+
+```tsx title="Conceptual"
+const listRef = useAnimatedRef<FlatList<Article>>();
+const top = useScrollToTop({ ref: listRef });
+
+<Animated.FlatList ref={listRef} onScroll={top.scrollProps.onScroll} … />
+```
+
+### Without a button
+
+On a short list, skip the button and keep the tab press and the status bar tap:
+
+```tsx title="Conceptual"
+const top = useScrollToTop({ threshold: Infinity });
+```
+
+### Moving focus after the return
+
+`onTop` is called once the list reaches `0` after `scrollToTop()`. Use it to move screen reader focus:
+
+```tsx title="Conceptual"
+useScrollToTop({
+  onTop: () => AccessibilityInfo.setAccessibilityFocus(findNodeHandle(titleRef.current)!),
+});
+```
+
+## Options
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `threshold` | `number` | list height | Offset in pt past which the button can show. `Infinity` never shows it. |
+| `showOn` | `'always' \| 'scroll-up'` | `'always'` | `always` shows it past the threshold. `scroll-up` only while the user scrolls up. |
+| `jumpDistance` | `number` | `2 × threshold` | Past this offset, the list jumps to `threshold` before animating. |
+| `tabPress` | `boolean` | `true` | Scrolls to the top when the selected tab is pressed again. Requires React Navigation. |
+| `ref` | `AnimatedRef` | — | Your own list ref. Created for you otherwise. |
+| `onTop` | `() => void` | — | Called when a `scrollToTop()` reaches `0`. |
+
+## Return value
+
+| Key | Type | Description |
+| --- | --- | --- |
+| `visible` | `boolean` | Whether to show the button. React state. |
+| `offset` | `SharedValue<number>` | Current scroll offset, for a button that animates with the scroll. |
+| `scrollToTop` | `() => void` | Jumps if needed, then animates to `0`. Instant with Reduce Motion. |
+| `scrollProps` | `object` | `ref`, `onScroll`, `scrollEventThrottle` and `scrollsToTop`, for an `Animated` `ScrollView`, `FlatList`, `SectionList` or `FlashList`. |
+
+## Related
+
+- [Scroll-to-top](/behaviors/scroll-to-top)
+- [IconButton](/atoms/icon-button)
+- [useCollapsibleHeader](/hooks/use-collapsible-header)

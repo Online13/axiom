@@ -1,0 +1,72 @@
+---
+// Four frozen frames of a large-title header driven by the scroll position.
+// progress = clamp(offset / (expanded - collapsed), 0, 1). The header height, the large title and the compact title
+// are all derived from that one value. A negative offset (iOS bounce) stretches the header instead.
+import TokenFrame from '@/components/tokens/token-frame.astro';
+
+const expanded = 96;
+const collapsed = 40;
+const range = expanded - collapsed;
+
+const states = [
+  { label: 'expanded', offset: 0, caption: 'List at the top. Large title, full height.' },
+  { label: 'collapsing', offset: 28, caption: 'Follows the scroll position, pt for pt.' },
+  { label: 'collapsed', offset: 80, caption: 'Past the range: compact bar, title centered.' },
+  { label: 'overscroll', offset: -20, caption: 'Pulled past the top: the header stretches.' },
+];
+
+const frames = states.map((state) => {
+  const progress = Math.min(Math.max(state.offset / range, 0), 1);
+  const stretch = Math.max(-state.offset, 0);
+  return {
+    ...state,
+    progress,
+    height: expanded - progress * range + stretch,
+    titleSize: 20 - progress * 6 + stretch * 0.05,
+    largeOpacity: 1 - Math.min(progress * 1.6, 1),
+    compactOpacity: Math.max((progress - 0.6) / 0.4, 0),
+  };
+});
+---
+
+<TokenFrame>
+  <div class="grid min-w-[36rem] grid-cols-4 gap-px bg-fd-border">
+    {
+      frames.map(({ label, offset, progress, height, titleSize, largeOpacity, compactOpacity, caption }) => (
+        <div class="flex flex-col gap-3 bg-fd-card p-3">
+          <div class="relative h-[13rem] overflow-hidden rounded-md border bg-fd-card">
+            <div class="absolute inset-x-0 flex flex-col" style={`top:${height}px`}>
+              {Array.from({ length: 7 }, () => (
+                <div class="flex items-center gap-2 border-b px-2 py-2">
+                  <span class="size-4 flex-none rounded-full bg-fd-muted" />
+                  <span class="h-1.5 flex-1 rounded-full bg-fd-muted" />
+                </div>
+              ))}
+            </div>
+
+            <div class:list={['absolute inset-x-0 top-0 bg-fd-muted', progress === 1 && 'border-b']} style={`height:${height}px`}>
+              <div class="flex h-[40px] items-center justify-between px-2 text-fd-muted-foreground">
+                <span class="size-3 rounded-full border border-current" />
+                <span class="text-[11px] font-semibold text-fd-foreground" style={`opacity:${compactOpacity}`}>Inbox</span>
+                <span class="size-3 rounded-full border border-current" />
+              </div>
+              <div
+                class="absolute bottom-2 left-2 origin-bottom-left font-bold leading-none text-fd-foreground"
+                style={`font-size:${titleSize}px;opacity:${largeOpacity}`}
+              >
+                Inbox
+              </div>
+            </div>
+
+            <div class="absolute inset-x-0 border-t border-dashed border-blue-500" style={`top:${collapsed}px`} />
+          </div>
+          <div class="font-mono text-xs">
+            <div>{label}</div>
+            <div class="text-fd-muted-foreground">offset {offset} · progress {progress.toFixed(2)}</div>
+          </div>
+          <p class="text-xs text-fd-muted-foreground">{caption}</p>
+        </div>
+      ))
+    }
+  </div>
+</TokenFrame>

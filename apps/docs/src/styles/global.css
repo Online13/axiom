@@ -41,6 +41,12 @@
   --color-fd-muted-foreground: #8a8a8a;
 }
 
+/* Container values shared with the landing (apps/landing/src/styles/global.css). */
+:root {
+  --container-max: 1440px;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+}
+
 html {
   scrollbar-gutter: stable;
 }
@@ -73,6 +79,33 @@ body {
   padding-bottom: 25vh;
 }
 
+/* Cap the reading column (Fumadocs default 900px). */
+#nd-page > * {
+  max-width: 740px;
+}
+
+/*
+ * Same container as the landing (.container: 1440px max, --gutter on each side).
+ * Sidebar + page + TOC fill it, so their edges line up with the header's logo and GitHub button.
+ */
+#nd-notebook-layout {
+  --fd-layout-width: calc(min(var(--container-max), 100%) - 2 * var(--gutter));
+}
+
+/* Header background and border span the screen; its content sits in the container. */
+#nd-subnav {
+  grid-column: 1 / -1;
+  border-bottom: 1px solid var(--color-fd-border);
+}
+
+#nd-subnav [data-header-body] {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  border-bottom: 0;
+}
+
 /* Page titles use the landing's tight headline tracking. */
 h1,
 h2,
@@ -91,4 +124,9 @@ h3 {
 html > body[data-scroll-locked] {
   margin-right: 0px !important;
   --removed-body-scroll-bar-size: 0px !important;
+}
+
+/* Notebook header centres the search; drop the right group's flex so search sits on the right, next to GitHub. */
+#nd-subnav [data-header-body] > div:last-child {
+  flex: none;
 }

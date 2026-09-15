@@ -1,6 +1,6 @@
 ---
 // Card for the behaviors page: a small phone-screen schematic, the behavior name and its status.
-// "available" links to the component or hook, "spec" to a planned pattern page, "planned" has no page yet.
+// Each card links to its page under /behaviors. The status says whether it is available, specified or planned.
 // Illustrations use the docs palette only, so they follow the light / dark theme.
 
 import Glyph from '@/components/preview/glyph.astro';
@@ -119,16 +119,6 @@ const accent = 'text-fd-foreground';
             </span>
           ))}
         </span>
-      )}
-      {preview === 'pull-to-dismiss' && (
-        <>
-          <span class="absolute inset-0 bg-fd-foreground/15" />
-          <span class={`absolute inset-x-0 bottom-0 flex h-[62px] translate-y-2 flex-col items-center gap-1 rounded-t-[6px] ${box} pt-1`}>
-            <span class="h-0.5 w-4 rounded-full bg-fd-muted-foreground/60" />
-            <Glyph name="arrow-down" size={10} class={accent} strokeWidth={2.4} />
-            <span class={`${line} w-3/4`} />
-          </span>
-        </>
       )}
 
       {/* Contextual UI */}

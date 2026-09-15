@@ -1,0 +1,119 @@
+---
+// Banner for the introduction: the wordmark on one side, the system drawn as a stack of layers on the other.
+// Foundations sit at the bottom, Blocks on top, the same order as the proof chain described on the page.
+
+const layers = ['Foundations', 'Atoms', 'Molecules', 'Organisms', 'Templates', 'Blocks'];
+---
+
+<figure class="not-prose axb" aria-label="Axiom: from foundations to blocks">
+  <div class="axb__copy">
+    <span class="axb__word">AXIOM</span>
+    <p class="axb__tagline">Build mobile experiences,<br />not isolated components.</p>
+  </div>
+
+  <div class="axb__scene" aria-hidden="true">
+    <div class="axb__stack">
+      {
+        layers.map((name, i) => (
+          <div class="axb__layer" style={`--i:${i}`}>
+            <span class="axb__label">{name}</span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</figure>
+
+<style>
+  .axb {
+    --axb-line: color-mix(in oklab, var(--color-fd-foreground) 6%, transparent);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    min-height: 20rem;
+    margin: 0 0 2.5rem;
+    overflow: hidden;
+    border: 1px solid var(--color-fd-border);
+    background-color: var(--color-fd-card);
+    background-image:
+      linear-gradient(var(--axb-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--axb-line) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .axb__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2.5rem;
+  }
+
+  .axb__word {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.2em;
+    color: var(--color-fd-foreground);
+  }
+
+  .axb__tagline {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--color-fd-muted-foreground);
+  }
+
+  .axb__scene {
+    height: 100%;
+    min-height: 20rem;
+    display: grid;
+    place-items: center;
+    perspective: 1400px;
+  }
+
+  .axb__stack {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin-top: 80px;
+    transform-style: preserve-3d;
+    transform: rotateX(58deg) rotateZ(-42deg);
+  }
+
+  .axb__layer {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--color-fd-muted-foreground);
+    background: var(--color-fd-card);
+    transform: translateZ(calc(var(--i) * 30px));
+  }
+
+  .axb__label {
+    position: absolute;
+    left: 8px;
+    bottom: 6px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-fd-muted-foreground);
+  }
+
+  @media (max-width: 767px) {
+    .axb {
+      grid-template-columns: 1fr;
+    }
+
+    .axb__copy {
+      padding: 1.75rem 1.5rem 0;
+    }
+
+    .axb__scene {
+      min-height: 16rem;
+    }
+
+    .axb__stack {
+      scale: 0.8;
+      margin-top: 40px;
+    }
+  }
+</style>

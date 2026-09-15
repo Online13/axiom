@@ -30,10 +30,25 @@ import TappableHitSlop from "@/components/tappable/tappable-hit-slop.astro";
 import RefreshControlPreview from "@/components/refresh-control/refresh-control-preview.astro";
 import RefreshControlStates from "@/components/refresh-control/refresh-control-states.astro";
 import RefreshControlResistance from "@/components/refresh-control/refresh-control-resistance.astro";
+import HideOnScrollStates from "@/components/hide-on-scroll/hide-on-scroll-states.astro";
+import CollapsibleHeaderStates from "@/components/collapsible-header/collapsible-header-states.astro";
+import HideOnScrollPreview from "@/components/hide-on-scroll/hide-on-scroll-preview.astro";
+import CollapsibleHeaderPreview from "@/components/collapsible-header/collapsible-header-preview.astro";
+import ScrollToTopPreview from "@/components/scroll-to-top/scroll-to-top-preview.astro";
+import ScrollAwareAppBarPreview from "@/components/scroll-aware-app-bar/scroll-aware-app-bar-preview.astro";
+import LongPressPreview from "@/components/long-press/long-press-preview.astro";
+import LongPressTimeline from "@/components/long-press/long-press-timeline.astro";
+import SwipeActionsPreview from "@/components/swipe-actions/swipe-actions-preview.astro";
+import SwipeActionsStates from "@/components/swipe-actions/swipe-actions-states.astro";
+import SwipeToDeletePreview from "@/components/swipe-to-delete/swipe-to-delete-preview.astro";
+import SwipeToDeleteStates from "@/components/swipe-to-delete/swipe-to-delete-states.astro";
+import DragToReorderPreview from "@/components/drag-to-reorder/drag-to-reorder-preview.astro";
+import DragToReorderStates from "@/components/drag-to-reorder/drag-to-reorder-states.astro";
 import PhonePreview from "@/components/preview/phone-preview.astro";
 import Glyph from "@/components/preview/glyph.astro";
 import ScaffoldAnatomy from "@/components/scaffold/scaffold-anatomy.astro";
 import PreviewTheme from "@/components/preview/preview-theme.astro";
+import AxiomBanner from "@/components/intro/axiom-banner.astro";
 import "@/styles/global.css";
 import "@/styles/preview.css";
 import { source } from "@/lib/source";
@@ -116,9 +131,24 @@ const toc: TOCItemType[] = headings.map((heading) => ({
           RefreshControlPreview,
           RefreshControlStates,
           RefreshControlResistance,
+          HideOnScrollPreview,
+          HideOnScrollStates,
+          CollapsibleHeaderPreview,
+          CollapsibleHeaderStates,
+          ScrollToTopPreview,
+          ScrollAwareAppBarPreview,
+          LongPressPreview,
+          LongPressTimeline,
+          SwipeActionsPreview,
+          SwipeActionsStates,
+          SwipeToDeletePreview,
+          SwipeToDeleteStates,
+          DragToReorderPreview,
+          DragToReorderStates,
           PhonePreview,
           Glyph,
           ScaffoldAnatomy,
+          AxiomBanner,
         }}
       />
     </div>

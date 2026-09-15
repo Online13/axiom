@@ -1,0 +1,220 @@
+---
+// A full-height feed driven by the same logic as useHideOnScroll.
+// Scroll the list (wheel, trackpad, touch or mouse drag): the AppBar and the BottomTabBar follow the scroll delta,
+// clamped between 0 and the bar height, and snap to the nearest end when the scroll stops.
+// The footer mirrors what the hook returns: hidden and progress.
+import PhonePreview from '@/components/preview/phone-preview.astro';
+import Glyph from '@/components/preview/glyph.astro';
+
+const posts = [
+  ['Grace Hopper', 'Found the bug. It was a moth.'],
+  ['Alan Turing', 'Can a machine think? Lunch first.'],
+  ['Katherine Johnson', 'Trajectory numbers attached.'],
+  ['Linus Torvalds', 'Just a hobby, won’t be big.'],
+  ['Margaret Hamilton', 'Priority alarms are fine.'],
+  ['Ada Lovelace', 'Notes on the engine, part G.'],
+  ['Dennis Ritchie', 'hello, world'],
+  ['Barbara Liskov', 'About that substitution…'],
+  ['Edsger Dijkstra', 'Goto considered harmful.'],
+  ['Frances Allen', 'The compiler is faster now.'],
+  ['Ken Thompson', 'Trust nothing you didn’t compile.'],
+  ['Radia Perlman', 'The spanning tree converged.'],
+  ['John McCarthy', '(lambda (x) (lunch x))'],
+  ['Hedy Lamarr', 'Frequency hopping, patent filed.'],
+  ['Tim Berners-Lee', 'Put it on a web page.'],
+  ['Donald Knuth', 'Volume 4 is almost ready.'],
+  ['Shafi Goldwasser', 'Proof attached, zero knowledge.'],
+  ['Guido van Rossum', 'There should be one way to do it.'],
+];
+
+const initials = (name: string) =>
+  name
+    .split(' ')
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join('');
+---
+
+<PhonePreview full>
+  <div class="hos" data-hide-on-scroll>
+    <div class="hos-scroller" data-scroller>
+      <div class="ax-list" data-variant="plain" data-inset>
+        {
+          posts.map(([name, text], index) => (
+            <div class="ax-item">
+              <span class="ax-avatar" data-photo={String((index % 5) + 1)}>{initials(name)}</span>
+              <div class="ax-item-content">
+                <span class="ax-item-title">{name}</span>
+                <span class="ax-item-desc">{text}</span>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="hos-top" data-bar="top">
+      <div class="ax-appbar" data-border>
+        <span class="ax-appbar-slot"><span class="ax-icon-btn"><Glyph name="menu" /></span></span>
+        <span class="ax-appbar-title">Feed</span>
+        <span class="ax-appbar-slot" data-side="end"><span class="ax-icon-btn"><Glyph name="search" /></span></span>
+      </div>
+    </div>
+
+    <div class="hos-bottom" data-bar="bottom">
+      <div class="ax-tabbar">
+        <span class="ax-tabbar-item" data-active><Glyph name="home" /><span>Feed</span></span>
+        <span class="ax-tabbar-item"><Glyph name="search" /><span>Explore</span></span>
+        <span class="ax-tabbar-item"><Glyph name="bell" /><span>Activity</span></span>
+        <span class="ax-tabbar-item"><Glyph name="user" /><span>Profile</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div slot="footer" class="border-t px-4 py-3 font-mono text-xs" data-hos-readout>
+    <span class="text-fd-muted-foreground">hidden </span><span data-out="hidden">0</span>
+    <span class="text-fd-muted-foreground"> · progress </span><span data-out="progress">0.00</span>
+    <span class="text-fd-muted-foreground"> · scroll the list</span>
+  </div>
+</PhonePreview>
+
+<style is:global>
+  .hos {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .hos-scroller {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    cursor: grab;
+    padding-top: var(--hos-top, 44px);
+    padding-bottom: var(--hos-bottom, 83px);
+  }
+
+  .hos-scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hos-scroller[data-dragging] {
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  .hos-top,
+  .hos-bottom {
+    position: absolute;
+    inset-inline: 0;
+    z-index: 2;
+    background: var(--ax-background-default);
+    will-change: transform;
+  }
+
+  .hos-top {
+    top: 0;
+    transform: translateY(calc(var(--hos-hidden, 0px) * -1));
+  }
+
+  .hos-bottom {
+    bottom: 0;
+    transform: translateY(var(--hos-hidden, 0px));
+  }
+
+  .hos[data-snapping] .hos-top,
+  .hos[data-snapping] .hos-bottom {
+    transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hos[data-snapping] .hos-top,
+    .hos[data-snapping] .hos-bottom {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-hide-on-scroll]:not([data-ready])').forEach((root) => {
+      root.dataset.ready = '';
+      const scroller = root.querySelector<HTMLElement>('[data-scroller]')!;
+      const top = root.querySelector<HTMLElement>('[data-bar="top"]')!;
+      const bottom = root.querySelector<HTMLElement>('[data-bar="bottom"]')!;
+      const readout = root.closest('[data-ax-preview]')!.querySelector<HTMLElement>('[data-hos-readout]')!;
+      const out = (key: string) => readout.querySelector<HTMLElement>(`[data-out="${key}"]`)!;
+
+      // Heights in screen points: offsetHeight ignores the zoom applied to the phone screen.
+      const height = Math.max(top.offsetHeight, bottom.offsetHeight);
+      root.style.setProperty('--hos-top', `${top.offsetHeight}px`);
+      root.style.setProperty('--hos-bottom', `${bottom.offsetHeight}px`);
+
+      let hidden = 0;
+      let previous = 0;
+      let snapTimer = 0;
+
+      const render = () => {
+        root.style.setProperty('--hos-hidden', `${hidden}px`);
+        out('hidden').textContent = String(Math.round(hidden));
+        out('progress').textContent = (hidden / height).toFixed(2);
+      };
+
+      const snap = () => {
+        if (hidden === 0 || hidden === height) return;
+        root.dataset.snapping = '';
+        hidden = hidden > height / 2 ? height : 0;
+        render();
+        setTimeout(() => delete root.dataset.snapping, 220);
+      };
+
+      scroller.addEventListener(
+        'scroll',
+        () => {
+          const max = scroller.scrollHeight - scroller.clientHeight;
+          // Ignore bounces: only offsets inside the content count.
+          const offset = Math.min(Math.max(scroller.scrollTop, 0), max);
+          delete root.dataset.snapping;
+          hidden = Math.min(Math.max(hidden + offset - previous, 0), height);
+          // Near the top, the bars are always complete.
+          hidden = Math.min(hidden, offset);
+          previous = offset;
+          render();
+          clearTimeout(snapTimer);
+          snapTimer = window.setTimeout(() => !scroller.dataset.dragging && snap(), 140);
+        },
+        { passive: true },
+      );
+
+      // Mouse drag scrolls like a finger. Touch and wheel already scroll natively.
+      let startY = 0;
+      let startScroll = 0;
+      scroller.addEventListener('pointerdown', (event) => {
+        if (event.pointerType !== 'mouse') return;
+        startY = event.clientY;
+        startScroll = scroller.scrollTop;
+        scroller.dataset.dragging = '';
+        scroller.setPointerCapture(event.pointerId);
+      });
+      scroller.addEventListener('pointermove', (event) => {
+        if (scroller.dataset.dragging === undefined) return;
+        const zoom = scroller.getBoundingClientRect().height / scroller.clientHeight || 1;
+        scroller.scrollTop = startScroll - (event.clientY - startY) / zoom;
+      });
+      const release = () => {
+        if (scroller.dataset.dragging === undefined) return;
+        delete scroller.dataset.dragging;
+        snap();
+      };
+      scroller.addEventListener('pointerup', release);
+      scroller.addEventListener('pointercancel', release);
+
+      render();
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

@@ -1,0 +1,60 @@
+---
+// Five frozen frames of a swipe-to-delete, from the drag to the commit.
+// The frame is 104pt wide: the Delete button is 32pt, the full-swipe threshold is 55% of the row (dashed line).
+import TokenFrame from '@/components/tokens/token-frame.astro';
+import Glyph from '@/components/preview/glyph.astro';
+
+const width = 104;
+const button = 32;
+const threshold = Math.round(width * 0.55);
+
+const states = [
+  { label: 'open', x: -button, height: 1, snackbar: false, caption: 'Short swipe: the Delete button stays open.' },
+  { label: 'armed', x: -76, height: 1, snackbar: false, caption: 'Past 55%: haptic, the button fills the row.' },
+  { label: 'removed', x: -width, height: 0.4, snackbar: true, caption: 'Released: slides out, collapses, snackbar.' },
+  { label: 'pending', x: -width, height: 0, snackbar: true, caption: 'Gone from the list. Nothing sent yet.' },
+  { label: 'committed', x: -width, height: 0, snackbar: false, caption: 'Timeout: the delete is sent. Undo: the row comes back.' },
+] as const;
+---
+
+<TokenFrame>
+  <div class="grid min-w-[40rem] grid-cols-5 gap-px bg-fd-border">
+    {
+      states.map(({ label, x, height, snackbar, caption }) => (
+        <div class="flex flex-col gap-3 bg-fd-card p-3">
+          <div class="relative mx-auto h-[9.5rem] w-[104px] overflow-hidden rounded-md border bg-fd-card">
+            {[0, 1, 2, 3].map((i) => (
+              <div class="relative overflow-hidden border-b" style={`height:${i === 1 ? 36 * height : 36}px`}>
+                {i === 1 && x < 0 && (
+                  <div
+                    class:list={['absolute inset-y-0 right-0 flex items-center bg-red-500 text-white', -x > threshold ? 'justify-start pl-2' : 'justify-center']}
+                    style={`width:${Math.max(button, -x)}px`}
+                  >
+                    <Glyph name="trash" size={12} strokeWidth={2.4} />
+                  </div>
+                )}
+                <div class="absolute inset-0 flex items-center gap-2 bg-fd-card px-2" style={i === 1 ? `transform:translateX(${x}px)` : undefined}>
+                  <span class="size-4 flex-none rounded-full bg-fd-muted" />
+                  <span class="h-1.5 flex-1 rounded-full bg-fd-muted" />
+                </div>
+              </div>
+            ))}
+            {label === 'armed' && <span class="absolute inset-y-0 border-l border-dashed border-blue-500" style={`right:${threshold}px`} />}
+            {snackbar && (
+              <div class="absolute inset-x-1.5 bottom-1.5 flex items-center justify-between overflow-hidden rounded bg-fd-foreground px-1.5 py-1 text-[9px] text-fd-background">
+                <span>Deleted</span>
+                <span class="font-semibold text-blue-400">Undo</span>
+                <span class="absolute bottom-0 left-0 h-0.5 bg-fd-background/40" style={`width:${label === 'removed' ? 95 : 45}%`} />
+              </div>
+            )}
+          </div>
+          <div class="font-mono text-xs">
+            <div>{label}</div>
+            <div class="text-fd-muted-foreground">progress {(-x / width).toFixed(2)}</div>
+          </div>
+          <p class="text-xs text-fd-muted-foreground">{caption}</p>
+        </div>
+      ))
+    }
+  </div>
+</TokenFrame>

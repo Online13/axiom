@@ -1,3 +1,92 @@
 ---
 title: "Scroll-aware AppBar"
+description: "An AppBar that stays in place and changes its look as content scrolls under it."
 ---
+
+<Callout title="Draft">Specified, not implemented yet. The API is described in [useScrollAwareAppBar](/hooks/use-scroll-aware-app-bar) and may change.</Callout>
+
+The bar doesn't move and doesn't change size. At the top of the screen it is transparent and has no title, so the content shows through. As content scrolls under it, it gets a background and a hairline, and the title appears once the title in the page has scrolled out of view.
+
+<ScrollAwareAppBarPreview />
+
+Scroll the article. Turn on Guides to see the bottom of the bar and the in-content title that drives the compact one.
+
+## When to use it
+
+- Detail screens that open on a cover image, a map or a hero: article, product, profile, place.
+- Any screen whose content starts with its own title, so the bar doesn't repeat it at the top.
+- Plain lists, with only the hairline: it appears once a row is under the bar, telling the user there is content above.
+
+The three scroll behaviors change different things:
+
+| Behavior | The bar… | Follows |
+| --- | --- | --- |
+| **Scroll-aware AppBar** | stays in place, changes its look | position |
+| [Collapsible header](/behaviors/collapsible-header) | changes its height | position |
+| [Hide-on-scroll](/behaviors/hide-on-scroll) | leaves the screen | delta |
+
+They combine: a collapsible header is scroll-aware once collapsed, and a scroll-aware bar can also hide on scroll.
+
+## How it works
+
+Two values, both derived from the scroll position:
+
+```ts
+elevation = clamp(offset / distance, 0, 1)
+title     = clamp((offset - (titleTop - barHeight)) / titleHeight, 0, 1)
+```
+
+```text
+offset      0 ──────────── distance ─────── titleTop − bar ─── + titleHeight ──►
+elevation   0 transparent ──► 1 background + hairline
+title                                        0 hidden ────────► 1 shown
+```
+
+- **`elevation`** fills the bar. With a cover, `distance` is the cover height minus the bar height, so the bar is opaque exactly when the cover is gone. On a plain list, a short `distance` (16pt) is enough.
+- **`title`** starts when the in-content title reaches the bottom of the bar and completes when it is fully under it. The two titles are never both readable.
+
+| Rule | Why |
+| --- | --- |
+| **Never move the bar** | Back and actions stay under the thumb and in the same place. |
+| **Keep controls readable over the cover** | Each button sits on a disc that fades out as the bar fills. |
+| **Title from the content's own layout** | The compact title appears when the real title leaves, whatever its length or the font size. |
+| **No snap, no animation of its own** | Both values follow the finger. The bar is in the right state whenever scrolling stops. |
+
+## Implementation
+
+Axiom implements it with one hook, [`useScrollAwareAppBar`](/hooks/use-scroll-aware-app-bar), and two [AppBar](/templates/app-bar) props that read its values.
+
+| Library | Used for |
+| --- | --- |
+| `react-native-reanimated` | `offset`, `elevation` and `title` as shared values computed in `useAnimatedScrollHandler`. `interpolateColor` for the background and the hairline. No React render while scrolling. |
+| React Native layout | `onLayout` on the in-content title gives `titleTop` and `titleHeight`. The bar is positioned over the content, which starts at the top of the screen. |
+
+### In a screen
+
+```tsx title="Conceptual"
+const bar = useScrollAwareAppBar({ distance: COVER_HEIGHT - 44 });
+
+<Animated.ScrollView {...bar.scrollProps}>
+  <Cover />
+  <Text variant="title" {...bar.titleProps}>The last lighthouse keeper</Text>
+</Animated.ScrollView>
+
+<AppBar elevationProgress={bar.elevation} titleProgress={bar.title} style={styles.overlay}>
+  <AppBar.Title>The last lighthouse keeper</AppBar.Title>
+</AppBar>
+```
+
+Installation, options and return value are documented in [useScrollAwareAppBar](/hooks/use-scroll-aware-app-bar).
+
+## Accessibility
+
+- Keep one heading for screen readers: the in-content title. Hide the compact one with `accessibilityElementsHidden` / `importantForAccessibility="no-hide-descendants"`, since it only repeats it.
+- Check contrast at `elevation` 0: icons over a photo need their disc, or a gradient under the bar.
+- The values follow the scroll, so Reduce Motion needs no change.
+
+## Related
+
+- [Collapsible header](/behaviors/collapsible-header)
+- [Hide-on-scroll](/behaviors/hide-on-scroll)
+- [AppBar](/templates/app-bar)
+- [useScrollAwareAppBar](/hooks/use-scroll-aware-app-bar)

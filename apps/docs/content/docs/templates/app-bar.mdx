@@ -50,7 +50,9 @@ import { AppBar } from '@/components/ui/app-bar';
 | `variant` | `'compact' \| 'large'` | `'compact'` | Uses a centered 17pt title or a 34pt title on a second row. Use `large` at the root of a section. |
 | `bordered` | `boolean` | `false` | Draws a hairline under the bar. Useful when content can scroll behind it. |
 | `safeArea` | `boolean` | `true` | Adds the top safe-area inset. Set it to `false` when `Scaffold` already owns that inset. |
-| `collapseProgress` | `number` | `0` | Progress from `0` to `1` used to collapse a large title and its search field into the compact bar. |
+| `collapseProgress` | `number \| SharedValue<number>` | `0` | Progress from `0` to `1` used to collapse a large title and its search field into the compact bar. |
+| `elevationProgress` | `number \| SharedValue<number>` | — | From `0` to `1`: fades in the background and the hairline. Overrides `bordered`. See [Scroll-aware AppBar](/behaviors/scroll-aware-app-bar). |
+| `titleProgress` | `number \| SharedValue<number>` | `1` | From `0` to `1`: fades in the compact title, when the page shows its own title first. |
 | `backgroundColor` | `ColorValue` | background token | Overrides the bar background without changing the screen background. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra styles for the bar container. |
 
@@ -141,7 +143,7 @@ Replace navigation controls with the selection count and actions. Do not stack a
 
 ## Scroll behavior
 
-Drive `collapseProgress` with the scroll position instead of putting scroll logic inside the bar. See [Behaviors: scroll](/behaviors#scroll).
+Drive `collapseProgress` with the scroll position instead of putting scroll logic inside the bar. See [Collapsible header](/behaviors/collapsible-header) for `collapseProgress` and [Scroll-aware AppBar](/behaviors/scroll-aware-app-bar) for `elevationProgress` and `titleProgress`.
 
 ## Related
 

@@ -1,6 +1,12 @@
 {
   "title": "Hooks",
   "pages": [
-    "use-refresh-control"
+    "use-refresh-control",
+    "use-hide-on-scroll",
+    "use-collapsible-header",
+    "use-scroll-to-top",
+    "use-scroll-aware-app-bar",
+    "use-swipe-actions",
+    "use-drag-to-reorder"
   ]
 }

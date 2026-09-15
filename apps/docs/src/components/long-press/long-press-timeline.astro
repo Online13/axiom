@@ -1,0 +1,81 @@
+---
+// Three presses on the same row, on one time axis from 0 to 700ms.
+// The dashed line is `delayLongPress` (500ms). What ends the press decides the event: release, delay, or movement.
+const scale = 700;
+const delay = 500;
+const at = (ms: number) => `${(ms / scale) * 100}%`;
+
+const lanes = [
+  {
+    label: 'Tap',
+    end: 180,
+    marker: 'release',
+    result: 'onPress',
+    caption: 'Released before the delay. The row opens.',
+    tone: 'bg-fd-foreground/70',
+  },
+  {
+    label: 'Long press',
+    end: delay,
+    hold: 680,
+    marker: 'delay reached',
+    result: 'onLongPress',
+    caption: 'Held until the delay. Haptic, menu. The release does nothing.',
+    tone: 'bg-blue-500',
+  },
+  {
+    label: 'Cancelled',
+    end: 260,
+    marker: 'moved 10pt',
+    result: 'none',
+    caption: 'The finger moved first. The list scrolls instead.',
+    tone: 'bg-fd-muted-foreground/40',
+  },
+] as const;
+
+const ticks = [0, 100, 200, 300, 500, 700];
+---
+
+<div class="not-prose my-6 overflow-x-auto border bg-fd-card">
+  <div class="min-w-[36rem] p-4">
+    <div class="grid grid-cols-[7rem_1fr_6.5rem] items-center gap-x-4 gap-y-5">
+      {
+        lanes.map((lane) => (
+          <>
+            <div class="text-sm font-medium">{lane.label}</div>
+            <div class="relative h-8">
+              <span class="absolute inset-x-0 top-1/2 h-px bg-fd-border" />
+              <span class="absolute -inset-y-2.5 border-l border-dashed border-blue-500" style={`left:${at(delay)}`} />
+              <span class={`absolute top-1/2 h-2 -translate-y-1/2 rounded-full ${lane.tone}`} style={`left:0;width:${at(lane.end)}`} />
+              {'hold' in lane && (
+                <span class="absolute top-1/2 h-2 -translate-y-1/2 rounded-r-full bg-blue-500/25" style={`left:${at(lane.end)};width:${at(lane.hold - lane.end)}`} />
+              )}
+              <span
+                class="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-fd-card bg-fd-foreground"
+                style={`left:${at(lane.end)}`}
+              />
+              <span class="absolute -top-1 -translate-x-1/2 whitespace-nowrap font-mono text-[10px] text-fd-muted-foreground" style={`left:${at(lane.end)}`}>
+                {lane.marker}
+              </span>
+            </div>
+            <div class="font-mono text-xs">{lane.result}</div>
+          </>
+        ))
+      }
+
+      <div />
+      <div class="relative h-5 border-t font-mono text-[10px] text-fd-muted-foreground">
+        {ticks.map((ms) => (
+          <span class:list={['absolute top-1 -translate-x-1/2', ms === delay && 'text-blue-500']} style={`left:${at(ms)}`}>{ms === delay ? 'delayLongPress 500' : ms}</span>
+        ))}
+      </div>
+      <div class="font-mono text-[10px] text-fd-muted-foreground">ms</div>
+    </div>
+
+    <ul class="mt-6 grid gap-2 border-t pt-3 text-xs text-fd-muted-foreground sm:grid-cols-3">
+      {lanes.map((lane) => (
+        <li><span class="font-medium text-fd-foreground">{lane.label}.</span> {lane.caption}</li>
+      ))}
+    </ul>
+  </div>
+</div>

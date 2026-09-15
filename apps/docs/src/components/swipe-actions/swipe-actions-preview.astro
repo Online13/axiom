@@ -1,0 +1,384 @@
+---
+// An inbox driven by the same rules as useSwipeActions.
+// Drag a row left for Flag and Archive, right for Read. The row follows the finger, resists past the actions' width,
+// and on release opens or closes from its position and velocity. One row open at a time; a tap elsewhere closes it.
+// The footer mirrors what the hook exposes: translateX and the open side.
+import PhonePreview from '@/components/preview/phone-preview.astro';
+import Glyph from '@/components/preview/glyph.astro';
+
+const mails = [
+  { from: 'Grace Hopper', subject: 'Found the bug. It was a moth.', time: '9:41', unread: true, photo: '1' },
+  { from: 'Alan Turing', subject: 'Re: can machines think?', time: '9:12', unread: true, photo: '2' },
+  { from: 'Margaret Hamilton', subject: 'Priority alarms are fine', time: '8:30', unread: false, photo: '3' },
+  { from: 'Ada Lovelace', subject: 'Notes on the engine, part G', time: 'Yesterday', unread: false, photo: '4' },
+  { from: 'Dennis Ritchie', subject: 'hello, world', time: 'Yesterday', unread: true, photo: '5' },
+  { from: 'Barbara Liskov', subject: 'About that substitution…', time: 'Mon', unread: false, photo: '1' },
+];
+
+const initials = (name: string) =>
+  name
+    .split(' ')
+    .map((part) => part[0])
+    .join('');
+---
+
+<PhonePreview>
+  <div class="sa" data-swipe-actions>
+    <div class="ax-appbar" data-border>
+      <span class="ax-appbar-slot" />
+      <span class="ax-appbar-title">Inbox</span>
+      <span class="ax-appbar-slot" data-side="end"><span class="ax-icon-btn" data-reset title="Reset"><Glyph name="refresh" /></span></span>
+    </div>
+
+    <div class="sa-list" data-list>
+      {
+        mails.map(({ from, subject, time, unread, photo }) => (
+          <div class="sa-row" data-row data-unread={unread ? '' : undefined}>
+            <div class="sa-actions" data-side="leading" style="--sa-width:80px">
+              <button type="button" class="sa-action" data-action="read" style="--sa-color:#007aff" tabindex="-1">
+                <Glyph name="mail" size={20} />
+                <span data-read-label>{unread ? 'Read' : 'Unread'}</span>
+              </button>
+            </div>
+            <div class="sa-actions" data-side="trailing" style="--sa-width:160px">
+              <button type="button" class="sa-action" data-action="flag" style="--sa-color:#ff9500" tabindex="-1">
+                <Glyph name="flag" size={20} />
+                <span>Flag</span>
+              </button>
+              <button type="button" class="sa-action" data-action="archive" style="--sa-color:#af52de" tabindex="-1">
+                <Glyph name="archive" size={20} />
+                <span>Archive</span>
+              </button>
+            </div>
+            <div class="ax-item sa-content" data-content>
+              <span class="sa-dot" />
+              <span class="ax-avatar" data-photo={photo}>{initials(from)}</span>
+              <div class="ax-item-content">
+                <span class="ax-row" data-justify="between">
+                  <span class="ax-item-title sa-from">{from}</span>
+                  <span class="sa-time"><Glyph name="flag" size={12} class="sa-flag" />{time}</span>
+                </span>
+                <span class="ax-item-desc">{subject}</span>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div slot="footer" class="border-t px-4 py-3 font-mono text-xs" data-sa-readout>
+    <span class="text-fd-muted-foreground">translateX </span><span data-out="x">0</span>
+    <span class="text-fd-muted-foreground"> · open </span><span data-out="open">none</span>
+    <span class="text-fd-muted-foreground"> · </span><span data-out="event" class="text-fd-muted-foreground">drag a row left or right</span>
+  </div>
+</PhonePreview>
+
+<style is:global>
+  .sa {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .sa-row {
+    position: relative;
+    overflow: hidden;
+    transition: height 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .sa-row + .sa-row .sa-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 68px;
+    height: 1px;
+    background: var(--ax-border-subtle);
+  }
+
+  [data-scheme='dark'] .sa-row + .sa-row .sa-content::before {
+    background: var(--ax-border-default);
+  }
+
+  .sa-content {
+    position: relative;
+    z-index: 1;
+    padding-left: 28px;
+    background: var(--ax-background-default);
+    cursor: grab;
+    user-select: none;
+    touch-action: pan-y;
+    transform: translateX(var(--sa-x, 0px));
+    will-change: transform;
+  }
+
+  .sa-row[data-settling] .sa-content,
+  .sa-row[data-settling] .sa-actions {
+    transition:
+      transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      width 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .sa-row[data-dragging] .sa-content {
+    cursor: grabbing;
+  }
+
+  .sa-dot {
+    position: absolute;
+    left: 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: #007aff;
+    opacity: 0;
+  }
+
+  .sa-row[data-unread] .sa-dot {
+    opacity: 1;
+  }
+
+  .sa-row[data-unread] .sa-from {
+    font-weight: 600;
+  }
+
+  .sa-time {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 4px;
+    color: var(--ax-content-muted);
+    font-size: 15px;
+  }
+
+  .sa-flag {
+    display: none;
+    color: #ff9500;
+  }
+
+  .sa-row[data-flagged] .sa-flag {
+    display: block;
+  }
+
+  /* Actions sit under the row and stretch with it: past their natural width, the buttons share the extra room. */
+  .sa-actions {
+    position: absolute;
+    inset-block: 0;
+    display: flex;
+    width: max(var(--sa-width), var(--sa-reveal, 0px));
+  }
+
+  /* Hidden at rest: at a fractional zoom, their color would bleed along the row's edges. */
+  .sa-row:not([data-revealed]) .sa-actions {
+    visibility: hidden;
+  }
+
+  .sa-actions[data-side='leading'] {
+    left: 0;
+  }
+
+  .sa-actions[data-side='trailing'] {
+    right: 0;
+  }
+
+  .sa-action {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border: 0;
+    background: var(--sa-color);
+    color: #fff;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sa-row,
+    .sa-row[data-settling] .sa-content,
+    .sa-row[data-settling] .sa-actions {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const RESISTANCE = 60;
+  const VELOCITY = 500;
+  const LOCK = 8;
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-swipe-actions]:not([data-ready])').forEach((root) => {
+      root.dataset.ready = '';
+      const list = root.querySelector<HTMLElement>('[data-list]')!;
+      const initial = list.innerHTML;
+      const readout = root.closest('[data-ax-preview]')!.querySelector<HTMLElement>('[data-sa-readout]')!;
+      const out = (key: string) => readout.querySelector<HTMLElement>(`[data-out="${key}"]`)!;
+
+      let openRow: HTMLElement | null = null;
+      // A press that closed another row doesn't also open a mail.
+      let consumed = false;
+
+      const widthOf = (row: HTMLElement, side: 'leading' | 'trailing') =>
+        parseFloat(row.querySelector<HTMLElement>(`[data-side="${side}"]`)!.style.getPropertyValue('--sa-width'));
+
+      const setX = (row: HTMLElement, x: number) => {
+        row.dataset.x = String(x);
+        if (x !== 0) row.dataset.revealed = '';
+        row.style.setProperty('--sa-x', `${x}px`);
+        row.querySelector<HTMLElement>('[data-side="leading"]')!.style.setProperty('--sa-reveal', `${Math.max(x, 0)}px`);
+        row.querySelector<HTMLElement>('[data-side="trailing"]')!.style.setProperty('--sa-reveal', `${Math.max(-x, 0)}px`);
+        out('x').textContent = String(Math.round(x));
+      };
+
+      const settle = (row: HTMLElement, x: number, event?: string) => {
+        row.dataset.settling = '';
+        setX(row, x);
+        const side = x > 0 ? 'leading' : x < 0 ? 'trailing' : 'none';
+        out('open').textContent = side;
+        if (event) out('event').textContent = event;
+        if (x === 0 && openRow === row) openRow = null;
+        if (x !== 0) openRow = row;
+        setTimeout(() => {
+          delete row.dataset.settling;
+          if (row.dataset.x === '0') delete row.dataset.revealed;
+        }, 280);
+      };
+
+      const bind = (row: HTMLElement) => {
+        const content = row.querySelector<HTMLElement>('[data-content]')!;
+        setX(row, 0);
+
+        let pointer: number | null = null;
+        let startX = 0;
+        let startY = 0;
+        let origin = 0;
+        let locked: 'x' | 'y' | null = null;
+        let samples: { t: number; x: number }[] = [];
+
+        content.addEventListener('pointerdown', (event) => {
+          if (event.button !== 0) return;
+          pointer = event.pointerId;
+          startX = event.clientX;
+          startY = event.clientY;
+          origin = Number(row.dataset.x ?? 0);
+          locked = null;
+          samples = [];
+          delete row.dataset.settling;
+        });
+
+        content.addEventListener('pointermove', (event) => {
+          if (event.pointerId !== pointer) return;
+          const zoom = content.getBoundingClientRect().width / content.offsetWidth || 1;
+          const dx = (event.clientX - startX) / zoom;
+          const dy = (event.clientY - startY) / zoom;
+
+          // Lock the direction after a few points: vertical belongs to the list, horizontal to the row.
+          if (!locked) {
+            if (Math.hypot(dx, dy) < LOCK) return;
+            locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+            if (locked === 'y') return;
+            content.setPointerCapture(event.pointerId);
+            row.dataset.dragging = '';
+            if (openRow && openRow !== row) settle(openRow, 0);
+          }
+          if (locked !== 'x') return;
+
+          const leading = widthOf(row, 'leading');
+          const trailing = widthOf(row, 'trailing');
+          let x = origin + dx;
+          // Past the actions' width, every extra point counts less, up to RESISTANCE.
+          if (x > leading) x = leading + ((x - leading) * RESISTANCE) / (x - leading + RESISTANCE);
+          if (x < -trailing) x = -trailing - ((-x - trailing) * RESISTANCE) / (-x - trailing + RESISTANCE);
+          setX(row, x);
+          out('open').textContent = 'dragging';
+          out('event').textContent = Math.abs(x) > (x > 0 ? leading : trailing) / 2 ? 'release: opens' : 'release: closes';
+          samples.push({ t: performance.now(), x });
+          if (samples.length > 5) samples.shift();
+        });
+
+        const release = (event: PointerEvent) => {
+          if (event.pointerId !== pointer) return;
+          pointer = null;
+          delete row.dataset.dragging;
+          if (locked !== 'x') {
+            // A tap: closes the open row instead of opening the mail.
+            if (!locked && event.type === 'pointerup') {
+              if (consumed) consumed = false;
+              else if (openRow) settle(openRow, 0, 'tap closed the row');
+              else out('event').textContent = 'onPress: open mail';
+            }
+            return;
+          }
+
+          const x = Number(row.dataset.x);
+          const first = samples[0];
+          const last = samples[samples.length - 1];
+          const velocity = first && last && last.t > first.t ? ((last.x - first.x) / (last.t - first.t)) * 1000 : 0;
+          const side = x > 0 ? 'leading' : 'trailing';
+          const width = widthOf(row, side);
+          const sign = x > 0 ? 1 : -1;
+          const towardOpen = velocity * sign;
+
+          let open = Math.abs(x) > width / 2;
+          if (towardOpen > VELOCITY) open = true;
+          if (towardOpen < -VELOCITY) open = false;
+
+          const why = Math.abs(towardOpen) > VELOCITY ? `velocity ${Math.round(Math.abs(velocity))}pt/s` : `${Math.round(Math.abs(x))}pt ${open ? '>' : '<'} ${width / 2}pt`;
+          settle(row, open ? sign * width : 0, `${open ? 'opened' : 'closed'}: ${why}`);
+        };
+        content.addEventListener('pointerup', release);
+        content.addEventListener('pointercancel', release);
+
+        row.querySelectorAll<HTMLButtonElement>('[data-action]').forEach((button) =>
+          button.addEventListener('click', () => {
+            const action = button.dataset.action;
+            if (action === 'read') {
+              const unread = row.toggleAttribute('data-unread');
+              row.querySelector('[data-read-label]')!.textContent = unread ? 'Read' : 'Unread';
+              settle(row, 0, unread ? 'marked unread' : 'marked read');
+            } else if (action === 'flag') {
+              settle(row, 0, row.toggleAttribute('data-flagged') ? 'flagged' : 'unflagged');
+            } else {
+              // Archive removes the row: it slides out, then its height collapses.
+              openRow = null;
+              row.dataset.settling = '';
+              setX(row, -row.offsetWidth);
+              out('open').textContent = 'none';
+              out('event').textContent = 'archived';
+              row.style.height = `${row.offsetHeight}px`;
+              setTimeout(() => (row.style.height = '0px'), 200);
+              setTimeout(() => row.remove(), 440);
+            }
+          }),
+        );
+      };
+
+      list.querySelectorAll<HTMLElement>('[data-row]').forEach(bind);
+
+      // A tap outside the rows (the AppBar) also closes the open row.
+      root.addEventListener('pointerdown', (event) => {
+        consumed = false;
+        if (openRow && !openRow.contains(event.target as Node)) {
+          consumed = true;
+          settle(openRow, 0, 'tap outside closed the row');
+        }
+      });
+
+      root.querySelector('[data-reset]')!.addEventListener('click', () => {
+        list.innerHTML = initial;
+        openRow = null;
+        list.querySelectorAll<HTMLElement>('[data-row]').forEach(bind);
+        out('open').textContent = 'none';
+        out('event').textContent = 'reset';
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

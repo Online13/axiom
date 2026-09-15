@@ -1,3 +1,108 @@
 ---
 title: "Swipe actions"
+description: "Swipe a row sideways to reveal the actions behind it."
 ---
+
+<Callout title="Draft">Specified, not implemented yet. The API is described in [useSwipeActions](/hooks/use-swipe-actions) and may change.</Callout>
+
+The user drags a row sideways. The row follows the finger and uncovers buttons underneath: archive, flag, mark as read. Released far enough, it stays open on the buttons; otherwise it closes.
+
+<SwipeActionsPreview />
+
+Drag a row left for Flag and Archive, or right for Read. Try a short, fast flick: speed counts as much as distance. Tap anywhere else to close the open row.
+
+The same row, frame by frame:
+
+<SwipeActionsStates />
+
+## When to use it
+
+- Lists where the user triages many items in a row: mail, notifications, tasks, conversations.
+- Two or three frequent actions per row, at most on each side.
+
+Swipe actions are invisible until someone tries. Keep every action reachable another way: a [long press](/behaviors/long-press) menu, the detail screen, or [selection mode](/behaviors/contextual-action-mode). Don't use them on rows that already react to a horizontal gesture (a carousel, a slider), or in a screen that is itself swiped between tabs.
+
+## How it works
+
+`translateX` is how far the row is from its rest position: negative to reveal the trailing actions, positive for the leading ones.
+
+### While dragging
+
+| Rule | Why |
+| --- | --- |
+| **Direction lock** after 8pt: horizontal goes to the row, vertical to the list | A slightly diagonal scroll doesn't move rows. |
+| **1:1** up to the actions' width | The row sticks to the finger. |
+| **Resistance** past it, the buttons stretch to fill the gap | The user feels the end without a hard stop. |
+| **One open row**: starting a swipe closes the other one | The list never has two rows half-open. |
+
+Past the actions' width `w`, each point counts less:
+
+```ts
+x = w + (over * resistance) / (over + resistance)   // resistance: 60pt
+```
+
+### On release
+
+The row opens or closes from **velocity first, then position**:
+
+```text
+velocity toward open  > 500pt/s ──► open
+velocity toward close > 500pt/s ──► close
+otherwise:  |x| > w / 2 ────────────► open
+            |x| ≤ w / 2 ────────────► close
+```
+
+The snap is a spring that starts from the release velocity, so a flick carries on smoothly instead of restarting.
+
+### Once open
+
+- A tap on the row, on another row or on the screen closes it without triggering anything else.
+- A tap on an action runs it and closes the row. If the action removes the row (archive), the row slides out and the list closes the gap: see [Swipe-to-delete](/behaviors/swipe-to-delete).
+- A scroll of the list closes it.
+
+## Implementation
+
+Axiom implements it with one hook, [`useSwipeActions`](/hooks/use-swipe-actions), and a `SwipeableRow` that renders the actions behind any [Item](/atoms/item).
+
+| Library | Used for |
+| --- | --- |
+| `react-native-gesture-handler` | `Gesture.Pan()` with `activeOffsetX([-8, 8])` and `failOffsetY([-8, 8])`: the direction lock, without blocking the list's vertical scroll. |
+| `react-native-reanimated` | `translateX` as a shared value, the resistance and the action widths computed in the gesture callbacks. `withSpring(target, { velocity })` for the snap. |
+| React context | The id of the open row, shared by the rows of one list, so opening a row closes the other. |
+
+### In a screen
+
+```tsx title="Conceptual"
+<SwipeableList>
+  <FlatList
+    data={mails}
+    renderItem={({ item }) => (
+      <SwipeableRow
+        leading={[{ key: 'read', icon: 'mail', label: 'Read', color: 'info', onPress: () => toggleRead(item) }]}
+        trailing={[
+          { key: 'flag', icon: 'flag', label: 'Flag', color: 'warning', onPress: () => flag(item) },
+          { key: 'archive', icon: 'archive', label: 'Archive', onPress: () => archive(item) },
+        ]}
+      >
+        <Item onPress={() => open(item)}>…</Item>
+      </SwipeableRow>
+    )}
+  />
+</SwipeableList>
+```
+
+Options and return value are documented in [useSwipeActions](/hooks/use-swipe-actions).
+
+## Accessibility
+
+- Expose each action as an `accessibilityActions` entry on the row: VoiceOver lists them in the rotor, TalkBack in its actions menu. Screen reader users never swipe rows.
+- Action buttons are hidden from screen readers while the row is closed, and focusable when it's open.
+- Colors aren't enough: each action has an icon and a label.
+- With Reduce Motion on, the snap is a short timing instead of a spring.
+
+## Related
+
+- [Swipe-to-delete](/behaviors/swipe-to-delete)
+- [Long press](/behaviors/long-press)
+- [useSwipeActions](/hooks/use-swipe-actions)
+- [Item](/atoms/item)

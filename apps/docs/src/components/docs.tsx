@@ -1,5 +1,5 @@
-import { DocsLayout } from 'fumadocs-ui/layouts/docs';
-import { DocsPage, type DocsPageProps } from 'fumadocs-ui/layouts/docs/page';
+import { DocsLayout } from 'fumadocs-ui/layouts/notebook';
+import { DocsPage, type DocsPageProps } from 'fumadocs-ui/layouts/notebook/page';
 import type { Root } from 'fumadocs-core/page-tree';
 import type { MouseEvent, ReactNode } from 'react';
 import { navigate } from 'astro:transitions/client';
@@ -8,6 +8,7 @@ import type { AstroProviderProps } from 'fumadocs-core/framework/astro';
 import SearchDialog from './search';
 
 const landingUrl = import.meta.env.PUBLIC_LANDING_URL ?? 'http://localhost:4321';
+const githubUrl = 'https://github.com/Online13/axiom';
 
 function preventActiveFolderNavigation(event: MouseEvent<HTMLElement>) {
   if (!(event.target instanceof Element)) return;
@@ -47,11 +48,19 @@ export function Docs({
         themeSwitch={{
           enabled: false,
         }}
+        // Collapsing is desktop-only; the mobile drawer trigger stays.
+        sidebar={{ collapsible: false }}
+        // 'top' moves the logo and search out of the sidebar into a full-width header.
         nav={{
-          title: <span className="font-bold tracking-[0.2em]">AXIOM</span>,
-          url: '/',
+          mode: 'top',
+          // Plain anchor: the logo leaves the docs for the landing page, outside the client router.
+          title: (props) => (
+            <a {...props} href={landingUrl}>
+              <span className="font-bold tracking-[0.2em]">AXIOM</span>
+            </a>
+          ),
         }}
-        links={[{ text: 'Home', url: landingUrl, external: true }]}
+        githubUrl={githubUrl}
       >
         <DocsPage {...page}>{children}</DocsPage>
       </DocsLayout>
