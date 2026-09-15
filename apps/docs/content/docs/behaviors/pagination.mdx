@@ -1,3 +1,42 @@
 ---
 title: "Pagination"
+description: "Load the next page of a list as the user nears the bottom, until there is nothing left."
 ---
+
+<Callout title="Planned">This behavior isn't described in detail yet.</Callout>
+
+A long list loads its content in pages. When the user scrolls close to the bottom, the next page loads and is appended, without any button to press.
+
+```text
+scroll ↓ → near the bottom → loading → page appended
+                                     → error → retry
+                                     → no more pages → end of list
+```
+
+## Loading the next page
+
+- Start loading before the user reaches the very bottom, around one screen away, so the next rows are ready in time.
+- Show a small [Spinner](/atoms/spinner) as the list footer while the page loads.
+- Never start a second request while one is in flight.
+
+## Error
+
+- Keep the rows already loaded.
+- Replace the footer spinner with a short message and a retry action.
+- Don't retry automatically on every scroll: wait for the user to tap retry.
+
+## End of list
+
+The last page is loaded and there is nothing more to fetch.
+
+- Replace the spinner with a discreet footer, such as a divider and "You're all caught up".
+- Stop requesting pages when the user touches the bottom again.
+- On a long list, the footer can offer a way on: back to the top, older items, or another filter.
+- A list that fits in a single page doesn't need the footer.
+
+## Related
+
+- [Async content state](/patterns/async-content-state), for the first load and the empty list
+- [Pull-to-refresh](/behaviors/pull-to-refresh)
+- [Scroll-to-top](/behaviors/scroll-to-top)
+- [Spinner](/atoms/spinner)

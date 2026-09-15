@@ -3,7 +3,6 @@
   "pages": [
     "---Patterns---",
     "otp-verification",
-    "swipe-actions",
     "undoable-action",
     "search-experience",
     "selection-mode",

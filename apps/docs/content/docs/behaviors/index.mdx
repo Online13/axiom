@@ -3,7 +3,7 @@ title: Behaviors
 description: "Recurring mobile behaviors, grouped by topic."
 ---
 
-Axiom doesn't stop at components. Over time, it covers the behaviors every mobile app needs. Some already exist as components or hooks; the rest are planned.
+Axiom doesn't stop at components. Over time, it covers the behaviors every mobile app needs. A behavior is an interaction mechanic, such as a gesture or a reaction to scroll, usually backed by a hook. Components live in [atoms](/atoms), [molecules](/molecules) and [templates](/templates); complete flows such as search or loading states live in [patterns](/patterns).
 
 Each card links to the behavior's page and shows its status:
 
@@ -21,6 +21,7 @@ How the screen reacts while the user scrolls a list.
   <BehaviorCard title="Collapsible header" preview="collapsible-header" status="spec" href="/behaviors/collapsible-header" />
   <BehaviorCard title="Scroll-to-top" preview="scroll-to-top" status="spec" href="/behaviors/scroll-to-top" />
   <BehaviorCard title="Scroll-aware AppBar" preview="scroll-aware-app-bar" status="spec" href="/behaviors/scroll-aware-app-bar" />
+  <BehaviorCard title="Pagination" preview="pagination" status="planned" href="/behaviors/pagination" />
 </BehaviorGrid>
 
 ## Gestures
@@ -39,44 +40,5 @@ Actions triggered by touch rather than a visible button.
 Actions that appear only when they apply to what the user is doing.
 
 <BehaviorGrid>
-  <BehaviorCard title="Context menu" preview="context-menu" status="available" href="/behaviors/context-menu" />
-  <BehaviorCard title="Contextual action mode" preview="selection-mode" status="spec" href="/behaviors/contextual-action-mode" />
   <BehaviorCard title="Dynamic toolbar" preview="dynamic-toolbar" status="available" href="/behaviors/dynamic-toolbar" />
-  <BehaviorCard title="Floating action menu" preview="floating-action-menu" status="spec" href="/behaviors/floating-action-menu" />
-</BehaviorGrid>
-
-## Navigation UI
-
-How the user moves between the main sections of the app.
-
-<BehaviorGrid>
-  <BehaviorCard title="BottomTabBar" preview="bottom-tab-bar" status="available" href="/behaviors/bottom-tab-bar" />
-  <BehaviorCard title="Floating BottomTabBar" preview="floating-tab-bar" status="planned" href="/behaviors/floating-bottom-tab-bar" />
-  <BehaviorCard title="Primary floating action" preview="primary-fab" status="planned" href="/behaviors/primary-floating-action" />
-  <BehaviorCard title="Top tabs" preview="top-tabs" status="available" href="/behaviors/top-tabs" />
-  <BehaviorCard title="Page-based navigation hub" preview="nav-hub" status="planned" href="/behaviors/navigation-hub" />
-</BehaviorGrid>
-
-## Search
-
-The full search flow, from the field to the results.
-
-<BehaviorGrid>
-  <BehaviorCard title="SearchBar" preview="search-bar" status="available" href="/behaviors/search-bar" />
-  <BehaviorCard title="SearchExperience" preview="search-experience" status="spec" href="/behaviors/search-experience" />
-  <BehaviorCard title="Search history" preview="search-history" status="planned" href="/behaviors/search-history" />
-  <BehaviorCard title="Recent searches" preview="recent-searches" status="planned" href="/behaviors/recent-searches" />
-  <BehaviorCard title="Cancel" preview="cancel" status="planned" href="/behaviors/cancel" />
-  <BehaviorCard title="Debounce" preview="debounce" status="planned" href="/behaviors/debounce" />
-</BehaviorGrid>
-
-## Async content
-
-Every step of a list that loads from the network. See [async content state](/patterns/async-content-state) for how they fit together.
-
-<BehaviorGrid>
-  <BehaviorCard title="Pagination" preview="pagination" status="planned" href="/behaviors/pagination" />
-  <BehaviorCard title="Pull-to-refresh" preview="pull-to-refresh" status="available" href="/behaviors/async-pull-to-refresh" />
-  <BehaviorCard title="Skeleton" preview="skeleton" status="available" href="/behaviors/skeleton" />
-  <BehaviorCard title="End-of-list" preview="end-of-list" status="planned" href="/behaviors/end-of-list" />
 </BehaviorGrid>

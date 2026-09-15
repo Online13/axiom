@@ -5,18 +5,53 @@ description: "Complete search pattern, from the field to the results."
 
 <Callout title="Planned">This pattern isn't available yet.</Callout>
 
-[SearchBar](/molecules/search-bar) is the field. The search experience is everything around it.
+[SearchBar](/molecules/search-bar) is the field. The search experience is everything around it: what shows before the user types, while they type, and when nothing matches.
 
-## Covers
+```text
+focus → recent searches
+type  → debounce → loading → results
+                           → no results
+cancel → back to the previous screen
+```
 
-- search history;
-- recent searches;
-- cancel;
-- debounce;
-- no-results behavior.
+## Recent searches
+
+What the screen shows when the field is focused and still empty.
+
+- List the last queries, most recent first, as tappable rows built with [Item](/atoms/item).
+- Tapping a row runs that query again.
+- Let the user remove one entry, and clear the whole list.
+
+## Search history
+
+Where recent searches come from.
+
+- Save a query when the user opens a result or submits, not on every keystroke.
+- Store it on the device and cap the list, around 10 entries.
+- Move a repeated query to the top instead of adding it twice.
+
+## Debounce
+
+Wait for a short pause in typing before sending the request, around 250 ms.
+
+- Show the `loading` state of [SearchBar](/molecules/search-bar) while the request runs.
+- Ignore responses to older queries, so results never flash back to a previous one.
+- A local list can filter on every keystroke, without debounce.
+
+## Cancel
+
+Cancel leaves search mode.
+
+- It clears the field, closes the keyboard and returns to the previous screen.
+- The clear button inside the field only empties the query and keeps the user in search.
+
+## No results
+
+The query matched nothing. See [No results](/patterns/async-content-state#no-results) in async content state.
 
 ## Related
 
 - [SearchBar](/molecules/search-bar)
+- [Async content state](/patterns/async-content-state)
 - [Empty](/atoms/empty), for the no-results state
 - [Chip](/atoms/chip), for filters
