@@ -10,7 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy": "wrangler deploy"
+    "deploy": "astro build && wrangler deploy --config wrangler.jsonc"
   },
   "dependencies": {
     "astro": "^7.3.2"

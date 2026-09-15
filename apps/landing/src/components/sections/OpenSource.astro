@@ -1,5 +1,6 @@
 ---
 import Title from '../Title.astro';
+const githubUrl = 'https://github.com/Online13/axiom';
 // Counts come from the registry docs (docs/README.md): core, hooks,
 // typography, atoms, molecules, organisms and templates.
 const facts = [
@@ -30,7 +31,7 @@ const tree = [
 			<p class="open-source__lede">
 				Every component, behavior and block lives on GitHub. Read it, fork it, send a pull request.
 			</p>
-			<a href="#" class="btn btn--ghost">Star on GitHub</a>
+			<a href={githubUrl} class="btn btn--ghost" target="_blank" rel="noopener noreferrer">Star on GitHub</a>
 		</div>
 
 		<div class="open-source__aside">
