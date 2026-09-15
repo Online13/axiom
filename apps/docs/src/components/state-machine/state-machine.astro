@@ -1,0 +1,290 @@
+---
+// An interactive state machine. The current state is highlighted, its outgoing transitions are the buttons below.
+// Click a transition (in the diagram or below) to follow it, or click a state to jump to it.
+// Edges are straight by default; `via` bends one through a control point, and `from === to` draws a loop (`loop` picks the side).
+export interface StateNode {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  caption: string;
+}
+
+export interface StateEdge {
+  from: string;
+  to: string;
+  label: string;
+  via?: [number, number];
+  /** Where the label sits along the edge, 0 to 1. */
+  labelAt?: number;
+  /** Nudges the label by [dx, dy] when it collides with something. */
+  labelOffset?: [number, number];
+  loop?: 'above' | 'below' | 'right';
+}
+
+interface Props {
+  nodes: StateNode[];
+  edges: StateEdge[];
+  initial: string;
+  width: number;
+  height: number;
+}
+
+const { nodes, edges, initial, width, height } = Astro.props;
+const NODE_W = 112;
+const NODE_H = 36;
+const GAP = 4;
+
+const byId = new Map(nodes.map((node) => [node.id, node]));
+
+// Point where the segment from the node centre toward (tx, ty) leaves the node box.
+function exit(node: StateNode, tx: number, ty: number, gap = 0) {
+  const dx = tx - node.x;
+  const dy = ty - node.y;
+  const t = Math.min((NODE_W / 2 + gap) / Math.abs(dx || 1e-9), (NODE_H / 2 + gap) / Math.abs(dy || 1e-9));
+  return [node.x + dx * t, node.y + dy * t];
+}
+
+const lerp = (a: number[], b: number[], t: number) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+
+const loops = {
+  below: (n: StateNode) => {
+    const y = n.y + NODE_H / 2;
+    return { d: `M ${n.x - 16} ${y} C ${n.x - 36} ${y + 46}, ${n.x + 36} ${y + 46}, ${n.x + 16} ${y + GAP}`, label: [n.x, y + 50] };
+  },
+  above: (n: StateNode) => {
+    const y = n.y - NODE_H / 2;
+    return { d: `M ${n.x - 16} ${y} C ${n.x - 36} ${y - 46}, ${n.x + 36} ${y - 46}, ${n.x + 16} ${y - GAP}`, label: [n.x, y - 50] };
+  },
+  right: (n: StateNode) => {
+    const x = n.x + NODE_W / 2;
+    return { d: `M ${x} ${n.y - 10} C ${x + 50} ${n.y - 34}, ${x + 50} ${n.y + 34}, ${x + GAP} ${n.y + 10}`, label: [x + 44, n.y - 34] };
+  },
+};
+
+const paths = edges.map((edge) => {
+  const from = byId.get(edge.from)!;
+  const to = byId.get(edge.to)!;
+  const [dx, dy] = edge.labelOffset ?? [0, 0];
+  const nudge = (p: { d: string; label: number[] }) => ({ d: p.d, label: [p.label[0] + dx, p.label[1] + dy] });
+  if (from === to) return nudge(loops[edge.loop ?? 'below'](from));
+  if (edge.via) {
+    const start = exit(from, ...edge.via);
+    const end = exit(to, ...edge.via, GAP);
+    const t = edge.labelAt ?? 0.5;
+    const label = lerp(lerp(start, edge.via, t), lerp(edge.via, end, t), t);
+    return nudge({ d: `M ${start[0]} ${start[1]} Q ${edge.via[0]} ${edge.via[1]} ${end[0]} ${end[1]}`, label });
+  }
+  const start = exit(from, to.x, to.y);
+  const end = exit(to, from.x, from.y, GAP);
+  return nudge({ d: `M ${start[0]} ${start[1]} L ${end[0]} ${end[1]}`, label: lerp(start, end, edge.labelAt ?? 0.5) });
+});
+
+const config = JSON.stringify({ nodes, edges, initial });
+---
+
+<div class="not-prose my-6 border bg-fd-card" data-state-machine={config}>
+  <div class="overflow-x-auto">
+    <svg viewBox={`0 0 ${width} ${height}`} class="mx-auto block w-full min-w-[36rem] select-none" style={`max-width:${width}px`} role="img" aria-label="State machine diagram">
+      <defs>
+        <marker id="sm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="context-stroke" />
+        </marker>
+      </defs>
+
+      {
+        edges.map((edge, i) => (
+          <g class="sm-edge cursor-pointer" data-edge={i}>
+            <path d={paths[i].d} fill="none" stroke="transparent" stroke-width="14" />
+            <path class="sm-line" d={paths[i].d} fill="none" stroke-width="1.5" marker-end="url(#sm-arrow)" data-line />
+            <text
+              x={paths[i].label[0]}
+              y={paths[i].label[1]}
+              text-anchor="middle"
+              dominant-baseline="middle"
+              class="sm-label font-mono text-[11px]"
+              style="paint-order:stroke;stroke-width:5px;stroke-linejoin:round"
+            >
+              {edge.label}
+            </text>
+          </g>
+        ))
+      }
+
+      {
+        nodes.map((node) => (
+          <g class="sm-node cursor-pointer" data-node={node.id} tabindex="0" role="button" aria-label={`Go to ${node.label}`}>
+            <rect x={node.x - NODE_W / 2} y={node.y - NODE_H / 2} width={NODE_W} height={NODE_H} rx="8" stroke-width="1.5" />
+            <text x={node.x} y={node.y} text-anchor="middle" dominant-baseline="central" class="font-mono text-[13px]">
+              {node.label}
+            </text>
+          </g>
+        ))
+      }
+
+      <circle r="4.5" class="sm-token" data-token opacity="0" />
+    </svg>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-x-4 gap-y-2 border-t px-4 py-3">
+    <div class="min-w-0 flex-1 basis-60">
+      <div class="font-mono text-sm" data-current-label></div>
+      <p class="text-xs text-fd-muted-foreground" data-current-caption></p>
+    </div>
+    <div class="flex flex-wrap gap-2" data-actions></div>
+    <button type="button" class="text-xs text-fd-muted-foreground underline-offset-2 hover:underline" data-reset>Reset</button>
+  </div>
+</div>
+
+<style>
+  .sm-line {
+    stroke: var(--color-fd-border);
+    transition: stroke 150ms;
+  }
+  .sm-label {
+    fill: var(--color-fd-muted-foreground);
+    stroke: var(--color-fd-card);
+  }
+  .sm-edge[data-active] .sm-line {
+    stroke: var(--color-fd-foreground);
+    stroke-dasharray: 6 4;
+    animation: sm-flow 900ms linear infinite;
+  }
+  .sm-edge[data-active] .sm-label {
+    fill: var(--color-fd-foreground);
+  }
+  .sm-node rect {
+    fill: var(--color-fd-card);
+    stroke: var(--color-fd-border);
+    transition: fill 150ms, stroke 150ms;
+  }
+  .sm-node text {
+    fill: var(--color-fd-muted-foreground);
+  }
+  .sm-node:hover rect,
+  .sm-node:focus-visible rect {
+    stroke: var(--color-fd-muted-foreground);
+  }
+  .sm-node:focus {
+    outline: none;
+  }
+  .sm-node[data-current] rect {
+    fill: var(--color-fd-primary);
+    stroke: var(--color-fd-primary);
+  }
+  .sm-node[data-current] text {
+    fill: var(--color-fd-primary-foreground);
+    font-weight: 600;
+  }
+  .sm-token {
+    fill: var(--color-fd-foreground);
+  }
+  @keyframes sm-flow {
+    to {
+      stroke-dashoffset: -20;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sm-edge[data-active] .sm-line {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  type Config = {
+    nodes: { id: string; label: string; caption: string }[];
+    edges: { from: string; to: string; label: string }[];
+    initial: string;
+  };
+
+  const TRAVEL = 420;
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-state-machine]:not([data-ready])').forEach((root) => {
+      root.dataset.ready = '';
+      const { nodes, edges, initial } = JSON.parse(root.dataset.stateMachine!) as Config;
+      const nodeEls = new Map([...root.querySelectorAll<SVGGElement>('[data-node]')].map((el) => [el.dataset.node!, el]));
+      const edgeEls = [...root.querySelectorAll<SVGGElement>('[data-edge]')];
+      const token = root.querySelector<SVGCircleElement>('[data-token]')!;
+      const label = root.querySelector<HTMLElement>('[data-current-label]')!;
+      const caption = root.querySelector<HTMLElement>('[data-current-caption]')!;
+      const actions = root.querySelector<HTMLElement>('[data-actions]')!;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      let current = initial;
+      let moving = false;
+
+      function render() {
+        const node = nodes.find((n) => n.id === current)!;
+        nodeEls.forEach((el, id) => el.toggleAttribute('data-current', id === current));
+        edgeEls.forEach((el, i) => el.toggleAttribute('data-active', edges[i].from === current));
+        label.textContent = node.label;
+        caption.textContent = node.caption;
+        actions.replaceChildren(
+          ...edges.flatMap((edge, i) => {
+            if (edge.from !== current) return [];
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'rounded-md border bg-fd-background px-2.5 py-1 font-mono text-xs hover:bg-fd-muted';
+            button.textContent = `${edge.label} → ${nodes.find((n) => n.id === edge.to)!.label}`;
+            button.addEventListener('click', () => follow(i));
+            return [button];
+          }),
+        );
+      }
+
+      function follow(i: number) {
+        const edge = edges[i];
+        if (moving || edge.from !== current) return;
+        if (reduceMotion.matches) {
+          current = edge.to;
+          return render();
+        }
+        const path = edgeEls[i].querySelector<SVGPathElement>('[data-line]')!;
+        const length = path.getTotalLength();
+        const start = performance.now();
+        moving = true;
+        token.setAttribute('opacity', '1');
+        const step = (now: number) => {
+          const t = Math.min((now - start) / TRAVEL, 1);
+          const eased = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+          const point = path.getPointAtLength(eased * length);
+          token.setAttribute('cx', String(point.x));
+          token.setAttribute('cy', String(point.y));
+          if (t < 1) return requestAnimationFrame(step);
+          token.setAttribute('opacity', '0');
+          moving = false;
+          current = edge.to;
+          render();
+        };
+        requestAnimationFrame(step);
+      }
+
+      edgeEls.forEach((el, i) => el.addEventListener('click', () => follow(i)));
+      nodeEls.forEach((el, id) => {
+        const jump = () => {
+          if (moving) return;
+          current = id;
+          render();
+        };
+        el.addEventListener('click', jump);
+        el.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            jump();
+          }
+        });
+      });
+      root.querySelector('[data-reset]')!.addEventListener('click', () => {
+        if (moving) return;
+        current = initial;
+        render();
+      });
+
+      render();
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

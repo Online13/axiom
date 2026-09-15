@@ -40,15 +40,40 @@ import LongPressPreview from "@/components/long-press/long-press-preview.astro";
 import LongPressTimeline from "@/components/long-press/long-press-timeline.astro";
 import SwipeActionsPreview from "@/components/swipe-actions/swipe-actions-preview.astro";
 import SwipeActionsStates from "@/components/swipe-actions/swipe-actions-states.astro";
-import SwipeToDeletePreview from "@/components/swipe-to-delete/swipe-to-delete-preview.astro";
-import SwipeToDeleteStates from "@/components/swipe-to-delete/swipe-to-delete-states.astro";
+import FullSwipePreview from "@/components/full-swipe/full-swipe-preview.astro";
+import FullSwipeStates from "@/components/full-swipe/full-swipe-states.astro";
 import DragToReorderPreview from "@/components/drag-to-reorder/drag-to-reorder-preview.astro";
 import DragToReorderStates from "@/components/drag-to-reorder/drag-to-reorder-states.astro";
+import PaginationPreview from "@/components/pagination/pagination-preview.astro";
+import PaginationStates from "@/components/pagination/pagination-states.astro";
+import DynamicToolbarPreview from "@/components/dynamic-toolbar/dynamic-toolbar-preview.astro";
+import DynamicToolbarStates from "@/components/dynamic-toolbar/dynamic-toolbar-states.astro";
+import OtpVerificationPreview from "@/components/otp-verification/otp-verification-preview.astro";
+import OtpVerificationStates from "@/components/otp-verification/otp-verification-states.astro";
+import UndoableActionPreview from "@/components/undoable-action/undoable-action-preview.astro";
+import UndoableActionStates from "@/components/undoable-action/undoable-action-states.astro";
+import SearchExperiencePreview from "@/components/search-experience/search-experience-preview.astro";
+import SearchExperienceStates from "@/components/search-experience/search-experience-states.astro";
+import SelectionModePreview from "@/components/selection-mode/selection-mode-preview.astro";
+import SelectionModeStates from "@/components/selection-mode/selection-mode-states.astro";
+import FloatingActionMenuPreview from "@/components/floating-action-menu/floating-action-menu-preview.astro";
+import FloatingActionMenuStates from "@/components/floating-action-menu/floating-action-menu-states.astro";
+import AsyncContentStatePreview from "@/components/async-content-state/async-content-state-preview.astro";
+import AsyncContentStateStates from "@/components/async-content-state/async-content-state-states.astro";
+import AsyncContentStateMachine from "@/components/async-content-state/async-content-state-machine.astro";
+import SwipeActionsMachine from "@/components/swipe-actions/swipe-actions-machine.astro";
+import PullToRefreshMachine from "@/components/refresh-control/pull-to-refresh-machine.astro";
+import ScrollToTopMachine from "@/components/scroll-to-top/scroll-to-top-machine.astro";
+import PaginationMachine from "@/components/pagination/pagination-machine.astro";
+import UndoableActionMachine from "@/components/undoable-action/undoable-action-machine.astro";
+import SearchExperienceMachine from "@/components/search-experience/search-experience-machine.astro";
+import SelectionModeMachine from "@/components/selection-mode/selection-mode-machine.astro";
 import PhonePreview from "@/components/preview/phone-preview.astro";
 import Glyph from "@/components/preview/glyph.astro";
 import ScaffoldAnatomy from "@/components/scaffold/scaffold-anatomy.astro";
 import PreviewTheme from "@/components/preview/preview-theme.astro";
 import AxiomBanner from "@/components/intro/axiom-banner.astro";
+import AtomicLevels from "@/components/intro/atomic-levels.astro";
 import "@/styles/global.css";
 import "@/styles/preview.css";
 import { source } from "@/lib/source";
@@ -141,14 +166,39 @@ const toc: TOCItemType[] = headings.map((heading) => ({
           LongPressTimeline,
           SwipeActionsPreview,
           SwipeActionsStates,
-          SwipeToDeletePreview,
-          SwipeToDeleteStates,
+          FullSwipePreview,
+          FullSwipeStates,
           DragToReorderPreview,
           DragToReorderStates,
+          PaginationPreview,
+          PaginationStates,
+          DynamicToolbarPreview,
+          DynamicToolbarStates,
+          OtpVerificationPreview,
+          OtpVerificationStates,
+          UndoableActionPreview,
+          UndoableActionStates,
+          SearchExperiencePreview,
+          SearchExperienceStates,
+          SelectionModePreview,
+          SelectionModeStates,
+          FloatingActionMenuPreview,
+          FloatingActionMenuStates,
+          AsyncContentStatePreview,
+          AsyncContentStateStates,
+          AsyncContentStateMachine,
+          SwipeActionsMachine,
+          PullToRefreshMachine,
+          ScrollToTopMachine,
+          PaginationMachine,
+          UndoableActionMachine,
+          SearchExperienceMachine,
+          SelectionModeMachine,
           PhonePreview,
           Glyph,
           ScaffoldAnatomy,
           AxiomBanner,
+          AtomicLevels,
         }}
       />
     </div>

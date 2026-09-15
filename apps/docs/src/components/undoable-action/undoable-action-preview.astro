@@ -1,0 +1,305 @@
+---
+// A notifications screen where archiving is undoable instead of confirmed.
+// Tap the archive button: the row leaves at once and a snackbar offers Undo for 4s. Nothing is sent yet.
+// Undo puts the row back in place. The timeout, a second archive, or leaving the screen commits the pending one.
+// The footer logs what reaches the server.
+import PhonePreview from '@/components/preview/phone-preview.astro';
+import Glyph from '@/components/preview/glyph.astro';
+
+const notifications = [
+  { id: 'n1', icon: 'bag', title: 'Order shipped', text: 'Your headphones are on the way.', time: '9:41' },
+  { id: 'n2', icon: 'calendar', title: 'Dentist tomorrow', text: '10:30 at Harley Street.', time: '9:02' },
+  { id: 'n3', icon: 'users', title: 'Ada joined the team', text: 'Say hello in #general.', time: '8:15' },
+  { id: 'n4', icon: 'card', title: 'Payment received', text: '£42.00 from Alan.', time: 'Yesterday' },
+  { id: 'n5', icon: 'star', title: 'New review', text: '"Fast delivery, great fit."', time: 'Yesterday' },
+  { id: 'n6', icon: 'bell', title: 'Price drop', text: 'The desk lamp is 20% off.', time: 'Mon' },
+] as const;
+---
+
+<PhonePreview>
+  <div class="und" data-undoable-action>
+    <div class="ax-appbar" data-border>
+      <span class="ax-appbar-slot" />
+      <span class="ax-appbar-title">Notifications</span>
+      <span class="ax-appbar-slot" data-side="end" />
+    </div>
+
+    <div class="und-list">
+      {
+        notifications.map(({ id, icon, title, text, time }) => (
+          <div class="und-row" data-row data-id={id} data-title={title}>
+            <div class="ax-item">
+              <span class="und-icon"><Glyph name={icon} size={18} /></span>
+              <div class="ax-item-content">
+                <span class="ax-row" data-justify="between">
+                  <span class="ax-item-title">{title}</span>
+                  <span class="ax-item-desc">{time}</span>
+                </span>
+                <span class="ax-item-desc">{text}</span>
+              </div>
+              <button type="button" class="ax-icon-btn und-archive" data-archive aria-label={`Archive ${title}`}>
+                <Glyph name="archive" size={20} />
+              </button>
+            </div>
+          </div>
+        ))
+      }
+      <div class="ax-center und-empty" data-empty>
+        <span class="ax-empty-media"><Glyph name="inbox" size={28} /></span>
+        <span class="ax-subhead ax-muted">All caught up</span>
+      </div>
+    </div>
+
+    <div class="und-snackbar ax-snackbar" data-snackbar>
+      <span class="ax-grow" data-snackbar-text>Archived</span>
+      <button type="button" class="ax-snackbar-action und-undo" data-undo>Undo</button>
+      <span class="und-timer" data-timer />
+    </div>
+  </div>
+
+  <div slot="footer" class="flex flex-col gap-2 border-t px-4 py-3 font-mono text-xs" data-und-readout>
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      <span>
+        <span class="text-fd-muted-foreground">pending </span><span data-out="pending">none</span>
+      </span>
+      <span class="flex gap-2">
+        <button type="button" class="border px-2 py-0.5" data-leave>Leave screen</button>
+        <button type="button" class="border px-2 py-0.5" data-reset>Reset</button>
+      </span>
+    </div>
+    <div><span class="text-fd-muted-foreground">server </span><span data-out="log">nothing sent</span></div>
+  </div>
+</PhonePreview>
+
+<style is:global>
+  .und {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .und-list {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .und-row {
+    overflow: hidden;
+    transition:
+      height 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 160ms ease;
+  }
+
+  .und-row + .und-row .ax-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 68px;
+    height: 1px;
+    background: var(--ax-border-subtle);
+  }
+
+  .und-row[data-hidden] {
+    opacity: 0;
+  }
+
+  .und-row[data-restored] .ax-item {
+    animation: und-flash 900ms ease;
+  }
+
+  @keyframes und-flash {
+    from { background: color-mix(in srgb, var(--ax-content-link) 14%, transparent); }
+  }
+
+  .und-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: var(--ax-background-subtle);
+    color: var(--ax-content-muted);
+  }
+
+  .und-archive {
+    border: 0;
+    background: none;
+    color: var(--ax-content-muted);
+    cursor: pointer;
+  }
+
+  .und-archive:active {
+    background: var(--ax-background-subtle);
+  }
+
+  .und .und-empty {
+    display: none;
+    position: absolute;
+    inset: 0;
+  }
+
+  .und[data-all-gone] .und-empty {
+    display: flex;
+  }
+
+  .und-snackbar {
+    position: absolute;
+    inset-inline: 12px;
+    bottom: 12px;
+    z-index: 5;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(24px);
+    pointer-events: none;
+    transition:
+      opacity 180ms ease,
+      transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .und-snackbar[data-open] {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .und-undo {
+    border: 0;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .und-timer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    opacity: 0.35;
+    transform-origin: left;
+  }
+
+  .und-snackbar[data-open] .und-timer {
+    animation: und-timer 4000ms linear forwards;
+  }
+
+  @keyframes und-timer {
+    to { transform: scaleX(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .und-row,
+    .und-snackbar {
+      transition: none;
+    }
+
+    .und-row[data-restored] .ax-item {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const DURATION = 4000;
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-undoable-action]:not([data-ready])').forEach((root) => {
+      root.dataset.ready = '';
+      const rows = [...root.querySelectorAll<HTMLElement>('[data-row]')];
+      const snackbar = root.querySelector<HTMLElement>('[data-snackbar]')!;
+      const snackbarText = root.querySelector<HTMLElement>('[data-snackbar-text]')!;
+      const preview = root.closest('[data-ax-preview]')!;
+      const readout = preview.querySelector<HTMLElement>('[data-und-readout]')!;
+      const out = (key: string) => readout.querySelector<HTMLElement>(`[data-out="${key}"]`)!;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      let pending: { row: HTMLElement; timer: number } | null = null;
+      const sent: string[] = [];
+
+      const render = () => {
+        out('pending').textContent = pending ? `archive("${pending.row.dataset.title}")` : 'none';
+        out('log').textContent = sent.length ? sent.join(' · ') : 'nothing sent';
+        root.toggleAttribute('data-all-gone', rows.every((row) => row.hasAttribute('data-gone') || row.hasAttribute('data-hidden')));
+      };
+
+      const collapse = (row: HTMLElement) => {
+        row.style.height = `${row.offsetHeight}px`;
+        void row.offsetHeight;
+        row.dataset.hidden = '';
+        row.style.height = '0px';
+      };
+
+      const hideSnackbar = () => {
+        delete snackbar.dataset.open;
+        void snackbar.offsetWidth;
+      };
+
+      // The request only leaves when the undo window closes, whatever closed it.
+      const commit = (reason: string) => {
+        if (!pending) return;
+        clearTimeout(pending.timer);
+        pending.row.dataset.gone = '';
+        sent.push(`archive("${pending.row.dataset.title}") ← ${reason}`);
+        pending = null;
+        hideSnackbar();
+        render();
+      };
+
+      const archive = (row: HTMLElement) => {
+        commit('replaced');
+        collapse(row);
+        snackbarText.textContent = `"${row.dataset.title}" archived`;
+        hideSnackbar();
+        requestAnimationFrame(() => {
+          snackbar.dataset.open = '';
+        });
+        pending = { row, timer: window.setTimeout(() => commit('timeout'), DURATION) };
+        render();
+      };
+
+      const undo = () => {
+        if (!pending) return;
+        clearTimeout(pending.timer);
+        const { row } = pending;
+        pending = null;
+        hideSnackbar();
+        delete row.dataset.hidden;
+        row.style.height = `${row.scrollHeight}px`;
+        row.removeAttribute('data-restored');
+        void row.offsetWidth;
+        row.dataset.restored = '';
+        setTimeout(() => (row.style.height = ''), reduceMotion.matches ? 0 : 240);
+        render();
+      };
+
+      rows.forEach((row) => row.querySelector('[data-archive]')!.addEventListener('click', () => archive(row)));
+      root.querySelector('[data-undo]')!.addEventListener('click', undo);
+      preview.querySelector('[data-leave]')!.addEventListener('click', () => commit('left screen'));
+      preview.querySelector('[data-reset]')!.addEventListener('click', () => {
+        if (pending) clearTimeout(pending.timer);
+        pending = null;
+        hideSnackbar();
+        sent.length = 0;
+        rows.forEach((row) => {
+          delete row.dataset.hidden;
+          delete row.dataset.gone;
+          row.style.height = '';
+        });
+        render();
+      });
+
+      render();
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

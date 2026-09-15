@@ -1,0 +1,65 @@
+---
+// The five component levels as small schematics, from the smallest piece to a complete screen.
+// Each level reuses the one before it. Illustrations use the docs palette only, so they follow the light / dark theme.
+
+const levels = [
+  { id: 'atoms', name: 'Atoms', examples: 'Button, Input, Avatar' },
+  { id: 'molecules', name: 'Molecules', examples: 'SearchBar, DatePicker' },
+  { id: 'organisms', name: 'Organisms', examples: 'Passcode' },
+  { id: 'templates', name: 'Templates', examples: 'Scaffold, AppBar' },
+  { id: 'blocks', name: 'Blocks', examples: 'Onboarding, Profile' },
+];
+
+const line = 'block h-1 rounded-full bg-fd-muted-foreground/30';
+const strong = 'block h-1 rounded-full bg-fd-foreground/70';
+const dashed = 'border border-dashed border-fd-muted-foreground/50';
+const phone = 'flex h-[88px] w-[52px] flex-col gap-1 overflow-hidden rounded-[8px] border border-fd-border bg-fd-background p-1';
+---
+
+<ol class="not-prose my-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5" aria-label="Component levels">
+  {levels.map((level, index) => (
+    <li class="flex flex-col border bg-fd-card text-fd-card-foreground">
+      <div class="flex h-28 items-center justify-center border-b bg-fd-muted/60" aria-hidden="true">
+        {level.id === 'atoms' && (
+          <span class="flex flex-col items-center gap-1.5">
+            <span class="flex h-4 w-12 items-center justify-center rounded-[4px] bg-fd-foreground"><span class="block h-1 w-6 rounded-full bg-fd-background/80" /></span>
+            <span class="flex h-4 w-12 items-center rounded-[4px] border border-fd-border bg-fd-background px-1"><span class={`${line} w-5`} /></span>
+          </span>
+        )}
+        {level.id === 'molecules' && (
+          <span class="flex h-5 w-20 items-center gap-1 rounded-[5px] border border-fd-border bg-fd-background px-1">
+            <span class="size-2 shrink-0 rounded-full border-[1.5px] border-fd-muted-foreground" />
+            <span class={`${line} flex-1`} />
+            <span class="flex h-3 w-5 items-center justify-center rounded-[3px] bg-fd-foreground"><span class="block h-0.5 w-2.5 rounded-full bg-fd-background/80" /></span>
+          </span>
+        )}
+        {level.id === 'organisms' && (
+          <span class="flex w-16 flex-col items-center gap-1.5 rounded-[6px] border border-fd-border bg-fd-background p-1.5">
+            <span class="flex gap-1">{[0, 1, 2, 3].map((i) => <span class={`size-1.5 rounded-full ${i < 2 ? 'bg-fd-foreground/70' : 'border border-fd-muted-foreground/60'}`} />)}</span>
+            <span class="grid grid-cols-3 gap-1">{Array.from({ length: 9 }).map(() => <span class="block h-2 w-3 rounded-[2px] bg-fd-muted-foreground/25" />)}</span>
+          </span>
+        )}
+        {level.id === 'templates' && (
+          <span class={phone}>
+            <span class={`h-2.5 shrink-0 rounded-[2px] ${dashed}`} />
+            <span class={`flex-1 rounded-[2px] ${dashed}`} />
+            <span class={`h-3 shrink-0 rounded-[2px] ${dashed}`} />
+          </span>
+        )}
+        {level.id === 'blocks' && (
+          <span class={phone}>
+            <span class="flex h-2.5 shrink-0 items-center justify-center"><span class={`${strong} w-5`} /></span>
+            <span class="mx-auto size-4 shrink-0 rounded-full bg-fd-muted-foreground/40" />
+            <span class="flex flex-1 flex-col gap-1 px-0.5 pt-0.5"><span class={line} /><span class={`${line} w-2/3`} /></span>
+            <span class="h-3 shrink-0 rounded-[3px] bg-fd-foreground" />
+          </span>
+        )}
+      </div>
+      <div class="flex flex-col gap-0.5 p-3">
+        <span class="text-xs text-fd-muted-foreground">{index + 1}</span>
+        <span class="text-sm font-medium">{level.name}</span>
+        <span class="text-xs text-fd-muted-foreground">{level.examples}</span>
+      </div>
+    </li>
+  ))}
+</ol>

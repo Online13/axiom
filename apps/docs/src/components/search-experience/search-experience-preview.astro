@@ -1,0 +1,447 @@
+---
+// The whole search flow around a SearchBar, on a list of cities.
+// Focus the field: recent searches replace the list. Type: after a 250ms pause one request leaves, the field shows
+// a spinner, then results or a no-results state. Opening a result saves the query to the top of the recents.
+// The clear button empties the query and stays in search; Cancel leaves search and restores the list.
+// The server answers with a random delay, so responses to older queries are ignored instead of shown.
+import PhonePreview from '@/components/preview/phone-preview.astro';
+import Glyph from '@/components/preview/glyph.astro';
+
+const cities = [
+  ['Lisbon', 'Portugal'], ['London', 'United Kingdom'], ['Lyon', 'France'], ['Los Angeles', 'United States'],
+  ['Lima', 'Peru'], ['Lagos', 'Nigeria'], ['Paris', 'France'], ['Porto', 'Portugal'], ['Prague', 'Czechia'],
+  ['Berlin', 'Germany'], ['Barcelona', 'Spain'], ['Bogotá', 'Colombia'], ['Madrid', 'Spain'], ['Milan', 'Italy'],
+  ['Montreal', 'Canada'], ['Tokyo', 'Japan'], ['Toronto', 'Canada'], ['Seoul', 'South Korea'], ['Sydney', 'Australia'],
+  ['Nairobi', 'Kenya'], ['Oslo', 'Norway'], ['Rome', 'Italy'], ['Vienna', 'Austria'], ['Antananarivo', 'Madagascar'],
+];
+---
+
+<PhonePreview>
+  <div class="srx" data-search-experience data-phase="browse">
+    <div class="srx-heading ax-large-heading">Cities</div>
+
+    <div class="ax-row srx-bar">
+      <label class="ax-searchbar srx-field">
+        <span class="srx-lead" data-lead><Glyph name="search" size={18} /></span>
+        <span class="srx-spinner ax-spinner" data-size="sm" />
+        <input class="srx-input" data-input type="search" placeholder="Search" autocomplete="off" enterkeyhint="search" />
+        <button type="button" class="ax-search-clear srx-clear" data-clear aria-label="Clear"><Glyph name="close" size={12} strokeWidth={3} /></button>
+      </label>
+      <button type="button" class="srx-cancel ax-link" data-cancel>Cancel</button>
+    </div>
+
+    <div class="srx-body">
+      <div class="srx-panel" data-panel="browse">
+        <div class="ax-list" data-variant="plain">
+          {cities.slice(0, 10).map(([name, country]) => (
+            <div class="ax-item"><div class="ax-item-content"><span class="ax-item-title">{name}</span><span class="ax-item-desc">{country}</span></div></div>
+          ))}
+        </div>
+      </div>
+
+      <div class="srx-panel" data-panel="recent">
+        <div class="ax-row srx-recent-head" data-justify="between">
+          <span class="ax-headline">Recent</span>
+          <button type="button" class="srx-text-btn ax-link ax-subhead" data-clear-history>Clear</button>
+        </div>
+        <div class="ax-list" data-variant="plain" data-recent-list />
+        <div class="ax-subhead ax-muted srx-hint" data-recent-empty>Your recent searches show up here.</div>
+      </div>
+
+      <div class="srx-panel" data-panel="results">
+        <div class="ax-list" data-variant="plain" data-results />
+      </div>
+
+      <div class="srx-panel" data-panel="empty">
+        <div class="ax-center srx-no-results">
+          <span class="ax-empty-media"><Glyph name="search" size={28} /></span>
+          <span class="ax-headline" data-empty-title>No results</span>
+          <span class="ax-subhead ax-muted">Check the spelling or try another city.</span>
+          <button type="button" class="ax-btn srx-btn" data-variant="outline" data-size="sm" data-clear-query>Clear search</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div slot="footer" class="flex flex-wrap items-center justify-between gap-2 border-t px-4 py-3 font-mono text-xs" data-srx-readout>
+    <span>
+      <span class="text-fd-muted-foreground">phase </span><span data-out="phase">browse</span>
+      <span class="text-fd-muted-foreground"> · keystrokes </span><span data-out="keys">0</span>
+      <span class="text-fd-muted-foreground"> · requests </span><span data-out="requests">0</span>
+      <span class="text-fd-muted-foreground"> · stale ignored </span><span data-out="stale">0</span>
+    </span>
+  </div>
+
+  <script is:inline type="application/json" data-cities set:html={JSON.stringify(cities)} />
+</PhonePreview>
+
+<style is:global>
+  .srx {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .srx-heading {
+    overflow: hidden;
+    height: 51px;
+    box-sizing: border-box;
+    transition:
+      height 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      padding 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 160ms ease;
+  }
+
+  /* In search, the title makes room and the field moves up. */
+  .srx:not([data-phase='browse']) .srx-heading {
+    height: 0;
+    padding-block: 0;
+    opacity: 0;
+  }
+
+  .srx-bar {
+    padding: 4px 16px 10px;
+    gap: 0;
+  }
+
+  .srx-field {
+    cursor: text;
+  }
+
+  .srx-input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: none;
+    color: var(--ax-content-default);
+    font: inherit;
+    appearance: none;
+  }
+
+  .srx-input::placeholder {
+    color: var(--ax-content-subtle);
+  }
+
+  .srx-input::-webkit-search-cancel-button {
+    display: none;
+  }
+
+  .srx-spinner {
+    display: none;
+    color: var(--ax-content-subtle);
+  }
+
+  .srx[data-loading] .srx-spinner {
+    display: block;
+  }
+
+  .srx[data-loading] .srx-lead {
+    display: none;
+  }
+
+  .srx-lead {
+    display: flex;
+  }
+
+  .srx-clear {
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .srx:not([data-has-query]) .srx-clear {
+    display: none;
+  }
+
+  .srx-cancel {
+    overflow: hidden;
+    max-width: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+    opacity: 0;
+    transition:
+      max-width 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      padding 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 160ms ease;
+  }
+
+  .srx:not([data-phase='browse']) .srx-cancel {
+    max-width: 80px;
+    padding-left: 12px;
+    opacity: 1;
+  }
+
+  .srx-body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .srx-panel {
+    display: none;
+  }
+
+  .srx[data-phase='browse'] [data-panel='browse'],
+  .srx[data-phase='recent'] [data-panel='recent'],
+  .srx[data-phase='results'] [data-panel='results'],
+  .srx[data-phase='empty'] [data-panel='empty'] {
+    display: block;
+  }
+
+  .srx[data-phase='empty'] [data-panel='empty'] {
+    display: flex;
+    height: 100%;
+  }
+
+  .srx-recent-head {
+    padding: 4px 16px 4px;
+  }
+
+  .srx-text-btn,
+  .srx-row-btn {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .srx-text-btn {
+    color: var(--ax-content-link);
+  }
+
+  .srx-recent-row,
+  .srx-result {
+    cursor: pointer;
+  }
+
+  .srx-recent-row:active,
+  .srx-result:active {
+    background: var(--ax-background-subtle);
+  }
+
+  .srx-row-btn {
+    display: flex;
+    color: var(--ax-content-subtle);
+  }
+
+  .srx-hint {
+    padding: 8px 16px;
+  }
+
+  .srx-btn {
+    border: 0;
+    font: inherit;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .srx mark {
+    background: none;
+    color: var(--ax-content-default);
+    font-weight: 600;
+  }
+
+  .srx-result .ax-item-title {
+    font-weight: 400;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .srx-heading,
+    .srx-cancel {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const DEBOUNCE = 250;
+  const HISTORY_CAP = 10;
+
+  const escape = (value: string) => value.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
+  const fold = (value: string) => value.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-search-experience]:not([data-ready])').forEach((root) => {
+      root.dataset.ready = '';
+      const preview = root.closest('[data-ax-preview]')!;
+      const cities: [string, string][] = JSON.parse(preview.querySelector('[data-cities]')!.textContent!);
+      const input = root.querySelector<HTMLInputElement>('[data-input]')!;
+      const recentList = root.querySelector<HTMLElement>('[data-recent-list]')!;
+      const recentEmpty = root.querySelector<HTMLElement>('[data-recent-empty]')!;
+      const clearHistory = root.querySelector<HTMLElement>('[data-clear-history]')!;
+      const results = root.querySelector<HTMLElement>('[data-results]')!;
+      const emptyTitle = root.querySelector<HTMLElement>('[data-empty-title]')!;
+      const readout = preview.querySelector<HTMLElement>('[data-srx-readout]')!;
+      const out = (key: string) => readout.querySelector<HTMLElement>(`[data-out="${key}"]`)!;
+
+      let history = ['Lisbon', 'Tokyo', 'Nairobi'];
+      let debounce = 0;
+      let latest = 0;
+      const stats = { keys: 0, requests: 0, stale: 0 };
+
+      const setPhase = (phase: 'browse' | 'recent' | 'results' | 'empty') => {
+        root.dataset.phase = phase;
+        out('phase').textContent = root.hasAttribute('data-loading') ? `${phase} (loading)` : phase;
+        out('keys').textContent = String(stats.keys);
+        out('requests').textContent = String(stats.requests);
+        out('stale').textContent = String(stats.stale);
+      };
+
+      const renderHistory = () => {
+        recentList.innerHTML = history
+          .map(
+            (query) => `<div class="ax-item srx-recent-row" data-recent="${escape(query)}">
+              <span class="ax-subtle" style="display:flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2"/></svg></span>
+              <div class="ax-item-content"><span class="ax-item-title" style="font-weight:400">${escape(query)}</span></div>
+              <button type="button" class="srx-row-btn" data-remove aria-label="Remove ${escape(query)}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            </div>`,
+          )
+          .join('');
+        recentEmpty.hidden = history.length > 0;
+        clearHistory.hidden = history.length === 0;
+      };
+
+      const save = (query: string) => {
+        history = [query, ...history.filter((item) => fold(item) !== fold(query))].slice(0, HISTORY_CAP);
+        renderHistory();
+      };
+
+      const renderResults = (query: string, matches: [string, string][]) => {
+        const q = fold(query);
+        results.innerHTML = matches
+          .map(([name, country]) => {
+            const start = fold(name).indexOf(q);
+            const title = start < 0 ? escape(name) : `${escape(name.slice(0, start))}<mark>${escape(name.slice(start, start + q.length))}</mark>${escape(name.slice(start + q.length))}`;
+            return `<div class="ax-item srx-result" data-result="${escape(name)}"><div class="ax-item-content"><span class="ax-item-title">${title}</span><span class="ax-item-desc">${escape(country)}</span></div></div>`;
+          })
+          .join('');
+      };
+
+      // A fake server with a random delay: a slow early response can arrive after a fast later one.
+      const request = (query: string) => {
+        const id = ++latest;
+        stats.requests++;
+        root.dataset.loading = '';
+        setPhase(root.dataset.phase as never);
+        const delay = 250 + Math.random() * 600;
+        setTimeout(() => {
+          if (id !== latest) {
+            stats.stale++;
+            setPhase(root.dataset.phase as never);
+            return;
+          }
+          delete root.dataset.loading;
+          const matches = cities.filter(([name, country]) => fold(name).includes(fold(query)) || fold(country).includes(fold(query)));
+          if (matches.length) {
+            renderResults(query, matches);
+            setPhase('results');
+          } else {
+            emptyTitle.textContent = `No results for "${query}"`;
+            setPhase('empty');
+          }
+        }, delay);
+      };
+
+      const onQuery = () => {
+        const query = input.value.trim();
+        root.toggleAttribute('data-has-query', input.value.length > 0);
+        clearTimeout(debounce);
+        if (!query) {
+          latest++;
+          delete root.dataset.loading;
+          setPhase('recent');
+          return;
+        }
+        debounce = window.setTimeout(() => request(query), DEBOUNCE);
+        setPhase(root.dataset.phase === 'recent' ? 'recent' : (root.dataset.phase as never));
+      };
+
+      const run = (query: string) => {
+        input.value = query;
+        root.toggleAttribute('data-has-query', true);
+        clearTimeout(debounce);
+        request(query);
+      };
+
+      input.addEventListener('focus', () => {
+        if (root.dataset.phase === 'browse') setPhase('recent');
+      });
+
+      input.addEventListener('input', () => {
+        stats.keys++;
+        onQuery();
+      });
+
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && input.value.trim()) {
+          save(input.value.trim());
+          input.blur();
+        }
+      });
+
+      root.querySelector('[data-clear]')!.addEventListener('click', (event) => {
+        event.preventDefault();
+        input.value = '';
+        onQuery();
+        input.focus();
+      });
+
+      root.querySelector('[data-clear-query]')!.addEventListener('click', () => {
+        input.value = '';
+        onQuery();
+        input.focus();
+      });
+
+      root.querySelector('[data-cancel]')!.addEventListener('click', () => {
+        clearTimeout(debounce);
+        latest++;
+        input.value = '';
+        input.blur();
+        delete root.dataset.loading;
+        root.removeAttribute('data-has-query');
+        setPhase('browse');
+      });
+
+      clearHistory.addEventListener('click', () => {
+        history = [];
+        renderHistory();
+      });
+
+      recentList.addEventListener('click', (event) => {
+        const row = (event.target as HTMLElement).closest<HTMLElement>('[data-recent]');
+        if (!row) return;
+        if ((event.target as HTMLElement).closest('[data-remove]')) {
+          history = history.filter((item) => item !== row.dataset.recent);
+          renderHistory();
+          return;
+        }
+        run(row.dataset.recent!);
+      });
+
+      // Opening a result is what saves the query, not typing it.
+      results.addEventListener('click', (event) => {
+        const row = (event.target as HTMLElement).closest<HTMLElement>('[data-result]');
+        if (!row) return;
+        save(input.value.trim());
+        row.style.background = 'var(--ax-background-subtle)';
+        setTimeout(() => (row.style.background = ''), 300);
+      });
+
+      renderHistory();
+      setPhase('browse');
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

@@ -1,0 +1,63 @@
+---
+// Four frozen frames of the same files screen. The bottom bar changes with the mode, then its actions with the selection.
+// Actions keep their place: an action that doesn't apply is greyed out, never removed.
+import TokenFrame from '@/components/tokens/token-frame.astro';
+import Glyph from '@/components/preview/glyph.astro';
+
+const actions = ['share', 'archive', 'edit', 'trash'] as const;
+
+const states = [
+  { label: 'browse', selecting: false, rows: [], enabled: [], caption: 'The tab bar. Rows open files.' },
+  { label: 'select · 0', selecting: true, rows: [], enabled: [], caption: 'The toolbar replaces the tab bar, every action greyed out.' },
+  { label: 'select · 1', selecting: true, rows: [0], enabled: ['share', 'archive', 'edit', 'trash'], caption: 'One file: everything applies, Rename included.' },
+  { label: 'select · 2', selecting: true, rows: [0, 2], enabled: ['share', 'archive'], caption: 'Two files, one shared: no Rename, no Delete.' },
+] as const;
+---
+
+<TokenFrame>
+  <div class="grid min-w-[36rem] grid-cols-4 gap-px bg-fd-border">
+    {
+      states.map(({ label, selecting, rows, enabled, caption }) => (
+        <div class="flex flex-col gap-3 bg-fd-card p-3">
+          <div class="relative mx-auto flex h-[9.5rem] w-[104px] flex-col overflow-hidden rounded-md border bg-fd-card">
+            <div class="flex h-5 flex-none items-center justify-center border-b text-[8px] font-semibold">
+              {selecting ? (rows.length ? `${rows.length} selected` : 'Select items') : 'Files'}
+            </div>
+            <div class="flex flex-1 flex-col">
+              {[0, 1, 2, 3].map((i) => {
+                const selected = (rows as readonly number[]).includes(i);
+                return (
+                  <div class:list={['flex h-6 flex-none items-center gap-1.5 border-b px-1.5', selected && 'bg-blue-500/10']}>
+                    {selecting && (
+                      <span class:list={['flex size-2.5 flex-none items-center justify-center rounded-[2px]', selected ? 'bg-blue-500 text-white' : 'border border-fd-muted-foreground/50']}>
+                        {selected && <Glyph name="check" size={7} strokeWidth={3} />}
+                      </span>
+                    )}
+                    <span class="h-1.5 flex-1 rounded-full bg-fd-muted" />
+                    {i === 2 && <Glyph name="users" size={8} class="text-fd-muted-foreground" />}
+                  </div>
+                );
+              })}
+            </div>
+            <div class="flex h-6 flex-none items-center justify-around border-t">
+              {selecting
+                ? actions.map((name) => (
+                    <Glyph
+                      name={name}
+                      size={9}
+                      strokeWidth={2.4}
+                      class={(enabled as readonly string[]).includes(name) ? (name === 'trash' ? 'text-red-500' : 'text-blue-500') : 'text-fd-muted-foreground/40'}
+                    />
+                  ))
+                : (['file', 'clock', 'users', 'settings'] as const).map((name, i) => (
+                    <Glyph name={name} size={9} strokeWidth={2.4} class={i === 0 ? 'text-blue-500' : 'text-fd-muted-foreground'} />
+                  ))}
+            </div>
+          </div>
+          <div class="font-mono text-xs">{label}</div>
+          <p class="text-xs text-fd-muted-foreground">{caption}</p>
+        </div>
+      ))
+    }
+  </div>
+</TokenFrame>

@@ -1,19 +1,9 @@
 {
   "title": "Behaviors",
   "pages": [
-    "---Scroll---",
-    "pull-to-refresh",
-    "hide-on-scroll",
-    "collapsible-header",
-    "scroll-to-top",
-    "scroll-aware-app-bar",
-    "pagination",
-    "---Gestures---",
-    "long-press",
-    "swipe-actions",
-    "swipe-to-delete",
-    "drag-to-reorder",
-    "---Contextual UI---",
-    "dynamic-toolbar"
+    "index",
+    "(scroll)",
+    "(gestures)",
+    "(contextual-ui)"
   ]
 }

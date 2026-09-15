@@ -1,0 +1,335 @@
+---
+// A photo grid with a contextual selection mode.
+// Hold a photo (or tap Select) to enter the mode. In the mode a tap toggles a photo instead of opening it,
+// the title counts the selection and a toolbar replaces the tab bar. Deselecting the last photo keeps the mode.
+// Done leaves it; Delete removes the selected photos and leaves it too. The footer shows what a screen reader announces.
+import PhonePreview from '@/components/preview/phone-preview.astro';
+import Glyph from '@/components/preview/glyph.astro';
+
+const photos = Array.from({ length: 18 }, (_, i) => ({ id: i, tone: String((i % 6) + 1) }));
+---
+
+<PhonePreview full>
+  <div class="sel" data-selection-mode>
+    <div class="ax-appbar" data-border>
+      <span class="ax-appbar-slot"><button type="button" class="sel-link" data-all>Select all</button></span>
+      <span class="ax-appbar-title" data-title>Library</span>
+      <span class="ax-appbar-slot" data-side="end"><button type="button" class="sel-link" data-mode>Select</button></span>
+    </div>
+
+    <div class="sel-body">
+      <div class="sel-grid" data-grid>
+        {
+          photos.map(({ id, tone }) => (
+            <div class="sel-tile" data-tile data-id={id} role="button" tabindex="0" aria-label={`Photo ${id + 1}`}>
+              <div class="ax-media sel-media" data-tone={tone} />
+              <span class="sel-check"><Glyph name="check" size={14} strokeWidth={3} /></span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="sel-bars">
+      <div class="ax-tabbar sel-tabbar">
+        <span class="ax-tabbar-item" data-active><Glyph name="image" /><span>Library</span></span>
+        <span class="ax-tabbar-item"><Glyph name="heart" /><span>For you</span></span>
+        <span class="ax-tabbar-item"><Glyph name="grid" /><span>Albums</span></span>
+        <span class="ax-tabbar-item"><Glyph name="search" /><span>Search</span></span>
+      </div>
+      <div class="ax-toolbar sel-toolbar" role="toolbar" aria-label="Selection actions">
+        <button type="button" class="ax-toolbar-action sel-action" data-action="share"><Glyph name="share" /><span>Share</span></button>
+        <button type="button" class="ax-toolbar-action sel-action" data-action="favorite"><Glyph name="heart" /><span>Favorite</span></button>
+        <button type="button" class="ax-toolbar-action sel-action" data-action="edit"><Glyph name="edit" /><span>Edit</span></button>
+        <button type="button" class="ax-toolbar-action sel-action" data-action="delete" data-destructive><Glyph name="trash" /><span>Delete</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div slot="footer" class="flex flex-wrap items-center justify-between gap-2 border-t px-4 py-3 font-mono text-xs" data-sel-readout>
+    <span>
+      <span class="text-fd-muted-foreground">mode </span><span data-out="mode">browse</span>
+      <span class="text-fd-muted-foreground"> · announce </span><span data-out="announce">–</span>
+    </span>
+    <button type="button" class="border px-2 py-0.5" data-reset>Reset</button>
+  </div>
+</PhonePreview>
+
+<style is:global>
+  .sel {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .sel-link {
+    padding: 0 8px;
+    border: 0;
+    background: none;
+    color: var(--ax-content-link);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .sel [data-all] {
+    visibility: hidden;
+  }
+
+  .sel[data-selecting] [data-all] {
+    visibility: visible;
+  }
+
+  .sel-body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .sel-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .sel-tile {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  .sel-media {
+    height: 100%;
+    transition: transform 160ms ease;
+  }
+
+  .sel-tile[data-selected] .sel-media {
+    transform: scale(0.9);
+    border-radius: 6px;
+  }
+
+  .sel-tile[data-pressing] .sel-media {
+    transform: scale(0.95);
+  }
+
+  .sel-check {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    box-shadow:
+      inset 0 0 0 1.5px #fff,
+      0 1px 3px rgb(0 0 0 / 0.3);
+    color: transparent;
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+
+  .sel[data-selecting] .sel-check {
+    opacity: 1;
+  }
+
+  .sel-tile[data-selected] .sel-check {
+    background: var(--ax-content-link);
+    color: #fff;
+  }
+
+  .sel-bars {
+    position: relative;
+    flex: none;
+    height: 83px;
+    overflow: hidden;
+  }
+
+  .sel-tabbar,
+  .sel-toolbar {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 83px;
+    box-sizing: border-box;
+    transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .sel-toolbar {
+    align-items: flex-start;
+    padding-top: 8px;
+    transform: translateY(100%);
+  }
+
+  .sel[data-selecting] .sel-tabbar {
+    transform: translateY(100%);
+  }
+
+  .sel[data-selecting] .sel-toolbar {
+    transform: none;
+  }
+
+  .sel-action {
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 10px;
+    cursor: pointer;
+  }
+
+  .sel-action[data-state='disabled'] {
+    cursor: default;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sel-tabbar,
+    .sel-toolbar,
+    .sel-media,
+    .sel-check {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-selection-mode]:not([data-ready])').forEach((root) => {
+      root.dataset.ready = '';
+      const grid = root.querySelector<HTMLElement>('[data-grid]')!;
+      const initial = grid.innerHTML;
+      const title = root.querySelector<HTMLElement>('[data-title]')!;
+      const mode = root.querySelector<HTMLButtonElement>('[data-mode]')!;
+      const all = root.querySelector<HTMLButtonElement>('[data-all]')!;
+      const actions = [...root.querySelectorAll<HTMLButtonElement>('[data-action]')];
+      const preview = root.closest('[data-ax-preview]')!;
+      const readout = preview.querySelector<HTMLElement>('[data-sel-readout]')!;
+      const out = (key: string) => readout.querySelector<HTMLElement>(`[data-out="${key}"]`)!;
+
+      const tiles = () => [...grid.querySelectorAll<HTMLElement>('[data-tile]')];
+      const selected = () => tiles().filter((tile) => tile.hasAttribute('data-selected'));
+      const selecting = () => root.hasAttribute('data-selecting');
+
+      const rules: Record<string, (count: number) => boolean> = {
+        share: (count) => count > 0,
+        favorite: (count) => count > 0,
+        edit: (count) => count === 1,
+        delete: (count) => count > 0,
+      };
+
+      const render = (announce?: string) => {
+        const count = selected().length;
+        title.textContent = !selecting() ? 'Library' : count ? `${count} selected` : 'Select items';
+        mode.textContent = selecting() ? 'Done' : 'Select';
+        all.textContent = count && count === tiles().length ? 'Deselect all' : 'Select all';
+        actions.forEach((action) => {
+          const on = rules[action.dataset.action!](count);
+          if (on) action.removeAttribute('data-state');
+          else action.dataset.state = 'disabled';
+          action.setAttribute('aria-disabled', String(!on));
+        });
+        tiles().forEach((tile) => tile.setAttribute('aria-pressed', selecting() ? String(tile.hasAttribute('data-selected')) : 'false'));
+        out('mode').textContent = selecting() ? `select · ${count}` : 'browse';
+        if (announce) out('announce').textContent = `"${announce}"`;
+      };
+
+      const enter = (tile?: HTMLElement) => {
+        root.setAttribute('data-selecting', '');
+        tile?.setAttribute('data-selected', '');
+        render(`Selection mode, ${selected().length} selected`);
+      };
+
+      const exit = (announce = 'Selection mode off') => {
+        root.removeAttribute('data-selecting');
+        tiles().forEach((tile) => tile.removeAttribute('data-selected'));
+        render(announce);
+      };
+
+      const toggle = (tile: HTMLElement) => {
+        tile.toggleAttribute('data-selected');
+        const count = selected().length;
+        render(count ? `${count} selected` : 'Nothing selected');
+      };
+
+      mode.addEventListener('click', () => (selecting() ? exit() : enter()));
+
+      all.addEventListener('click', () => {
+        const every = selected().length === tiles().length;
+        tiles().forEach((tile) => tile.toggleAttribute('data-selected', !every));
+        render(every ? 'Nothing selected' : `${tiles().length} selected`);
+      });
+
+      actions.forEach((action) =>
+        action.addEventListener('click', () => {
+          if (action.dataset.state === 'disabled') return;
+          const count = selected().length;
+          if (action.dataset.action === 'delete') {
+            selected().forEach((tile) => tile.remove());
+            exit(`${count} ${count === 1 ? 'photo' : 'photos'} deleted`);
+          } else if (action.dataset.action === 'favorite') {
+            exit(`${count} added to favorites`);
+          } else {
+            render(`${action.dataset.action === 'edit' ? 'Opens the editor' : 'Opens the share sheet'}, the mode stays`);
+          }
+        }),
+      );
+
+      // Delegated, so tiles removed and restored by Reset keep working.
+      let timer = 0;
+      let long = false;
+      let pressed: HTMLElement | null = null;
+
+      grid.addEventListener('pointerdown', (event) => {
+        const tile = (event.target as HTMLElement).closest<HTMLElement>('[data-tile]');
+        if (!tile) return;
+        long = false;
+        pressed = tile;
+        tile.dataset.pressing = '';
+        timer = window.setTimeout(() => {
+          long = true;
+          delete tile.dataset.pressing;
+          navigator.vibrate?.(10);
+          if (!selecting()) enter(tile);
+          else if (!tile.hasAttribute('data-selected')) toggle(tile);
+        }, 500);
+      });
+
+      const cancel = () => {
+        clearTimeout(timer);
+        if (pressed) delete pressed.dataset.pressing;
+      };
+      grid.addEventListener('pointerup', cancel);
+      grid.addEventListener('pointerleave', cancel);
+      grid.addEventListener('pointercancel', cancel);
+      grid.addEventListener('contextmenu', (event) => event.preventDefault());
+
+      grid.addEventListener('click', (event) => {
+        const tile = (event.target as HTMLElement).closest<HTMLElement>('[data-tile]');
+        if (!tile || long) return;
+        if (selecting()) toggle(tile);
+        else render(`Opens photo ${Number(tile.dataset.id) + 1}`);
+      });
+
+      grid.addEventListener('keydown', (event) => {
+        const tile = (event.target as HTMLElement).closest<HTMLElement>('[data-tile]');
+        if (!tile || (event.key !== 'Enter' && event.key !== ' ')) return;
+        event.preventDefault();
+        if (selecting()) toggle(tile);
+        else enter(tile);
+      });
+
+      preview.querySelector('[data-reset]')!.addEventListener('click', () => {
+        grid.innerHTML = initial;
+        exit();
+        out('announce').textContent = '–';
+      });
+
+      render();
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

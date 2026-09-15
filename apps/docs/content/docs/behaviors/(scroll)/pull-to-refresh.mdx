@@ -78,12 +78,7 @@ An indicator written once works on both.
 
 ### On release
 
-```text
-release ─┬─ pulling ──► settling ──► idle
-         │
-         └─ armed ────► refreshing ──► settling ──► idle
-                        await onRefresh() and minDuration (500ms)
-```
+<PullToRefreshMachine />
 
 `minDuration` prevents the spinner from flashing when the request answers in 50ms. If `onRefresh` rejects, the list still settles; show the error with a [Toast](/atoms/toast).
 

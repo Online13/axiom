@@ -98,18 +98,6 @@ const accent = 'text-fd-foreground';
         <span class={row}><span class={dot} /><span class={`${line} w-2/3`} /></span>
         </>
       )}
-      {preview === 'swipe-to-delete' && (
-        <>
-          <span class={`${row} mt-1`}><span class={dot} /><span class={`${line} flex-1`} /></span>
-          <span class="flex h-5 overflow-hidden border-y border-fd-border">
-            <span class="flex w-7 -translate-x-2 items-center gap-1 bg-fd-background px-1"><span class={dot} /></span>
-            <span class="flex flex-1 items-center justify-end bg-red-500 pr-1.5 text-white"><Glyph name="trash" size={9} strokeWidth={2.4} /></span>
-          </span>
-          <span class="mx-1 mt-auto mb-1 flex items-center justify-between rounded-[3px] bg-fd-foreground px-1 py-0.5 text-[6px] font-semibold text-fd-background">
-            <span class="block h-0.5 w-4 rounded-full bg-fd-background/60" />Undo
-          </span>
-        </>
-      )}
       {preview === 'drag-to-reorder' && (
         <span class="flex flex-col gap-1 p-1.5">
           {[0, 1, 2].map((i) => (

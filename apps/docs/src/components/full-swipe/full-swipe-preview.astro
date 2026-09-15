@@ -24,21 +24,21 @@ const initials = (name: string) =>
 ---
 
 <PhonePreview>
-  <div class="std" data-swipe-to-delete>
+  <div class="fsw" data-full-swipe>
     <div class="ax-appbar" data-border>
       <span class="ax-appbar-slot" />
       <span class="ax-appbar-title">Messages</span>
       <span class="ax-appbar-slot" data-side="end"><span class="ax-icon-btn"><Glyph name="edit" /></span></span>
     </div>
 
-    <div class="std-list" data-list>
+    <div class="fsw-list" data-list>
       {
         threads.map(({ from, text, time, photo }) => (
-          <div class="std-row" data-row data-name={from}>
-            <button type="button" class="std-delete" data-delete tabindex="-1">
-              <span class="std-delete-label"><Glyph name="trash" size={20} /><span>Delete</span></span>
+          <div class="fsw-row" data-row data-name={from}>
+            <button type="button" class="fsw-delete" data-delete tabindex="-1">
+              <span class="fsw-delete-label"><Glyph name="trash" size={20} /><span>Delete</span></span>
             </button>
-            <div class="ax-item std-content" data-content>
+            <div class="ax-item fsw-content" data-content>
               <span class="ax-avatar" data-photo={photo}>{initials(from)}</span>
               <div class="ax-item-content">
                 <span class="ax-row" data-justify="between">
@@ -53,14 +53,14 @@ const initials = (name: string) =>
       }
     </div>
 
-    <div class="std-snackbar ax-snackbar" data-snackbar>
+    <div class="fsw-snackbar ax-snackbar" data-snackbar>
       <span class="ax-grow" data-snackbar-text>Conversation deleted</span>
       <span class="ax-snackbar-action" data-undo>Undo</span>
-      <span class="std-timer" data-timer />
+      <span class="fsw-timer" data-timer />
     </div>
   </div>
 
-  <div slot="footer" class="border-t px-4 py-3 font-mono text-xs" data-std-readout>
+  <div slot="footer" class="border-t px-4 py-3 font-mono text-xs" data-fsw-readout>
     <span class="text-fd-muted-foreground">progress </span><span data-out="progress">0.00</span>
     <span class="text-fd-muted-foreground"> · status </span><span data-out="status">idle</span>
     <span class="text-fd-muted-foreground"> · </span><span data-out="event" class="text-fd-muted-foreground">swipe a row far left</span>
@@ -68,7 +68,7 @@ const initials = (name: string) =>
 </PhonePreview>
 
 <style is:global>
-  .std {
+  .fsw {
     position: relative;
     display: flex;
     flex: 1;
@@ -77,13 +77,13 @@ const initials = (name: string) =>
     overflow: hidden;
   }
 
-  .std-row {
+  .fsw-row {
     position: relative;
     overflow: hidden;
     transition: height 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .std-row + .std-row .std-content::before {
+  .fsw-row + .fsw-row .fsw-content::before {
     content: '';
     position: absolute;
     top: 0;
@@ -93,33 +93,33 @@ const initials = (name: string) =>
     background: var(--ax-border-subtle);
   }
 
-  [data-scheme='dark'] .std-row + .std-row .std-content::before {
+  [data-scheme='dark'] .fsw-row + .fsw-row .fsw-content::before {
     background: var(--ax-border-default);
   }
 
-  .std-content {
+  .fsw-content {
     position: relative;
     z-index: 1;
     background: var(--ax-background-default);
     cursor: grab;
     user-select: none;
     touch-action: pan-y;
-    transform: translateX(var(--std-x, 0px));
+    transform: translateX(var(--fsw-x, 0px));
     will-change: transform;
   }
 
-  .std-row[data-dragging] .std-content {
+  .fsw-row[data-dragging] .fsw-content {
     cursor: grabbing;
   }
 
-  .std-delete {
+  .fsw-delete {
     position: absolute;
     inset-block: 0;
     right: 0;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    width: max(80px, calc(var(--std-x, 0px) * -1));
+    width: max(80px, calc(var(--fsw-x, 0px) * -1));
     padding: 0;
     border: 0;
     background: #ff3b30;
@@ -131,7 +131,7 @@ const initials = (name: string) =>
   }
 
   /* Centered in the 80pt button; once armed, it follows the row's edge. */
-  .std-delete-label {
+  .fsw-delete-label {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -140,26 +140,26 @@ const initials = (name: string) =>
     transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .std-row:not([data-revealed]) .std-delete {
+  .fsw-row:not([data-revealed]) .fsw-delete {
     visibility: hidden;
   }
 
-  .std-row[data-armed] .std-delete {
+  .fsw-row[data-armed] .fsw-delete {
     justify-content: flex-start;
   }
 
-  .std-row[data-armed] .std-delete-label {
+  .fsw-row[data-armed] .fsw-delete-label {
     transform: scale(1.1);
   }
 
-  .std-row[data-settling] .std-content,
-  .std-row[data-settling] .std-delete {
+  .fsw-row[data-settling] .fsw-content,
+  .fsw-row[data-settling] .fsw-delete {
     transition:
       transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
       width 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .std-snackbar {
+  .fsw-snackbar {
     position: absolute;
     inset-inline: 12px;
     bottom: 12px;
@@ -173,17 +173,17 @@ const initials = (name: string) =>
       transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .std-snackbar[data-open] {
+  .fsw-snackbar[data-open] {
     opacity: 1;
     transform: none;
     pointer-events: auto;
   }
 
-  .std-snackbar [data-undo] {
+  .fsw-snackbar [data-undo] {
     cursor: pointer;
   }
 
-  .std-timer {
+  .fsw-timer {
     position: absolute;
     left: 0;
     bottom: 0;
@@ -194,21 +194,21 @@ const initials = (name: string) =>
     transform-origin: left;
   }
 
-  .std-snackbar[data-open] .std-timer {
-    animation: std-timer var(--std-duration, 4000ms) linear forwards;
+  .fsw-snackbar[data-open] .fsw-timer {
+    animation: fsw-timer var(--fsw-duration, 4000ms) linear forwards;
   }
 
-  @keyframes std-timer {
+  @keyframes fsw-timer {
     to {
       transform: scaleX(0);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .std-row,
-    .std-row[data-settling] .std-content,
-    .std-row[data-settling] .std-delete,
-    .std-snackbar {
+    .fsw-row,
+    .fsw-row[data-settling] .fsw-content,
+    .fsw-row[data-settling] .fsw-delete,
+    .fsw-snackbar {
       transition: none;
     }
   }
@@ -222,11 +222,11 @@ const initials = (name: string) =>
   const DURATION = 4000;
 
   function init() {
-    document.querySelectorAll<HTMLElement>('[data-swipe-to-delete]:not([data-ready])').forEach((root) => {
+    document.querySelectorAll<HTMLElement>('[data-full-swipe]:not([data-ready])').forEach((root) => {
       root.dataset.ready = '';
-      root.style.setProperty('--std-duration', `${DURATION}ms`);
+      root.style.setProperty('--fsw-duration', `${DURATION}ms`);
       const snackbar = root.querySelector<HTMLElement>('[data-snackbar]')!;
-      const readout = root.closest('[data-ax-preview]')!.querySelector<HTMLElement>('[data-std-readout]')!;
+      const readout = root.closest('[data-ax-preview]')!.querySelector<HTMLElement>('[data-fsw-readout]')!;
       const out = (key: string) => readout.querySelector<HTMLElement>(`[data-out="${key}"]`)!;
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -241,7 +241,7 @@ const initials = (name: string) =>
       const setX = (row: HTMLElement, x: number) => {
         row.dataset.x = String(x);
         if (x !== 0) row.dataset.revealed = '';
-        row.style.setProperty('--std-x', `${x}px`);
+        row.style.setProperty('--fsw-x', `${x}px`);
         out('progress').textContent = (Math.abs(x) / row.offsetWidth).toFixed(2);
       };
 

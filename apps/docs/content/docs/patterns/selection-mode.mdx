@@ -3,16 +3,74 @@ title: Contextual selection mode
 description: "Select items and act on them through a contextual toolbar."
 ---
 
-<Callout title="Planned">This pattern isn't available yet.</Callout>
+<Callout title="Draft">Specified, not implemented yet. It combines [long press](/behaviors/long-press) and the [dynamic toolbar](/behaviors/dynamic-toolbar). The API may change.</Callout>
 
-When the user starts selecting items (for example with a long press), the screen switches to a selection mode:
+The user picks several items, photos, files or messages, and acts on all of them at once. For as long as the mode lasts, a tap selects instead of opening.
 
-- normal navigation can hide;
-- a contextual [ToolBar](/templates/tool-bar) appears;
-- the available actions change depending on what is selected.
+<SelectionModePreview />
+
+Hold a photo to enter the mode with it selected, or tap **Select**. Tap other photos to add them. Deselect everything and notice you're still in the mode. **Done** leaves it, and so does **Delete**, once the photos are gone. The footer shows what a screen reader announces at each step.
+
+The mode, frame by frame:
+
+<SelectionModeStates />
+
+<SelectionModeMachine />
+
+## When to use it
+
+- Lists and grids where acting on several items at once is common: photos, files, emails, chats.
+- Actions that make sense in bulk: share, move, delete, mark as read.
+
+Don't add it when users almost always act on one item. A [swipe action](/behaviors/swipe-actions) or a [Menu](/atoms/menu) is faster.
+
+## Entering the mode
+
+- A [long press](/behaviors/long-press) on an item enters the mode with that item selected.
+- A **Select** action in the app bar enters the mode with nothing selected.
+- Each item shows a check, and a tap toggles it instead of opening the item.
+
+## Acting on the selection
+
+The tab bar gives way to a [dynamic toolbar](/behaviors/dynamic-toolbar). Its actions depend on the selection:
+
+| Action | Enabled when |
+| --- | --- |
+| Share | At least one item. |
+| Favorite | At least one item. |
+| Edit | Exactly one item. |
+| Delete | At least one item, and all of them are the user's own. |
+
+The app bar title shows the count ("3 selected"), and **Select all** takes the place of the leading button.
+
+## Leaving the mode
+
+- **Done** in the app bar, the system back gesture, or an action that completes (Move, Delete) all return to browsing.
+- Share or Edit open something on top and keep the mode, so the user finds their selection when they come back.
+- Deselecting the last item keeps the mode: the user may be about to pick another. The title becomes "Select items" and every action greys out.
+
+## Implementation
+
+```tsx title="Conceptual"
+const [selected, setSelected] = useState<Set<string> | null>(null); // null = browsing
+const selecting = selected !== null;
+const toggle = (id: string) => setSelected((s) => new Set(s?.has(id) ? [...s].filter((x) => x !== id) : [...(s ?? []), id]));
+
+usePreventRemove(selecting, () => setSelected(null)); // back leaves the mode
+
+<Photo onLongPress={() => !selecting && setSelected(new Set([photo.id]))} onPress={() => (selecting ? toggle(photo.id) : open(photo))} />
+```
+
+## Accessibility
+
+- Announce the mode ("Selection mode, 1 selected") and each change of the count.
+- Each item exposes its selected state with `accessibilityState={{ selected }}`.
+- The long press has an alternative: the **Select** button, and an accessibility action on each item.
 
 ## Related
 
+- [Dynamic toolbar](/behaviors/dynamic-toolbar)
+- [Long press](/behaviors/long-press)
 - [ToolBar](/templates/tool-bar)
 - [OptionItem](/atoms/option-item)
 - [Checkbox](/atoms/checkbox)

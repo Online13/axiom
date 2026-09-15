@@ -3,18 +3,23 @@ title: Async content state
 description: "A standard way to handle loading, content, empty, error, offline and retry."
 ---
 
-<Callout title="Planned">This pattern isn't available yet.</Callout>
+<Callout title="Draft">Specified, not implemented yet. It relies on [Skeleton](/atoms/skeleton), [Empty](/atoms/empty) and a data library such as TanStack Query. The API may change.</Callout>
 
-Almost every screen that loads data goes through the same states. This pattern standardizes them so each screen doesn't reinvent the switch.
+Almost every screen that loads data goes through the same states. This pattern names them once, so each screen doesn't reinvent the switch.
 
-```text
-loading → content
-        → empty
-        → error   → retry → loading
-        → offline → retry → loading
-```
+<AsyncContentStatePreview />
 
-A screen is in exactly one state at a time. Content that is already on screen stays visible during a refresh: the states below describe what replaces the content, not what overlays it.
+The screen loads on its own. Use the footer to choose what the server returns next, then tap **Reopen screen**. Pick **Error** and tap **Try again**: the button locks while the request runs. Switch **Network** to **Offline** and reopen, then back to **Online**: the screen retries without a tap. Now load the orders, set **Error**, and tap the refresh icon. The orders stay, and a snackbar reports the failure.
+
+The five states side by side:
+
+<AsyncContentStateStates />
+
+How the states connect. Tap a transition to follow it, or a state to jump to it:
+
+<AsyncContentStateMachine />
+
+A screen is in exactly one state at a time. Content already on screen stays visible during a refresh. The states below describe what replaces the content, not what covers it.
 
 ## Loading
 

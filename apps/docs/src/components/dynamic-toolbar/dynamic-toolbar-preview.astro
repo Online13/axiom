@@ -1,0 +1,291 @@
+---
+// A files screen where the bottom bar follows what the user is doing.
+// Browsing: the tab bar. Select (or long press a row): the tab bar slides out and a toolbar slides in.
+// The toolbar keeps the same four actions; each one is enabled only when it applies to the selection:
+// nothing selected disables everything, Rename needs exactly one file, Delete is disabled when a shared file is selected.
+// Done, or deselecting from the app bar, brings the tab bar back.
+import PhonePreview from '@/components/preview/phone-preview.astro';
+import Glyph from '@/components/preview/glyph.astro';
+
+const files = [
+  { name: 'Design brief.pdf', meta: '1.8 MB · Today' },
+  { name: 'Estimate.xlsx', meta: '46 KB · Yesterday' },
+  { name: 'Team photo.jpg', meta: 'Shared with you · 3.2 MB', shared: true },
+  { name: 'References.zip', meta: '12 MB · Mon' },
+  { name: 'Interview notes.txt', meta: '4 KB · Mon' },
+  { name: 'Roadmap.key', meta: '8.4 MB · Last week' },
+  { name: 'Invoice 0917.pdf', meta: '220 KB · Last week' },
+  { name: 'Logo final v3.svg', meta: '18 KB · Aug 30' },
+  { name: 'Moodboard.png', meta: 'Shared with you · 5.1 MB', shared: true },
+  { name: 'Contract draft.docx', meta: '96 KB · Aug 21' },
+];
+---
+
+<PhonePreview full>
+  <div class="dtb" data-dynamic-toolbar>
+    <div class="ax-appbar" data-border>
+      <span class="ax-appbar-slot"><button type="button" class="ax-btn dtb-link" data-variant="ghost" data-size="sm" data-all>Select all</button></span>
+      <span class="ax-appbar-title" data-title>Files</span>
+      <span class="ax-appbar-slot" data-side="end"><button type="button" class="ax-btn dtb-link" data-variant="ghost" data-size="sm" data-mode>Select</button></span>
+    </div>
+
+    <div class="dtb-body">
+      <div class="ax-list" data-variant="plain">
+        {
+          files.map(({ name, meta, shared }) => (
+            <div class="ax-item dtb-row" data-row data-shared={shared ? '' : undefined} role="button" tabindex="0">
+              <span class="ax-checkbox dtb-check"><Glyph name="check" size={14} /></span>
+              <span class="dtb-icon"><Glyph name={shared ? 'users' : 'file'} size={18} /></span>
+              <div class="ax-item-content">
+                <span class="ax-item-title">{name}</span>
+                <span class="ax-item-desc">{meta}</span>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="dtb-bars">
+      <div class="ax-tabbar dtb-tabbar">
+        <span class="ax-tabbar-item" data-active><Glyph name="file" /><span>Files</span></span>
+        <span class="ax-tabbar-item"><Glyph name="clock" /><span>Recent</span></span>
+        <span class="ax-tabbar-item"><Glyph name="users" /><span>Shared</span></span>
+        <span class="ax-tabbar-item"><Glyph name="settings" /><span>Settings</span></span>
+      </div>
+      <div class="ax-toolbar dtb-toolbar" role="toolbar" aria-label="Selection actions">
+        <span class="ax-toolbar-action" data-action="share"><Glyph name="share" /><span>Share</span></span>
+        <span class="ax-toolbar-action" data-action="move"><Glyph name="archive" /><span>Move</span></span>
+        <span class="ax-toolbar-action" data-action="rename"><Glyph name="edit" /><span>Rename</span></span>
+        <span class="ax-toolbar-action" data-action="delete" data-destructive><Glyph name="trash" /><span>Delete</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div slot="footer" class="flex flex-wrap items-center justify-between gap-2 border-t px-4 py-3 font-mono text-xs" data-dtb-readout>
+    <span>
+      <span class="text-fd-muted-foreground">mode </span><span data-out="mode">browse</span>
+      <span class="text-fd-muted-foreground"> · selected </span><span data-out="count">0</span>
+    </span>
+    <span><span class="text-fd-muted-foreground">enabled </span><span data-out="enabled">–</span></span>
+  </div>
+</PhonePreview>
+
+<style is:global>
+  .dtb {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .dtb-body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .dtb-link {
+    cursor: pointer;
+    border: 0;
+    background: none;
+    color: var(--ax-content-link);
+    font: inherit;
+  }
+
+  .dtb [data-all] {
+    visibility: hidden;
+  }
+
+  .dtb[data-selecting] [data-all] {
+    visibility: visible;
+  }
+
+  .dtb-row {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 150ms ease;
+  }
+
+  .dtb-row[data-selected] {
+    background: color-mix(in srgb, var(--ax-content-link) 10%, transparent);
+  }
+
+  /* The checkbox takes no room while browsing and slides in with selection mode. */
+  .dtb-check {
+    width: 0;
+    margin-right: -12px;
+    opacity: 0;
+    overflow: hidden;
+    transition:
+      width 200ms ease,
+      margin 200ms ease,
+      opacity 150ms ease;
+  }
+
+  .dtb[data-selecting] .dtb-check {
+    width: 22px;
+    margin-right: 0;
+    opacity: 1;
+  }
+
+  .dtb-row[data-selected] .dtb-check {
+    background: var(--ax-content-link);
+    box-shadow: none;
+    color: #fff;
+  }
+
+  .dtb-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--ax-background-subtle);
+    color: var(--ax-content-muted);
+  }
+
+  /* Both bars share the same slot: one slides down while the other slides up. */
+  .dtb-bars {
+    position: relative;
+    flex: none;
+    height: 83px;
+    overflow: hidden;
+  }
+
+  .dtb-tabbar,
+  .dtb-toolbar {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 83px;
+    box-sizing: border-box;
+    transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .dtb-toolbar {
+    align-items: flex-start;
+    padding-top: 8px;
+    transform: translateY(100%);
+  }
+
+  .dtb[data-selecting] .dtb-tabbar {
+    transform: translateY(100%);
+  }
+
+  .dtb[data-selecting] .dtb-toolbar {
+    transform: none;
+  }
+
+  .dtb-toolbar .ax-toolbar-action {
+    transition: color 150ms ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dtb-tabbar,
+    .dtb-toolbar,
+    .dtb-check {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-dynamic-toolbar]:not([data-ready])').forEach((root) => {
+      root.dataset.ready = '';
+      const rows = [...root.querySelectorAll<HTMLElement>('[data-row]')];
+      const title = root.querySelector<HTMLElement>('[data-title]')!;
+      const mode = root.querySelector<HTMLButtonElement>('[data-mode]')!;
+      const all = root.querySelector<HTMLButtonElement>('[data-all]')!;
+      const actions = [...root.querySelectorAll<HTMLElement>('[data-action]')];
+      const readout = root.closest('[data-ax-preview]')!.querySelector<HTMLElement>('[data-dtb-readout]')!;
+      const out = (key: string) => readout.querySelector<HTMLElement>(`[data-out="${key}"]`)!;
+
+      // Each action says when it applies. The toolbar never adds or removes actions, so nothing moves under the thumb.
+      const rules: Record<string, (selected: HTMLElement[]) => boolean> = {
+        share: (selected) => selected.length > 0,
+        move: (selected) => selected.length > 0,
+        rename: (selected) => selected.length === 1,
+        delete: (selected) => selected.length > 0 && selected.every((row) => row.dataset.shared === undefined),
+      };
+
+      const render = () => {
+        const selecting = root.hasAttribute('data-selecting');
+        const selected = rows.filter((row) => row.hasAttribute('data-selected'));
+        title.textContent = !selecting ? 'Files' : selected.length ? `${selected.length} selected` : 'Select items';
+        mode.textContent = selecting ? 'Done' : 'Select';
+        all.textContent = selected.length === rows.length ? 'Deselect all' : 'Select all';
+
+        const enabled: string[] = [];
+        actions.forEach((action) => {
+          const on = rules[action.dataset.action!](selected);
+          if (on) enabled.push(action.dataset.action!);
+          if (on) action.removeAttribute('data-state');
+          else action.dataset.state = 'disabled';
+          action.setAttribute('aria-disabled', String(!on));
+        });
+
+        out('mode').textContent = selecting ? 'select' : 'browse';
+        out('count').textContent = String(selected.length);
+        out('enabled').textContent = selecting ? enabled.join(', ') || 'none' : '–';
+      };
+
+      const setSelecting = (on: boolean) => {
+        root.toggleAttribute('data-selecting', on);
+        if (!on) rows.forEach((row) => row.removeAttribute('data-selected'));
+        render();
+      };
+
+      mode.addEventListener('click', () => setSelecting(!root.hasAttribute('data-selecting')));
+
+      all.addEventListener('click', () => {
+        const every = rows.every((row) => row.hasAttribute('data-selected'));
+        rows.forEach((row) => row.toggleAttribute('data-selected', !every));
+        render();
+      });
+
+      rows.forEach((row) => {
+        let timer = 0;
+        let long = false;
+
+        // Long press on a row enters selection mode with that row selected.
+        row.addEventListener('pointerdown', () => {
+          long = false;
+          timer = window.setTimeout(() => {
+            long = true;
+            if (!root.hasAttribute('data-selecting')) root.setAttribute('data-selecting', '');
+            row.setAttribute('data-selected', '');
+            render();
+          }, 500);
+        });
+        const cancel = () => clearTimeout(timer);
+        row.addEventListener('pointerup', cancel);
+        row.addEventListener('pointerleave', cancel);
+        row.addEventListener('pointercancel', cancel);
+
+        // A tap toggles the row while selecting. While browsing it would open the file, which the preview skips.
+        const toggle = () => {
+          if (long || !root.hasAttribute('data-selecting')) return;
+          row.toggleAttribute('data-selected');
+          render();
+        };
+        row.addEventListener('click', toggle);
+        row.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          if (!root.hasAttribute('data-selecting')) root.setAttribute('data-selecting', '');
+          row.toggleAttribute('data-selected');
+          render();
+        });
+      });
+
+      render();
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

@@ -1,6 +1,7 @@
 {
   "title": "Hooks",
   "pages": [
+    "index",
     "use-refresh-control",
     "use-hide-on-scroll",
     "use-collapsible-header",

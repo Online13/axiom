@@ -1,0 +1,52 @@
+---
+// Five frozen frames of the code screen: the cells, the line under them and the resend link.
+import TokenFrame from '@/components/tokens/token-frame.astro';
+import Glyph from '@/components/preview/glyph.astro';
+
+type Cell = 'empty' | 'filled' | 'active' | 'invalid' | 'success';
+
+const states: { label: string; filled: number; tone: Cell; line: string; lineClass?: string; resend: string; caption: string }[] = [
+  { label: 'typing', filled: 3, tone: 'filled', line: '', resend: 'Resend in 0:24', caption: 'The cursor waits in the next cell. Resend is still counting down.' },
+  { label: 'verifying', filled: 6, tone: 'filled', line: 'Verifying…', lineClass: 'text-fd-muted-foreground', resend: 'Resend in 0:21', caption: 'The last digit submits. Keys are locked until the answer.' },
+  { label: 'invalid', filled: 6, tone: 'invalid', line: '2 attempts left', lineClass: 'text-red-500', resend: 'Resend in 0:20', caption: 'The cells shake and turn red. The next key starts over.' },
+  { label: 'resend', filled: 0, tone: 'empty', line: '', resend: 'Resend code', caption: 'The countdown is over: the link turns on.' },
+  { label: 'success', filled: 6, tone: 'success', line: 'Verified', lineClass: 'text-green-600', resend: '', caption: 'Green cells, a short pause, then the next screen.' },
+];
+
+const cellClass = (tone: Cell, i: number, filled: number) => {
+  if (tone === 'invalid') return 'border-red-500 text-red-500';
+  if (tone === 'success') return 'border-green-600 text-green-600';
+  if (i === filled && filled < 6) return 'border-blue-500';
+  return 'border-fd-border';
+};
+---
+
+<TokenFrame>
+  <div class="grid min-w-[44rem] grid-cols-5 gap-px bg-fd-border">
+    {
+      states.map(({ label, filled, tone, line, lineClass, resend, caption }) => (
+        <div class="flex flex-col gap-3 bg-fd-card p-3">
+          <div class="mx-auto flex h-[9.5rem] w-[104px] flex-col items-center gap-2 overflow-hidden rounded-md border bg-fd-card px-1.5 pt-4">
+            <span class="h-1.5 w-3/4 self-start rounded-full bg-fd-foreground/70" />
+            <span class="h-1 w-full self-start rounded-full bg-fd-muted" />
+            <div class="mt-2 flex gap-[3px]">
+              {[0, 1, 2, 3, 4, 5].map((i) => (
+                <span class:list={['flex h-[18px] w-[12px] items-center justify-center rounded-[3px] border font-mono text-[8px]', cellClass(tone, i, filled)]}>
+                  {i < filled ? '•' : ''}
+                </span>
+              ))}
+            </div>
+            <span class:list={['flex h-3 items-center gap-1 text-[7px] font-semibold', lineClass]}>
+              {label === 'verifying' && <span class="size-1.5 animate-spin rounded-full border border-current border-t-transparent" />}
+              {tone === 'success' && <Glyph name="check" size={7} strokeWidth={3} />}
+              {line}
+            </span>
+            <span class:list={['text-[7px]', resend === 'Resend code' ? 'text-blue-500' : 'text-fd-muted-foreground']}>{resend}</span>
+          </div>
+          <div class="font-mono text-xs">{label}</div>
+          <p class="text-xs text-fd-muted-foreground">{caption}</p>
+        </div>
+      ))
+    }
+  </div>
+</TokenFrame>

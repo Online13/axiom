@@ -45,20 +45,37 @@ x = w + (over * resistance) / (over + resistance)   // resistance: 60pt
 
 The row opens or closes from **velocity first, then position**:
 
-```text
-velocity toward open  > 500pt/s ──► open
-velocity toward close > 500pt/s ──► close
-otherwise:  |x| > w / 2 ────────────► open
-            |x| ≤ w / 2 ────────────► close
-```
+<SwipeActionsMachine />
 
 The snap is a spring that starts from the release velocity, so a flick carries on smoothly instead of restarting.
 
 ### Once open
 
 - A tap on the row, on another row or on the screen closes it without triggering anything else.
-- A tap on an action runs it and closes the row. If the action removes the row (archive), the row slides out and the list closes the gap: see [Swipe-to-delete](/behaviors/swipe-to-delete).
+- A tap on an action runs it and closes the row. If the action removes the row (archive, delete), the row slides out and the list closes the gap.
 - A scroll of the list closes it.
+
+### Full swipe
+
+A side can trigger its outermost action with a long swipe, without stopping on the buttons. It suits the one action the user repeats most, often Archive or Delete.
+
+<FullSwipePreview />
+
+Swipe a row a little, then all the way. What happens after the row leaves, with the snackbar and Undo, is described in [undoable action](/patterns/undoable-action).
+
+<FullSwipeStates />
+
+`progress` is `|translateX| / rowWidth`. Two thresholds split the swipe:
+
+| Zone | Release does | Feedback |
+| --- | --- | --- |
+| Under half the button (40pt) | Closes. | – |
+| Button to 55% of the row | Opens on the buttons. | – |
+| Past 55% (**armed**) | Runs the outermost action. | Haptic when crossing, both ways. The button fills the row, its icon follows the row's edge. |
+
+Crossing back under 55% before releasing disarms it: the user can change their mind until the last moment.
+
+Only use a full swipe for an action that can be undone. Deleting something that can't be restored (a folder with its content, an account) needs a [Dialog](/atoms/dialog) first.
 
 ## Implementation
 
@@ -67,7 +84,8 @@ Axiom implements it with one hook, [`useSwipeActions`](/hooks/use-swipe-actions)
 | Library | Used for |
 | --- | --- |
 | `react-native-gesture-handler` | `Gesture.Pan()` with `activeOffsetX([-8, 8])` and `failOffsetY([-8, 8])`: the direction lock, without blocking the list's vertical scroll. |
-| `react-native-reanimated` | `translateX` as a shared value, the resistance and the action widths computed in the gesture callbacks. `withSpring(target, { velocity })` for the snap. |
+| `react-native-reanimated` | `translateX` as a shared value, the resistance and the action widths computed in the gesture callbacks. `withSpring(target, { velocity })` for the snap. `progress` and the armed state are derived on the UI thread; `runOnJS` fires the haptic when it changes. |
+| Reanimated layout animations | `exiting` slides a removed row out, `LinearTransition` on the list closes the gap. |
 | React context | The id of the open row, shared by the rows of one list, so opening a row closes the other. |
 
 ### In a screen
@@ -81,7 +99,7 @@ Axiom implements it with one hook, [`useSwipeActions`](/hooks/use-swipe-actions)
         leading={[{ key: 'read', icon: 'mail', label: 'Read', color: 'info', onPress: () => toggleRead(item) }]}
         trailing={[
           { key: 'flag', icon: 'flag', label: 'Flag', color: 'warning', onPress: () => flag(item) },
-          { key: 'archive', icon: 'archive', label: 'Archive', onPress: () => archive(item) },
+          { key: 'archive', icon: 'archive', label: 'Archive', fullSwipe: true, onPress: () => archive(item) },
         ]}
       >
         <Item onPress={() => open(item)}>…</Item>
@@ -97,12 +115,12 @@ Options and return value are documented in [useSwipeActions](/hooks/use-swipe-ac
 
 - Expose each action as an `accessibilityActions` entry on the row: VoiceOver lists them in the rotor, TalkBack in its actions menu. Screen reader users never swipe rows.
 - Action buttons are hidden from screen readers while the row is closed, and focusable when it's open.
-- Colors aren't enough: each action has an icon and a label.
-- With Reduce Motion on, the snap is a short timing instead of a spring.
+- Colors aren't enough: each action has an icon and a label. The haptic isn't the only armed signal: the button changes shape too.
+- With Reduce Motion on, the snap is a short timing instead of a spring, and a removed row disappears without sliding.
 
 ## Related
 
-- [Swipe-to-delete](/behaviors/swipe-to-delete)
+- [Undoable action](/patterns/undoable-action)
 - [Long press](/behaviors/long-press)
 - [useSwipeActions](/hooks/use-swipe-actions)
 - [Item](/atoms/item)

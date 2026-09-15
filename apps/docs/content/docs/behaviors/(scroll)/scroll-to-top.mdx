@@ -26,13 +26,7 @@ Don't add it to lists that fit in one or two screens, or on a screen that alread
 
 The button appears only once the top of the list is out of reach. `threshold` defaults to one screen of content.
 
-```text
-offset   0 ─────────── threshold ──────────────────────────►
-button   hidden         │ shown
-                        │
-showOn:  'always'       └─ shown as long as offset ≥ threshold
-         'scroll-up'    └─ shown only while scrolling up, hidden again on scroll down
-```
+<ScrollToTopMachine />
 
 `scroll-up` keeps the content clear while the user reads down, and offers the button when they start looking for the top.
 

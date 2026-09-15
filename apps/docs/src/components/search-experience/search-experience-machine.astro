@@ -1,0 +1,28 @@
+---
+// Search mode, from the focus to a result. Typing restarts the pause; a late answer for an old query is ignored.
+import StateMachine, { type StateEdge, type StateNode } from '@/components/state-machine/state-machine.astro';
+
+const nodes: StateNode[] = [
+  { id: 'screen', label: 'screen', x: 80, y: 110, caption: 'The previous screen, before search mode.' },
+  { id: 'recent', label: 'recent', x: 260, y: 110, caption: 'The field is focused and empty: recent searches, most recent first.' },
+  { id: 'debounce', label: 'debounce', x: 450, y: 110, caption: 'The user is typing. The request waits for a pause of about 250ms.' },
+  { id: 'loading', label: 'loading', x: 660, y: 110, caption: 'The request is out. Typing again sends a new one, and the old answer is ignored.' },
+  { id: 'results', label: 'results', x: 560, y: 270, caption: 'Matches for the query. Opening one saves the query to recents.' },
+  { id: 'none', label: 'no results', x: 760, y: 270, caption: 'Nothing matched. Repeat the query and offer to clear it.' },
+];
+
+const edges: StateEdge[] = [
+  { from: 'screen', to: 'recent', label: 'focus' },
+  { from: 'recent', to: 'debounce', label: 'type' },
+  { from: 'debounce', to: 'debounce', label: 'keystroke', loop: 'above' },
+  { from: 'debounce', to: 'loading', label: 'pause' },
+  { from: 'recent', to: 'loading', label: 'tap a recent search', via: [460, -60] },
+  { from: 'loading', to: 'results', label: 'matches' },
+  { from: 'loading', to: 'none', label: 'nothing' },
+  { from: 'results', to: 'debounce', label: 'type again', labelOffset: [-30, 0] },
+  { from: 'none', to: 'recent', label: 'clear', via: [260, 350], labelOffset: [0, 6] },
+  { from: 'recent', to: 'screen', label: 'Cancel · back', via: [170, 200] },
+];
+---
+
+<StateMachine nodes={nodes} edges={edges} initial="screen" width={840} height={330} />
