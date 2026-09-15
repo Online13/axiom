@@ -1,29 +1,80 @@
 ---
 title: Async content state
-description: "A standard way to handle loading, content, empty, error and retry."
+description: "A standard way to handle loading, content, empty, error, offline and retry."
 ---
 
 <Callout title="Planned">This pattern isn't available yet.</Callout>
 
-Almost every screen that loads data goes through the same states. This abstraction standardizes them so each screen doesn't reinvent the switch.
+Almost every screen that loads data goes through the same states. This pattern standardizes them so each screen doesn't reinvent the switch.
 
 ```text
 loading → content
         → empty
-        → error → retry → loading
+        → error   → retry → loading
+        → offline → retry → loading
 ```
 
-## States
+A screen is in exactly one state at a time. Content that is already on screen stays visible during a refresh: the states below describe what replaces the content, not what overlays it.
 
-- loading;
-- content;
-- empty;
-- error;
-- retry.
+## Loading
+
+The first load, before any content exists.
+
+- Use a [Skeleton](/atoms/skeleton) shaped like the content when the layout is known, such as a list or a card grid.
+- Use a [Spinner](/atoms/spinner) when the layout isn't known, or for short, blocking actions.
+- A refresh of existing content is not a loading state. Use [pull-to-refresh](/behaviors/pull-to-refresh) and keep the content on screen.
+
+## Empty
+
+The request succeeded but returned nothing. There are two different cases, and they need different messages.
+
+### First use
+
+The user hasn't created anything yet. This is a chance to explain what the screen is for and to point to the main action, such as creating the first item.
+
+- A title that names what will live here.
+- One sentence on why it's useful.
+- One primary action.
+
+### No results
+
+The user searched or filtered, and nothing matched. The screen isn't empty in general, only for this query.
+
+- Repeat the query or the active filters.
+- Offer a way out: clear the search, reset filters.
+- No primary "create" action: the user was looking for something, not trying to add it.
+
+Both cases are built with [Empty](/atoms/empty).
+
+## Error
+
+The request failed.
+
+- Say what couldn't be loaded, in plain language. No error codes on screen.
+- Offer a retry action.
+- If content was already on screen, keep it and report the error with a [Snackbar](/atoms/snackbar) or a [Toast](/atoms/toast) instead of replacing the screen.
+
+## Offline
+
+The device has no connection. It is a specific error: the fix is on the user's side, not the app's.
+
+- Say that the device is offline, not that something went wrong.
+- Retry automatically when the connection comes back, and keep the manual retry.
+- Show cached content when there is some, with a discreet offline indicator.
+
+## Retry
+
+Retry is a transition, not a screen: it sends the user back to loading.
+
+- The retry action goes back to the loading state, never straight to content.
+- Disable the action while the request is in flight, so repeated taps don't stack requests.
+- After several failures in a row, stop retrying automatically and leave the manual action.
 
 ## Related
 
 - [Skeleton](/atoms/skeleton)
+- [Spinner](/atoms/spinner)
 - [Empty](/atoms/empty)
-- [useRefreshControl](/hooks/use-refresh-control)
-- [Behaviors: async content](/behaviors#async-content)
+- [Pull-to-refresh](/behaviors/pull-to-refresh)
+- [Pagination](/behaviors/pagination)
+- [Search experience](/patterns/search-experience)
