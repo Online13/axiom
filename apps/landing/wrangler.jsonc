@@ -4,5 +4,12 @@
   "compatibility_date": "2026-09-14",
   "assets": {
     "directory": "./dist"
+  },
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true,
+      "persist": true
+    }
   }
 }
