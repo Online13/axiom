@@ -1,0 +1,84 @@
+---
+title: Introduction
+description: "Real apps built with Axiom, and the ones we're building next."
+---
+
+<Callout title="Nothing shipped yet">
+  Axiom is in [phase 1](/roadmap). None of these apps exist as code today. They are the proof we owe the system: each one is chosen to stress a different part of it, and this page fills up as they ship.
+</Callout>
+
+A component library proves itself in a real app, not in a catalog. Every app below is a whole product, built only with Axiom components and the same [tokens](/foundations/tokens) any consumer gets. If a screen needs something the system doesn't have, that gap becomes a component, a [behavior](/behaviors) or a [pattern](/patterns) rather than a one-off file inside the app.
+
+## The apps
+
+<ShowcaseGrid>
+  <ShowcaseCard
+    title="Axiom Demo"
+    href="/showcase/demo"
+    preview="demo"
+    status="Phase 1"
+    uses={["Every atom", "Foundations", "Styling variants"]}
+  >
+    The reference app: one screen per component, light and dark side by side, every styling variant running from the same props.
+  </ShowcaseCard>
+  <ShowcaseCard
+    title="Tempo"
+    href="/showcase/tempo"
+    preview="tempo"
+    status="Planned"
+    uses={["Lists", "Gestures", "Selection mode"]}
+  >
+    A habit tracker. Long lists you check off, reorder by dragging and clean up in bulk.
+  </ShowcaseCard>
+  <ShowcaseCard
+    title="Tally"
+    href="/showcase/tally"
+    preview="tally"
+    status="Planned"
+    uses={["Forms", "Keyboard", "Undoable action"]}
+  >
+    Shared expenses. Numeric entry, split rules, and actions that stay cancellable for a few seconds.
+  </ShowcaseCard>
+  <ShowcaseCard
+    title="Atlas"
+    href="/showcase/atlas"
+    preview="atlas"
+    status="Planned"
+    uses={["BottomSheet", "Search", "Scroll"]}
+  >
+    A city guide. A map under a sheet that snaps, plus the full search flow from field to results.
+  </ShowcaseCard>
+  <ShowcaseCard
+    title="Chapter"
+    href="/showcase/chapter"
+    preview="chapter"
+    status="Planned"
+    uses={["Typography", "Theming", "Long press"]}
+  >
+    A reader with notes. Where type scale, reading themes and text selection get tested for real.
+  </ShowcaseCard>
+  <ShowcaseCard
+    title="Corner"
+    href="/showcase/corner"
+    preview="corner"
+    status="Planned"
+    uses={["Commerce blocks", "Paywall", "Checkout"]}
+  >
+    A neighbourhood shop. Browse, product page, cart and checkout, built on the commerce [blocks](/blocks).
+  </ShowcaseCard>
+</ShowcaseGrid>
+
+## What each app has to prove
+
+| App | The question it answers |
+| --- | --- |
+| Axiom Demo | Do all the components exist, in every state, in every styling variant? |
+| Tempo | Do gestures survive a list that scrolls, reorders and selects at once? |
+| Tally | Does a form hold up against the keyboard, the numeric pad and a mistake? |
+| Atlas | Can a sheet, a map and a search field share one screen without fighting? |
+| Chapter | Do the typography and color tokens hold a whole reading surface? |
+| Corner | Can a real purchase flow be assembled from blocks alone? |
+
+## Building your own
+
+Nothing here is a template to fork. Axiom is copied into your project file by file with the [CLI](/cli), so the apps below are read as evidence, not as a starting repo. Ship one and open an issue: this page is meant to hold your app too.

@@ -1,29 +1,11 @@
 {
   "pages": [
-    "---Get Started---",
-    "index",
-    "installation",
-    "cli",
-    "configuration",
-    "styling",
-    "---System---",
-    "foundations",
-    "core",
-    "---Components---",
-    "components",
-    "atoms",
-    "molecules",
-    "organisms",
-    "templates",
-    "---Hooks---",
-    "...hooks",
-    "---Behaviors---",
-    "...behaviors",
-    "---Patterns---",
-    "...patterns",
-    "---Blocks---",
-    "...blocks",
-    "---Project---",
-    "roadmap"
+    "(get-started)",
+    "(api-reference)",
+    "(theming)",
+    "(experiences)",
+    "blocks",
+    "agent",
+    "showcase"
   ]
 }

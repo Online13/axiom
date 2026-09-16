@@ -1,0 +1,42 @@
+---
+title: Tally
+description: "Shared expenses — numeric entry, split rules, and actions you can take back."
+---
+
+<Callout title="Planned">Not built yet. Tally is the form-and-keyboard test: everything Axiom has to get right when the keyboard is up.</Callout>
+
+A group, a list of expenses, who owes whom. Most of the app is one screen: entering an amount, picking who paid and splitting the rest. That screen is where mobile form components usually fall apart.
+
+<ShowcaseScreens app="tally" />
+
+## Why this app
+
+The keyboard is the hardest layout constraint on a phone. Tally forces the answers:
+
+- A numeric field that stays visible when the pad opens, without the submit button scrolling away.
+- Validation that appears without the content jumping.
+- A [bottom sheet](/atoms/bottom-sheet) that resizes with the keyboard instead of hiding under it.
+- "Marked as paid" that stays cancellable while the request is already in flight.
+
+## Screens
+
+| Screen | What it holds |
+| --- | --- |
+| Balances | Who owes what, as a summary card and a transaction list. |
+| Add expense | Amount, payer, split, category, note. |
+| Settle up | Per-person amounts and a confirmation that can be undone. |
+| Group | Members, invitations, currency, history. |
+
+## Built with
+
+- [Input](/atoms/input), [InputGroup](/atoms/input-group), [TextArea](/atoms/text-area), [SegmentedControl](/atoms/segmented-control) for the form.
+- [Avatar](/atoms/avatar) and [Item](/atoms/item) for members and rows.
+- [BottomSheet](/atoms/bottom-sheet) for the payer and split pickers.
+- [Undoable action](/patterns/undoable-action) on settle-up, [Snackbar](/atoms/snackbar) for the countdown.
+- [Async content state](/patterns/async-content-state) for the balance list: loading, empty, offline, retry.
+
+## What it checks
+
+- The keyboard never covers the field being typed into, or the action that submits it.
+- Numbers are formatted per locale and currency without breaking the layout.
+- An optimistic write that fails restores the previous state and says so.

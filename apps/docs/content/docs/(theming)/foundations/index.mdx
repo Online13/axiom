@@ -1,5 +1,5 @@
 ---
-title: Foundations
+title: Introduction
 description: "The visual base shared by every component: theme, tokens, colors and typography."
 ---
 
@@ -7,13 +7,7 @@ Foundations are copied by `npx axiom init`. Every other layer builds on them.
 
 The theme has three layers, from raw values to component defaults:
 
-```text
-Tokens            raw values: palettes, spacing, radius, type, sizes
-   ↓
-ThemeColors       semantic colors: background, content, border, feedback
-   ↓
-Components        per-component values derived from the colors
-```
+<ThemeLayers />
 
 Components read the last layer. They never use raw palette values directly, so changing a semantic color updates every component that depends on it.
 
@@ -41,7 +35,7 @@ The contracts don't depend on the styling tool. Each variant translates them int
   <Card title="Component tokens" href="/foundations/component-tokens">
     Per-component values derived from colors.
   </Card>
-  <Card title="Typography" href="/foundations/title">
+  <Card title="Typography" href="/atoms/title">
     Title and Text.
   </Card>
 </Cards>

@@ -1,0 +1,19 @@
+---
+title: Introduction
+description: "Give coding agents the context they need to build with Axiom."
+---
+
+<Callout title="Draft">This section is being written. What it covers may still change.</Callout>
+
+Axiom is a set of files copied into your project, so a coding agent works on your code, not on a package it can only read from the outside. What it misses is the context around those files: which component belongs to which level, which tokens exist, what the CLI copies, how a pattern is meant to be assembled.
+
+This section is about handing over that context.
+
+<Cards>
+  <Card title="MCP" href="/agent/mcp">
+    Expose the component catalog, tokens and CLI to an agent over MCP.
+  </Card>
+  <Card title="Skill" href="/agent/skill">
+    Package the conventions an agent should follow when writing Axiom code.
+  </Card>
+</Cards>

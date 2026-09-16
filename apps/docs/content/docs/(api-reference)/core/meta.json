@@ -1,6 +1,7 @@
 {
   "title": "Core",
   "pages": [
+    "index",
     "slot",
     "portal",
     "overlay",

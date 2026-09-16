@@ -1,0 +1,9 @@
+{
+  "title": "Agent",
+  "root": true,
+  "pages": [
+    "index",
+    "mcp",
+    "skill"
+  ]
+}

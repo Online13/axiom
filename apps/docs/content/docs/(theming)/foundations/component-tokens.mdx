@@ -9,10 +9,9 @@ description: "Per-component colors derived from the semantic colors."
 
 Components read this layer, never [colors](/foundations/colors) or the [palette](/foundations/tokens/palette) directly.
 
-```text
-Tokens (palette)  →  ThemeColors  →  Components  →  Button, Input, Switch…
-blue.500             border.focus    input.default.focused.border
-```
+<ComponentTokenPath />
+
+Each row below traces a real component token back to its semantic color and palette step, in both schemes.
 
 <TokenChain />
 

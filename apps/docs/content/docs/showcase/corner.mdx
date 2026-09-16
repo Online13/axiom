@@ -1,0 +1,44 @@
+---
+title: Corner
+description: "A neighbourhood shop — browse, product, cart and checkout, assembled from blocks."
+---
+
+<Callout title="Planned">Not built yet. Corner comes with [phase 2](/roadmap): it is assembled from the [blocks](/blocks), not from loose components.</Callout>
+
+A small shop with a few dozen products. The whole app is the commerce and account flows a real store needs, and almost none of it should be written by hand.
+
+<ShowcaseScreens app="corner" />
+
+## Why this app
+
+Blocks claim you can put a real flow together from whole screens. Corner is where that claim is either true or not:
+
+- Storefront, product, cart and checkout come from the [commerce](/blocks/commerce) blocks.
+- Sign-in, sign-up and OTP come from [authentication](/blocks/authentication).
+- The first run comes from [onboarding](/blocks/onboarding), the paid tier from [monetization](/blocks/monetization).
+- What is left to write is the shop's own: catalog, prices, copy, brand.
+
+If a block has to be rewritten instead of adapted, it was specified wrong.
+
+## Screens
+
+| Screen | What it holds |
+| --- | --- |
+| Storefront | Categories, product grid, cart badge. |
+| Product | Gallery, price, quantity, add to cart. |
+| Cart | Lines, quantities, removal with undo, total. |
+| Checkout | Delivery, payment, summary, confirmation. |
+
+## Built with
+
+- The [commerce](/blocks/commerce), [authentication](/blocks/authentication), [onboarding](/blocks/onboarding), [monetization](/blocks/monetization) and [profile](/blocks/profile) blocks.
+- [Card](/atoms/card), [Chip](/atoms/chip), [Badge](/atoms/badge), [ButtonGroup](/atoms/button-group) in the catalog.
+- [OTP verification](/patterns/otp-verification) on sign-in.
+- [Undoable action](/patterns/undoable-action) when a line leaves the cart.
+- [Toast](/atoms/toast) and [Snackbar](/atoms/snackbar) for order feedback.
+
+## What it checks
+
+- A block can be rebranded with tokens alone: colors, radius, type, and nothing else.
+- Flows compose: leaving checkout for sign-in and coming back keeps the cart.
+- Money, stock and errors all have a drawn state, not a spinner.

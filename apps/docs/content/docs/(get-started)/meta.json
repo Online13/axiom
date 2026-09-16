@@ -1,0 +1,13 @@
+{
+  "title": "Get Started",
+  "root": true,
+  "pages": [
+    "index",
+    "installation",
+    "cli",
+    "configuration",
+    "styling",
+    "---Project---",
+    "roadmap"
+  ]
+}

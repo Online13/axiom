@@ -1,5 +1,6 @@
 {
   "title": "Blocks",
+  "root": true,
   "pages": [
     "index",
     "authentication",

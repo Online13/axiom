@@ -1,0 +1,16 @@
+{
+  "title": "API Reference",
+  "root": true,
+  "pages": [
+    "---Components---",
+    "components",
+    "atoms",
+    "molecules",
+    "organisms",
+    "templates",
+    "---Core---",
+    "...core",
+    "---Hooks---",
+    "...hooks"
+  ]
+}

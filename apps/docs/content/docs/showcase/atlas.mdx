@@ -1,0 +1,42 @@
+---
+title: Atlas
+description: "A city guide — a map under a sheet that snaps, and search from field to results."
+---
+
+<Callout title="Planned">Not built yet. Atlas is the layering test: a sheet, a map and a search field sharing one screen.</Callout>
+
+Places on a map, a sheet you drag up to read them, and a search that takes over the whole screen when it is focused. Three surfaces on top of each other, each with its own scroll.
+
+<ShowcaseScreens app="atlas" />
+
+## Why this app
+
+Most layering bugs are invisible until two scrollable things stack:
+
+- The sheet scrolls its content at full height, and drags itself down only once that content is at the top.
+- The map keeps its gestures while the sheet is at its smallest snap point.
+- Focusing search covers both, then restores the exact map position on exit.
+- [Portal](/core/portal) ordering decides what a [Dialog](/atoms/dialog) opened from inside the sheet lands on top of.
+
+## Screens
+
+| Screen | What it holds |
+| --- | --- |
+| Map | Pins, a floating search field, the sheet at its first snap point. |
+| Place sheet | Photos, rating, hours, actions, reviews — scrolling inside the sheet. |
+| Search | History, suggestions, results, no result. |
+| Saved | Lists of places, grouped and reorderable. |
+
+## Built with
+
+- [BottomSheet](/atoms/bottom-sheet) with snap points, over [Overlay](/core/overlay) and [Portal](/core/portal).
+- [SearchBar](/molecules/search-bar) driving the [search experience](/patterns/search-experience).
+- [Carousel](/atoms/carousel) for photos, [Skeleton](/atoms/skeleton) while a place loads.
+- [Collapsible header](/behaviors/collapsible-header) and [hide on scroll](/behaviors/hide-on-scroll) on the saved lists.
+- [Pagination](/behaviors/pagination) on results.
+
+## What it checks
+
+- One drag gesture, two consumers: the sheet and the list inside it never both move.
+- Search entry and exit keep map state, scroll position and keyboard focus consistent.
+- Anything opened from a sheet stacks above it, including toasts and dialogs.

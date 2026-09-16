@@ -1,0 +1,42 @@
+---
+title: Chapter
+description: "A reader with notes — where typography, theming and text selection get tested for real."
+---
+
+<Callout title="Planned">Not built yet. Chapter is the typography and theming test: a whole screen made of text.</Callout>
+
+A library, a reading surface, and the notes that come out of it. Almost no chrome: what is left is type, spacing, color and one contextual toolbar.
+
+<ShowcaseScreens app="chapter" />
+
+## Why this app
+
+A reader exposes the [tokens](/foundations/tokens) with nothing to hide behind:
+
+- Line height, measure and paragraph spacing come from the [type scale](/foundations/tokens/typography), not from magic numbers.
+- Reading themes — light, sepia, dark, black — are [color roles](/foundations/colors) swapped underneath, with no component aware of it.
+- The app has to stay readable at the largest system font size without any layout breaking.
+- Text selection drives a [dynamic toolbar](/behaviors/dynamic-toolbar) instead of a system menu.
+
+## Screens
+
+| Screen | What it holds |
+| --- | --- |
+| Library | Covers, progress, filters, grouped by status. |
+| Reader | The page, the progress bar, tap zones for chrome. |
+| Highlight | A selection and its contextual toolbar. |
+| Notes | Highlights and notes, searchable, per book. |
+
+## Built with
+
+- [Title](/atoms/title) and [Text](/atoms/text) as the whole reading surface.
+- [Theme](/foundations) with four reading themes, switched at the token layer.
+- [Long press](/behaviors/long-press) for selection, [dynamic toolbar](/behaviors/dynamic-toolbar) for its actions.
+- [Menu](/atoms/menu), [Slider](/atoms/slider) and [SegmentedControl](/atoms/segmented-control) for reading settings.
+- [AppBar](/templates/app-bar) that [hides on scroll](/behaviors/hide-on-scroll) while reading.
+
+## What it checks
+
+- The type scale holds a full page of prose, not just labels and buttons.
+- Adding a theme means adding colors, never touching a component.
+- Chrome that hides on scroll comes back reliably, including after a tap.
