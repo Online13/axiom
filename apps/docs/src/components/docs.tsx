@@ -39,17 +39,19 @@ export function Docs({
       pathname={pathname}
       params={params}
       navigate={navigate}
-      theme={{ enabled: false }}
+      // The header switcher is the only toggle; `d` stays free for typing in the page.
+      theme={{ hotKey: false }}
       search={{ SearchDialog }}
     >
       <DocsLayout
         tree={tree}
         containerProps={{ onClickCapture: preventActiveFolderNavigation }}
-        themeSwitch={{
-          enabled: false,
-        }}
+        // System is the default theme, so it gets its own segment rather than being hidden.
+        themeSwitch={{ mode: 'light-dark-system' }}
         // Collapsing is desktop-only; the mobile drawer trigger stays.
         sidebar={{ collapsible: false }}
+        // Root folders become tabs; 'navbar' puts them on their own row under the header.
+        tabMode="navbar"
         // 'top' moves the logo and search out of the sidebar into a full-width header.
         nav={{
           mode: 'top',
