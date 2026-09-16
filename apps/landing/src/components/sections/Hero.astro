@@ -2,6 +2,7 @@
 import Title from '../Title.astro';
 import HeroPhone from '../HeroPhone.astro';
 import CopyCommand from '../CopyCommand.astro';
+import { docs } from '../../lib/links';
 ---
 
 <section class="section hero">
@@ -16,7 +17,7 @@ import CopyCommand from '../CopyCommand.astro';
 			</p>
 			<div class="hero__actions">
 				<CopyCommand command="npx axiom init" />
-				<a href="#get-started" class="btn btn--ghost">Read the docs</a>
+				<a href={docs()} class="btn btn--ghost">Read the docs</a>
 			</div>
 		</div>
 

@@ -1,16 +1,15 @@
 ---
-const docsUrl = import.meta.env.PUBLIC_DOCS_URL ?? 'http://localhost:4322';
-const githubUrl = 'https://github.com/Online13/axiom';
+import { docs, githubUrl } from '../../lib/links';
 
 const links = [
-	{ label: 'Docs', href: docsUrl },
+	{ label: 'Docs', href: docs() },
 	{ label: 'Registry', href: '#registry' },
 ];
 ---
 
 <header class="nav">
 	<div class="container nav__inner">
-		<a href="#" class="nav__logo">AXIOM</a>
+		<a href="/" class="nav__logo">AXIOM</a>
 		<div class="nav__right">
 			<nav class="nav__links">
 				{links.map((link) => <a href={link.href}>{link.label}</a>)}
@@ -22,7 +21,7 @@ const links = [
 					</svg>
 					<span>GitHub</span>
 				</a>
-				<a href="#get-started" class="btn nav__btn">Get started</a>
+				<a href={docs()} class="btn nav__btn">Get started</a>
 			</div>
 		</div>
 	</div>

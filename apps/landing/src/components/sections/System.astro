@@ -1,12 +1,15 @@
 ---
 import Title from '../Title.astro';
+import { docs } from '../../lib/links';
+
+// Each layer opens the matching section of the docs.
 const layers = [
-	{ name: 'Foundations', detail: 'Tokens · color · type · spacing · radius' },
-	{ name: 'Atoms', detail: 'Button · Switch · Checkbox · Badge · Avatar' },
-	{ name: 'Molecules', detail: 'SearchBar · Attachment · DatePicker' },
-	{ name: 'Organisms', detail: 'Passcode' },
-	{ name: 'Templates', detail: 'AppBar · BottomTabBar · ToolBar · Scaffold' },
-	{ name: 'Blocks', detail: 'Login · Onboarding · Paywall · Checkout' },
+	{ name: 'Foundations', href: docs('/foundations'), detail: 'Tokens · color · type · spacing · radius' },
+	{ name: 'Atoms', href: docs('/atoms'), detail: 'Button · Switch · Checkbox · Badge · Avatar' },
+	{ name: 'Molecules', href: docs('/molecules'), detail: 'SearchBar · Attachment · DatePicker' },
+	{ name: 'Organisms', href: docs('/organisms'), detail: 'Passcode' },
+	{ name: 'Templates', href: docs('/templates'), detail: 'AppBar · BottomTabBar · ToolBar · Scaffold' },
+	{ name: 'Blocks', href: docs('/blocks'), detail: 'Login · Onboarding · Paywall · Checkout' },
 ];
 
 const swatches = ['#f5f5f5', '#8a8a8a', '#262626', '#0a0a0a', '#ff5a1f'];
@@ -26,7 +29,9 @@ const blocks = ['Login', 'Onboarding', 'Paywall', 'Profile', 'Checkout'];
 					<li class="system__layer" style={`--i: ${i}`}>
 						<div class="system__label">
 							<span class="eyebrow">0{i + 1}</span>
-							<h3>{layer.name}</h3>
+							<h3>
+								<a href={layer.href}>{layer.name}</a>
+							</h3>
 							<p>{layer.detail}</p>
 						</div>
 						<div class="system__block" aria-hidden="true">
@@ -171,6 +176,11 @@ const blocks = ['Login', 'Onboarding', 'Paywall', 'Profile', 'Checkout'];
 	.system__label h3 {
 		font-size: 1.25rem;
 		font-weight: 500;
+	}
+
+	.system__label h3 a:hover {
+		text-decoration: underline;
+		text-underline-offset: 0.25em;
 	}
 
 	.system__label p {

@@ -1,6 +1,7 @@
 ---
 import Title from '../Title.astro';
 import CopyCommand from '../CopyCommand.astro';
+import { docs } from '../../lib/links';
 const components = [
 	'button', 'icon-button', 'tappable', 'text', 'icon', 'avatar',
 	'badge', 'chip', 'divider', 'item', 'list', 'section-header',
@@ -46,7 +47,7 @@ const initial = ['button', 'bottom-sheet'];
 					))
 				}
 			</div>
-			<a href="#" class="btn btn--ghost registry__all">View all components</a>
+			<a href={docs('/components')} class="btn btn--ghost registry__all">View all components</a>
 		</div>
 	</div>
 </section>

@@ -1,16 +1,15 @@
 ---
-const docsUrl = import.meta.env.PUBLIC_DOCS_URL ?? 'http://localhost:4322';
-const githubUrl = 'https://github.com/Online13/axiom';
+import { docs, githubUrl } from '../../lib/links';
 
 const links = [
-	{ label: 'Docs', href: docsUrl },
+	{ label: 'Docs', href: docs() },
 	{ label: 'Registry', href: '#registry' },
 ];
 ---
 
 <footer class="section section--solid footer">
 	<div class="container footer__inner">
-		<a href="#" class="footer__logo">AXIOM</a>
+		<a href="/" class="footer__logo">AXIOM</a>
 		<nav class="footer__links">
 			{links.map((link) => <a href={link.href}>{link.label}</a>)}
 			<a href={githubUrl} class="footer__github" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
