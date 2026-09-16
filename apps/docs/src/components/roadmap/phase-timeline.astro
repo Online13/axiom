@@ -1,0 +1,83 @@
+---
+// The phases as one track, from the spec to what comes last.
+// The phase in progress carries a "You are here" marker so the current position is readable at a glance.
+// Status drives every visual: a shipped phase is filled, the current one is outlined and highlighted,
+// a future one stays muted.
+
+const phases = [
+  {
+    label: 'Phase 0',
+    name: 'Specification',
+    status: 'done',
+    summary: 'Every component, behavior and pattern written down: API, states, tokens.',
+  },
+  {
+    label: 'Phase 1',
+    name: 'Foundation',
+    status: 'current',
+    summary: 'The system itself: foundations, core, atoms up to templates, plus the tooling around them.',
+  },
+  {
+    label: 'Phase 2',
+    name: 'Blocks',
+    status: 'next',
+    summary: 'Complete screens assembled from the components, once the system is stable.',
+  },
+  {
+    label: 'Later',
+    name: 'Depth',
+    status: 'next',
+    summary: 'Patterns, more hooks, device CI and visual tests.',
+  },
+];
+
+const statusLabel = {
+  done: 'Done',
+  current: 'In progress',
+  next: 'Planned',
+};
+
+const dot = {
+  done: 'bg-fd-foreground border-fd-foreground',
+  current: 'bg-fd-background border-fd-foreground ring-4 ring-fd-foreground/15',
+  next: 'bg-fd-background border-fd-muted-foreground/40',
+};
+
+const card = {
+  done: 'border-fd-border bg-fd-card',
+  current: 'border-fd-foreground/40 bg-fd-card shadow-sm',
+  next: 'border-fd-border bg-fd-card/40',
+};
+
+const badge = {
+  done: 'text-fd-muted-foreground',
+  current: 'text-fd-foreground',
+  next: 'text-fd-muted-foreground',
+};
+---
+
+<ol class="not-prose my-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Roadmap phases">
+  {phases.map((phase, index) => (
+    <li class="flex flex-col">
+      <div class="relative flex items-center" aria-hidden="true">
+        <span class={`h-px flex-1 ${index === 0 ? 'bg-transparent' : phase.status === 'next' ? 'bg-fd-border' : 'bg-fd-foreground/40'}`} />
+        <span class={`size-3 shrink-0 rounded-full border-2 ${dot[phase.status]}`} />
+        <span class={`h-px flex-1 ${index === phases.length - 1 ? 'bg-transparent' : phase.status === 'done' ? 'bg-fd-foreground/40' : 'bg-fd-border'}`} />
+      </div>
+      <div class="mt-1 flex h-5 items-center justify-center">
+        {phase.status === 'current' && (
+          <span class="rounded-full bg-fd-foreground px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide leading-none text-fd-background">
+            You are here
+          </span>
+        )}
+      </div>
+      <div class={`mt-2 flex flex-1 flex-col gap-1 rounded-lg border p-3 ${card[phase.status]}`}>
+        <span class={`text-[11px] font-semibold uppercase tracking-wide ${badge[phase.status]}`}>
+          {phase.label} · {statusLabel[phase.status]}
+        </span>
+        <span class="text-sm font-medium leading-5">{phase.name}</span>
+        <span class="text-xs leading-5 text-fd-muted-foreground">{phase.summary}</span>
+      </div>
+    </li>
+  ))}
+</ol>

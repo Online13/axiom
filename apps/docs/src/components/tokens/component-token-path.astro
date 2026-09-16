@@ -1,0 +1,14 @@
+---
+// The same three layers as the theme overview, followed by the components that read them,
+// with one value traced through every step.
+import LayerFlow from './layer-flow.astro';
+
+const steps = [
+  { name: 'Tokens', caption: 'The palette step.', example: 'blue.500' },
+  { name: 'ThemeColors', caption: 'The semantic color pointing to it.', example: 'border.focus' },
+  { name: 'Components', caption: 'The component token reading the color.', example: 'input.default.focused.border' },
+  { name: 'Your components', caption: 'Button, Input, Switch… read this layer only.', consumer: true },
+];
+---
+
+<LayerFlow steps={steps} />

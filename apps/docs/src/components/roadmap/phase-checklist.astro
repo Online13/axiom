@@ -1,0 +1,85 @@
+---
+// The workstreams of the phase in progress, each item with its own state.
+// "Next up" marks where the work resumes, so the reader sees the current position
+// down to the item, not only down to the phase.
+
+interface Props {
+  title?: string;
+}
+
+const { title } = Astro.props;
+
+const groups = [
+  {
+    name: 'Styling variants',
+    items: [
+      { name: 'stylesheet', detail: 'behavior / style split in place', status: 'next' },
+      { name: 'unistyles', detail: 'same API, other engine', status: 'todo' },
+      { name: 'tailwind', detail: 'NativeWind / Uniwind, once the split is proven', status: 'todo' },
+    ],
+  },
+  {
+    name: 'Components',
+    items: [
+      { name: 'Foundations', detail: 'tokens, ThemeColors, Theme, light / dark', status: 'next' },
+      { name: 'Core', detail: 'Slot, Portal, Overlay, Tappable', status: 'todo' },
+      { name: 'Hooks', detail: 'useRefreshControl', status: 'todo' },
+      { name: 'Typography', detail: 'Title, Text', status: 'todo' },
+      { name: 'Atoms', detail: '32 components', status: 'todo' },
+      { name: 'Molecules', detail: 'SearchBar, Attachment, DatePicker', status: 'todo' },
+      { name: 'Organisms', detail: 'Passcode', status: 'todo' },
+      { name: 'Templates', detail: 'AppBar, BottomTabBar, Tab, ToolBar, Scaffold', status: 'todo' },
+    ],
+  },
+  {
+    name: 'Tooling',
+    items: [
+      { name: 'registry.json', detail: 'component manifest', status: 'todo' },
+      { name: 'CLI', detail: 'init, add', status: 'todo' },
+      { name: 'Demo app', detail: 'one screen per component, light / dark, variants side by side', status: 'todo' },
+      { name: 'Foundations screen', detail: 'colors, typography, spacing, radius, icons, targets, states', status: 'todo' },
+      { name: 'CI', detail: 'typecheck per variant, props parity, lint, tests, builds', status: 'todo' },
+    ],
+  },
+];
+
+const mark = {
+  done: 'bg-fd-foreground border-fd-foreground',
+  doing: 'bg-fd-background border-fd-foreground ring-[3px] ring-fd-foreground/15',
+  next: 'bg-fd-background border-fd-foreground',
+  todo: 'bg-fd-background border-fd-muted-foreground/40',
+};
+---
+
+<div class="not-prose my-6 grid gap-3 md:grid-cols-3" aria-label={title ?? 'Phase 1 workstreams'}>
+  {groups.map((group) => (
+    <section class="flex flex-col gap-3 rounded-lg border bg-fd-card p-4">
+      <h3 class="text-[11px] font-semibold uppercase tracking-wide text-fd-muted-foreground">{group.name}</h3>
+      <ol class="flex flex-col gap-2.5">
+        {group.items.map((item) => (
+          <li class="flex gap-2.5">
+            <span class={`mt-1 size-2.5 shrink-0 rounded-full border-2 ${mark[item.status]}`} aria-hidden="true" />
+            <span class="flex min-w-0 flex-col gap-0.5">
+              <span class="flex flex-wrap items-center gap-1.5">
+                <span class={`text-sm leading-5 ${item.status === 'todo' ? 'text-fd-muted-foreground' : 'font-medium'}`}>
+                  {item.name}
+                </span>
+                {item.status === 'next' && (
+                  <span class="rounded-full border border-fd-foreground/30 px-1.5 py-px text-[10px] font-semibold uppercase leading-none">
+                    Next up
+                  </span>
+                )}
+                {item.status === 'doing' && (
+                  <span class="rounded-full bg-fd-foreground px-1.5 py-px text-[10px] font-semibold uppercase leading-none text-fd-background">
+                    In progress
+                  </span>
+                )}
+              </span>
+              <span class="text-xs leading-5 text-fd-muted-foreground">{item.detail}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  ))}
+</div>

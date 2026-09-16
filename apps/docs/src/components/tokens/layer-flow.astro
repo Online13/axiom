@@ -1,0 +1,68 @@
+---
+// A chain of theme layers, read left to right. Each step carries a name, what it holds, and an optional
+// example value. Steps stack vertically and the arrows turn a quarter when the page is too narrow.
+import TokenFrame from './token-frame.astro';
+
+export interface FlowStep {
+  name: string;
+  caption: string;
+  example?: string;
+  /** A step outside the theme, such as the components reading the last layer. Drawn dashed. */
+  consumer?: boolean;
+}
+
+interface Props {
+  steps: FlowStep[];
+}
+
+const { steps } = Astro.props;
+const hasExamples = steps.some((step) => step.example);
+// The layer components actually read: the last one that is still part of the theme.
+const lastLayer = steps.reduce((last, step, i) => (step.consumer ? last : i), 0);
+---
+
+<TokenFrame>
+  <ol class="flex flex-col items-stretch gap-2 p-4 sm:flex-row">
+    {
+      steps.map((step, i) => (
+        <>
+          <li
+            class="flex min-w-0 flex-1 flex-col gap-1.5 border bg-fd-background p-3"
+            data-accent={i === lastLayer ? '' : null}
+            data-consumer={step.consumer ? '' : null}
+          >
+            <div class="flex items-baseline gap-2">
+              <span class="font-mono text-[0.65rem] text-fd-muted-foreground">{String(i + 1).padStart(2, '0')}</span>
+              <span class="font-mono text-sm">{step.name}</span>
+            </div>
+            <p class="text-xs leading-snug text-fd-muted-foreground">{step.caption}</p>
+            {hasExamples && step.example && (
+              <code class="mt-auto block break-all border bg-fd-card px-1.5 py-1 font-mono text-[0.65rem] leading-tight">{step.example}</code>
+            )}
+          </li>
+          {i < steps.length - 1 && (
+            <li class="flex shrink-0 items-center justify-center text-fd-muted-foreground" aria-hidden="true">
+              <svg viewBox="0 0 24 12" class="h-3 w-6 rotate-90 sm:rotate-0" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M1 6 H21" />
+                <path d="M16 1.5 L21 6 L16 10.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </li>
+          )}
+        </>
+      ))
+    }
+  </ol>
+</TokenFrame>
+
+<style>
+  /* The chain reads as a progression: the accent marks the layer components actually read. */
+  li[data-accent] {
+    border-color: var(--color-fd-primary);
+    box-shadow: inset 0 0 0 1px var(--color-fd-primary);
+  }
+  li[data-consumer] {
+    border-style: dashed;
+    border-color: var(--color-fd-muted-foreground);
+    background: transparent;
+  }
+</style>

@@ -1,0 +1,12 @@
+---
+// The three layers of the theme, from raw values to component defaults.
+import LayerFlow from './layer-flow.astro';
+
+const steps = [
+  { name: 'Tokens', caption: 'Raw values: palettes, spacing, radius, type, sizes.' },
+  { name: 'ThemeColors', caption: 'Semantic colors: background, content, border, feedback.' },
+  { name: 'Components', caption: 'Per-component values derived from the colors.' },
+];
+---
+
+<LayerFlow steps={steps} />

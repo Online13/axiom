@@ -15,6 +15,8 @@ import MetricsPreview from "@/components/tokens/metrics-preview.astro";
 import ColorRoleTable from "@/components/tokens/color-role-table.astro";
 import RolePreview from "@/components/tokens/role-preview.astro";
 import TokenChain from "@/components/tokens/token-chain.astro";
+import ThemeLayers from "@/components/tokens/theme-layers.astro";
+import ComponentTokenPath from "@/components/tokens/component-token-path.astro";
 import ComponentTokenPreview from "@/components/tokens/component-token-preview.astro";
 import ComponentTokenTable from "@/components/tokens/component-token-table.astro";
 import OverlayPreview from "@/components/overlay/overlay-preview.astro";
@@ -22,6 +24,8 @@ import OverlayLayers from "@/components/overlay/overlay-layers.astro";
 import AtomGrid from "@/components/atoms/atom-grid.astro";
 import BehaviorGrid from "@/components/behaviors/behavior-grid.astro";
 import BehaviorCard from "@/components/behaviors/behavior-card.astro";
+import PatternGrid from "@/components/patterns/pattern-grid.astro";
+import PatternCard from "@/components/patterns/pattern-card.astro";
 import AtomCard from "@/components/atoms/atom-card.astro";
 import ComponentGrid from "@/components/catalog/component-grid.astro";
 import ComponentCard from "@/components/catalog/component-card.astro";
@@ -74,6 +78,11 @@ import ScaffoldAnatomy from "@/components/scaffold/scaffold-anatomy.astro";
 import PreviewTheme from "@/components/preview/preview-theme.astro";
 import AxiomBanner from "@/components/intro/axiom-banner.astro";
 import AtomicLevels from "@/components/intro/atomic-levels.astro";
+import ShowcaseGrid from "@/components/showcase/showcase-grid.astro";
+import ShowcaseCard from "@/components/showcase/showcase-card.astro";
+import ShowcaseScreens from "@/components/showcase/showcase-screens.astro";
+import PhaseTimeline from "@/components/roadmap/phase-timeline.astro";
+import PhaseChecklist from "@/components/roadmap/phase-checklist.astro";
 import "@/styles/global.css";
 import "@/styles/preview.css";
 import { source } from "@/lib/source";
@@ -141,6 +150,8 @@ const toc: TOCItemType[] = headings.map((heading) => ({
           ColorRoleTable,
           RolePreview,
           TokenChain,
+          ThemeLayers,
+          ComponentTokenPath,
           ComponentTokenPreview,
           ComponentTokenTable,
           OverlayPreview,
@@ -148,6 +159,8 @@ const toc: TOCItemType[] = headings.map((heading) => ({
           AtomGrid,
           BehaviorGrid,
           BehaviorCard,
+          PatternGrid,
+          PatternCard,
           AtomCard,
           ComponentGrid,
           ComponentCard,
@@ -199,6 +212,11 @@ const toc: TOCItemType[] = headings.map((heading) => ({
           ScaffoldAnatomy,
           AxiomBanner,
           AtomicLevels,
+          PhaseTimeline,
+          PhaseChecklist,
+          ShowcaseGrid,
+          ShowcaseCard,
+          ShowcaseScreens,
         }}
       />
     </div>
