@@ -2,6 +2,11 @@
 
 An open source system for building mobile experiences with React Native and Expo.
 
+![Status: pre-alpha](https://img.shields.io/badge/status-pre--alpha-orange)
+![License: MIT](https://img.shields.io/badge/license-MIT-blue)
+
+**Axiom is being built in the open, and is not usable yet.** The repository holds the documentation site and the landing page. The component source, the registry and the CLI are not published, so the commands in the documentation describe what is being built, not what you can install today.
+
 > **Components are only the beginning.**
 
 A mobile screen is more than the components on it. A bottom sheet has to follow the finger, snap and dismiss. A list has to refresh, paginate and show something useful while it's empty. The press feedback, the safe areas and the keyboard all shape how the screen feels.
@@ -33,12 +38,6 @@ Packaged libraries also mean you don't own the code in your app. When a componen
 - React Native and Expo, on iOS and Android
 
 The reasoning behind these ideas is in [Design Principles](./DESIGN_PRINCIPLES.md).
-
-## Status
-
-Axiom is in early development and is not ready for use yet.
-
-The repository currently holds the documentation site and the landing page. The component source, the registry and the CLI are not published. Commands shown in the documentation are drafts and may change.
 
 ## Preview
 

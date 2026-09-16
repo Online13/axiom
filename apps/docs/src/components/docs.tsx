@@ -4,6 +4,7 @@ import type { Root } from 'fumadocs-core/page-tree';
 import type { MouseEvent, ReactNode } from 'react';
 import { navigate } from 'astro:transitions/client';
 import { RootProvider } from 'fumadocs-ui/provider/astro';
+import { Banner } from 'fumadocs-ui/components/banner';
 import type { AstroProviderProps } from 'fumadocs-core/framework/astro';
 import SearchDialog from './search';
 
@@ -43,6 +44,22 @@ export function Docs({
       theme={{ hotKey: false }}
       search={{ SearchDialog }}
     >
+      {/* No `id`: the banner has no close button, so the status can't be dismissed for good. */}
+      <Banner className="gap-x-2 gap-y-0 flex-wrap text-fd-muted-foreground">
+        <span className="rounded-full bg-fd-primary/10 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-fd-primary">
+          Pre-alpha
+        </span>
+        <span>
+          The registry and the CLI are not published yet.
+          <span className="hidden sm:inline">
+            {' '}
+            These pages describe what is being built.
+          </span>
+        </span>
+        <a href="/roadmap" className="underline underline-offset-4 hover:text-fd-foreground">
+          Roadmap
+        </a>
+      </Banner>
       <DocsLayout
         tree={tree}
         containerProps={{ onClickCapture: preventActiveFolderNavigation }}
