@@ -26,7 +26,7 @@ export type InputProps = Omit<TextInputProps, 'editable'> & {
   prefix?: ReactNode;
   /** After the text: a unit, a clear button, a visibility toggle. */
   suffix?: ReactNode;
-  /** 32, 44 or 52pt, from the `control` size tokens. */
+  /** Fixed height of the field: 32, 44 or 52pt, from the `control` size tokens. Label and helper come on top. */
   size?: InputSize;
   variant?: InputVariant;
   disabled?: boolean;
@@ -103,7 +103,7 @@ export function Input({
         style={[
           styles.control,
           {
-            minHeight: tokens.sizes.control[size],
+            height: tokens.sizes.control[size],
             paddingHorizontal: tokens.spacing[size === 'sm' ? 2 : 3],
             gap: tokens.spacing[2],
             borderRadius: tokens.radius.md,

@@ -39,7 +39,7 @@ function InputGroupRoot({ children, divided = true, style, ...options }: InputGr
         style={[
           styles.group,
           {
-            minHeight: tokens.sizes.control[group.context.size],
+            height: tokens.sizes.control[group.context.size],
             borderRadius: tokens.radius.md,
             backgroundColor: colors.background ?? 'transparent',
             borderColor: colors.border ?? 'transparent',
@@ -221,8 +221,10 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: 0.6,
   },
+  // Button sizes itself and aligns to the start: fill the group height instead.
   button: {
     minHeight: 0,
+    alignSelf: 'stretch',
     borderRadius: 0,
     borderWidth: 0,
   },

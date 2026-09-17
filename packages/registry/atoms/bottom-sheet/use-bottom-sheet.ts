@@ -96,6 +96,7 @@ export function useBottomSheetContent({
   const positions = useSharedValue(snapPositions);
   const closed = useSharedValue(closedPosition);
   const canDismiss = useSharedValue(dismissible);
+  const isReady = useSharedValue(false);
   const start = useSharedValue(0);
 
   // The keyboard covers the bottom safe area, so the sheet only rises by what's above it.
@@ -144,6 +145,7 @@ export function useBottomSheetContent({
     followsKeyboard.value = keyboardBehavior !== 'none';
     safeBottom.value = insets.bottom;
     topLimit.value = maxHeight - sheetHeight;
+    isReady.value = mounted && ready;
     if (!mounted || !ready) return;
 
     if (open) {
@@ -278,6 +280,8 @@ export function useBottomSheetContent({
 
   /** 0 when closed, 1 at the first snap point. Drives the Overlay. */
   const progress = useDerivedValue(() => {
+    // Until 'content' is measured, the positions are placeholders: closed and first can be equal, which read as fully open.
+    if (!isReady.value) return 0;
     const first = positions.value[0] ?? 0;
     if (closed.value === first) return 1;
     return interpolate(translateY.value, [closed.value, first], [0, 1], Extrapolation.CLAMP);
