@@ -18,8 +18,8 @@
     "astro": "^7.3.1",
     "fumadocs-core": "16.15.10",
     "fumadocs-ui": "npm:@fumadocs/base-ui@16.15.10",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
     "sharp": "^0.35.4",
     "takumi-js": "^2.13.7"
   },

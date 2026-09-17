@@ -2,7 +2,7 @@
 
 Thanks for your interest in Axiom. This guide covers setting up the repository, finding something to work on, and opening a pull request.
 
-Axiom is in early development. Today the repository contains the documentation site and the landing page. The component source, the registry and the CLI are not in the repository yet, so most contributions for now are on documentation and the apps.
+Axiom is in early development. The repository contains the documentation site, the landing page, four demo apps, an empty registry and a first version of the CLI. No component is written yet, so most contributions for now are on documentation and tooling.
 
 ## Before contributing
 
@@ -19,7 +19,7 @@ For anything beyond a small fix, such as a new component, a new pattern, an API 
 - [Bun](https://bun.sh/), the package manager for the monorepo (`bun.lock` is committed)
 - [Node.js](https://nodejs.org/) `>=22.12.0`, required by the Astro apps (see `apps/landing/package.json`)
 
-No React Native or Expo environment is needed yet, because the repository has no mobile app.
+The demo apps run as [development builds](https://docs.expo.dev/develop/development-builds/introduction/), compiled on your machine. For Android you need Android Studio (Android SDK and JDK), and for iOS you need Xcode on macOS.
 
 ## Local setup
 
@@ -45,7 +45,18 @@ bun landing build
 
 Both dev servers can run at the same time. See [apps/README.md](./apps/README.md) for details.
 
-The repository has no test, lint or typecheck scripts yet. Until it does, a successful build of the app you changed is the minimum check.
+Start a demo app from its own folder, so Expo can show the QR code:
+
+```bash
+cd apps/demo-stylesheet
+bun start
+```
+
+Components are written in `packages/registry` and copied into the demos by the CLI. See [repository.md](./docs/architecture/repository.md#les-démos-passent-par-le-cli).
+
+The repo installs dependencies hoisted (`bunfig.toml`), so every app must use the same React version as Expo.
+
+There are no tests yet. The minimum check is a successful build of the app you changed. For a demo app, run `bunx tsc --noEmit` and `bunx expo-doctor` in its folder.
 
 ## Finding something to work on
 

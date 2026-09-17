@@ -1,0 +1,26 @@
+{
+  "$schema": "../../packages/cli/schema.json",
+  "styling": "stylesheet",
+  "icons": "expo-symbols",
+  "aliases": {
+    "theme": "@/theme",
+    "core": "@/components/core",
+    "hooks": "@/hooks",
+    "components": "@/components/ui",
+    "blocks": "@/components/blocks"
+  },
+  "items": [
+    "bottom-sheet",
+    "button",
+    "icon",
+    "overlay",
+    "portal",
+    "slot",
+    "switch",
+    "tappable",
+    "text",
+    "theme",
+    "title",
+    "tokens"
+  ]
+}

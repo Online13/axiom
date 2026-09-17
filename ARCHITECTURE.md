@@ -110,7 +110,7 @@ The registry is the manifest of everything Axiom can add to a project. For each 
 
 With this graph, a project can take one item and get exactly what that item needs.
 
-The registry isn't in the repository yet.
+The registry lives in `packages/registry`. Its manifest, `registry.json`, has no items yet.
 
 ## CLI
 
@@ -118,7 +118,7 @@ The CLI is how a project uses the registry. It copies the requested items and th
 
 The copied code belongs to the project. The CLI is a tool for adding code and never becomes a runtime dependency of the app.
 
-The CLI isn't in the repository yet, and its commands aren't final.
+The CLI lives in `packages/cli`. Only `add` exists so far. It copies files and rewrites imports, reads the registry from a local folder, and lists missing npm packages without installing them. Its commands aren't final.
 
 ## Repository structure
 
@@ -127,15 +127,24 @@ The repository is a Bun workspace monorepo. The workspaces are `apps/*` and `pac
 ```text
 axiom/
 ├── apps/
-│   ├── docs/       # documentation site
-│   └── landing/    # presentation page
-├── packages/       # reserved for Axiom source, currently empty
-└── package.json    # workspaces and app shortcuts
+│   ├── docs/              # documentation site
+│   ├── landing/           # presentation page
+│   ├── demo-stylesheet/   # demo app, one per styling variant
+│   ├── demo-unistyles/
+│   ├── demo-nativewind/
+│   └── demo-uniwind/
+├── packages/
+│   ├── registry/          # source of every item, and registry.json
+│   └── cli/               # the axiom CLI
+├── bunfig.toml            # hoisted installs, required by the Expo apps
+└── package.json           # workspaces and app shortcuts
 ```
 
 - **`apps/docs`.** The documentation site, built with Astro and Fumadocs. Pages live in `apps/docs/content/docs`, one folder per layer. See [its README](./apps/docs/README.md).
 - **`apps/landing`.** The Astro page that presents Axiom and links to the documentation.
-- **`packages/`.** Declared as a workspace. It contains no source code yet.
+- **`apps/demo-*`.** Expo apps, one per styling tool. Each one is set up like a user project: it has an `axiom.json` and gets its components through the CLI.
+- **`packages/registry`.** The code copied into projects. Nothing imports it directly. See [its README](./packages/registry/README.md).
+- **`packages/cli`.** The command that reads the registry and copies items into a project.
 
 See [apps/README.md](./apps/README.md) for how the apps run.
 

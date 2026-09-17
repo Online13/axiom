@@ -5,7 +5,7 @@ An open source system for building mobile experiences with React Native and Expo
 ![Status: pre-alpha](https://img.shields.io/badge/status-pre--alpha-orange)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 
-**Axiom is being built in the open, and is not usable yet.** The repository holds the documentation site and the landing page. The component source, the registry and the CLI are not published, so the commands in the documentation describe what is being built, not what you can install today.
+**Axiom is being built in the open, and is not usable yet.** No component code has been written: the documentation describes what is being built, not what you can install today. See [Current state](#current-state) for what the repository holds.
 
 > **Components are only the beginning.**
 
@@ -45,14 +45,31 @@ The reasoning behind these ideas is in [Design Principles](./DESIGN_PRINCIPLES.m
 
 _A preview of a real mobile flow built with Axiom will be added here._
 
-## Documentation
+## Current state
 
-The documentation lives in [`apps/docs`](./apps/docs). It isn't hosted yet. To run it locally:
+| Part | Location | Status |
+| --- | --- | --- |
+| Specification | [`docs`](./docs) | Written (in French), including the [roadmap](./docs/roadmap) |
+| Documentation site | [`apps/docs`](./apps/docs) | Runs locally, not hosted yet |
+| Landing page | [`apps/landing`](./apps/landing) | Runs locally, not hosted yet |
+| Demo apps, one per styling tool | [`apps/demo-*`](./apps) | Empty shells, run locally |
+| Registry | [`packages/registry`](./packages/registry) | Set up, no items yet |
+| CLI | [`packages/cli`](./packages/cli) | `add` works from a local registry |
+| Components, behaviors, patterns | [`packages/registry`](./packages/registry) | Not started |
+
+The next step is [Phase 1](./docs/roadmap/phase-1.md): foundations, core primitives and the first atoms.
+
+## Running locally
 
 ```bash
 bun install
-bun docs dev   # http://localhost:4322
+bun docs dev      # documentation → http://localhost:4322
+bun landing dev   # landing page  → http://localhost:4321
+
+cd apps/demo-stylesheet && bun android   # build and install the demo app, see apps/README.md
 ```
+
+More details in [`apps/README.md`](./apps/README.md).
 
 ## Learn more
 
@@ -66,6 +83,4 @@ Contributions are welcome. Start with [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## License
 
-<!-- TODO: add a LICENSE file and name the license here. -->
-
-A license has not been chosen yet. Until a [LICENSE](./LICENSE) file is added, no usage rights are granted.
+[MIT](./LICENSE)
