@@ -1,0 +1,18 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
+	href: string;
+	variant?: 'primary' | 'ghost';
+	hoverColor?: 'orange' | 'white';
+}
+
+const { href, variant = 'primary', hoverColor = 'orange', class: className, ...rest } = Astro.props;
+---
+
+<a href={href} class:list={['btn', { 'btn--ghost': variant === 'ghost', 'btn--hover-white': hoverColor === 'white' }, className]} {...rest}>
+	<span class="btn__label">
+		<span class="btn__content"><slot /></span>
+		<span class="btn__content btn__content--incoming" aria-hidden="true"><slot /></span>
+	</span>
+</a>

@@ -73,11 +73,15 @@ p {
 }
 
 .eyebrow {
-	font-family: var(--font-mono);
+	font-family: var(--font-sans);
 	font-size: 0.75rem;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
 	color: var(--muted);
+}
+
+.section .eyebrow + .title {
+	margin-top: -0.75rem;
 }
 
 .cli {
@@ -97,17 +101,96 @@ p {
 }
 
 .btn {
+	--btn-hover-bg: #ff5a1f;
+	--btn-hover-fg: #fff;
+
+	position: relative;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	overflow: hidden;
 	padding: 0.875rem 1.5rem;
 	background: var(--fg);
 	color: var(--bg);
 	font-weight: 500;
+	transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.btn--hover-white {
+	--btn-hover-bg: #fff;
+	--btn-hover-fg: #0a0a0a;
+}
+
+.btn::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: var(--btn-hover-bg);
+	transform: translateY(101%);
+	transition: transform 0.25s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.btn__label {
+	position: relative;
+	z-index: 1;
+	display: grid;
+	overflow: hidden;
+}
+
+.btn__content {
+	grid-area: 1 / 1;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	white-space: nowrap;
+	transition: transform 0.25s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.btn__content--incoming {
+	transform: translateY(110%);
+}
+
+.btn:is(:hover, :focus-visible) {
+	color: var(--btn-hover-fg);
+	border-color: var(--btn-hover-bg);
+}
+
+.btn:is(:hover, :focus-visible)::before {
+	transform: translateY(0);
+}
+
+.btn:is(:hover, :focus-visible) .btn__content:not(.btn__content--incoming) {
+	transform: translateY(-110%);
+}
+
+.btn:is(:hover, :focus-visible) .btn__content--incoming {
+	transform: translateY(0);
+}
+
+.btn:focus-visible {
+	outline: 2px solid var(--btn-hover-bg);
+	outline-offset: 3px;
 }
 
 .btn--ghost {
 	background: transparent;
 	color: var(--fg);
 	border: 1px solid var(--line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.btn,
+	.btn::before,
+	.btn__content {
+		transition: none;
+	}
+
+	.btn__content--incoming {
+		display: none;
+	}
+
+	.btn:is(:hover, :focus-visible) .btn__content:not(.btn__content--incoming) {
+		transform: none;
+	}
 }

@@ -1,6 +1,7 @@
 ---
 import Title from '../Title.astro';
 import CopyCommand from '../CopyCommand.astro';
+import Button from '../Button.astro';
 import { docs } from '../../lib/links';
 const components = [
 	'button', 'icon-button', 'tappable', 'text', 'icon', 'avatar',
@@ -47,7 +48,7 @@ const initial = ['button', 'bottom-sheet'];
 					))
 				}
 			</div>
-			<a href={docs('/components')} class="btn btn--ghost registry__all">View all components</a>
+			<Button href={docs('/components')} variant="ghost" class="registry__all">View all components</Button>
 		</div>
 	</div>
 </section>
@@ -194,8 +195,8 @@ const initial = ['button', 'bottom-sheet'];
 		white-space: nowrap;
 	}
 
-	.registry__all:hover {
-		border-color: var(--fg);
+	.registry__all:is(:hover, :focus-visible) {
+		border-color: var(--btn-hover-bg);
 	}
 
 	@media (max-width: 900px) {

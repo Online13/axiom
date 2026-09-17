@@ -1,5 +1,6 @@
 ---
 import Title from '../Title.astro';
+import Button from '../Button.astro';
 import { githubUrl } from '../../lib/links';
 // Counts come from the registry docs (docs/README.md): core, hooks,
 // typography, atoms, molecules, organisms and templates.
@@ -31,7 +32,7 @@ const tree = [
 			<p class="open-source__lede">
 				Every component, behavior and block lives on GitHub. Read it, fork it, send a pull request.
 			</p>
-			<a href={githubUrl} class="btn btn--ghost" target="_blank" rel="noopener noreferrer">Star on GitHub</a>
+			<Button href={githubUrl} variant="ghost" hoverColor="white" target="_blank" rel="noopener noreferrer">Star on GitHub</Button>
 		</div>
 
 		<div class="open-source__aside">
