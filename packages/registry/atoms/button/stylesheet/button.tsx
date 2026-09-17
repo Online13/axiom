@@ -6,9 +6,9 @@ import { Tappable, type TappableProps } from '@/components/core/tappable';
 import { useTheme, type Theme } from '@/theme';
 import { Icon } from '@/components/ui/icon';
 import type { IconName } from '@/components/ui/icons';
-import { FONT_WEIGHT, Text } from '@/components/ui/text';
+import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from '@/components/ui/text';
 
-export type ButtonVariant = 'solid' | 'outline' | 'ghost';
+export type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'destructive';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export type ButtonProps = Omit<TappableProps, 'children' | 'style'> & {
@@ -78,7 +78,7 @@ export function Button({
         {!loading && leadingIcon ? <Icon name={leadingIcon} size={iconSize} color={foreground} /> : null}
         <View style={[styles.label, loading && !leadingIcon && styles.hidden]}>
           {typeof children === 'string' || typeof children === 'number' ? (
-            <Text numberOfLines={1} style={[typography, { color: foreground, fontWeight: FONT_WEIGHT.semibold }]}>
+            <Text numberOfLines={1} maxFontSizeMultiplier={MAX_FONT_SCALE.control} style={[typography, { color: foreground, fontWeight: FONT_WEIGHT.semibold }]}>
               {children}
             </Text>
           ) : (

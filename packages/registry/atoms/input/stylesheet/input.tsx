@@ -9,7 +9,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 
-import { Text } from '@/components/ui/text';
+import { MAX_FONT_SCALE, Text } from '@/components/ui/text';
 import { useTheme } from '@/theme';
 
 import { useInput } from '../use-input';
@@ -26,7 +26,7 @@ export type InputProps = Omit<TextInputProps, 'editable'> & {
   prefix?: ReactNode;
   /** After the text: a unit, a clear button, a visibility toggle. */
   suffix?: ReactNode;
-  /** Fixed height of the field: 32, 44 or 52pt, from the `control` size tokens. Label and helper come on top. */
+  /** Minimum height of the field: 32, 44 or 52pt, from the `control` size tokens. Label and helper come on top. */
   size?: InputSize;
   variant?: InputVariant;
   disabled?: boolean;
@@ -82,7 +82,7 @@ export function Input({
   const typography = tokens.typography[TEXT[size]];
   const affix = (node: ReactNode) =>
     typeof node === 'string' || typeof node === 'number' ? (
-      <Text style={{ fontSize: typography.fontSize, color: colors.affix }}>{node}</Text>
+      <Text maxFontSizeMultiplier={MAX_FONT_SCALE.control} style={{ fontSize: typography.fontSize, color: colors.affix }}>{node}</Text>
     ) : (
       node
     );
@@ -103,7 +103,7 @@ export function Input({
         style={[
           styles.control,
           {
-            height: tokens.sizes.control[size],
+            minHeight: tokens.sizes.control[size],
             paddingHorizontal: tokens.spacing[size === 'sm' ? 2 : 3],
             gap: tokens.spacing[2],
             borderRadius: tokens.radius.md,
@@ -117,6 +117,7 @@ export function Input({
           placeholderTextColor={colors.placeholder}
           selectionColor={colors.caret}
           cursorColor={colors.caret}
+          maxFontSizeMultiplier={MAX_FONT_SCALE.control}
           {...props}
           {...input.inputProps}
           style={[
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     alignSelf: 'stretch',
-    // Android adds vertical padding to TextInput; the control sets the height.
+    // Android adds vertical padding to TextInput; the control sets the minimum height.
     paddingVertical: 0,
     paddingHorizontal: 0,
   },

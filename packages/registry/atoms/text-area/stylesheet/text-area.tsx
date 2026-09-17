@@ -1,8 +1,8 @@
 import type { Ref } from 'react';
-import { Pressable, StyleSheet, TextInput, type StyleProp, type TextInputProps, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, TextInput, useWindowDimensions, type StyleProp, type TextInputProps, type ViewStyle } from 'react-native';
 
 import { Field, inputColors } from '@/components/ui/field';
-import { Text } from '@/components/ui/text';
+import { MAX_FONT_SCALE, Text } from '@/components/ui/text';
 import { useInput } from '@/components/ui/use-input';
 import { useTheme } from '@/theme';
 
@@ -56,6 +56,7 @@ export function TextArea({
   ...props
 }: TextAreaProps) {
   const { tokens, components } = useTheme();
+  const { fontScale } = useWindowDimensions();
   const input = useInput({
     value,
     defaultValue,
@@ -76,7 +77,9 @@ export function TextArea({
   const colors = inputColors(components, plain ? 'outline' : variant, input.state);
   const typography = tokens.typography.callout;
   const paddingVertical = plain ? 0 : tokens.spacing[3] - 1;
-  const rowsHeight = (rows: number) => rows * typography.lineHeight + paddingVertical * 2;
+  // The system text size also scales the line height: the rows follow it, up to the cap.
+  const scale = Math.min(fontScale, MAX_FONT_SCALE.control);
+  const rowsHeight = (rows: number) => rows * typography.lineHeight * scale + paddingVertical * 2;
 
   const length = input.value.length;
   const count =
@@ -114,6 +117,7 @@ export function TextArea({
           selectionColor={colors.caret}
           cursorColor={colors.caret}
           textAlignVertical="top"
+          maxFontSizeMultiplier={MAX_FONT_SCALE.control}
           {...props}
           {...input.inputProps}
           multiline

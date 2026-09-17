@@ -38,21 +38,12 @@ export function Checkbox({
   accessibilityLabel,
   style,
 }: CheckboxProps) {
-  const { tokens, components } = useTheme();
+  const { tokens } = useTheme();
   const [value, setValue] = useControllableState<CheckedState>({
     value: checked,
     defaultValue: defaultChecked,
     onChange: (next) => onCheckedChange?.(next === true),
   });
-
-  const on = value !== false;
-  const states = components.checkbox.default;
-  const colors = {
-    ...states.default,
-    ...(on ? states.checked : undefined),
-    ...(error && !disabled ? states.invalid : undefined),
-    ...(disabled ? states.disabled : undefined),
-  };
 
   return (
     <Tappable
@@ -63,20 +54,7 @@ export function Checkbox({
       onPress={() => setValue(value !== true)}
       style={[styles.row, { gap: tokens.spacing[3] }, style]}
     >
-      <View
-        style={[
-          styles.box,
-          {
-            borderRadius: tokens.radius.sm,
-            borderColor: colors.border,
-            backgroundColor: colors.background ?? 'transparent',
-          },
-        ]}
-      >
-        {on ? (
-          <Icon name={value === 'indeterminate' ? 'minus' : 'check'} size="sm" color={colors.indicator} />
-        ) : null}
-      </View>
+      <CheckboxIndicator checked={value} error={error} disabled={disabled} />
       {label !== undefined || description !== undefined ? (
         <View style={styles.text}>
           {typeof label === 'string' ? <Text color={disabled ? 'disabled' : 'default'}>{label}</Text> : label}
@@ -90,6 +68,42 @@ export function Checkbox({
         </View>
       ) : null}
     </Tappable>
+  );
+}
+
+/** The box only, for custom rows. */
+export function CheckboxIndicator({
+  checked,
+  error = false,
+  disabled = false,
+}: {
+  checked: CheckedState;
+  error?: boolean;
+  disabled?: boolean;
+}) {
+  const { tokens, components } = useTheme();
+  const on = checked !== false;
+  const states = components.checkbox.default;
+  const colors = {
+    ...states.default,
+    ...(on ? states.checked : undefined),
+    ...(error && !disabled ? states.invalid : undefined),
+    ...(disabled ? states.disabled : undefined),
+  };
+
+  return (
+    <View
+      style={[
+        styles.box,
+        {
+          borderRadius: tokens.radius.sm,
+          borderColor: colors.border,
+          backgroundColor: colors.background ?? 'transparent',
+        },
+      ]}
+    >
+      {on ? <Icon name={checked === 'indeterminate' ? 'minus' : 'check'} size="sm" color={colors.indicator} /> : null}
+    </View>
   );
 }
 

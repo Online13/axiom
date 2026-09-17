@@ -4,7 +4,7 @@ import Animated from 'react-native-reanimated';
 
 import { Tappable } from '@/components/core/tappable';
 import { Icon } from '@/components/ui/icon';
-import { FONT_WEIGHT, Text } from '@/components/ui/text';
+import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from '@/components/ui/text';
 import { useTheme } from '@/theme';
 
 import { useSegmentedControl, type UseSegmentedControlOptions } from '../use-segmented-control';
@@ -12,7 +12,7 @@ import { useSegmentedControl, type UseSegmentedControlOptions } from '../use-seg
 export type { SegmentOption } from '../use-segmented-control';
 
 export type SegmentedControlProps = UseSegmentedControlOptions & {
-  /** Height: 32 or 40pt. */
+  /** Minimum height: 32 or 40pt. Grows with larger system text. */
   size?: 'md' | 'lg';
   /** Stretches to the parent width with equal segments. `false` sizes it to its content. */
   fullWidth?: boolean;
@@ -38,7 +38,7 @@ export function SegmentedControl({ size = 'md', fullWidth = true, disabled = fal
         style={[
           styles.track,
           {
-            height,
+            minHeight: height,
             padding: INSET,
             borderRadius: radius,
             backgroundColor: states.default.track,
@@ -91,6 +91,7 @@ export function SegmentedControl({ size = 'md', fullWidth = true, disabled = fal
                 <Text
                   variant="bodySm"
                   numberOfLines={1}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE.control}
                   style={{ color: foreground, fontWeight: isSelected ? FONT_WEIGHT.semibold : FONT_WEIGHT.medium }}
                 >
                   {segment.label}

@@ -8,6 +8,7 @@ export type ButtonTokens = {
   solid: ButtonStates;
   outline: ButtonStates;
   ghost: ButtonStates;
+  destructive: ButtonStates;
 };
 
 export const buttonTokens = (colors: ThemeColors): ButtonTokens => ({
@@ -29,5 +30,10 @@ export const buttonTokens = (colors: ThemeColors): ButtonTokens => ({
     default: { foreground: colors.content.default },
     pressed: { background: colors.background.subtle },
     disabled: { foreground: colors.content.disabled },
+  },
+  destructive: {
+    default: { background: colors.feedback.error, foreground: colors.content.inverse },
+    pressed: { foreground: colors.feedback.errorSubtle },
+    disabled: { background: colors.border.default, foreground: colors.content.disabled },
   },
 });

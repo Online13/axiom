@@ -4,7 +4,7 @@ import { StyleSheet, TextInput, View, type StyleProp, type TextInputProps, type 
 import { Tappable } from '@/components/core/tappable';
 import { Button, type ButtonProps } from '@/components/ui/button';
 import { inputColors } from '@/components/ui/field';
-import { Text } from '@/components/ui/text';
+import { MAX_FONT_SCALE, Text } from '@/components/ui/text';
 import { useInput } from '@/components/ui/use-input';
 import { useTheme } from '@/theme';
 
@@ -39,7 +39,7 @@ function InputGroupRoot({ children, divided = true, style, ...options }: InputGr
         style={[
           styles.group,
           {
-            height: tokens.sizes.control[group.context.size],
+            minHeight: tokens.sizes.control[group.context.size],
             borderRadius: tokens.radius.md,
             backgroundColor: colors.background ?? 'transparent',
             borderColor: colors.border ?? 'transparent',
@@ -110,6 +110,7 @@ function InputGroupInput({
       placeholderTextColor={colors.placeholder}
       selectionColor={colors.caret}
       cursorColor={colors.caret}
+      maxFontSizeMultiplier={MAX_FONT_SCALE.control}
       {...props}
       {...input.inputProps}
       style={[
@@ -147,7 +148,7 @@ function InputGroupAddon({ children, onPress, variant = 'subtle', accessibilityL
 
   const content =
     typeof children === 'string' || typeof children === 'number' ? (
-      <Text style={{ fontSize: typography.fontSize, color: colors.affix }}>{children}</Text>
+      <Text maxFontSizeMultiplier={MAX_FONT_SCALE.control} style={{ fontSize: typography.fontSize, color: colors.affix }}>{children}</Text>
     ) : (
       children
     );

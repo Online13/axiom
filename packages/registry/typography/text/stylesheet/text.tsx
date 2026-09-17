@@ -26,7 +26,7 @@ export type TextProps = NativeTextProps & {
   asChild?: boolean;
 };
 
-const VARIANT_TOKEN: Record<TextVariant, TypographyVariant> = {
+export const TEXT_VARIANT_TOKEN: Record<TextVariant, TypographyVariant> = {
   bodyLg: 'body',
   body: 'callout',
   bodySm: 'subheadline',
@@ -40,6 +40,16 @@ export const FONT_WEIGHT = {
   semibold: '600',
   bold: '700',
 } as const satisfies Record<TextWeight, string>;
+
+/**
+ * Caps on the system text size (Dynamic Type, Android font size), passed as `maxFontSizeMultiplier`.
+ * Running text has no cap. `control`: labels of components that grow with their text (buttons, fields, chips).
+ * `fixed`: text inside a shape that keeps its size (avatar initials, counters, calendar days, code cells).
+ */
+export const MAX_FONT_SCALE = {
+  control: 1.5,
+  fixed: 1.2,
+} as const;
 
 export function textColor(colors: Theme['colors'], color: TextColor): string {
   switch (color) {
@@ -60,7 +70,7 @@ export function Text({ variant, color, weight, align, asChild, style, children, 
   const nested = use(NestedContext);
 
   const textStyle = [
-    (variant ?? (nested ? undefined : 'body')) && tokens.typography[VARIANT_TOKEN[variant ?? 'body']],
+    (variant ?? (nested ? undefined : 'body')) && tokens.typography[TEXT_VARIANT_TOKEN[variant ?? 'body']],
     (color ?? (nested ? undefined : 'default')) && { color: textColor(colors, color ?? 'default') },
     weight && { fontWeight: FONT_WEIGHT[weight] },
     align && { textAlign: align },

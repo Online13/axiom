@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 import { StyleSheet, Text, TextInput, View, type StyleProp, type TextInputProps, type ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
 
+import { MAX_FONT_SCALE } from '@/components/ui/text';
 import { useTheme } from '@/theme';
 
 import { useInputOTP, type UseInputOTPOptions } from '../use-input-otp';
@@ -82,6 +83,7 @@ export function InputOTP({
                     <View style={[styles.dot, { backgroundColor: colors.text }]} />
                   ) : (
                     <Text
+                      maxFontSizeMultiplier={MAX_FONT_SCALE.fixed}
                       style={{
                         fontSize: typography.fontSize,
                         lineHeight: typography.lineHeight,

@@ -4,7 +4,7 @@ import Animated from 'react-native-reanimated';
 import { Tappable, type TappableProps } from '@/components/core/tappable';
 import { Icon } from '@/components/ui/icon';
 import type { IconName } from '@/components/ui/icons';
-import { FONT_WEIGHT, Text } from '@/components/ui/text';
+import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from '@/components/ui/text';
 import { useTheme } from '@/theme';
 
 import { useFloatingButton, type UseFloatingButtonOptions } from '../use-floating-button';
@@ -74,7 +74,7 @@ export function FloatingButton({
           return [
             styles.button,
             {
-              height: dimension,
+              minHeight: dimension,
               minWidth: dimension,
               paddingHorizontal: label ? tokens.spacing[5] : 0,
               borderRadius: tokens.radius.full,
@@ -96,7 +96,7 @@ export function FloatingButton({
             <View style={[styles.content, { gap: tokens.spacing[2] }]}>
               <Icon name={icon} size={size === 'sm' ? 'md' : 'lg'} color={foreground} />
               {label ? (
-                <Text variant="bodyLg" numberOfLines={1} style={{ color: foreground, fontWeight: FONT_WEIGHT.semibold }}>
+                <Text variant="bodyLg" numberOfLines={1} maxFontSizeMultiplier={MAX_FONT_SCALE.control} style={{ color: foreground, fontWeight: FONT_WEIGHT.semibold }}>
                   {label}
                 </Text>
               ) : null}

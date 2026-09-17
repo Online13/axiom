@@ -73,6 +73,13 @@
       ]
     },
     {
+      "name": "use-overlay-back-handler",
+      "type": "hooks",
+      "files": [
+        "hooks/use-overlay-back-handler/use-overlay-back-handler.ts"
+      ]
+    },
+    {
       "name": "text",
       "type": "typography",
       "internalDependencies": [
@@ -405,6 +412,7 @@
         "react-native-reanimated"
       ],
       "internalDependencies": [
+        "text",
         "theme",
         "use-controllable-state"
       ],
@@ -440,7 +448,8 @@
         "tappable",
         "theme",
         "title",
-        "use-controllable-state"
+        "use-controllable-state",
+        "use-overlay-back-handler"
       ],
       "variants": {
         "stylesheet": {
@@ -452,6 +461,472 @@
       "requiredIcons": [
         "close"
       ]
+    },
+    {
+      "name": "separator",
+      "type": "atoms",
+      "internalDependencies": [
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/separator/stylesheet/separator.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "spinner",
+      "type": "atoms",
+      "dependencies": [
+        "react-native-reanimated"
+      ],
+      "internalDependencies": [
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/spinner/stylesheet/spinner.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "skeleton",
+      "type": "atoms",
+      "tokens": "atoms/skeleton/skeleton-tokens.ts",
+      "files": [
+        "atoms/skeleton/skeleton-tokens.ts",
+        "atoms/skeleton/use-skeleton.ts"
+      ],
+      "dependencies": [
+        "react-native-reanimated"
+      ],
+      "internalDependencies": [
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/skeleton/stylesheet/skeleton.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "badge",
+      "type": "atoms",
+      "tokens": "atoms/badge/badge-tokens.ts",
+      "files": [
+        "atoms/badge/badge-tokens.ts"
+      ],
+      "dependencies": [
+        "react-native-reanimated"
+      ],
+      "internalDependencies": [
+        "icon",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/badge/stylesheet/badge.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "avatar",
+      "type": "atoms",
+      "tokens": "atoms/avatar/avatar-tokens.ts",
+      "files": [
+        "atoms/avatar/avatar-tokens.ts"
+      ],
+      "internalDependencies": [
+        "tappable",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/avatar/stylesheet/avatar.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "chip",
+      "type": "atoms",
+      "tokens": "atoms/chip/chip-tokens.ts",
+      "files": [
+        "atoms/chip/chip-tokens.ts"
+      ],
+      "requiredIcons": [
+        "close"
+      ],
+      "internalDependencies": [
+        "icon",
+        "tappable",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/chip/stylesheet/chip.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "card",
+      "type": "atoms",
+      "tokens": "atoms/card/card-tokens.ts",
+      "files": [
+        "atoms/card/card-tokens.ts"
+      ],
+      "internalDependencies": [
+        "tappable",
+        "text",
+        "theme",
+        "title"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/card/stylesheet/card.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "item",
+      "type": "atoms",
+      "tokens": "atoms/item/item-tokens.ts",
+      "files": [
+        "atoms/item/item-tokens.ts"
+      ],
+      "internalDependencies": [
+        "slot",
+        "tappable",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/item/stylesheet/item.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "option-item",
+      "type": "atoms",
+      "requiredIcons": [
+        "check",
+        "chevron-right"
+      ],
+      "internalDependencies": [
+        "checkbox",
+        "icon",
+        "item",
+        "radio",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/option-item/stylesheet/option-item.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "type": "atoms",
+      "tokens": "atoms/empty/empty-tokens.ts",
+      "files": [
+        "atoms/empty/empty-tokens.ts"
+      ],
+      "internalDependencies": [
+        "icon",
+        "text",
+        "theme",
+        "title"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/empty/stylesheet/empty.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "alert",
+      "type": "atoms",
+      "tokens": "atoms/alert/alert-tokens.ts",
+      "files": [
+        "atoms/alert/alert-tokens.ts"
+      ],
+      "requiredIcons": [
+        "info",
+        "success",
+        "warning",
+        "error",
+        "close"
+      ],
+      "internalDependencies": [
+        "icon",
+        "icon-button",
+        "tappable",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/alert/stylesheet/alert.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "button-group",
+      "type": "atoms",
+      "internalDependencies": [
+        "button",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/button-group/stylesheet/button-group.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "accordion",
+      "type": "atoms",
+      "files": [
+        "atoms/accordion/use-accordion.ts"
+      ],
+      "requiredIcons": [
+        "chevron-down"
+      ],
+      "dependencies": [
+        "react-native-reanimated",
+        "react-native-worklets"
+      ],
+      "internalDependencies": [
+        "icon",
+        "tappable",
+        "text",
+        "theme",
+        "use-controllable-state"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/accordion/stylesheet/accordion.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "dialog",
+      "type": "atoms",
+      "tokens": "atoms/dialog/dialog-tokens.ts",
+      "files": [
+        "atoms/dialog/dialog-tokens.ts",
+        "atoms/dialog/use-dialog.ts"
+      ],
+      "dependencies": [
+        "react-native-reanimated",
+        "react-native-worklets"
+      ],
+      "internalDependencies": [
+        "button",
+        "overlay",
+        "portal",
+        "slot",
+        "tappable",
+        "text",
+        "theme",
+        "title",
+        "use-controllable-state",
+        "use-overlay-back-handler"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/dialog/stylesheet/dialog.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "menu",
+      "type": "atoms",
+      "tokens": "atoms/menu/menu-tokens.ts",
+      "files": [
+        "atoms/menu/menu-tokens.ts",
+        "atoms/menu/use-menu.ts"
+      ],
+      "requiredIcons": [
+        "arrow-left",
+        "check",
+        "chevron-right"
+      ],
+      "dependencies": [
+        "react-native-reanimated",
+        "react-native-safe-area-context",
+        "react-native-worklets"
+      ],
+      "internalDependencies": [
+        "icon",
+        "overlay",
+        "portal",
+        "slot",
+        "tappable",
+        "text",
+        "theme",
+        "use-controllable-state",
+        "use-overlay-back-handler"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/menu/stylesheet/menu.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "toast",
+      "type": "atoms",
+      "tokens": "atoms/toast/toast-tokens.ts",
+      "files": [
+        "atoms/toast/toast-tokens.ts",
+        "atoms/toast/use-toast.ts"
+      ],
+      "requiredIcons": [
+        "success",
+        "error",
+        "info"
+      ],
+      "dependencies": [
+        "react-native-gesture-handler",
+        "react-native-reanimated",
+        "react-native-safe-area-context",
+        "react-native-worklets"
+      ],
+      "internalDependencies": [
+        "icon",
+        "portal",
+        "spinner",
+        "tappable",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/toast/stylesheet/toast.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "snackbar",
+      "type": "atoms",
+      "tokens": "atoms/snackbar/snackbar-tokens.ts",
+      "files": [
+        "atoms/snackbar/snackbar-tokens.ts",
+        "atoms/snackbar/use-snackbar.ts"
+      ],
+      "dependencies": [
+        "react-native-gesture-handler",
+        "react-native-reanimated",
+        "react-native-safe-area-context",
+        "react-native-worklets"
+      ],
+      "internalDependencies": [
+        "icon",
+        "portal",
+        "tappable",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/snackbar/stylesheet/snackbar.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "calendar",
+      "type": "atoms",
+      "tokens": "atoms/calendar/calendar-tokens.ts",
+      "files": [
+        "atoms/calendar/calendar-tokens.ts",
+        "atoms/calendar/use-calendar.ts"
+      ],
+      "requiredIcons": [
+        "chevron-left",
+        "chevron-right"
+      ],
+      "dependencies": [
+        "react-native-gesture-handler",
+        "react-native-worklets"
+      ],
+      "internalDependencies": [
+        "icon-button",
+        "tappable",
+        "text",
+        "theme",
+        "use-controllable-state"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/calendar/stylesheet/calendar.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "carousel",
+      "type": "atoms",
+      "files": [
+        "atoms/carousel/use-carousel.ts"
+      ],
+      "dependencies": [
+        "react-native-reanimated"
+      ],
+      "internalDependencies": [
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/carousel/stylesheet/carousel.tsx"
+          ]
+        }
+      }
     }
   ]
 }

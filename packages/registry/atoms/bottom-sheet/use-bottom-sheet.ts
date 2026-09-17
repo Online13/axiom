@@ -1,5 +1,5 @@
 import { createContext, use, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { BackHandler, useWindowDimensions, type LayoutChangeEvent } from 'react-native';
+import { useWindowDimensions, type LayoutChangeEvent } from 'react-native';
 import { Gesture } from 'react-native-gesture-handler';
 import Animated, {
   Extrapolation,
@@ -16,6 +16,8 @@ import Animated, {
 import { KeyboardController, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnRN } from 'react-native-worklets';
+
+import { useOverlayBackHandler } from '@/hooks/use-overlay-back-handler';
 
 import { useBottomSheet } from './bottom-sheet-root';
 
@@ -183,14 +185,7 @@ export function useBottomSheetContent({
     return Math.min(lift, Math.max(0, topLimit.value + translateY.value));
   });
 
-  useEffect(() => {
-    if (!open) return;
-    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (dismissible) requestClose();
-      return true;
-    });
-    return () => subscription.remove();
-  }, [open, dismissible, requestClose]);
+  useOverlayBackHandler(open, dismissible ? requestClose : undefined);
 
   const nativeGesture = useMemo(() => Gesture.Native(), []);
 
