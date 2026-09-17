@@ -8,7 +8,11 @@
   ],
   "scripts": {
     "docs": "bun run --filter './apps/docs'",
-    "landing": "bun run --filter './apps/landing'"
+    "landing": "bun run --filter './apps/landing'",
+    "demo:stylesheet": "bun run --cwd apps/demo-stylesheet",
+    "demo:unistyles": "bun run --cwd apps/demo-unistyles",
+    "demo:nativewind": "bun run --cwd apps/demo-nativewind",
+    "demo:uniwind": "bun run --cwd apps/demo-uniwind"
   },
   "devDependencies": {
     "wrangler": "^4.131.2"

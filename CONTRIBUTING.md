@@ -34,6 +34,7 @@ Run the apps from the repository root:
 ```bash
 bun docs dev        # documentation, http://localhost:4322
 bun landing dev     # landing page, http://localhost:4321
+bun demo:stylesheet start   # demo app, also demo:unistyles, demo:nativewind, demo:uniwind
 ```
 
 Build them to check your changes compile:

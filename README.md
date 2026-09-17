@@ -66,7 +66,8 @@ bun install
 bun docs dev      # documentation → http://localhost:4322
 bun landing dev   # landing page  → http://localhost:4321
 
-cd apps/demo-stylesheet && bun android   # build and install the demo app, see apps/README.md
+bun demo:stylesheet android   # build and install the demo app, see apps/README.md
+bun demo:stylesheet start     # start Metro
 ```
 
 More details in [`apps/README.md`](./apps/README.md).

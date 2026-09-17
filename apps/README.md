@@ -30,14 +30,13 @@ A single Astro page that presents Axiom: its positioning, its promise (*Build mo
 Four Expo apps, one per styling tool, with the same screens. Each is set up like a user project: it has an `axiom.json` and receives components from [`packages/registry`](../packages/registry) through the CLI. Files the CLI copies (`src/theme`, `src/hooks`, `src/components`) are ignored by git. Edit them in the registry.
 
 ```bash
-cd apps/demo-stylesheet
-bun run axiom add <item>   # copy an item and its internal dependencies
-bun run axiom:watch        # copy again on every registry change
-bun android                # build and install the development build (first time)
-bun start                  # start Metro, then open the app
+bun demo:stylesheet axiom add <item>   # copy an item and its internal dependencies
+bun demo:stylesheet axiom:watch        # copy again on every registry change
+bun demo:stylesheet android            # build and install the development build (first time)
+bun demo:stylesheet start              # start Metro, then open the app
 ```
 
-Run `bun start` from the app folder. Through `bun run --filter`, Expo has no interactive terminal and shows no QR code.
+Same for `demo:unistyles`, `demo:nativewind` and `demo:uniwind`. These shortcuts use `bun run --cwd apps/demo-<variant>`, which keeps Expo's interactive terminal and QR code. `bun run --filter` doesn't, so the demos don't use it.
 
 The demos don't use Expo Go. Each one is a [development build](https://docs.expo.dev/develop/development-builds/introduction/): the app is compiled from the project with `expo-dev-client`, so it includes native code Expo Go lacks, such as Unistyles. `bun android` compiles it locally (Android Studio required, phone plugged in over USB with debugging on) and `bun ios` does the same on macOS.
 
@@ -57,4 +56,4 @@ bun landing build   # landing production build
 
 Ports are fixed in each app's `astro.config.mjs`, so both servers can run at the same time. Cross-links default to these local URLs; set `PUBLIC_DOCS_URL` (landing) and `PUBLIC_LANDING_URL` (docs) for other environments.
 
-These shortcuts are defined in the root `package.json` with `bun run --filter './apps/<app>'`.
+These shortcuts are defined in the root `package.json` with `bun run --filter './apps/<app>'`. The demo shortcuts use `--cwd` instead, see [Demo apps](#demo-apps).
