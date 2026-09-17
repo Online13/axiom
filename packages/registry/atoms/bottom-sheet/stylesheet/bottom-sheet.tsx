@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Overlay } from '@/components/core/overlay';
 import { Portal } from '@/components/core/portal';
+import { IconButton } from '@/components/ui/icon-button';
 import { useTheme } from '@/theme';
 import { Title } from '@/components/ui/title';
 
@@ -147,11 +148,14 @@ export type BottomSheetHeaderProps = {
   title?: string;
   leading?: ReactNode;
   trailing?: ReactNode;
+  /** Adds a close button after `trailing`. Uses the `close` icon of your registry. */
+  closeButton?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
-function BottomSheetHeader({ title, leading, trailing, style }: BottomSheetHeaderProps) {
+function BottomSheetHeader({ title, leading, trailing, closeButton = false, style }: BottomSheetHeaderProps) {
   const { tokens } = useTheme();
+  const { close } = useBottomSheetContentContext();
 
   return (
     <View
@@ -171,7 +175,12 @@ function BottomSheetHeader({ title, leading, trailing, style }: BottomSheetHeade
           {title}
         </Title>
       ) : null}
-      <View style={[styles.side, styles.end]}>{trailing}</View>
+      <View style={[styles.side, styles.end]}>
+        {trailing}
+        {closeButton ? (
+          <IconButton icon="close" variant="tinted" size="sm" accessibilityLabel="Close" onPress={close} />
+        ) : null}
+      </View>
     </View>
   );
 }

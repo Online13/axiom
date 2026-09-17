@@ -30,7 +30,9 @@ description: "Compound bottom sheet with snap points, gestures and scrollable co
 npx axiom add bottom-sheet
 ```
 
-Also copies: [`portal`](/core/portal), [`overlay`](/core/overlay), [`tappable`](/core/tappable), [`slot`](/core/slot), [`title`](/atoms/title).
+Also copies: [`portal`](/core/portal), [`overlay`](/core/overlay), [`tappable`](/core/tappable), [`slot`](/core/slot), [`title`](/atoms/title), [`icon-button`](/atoms/icon-button).
+
+Requires the `close` icon in your [icon registry](/atoms/icon#icons-that-components-need).
 
 Installs: `react-native-reanimated`, `react-native-worklets`, `react-native-gesture-handler`, `react-native-safe-area-context`.
 
@@ -107,7 +109,7 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 | Part | Props | Description |
 | --- | --- | --- |
 | `Handle` | `style` | The grab bar. Drag it to resize. Announced as "Resize sheet" with up and down actions. |
-| `Header` | `title`, `leading`, `trailing`, `closeButton` | Title row. `closeButton` adds an [IconButton](/atoms/icon-button) that closes the sheet. |
+| `Header` | `title`, `leading`, `trailing`, `closeButton` | Title row. `closeButton` adds an [IconButton](/atoms/icon-button) that closes the sheet, with the `close` icon of your registry. |
 | `ScrollView` / `FlatList` | same as React Native | Scrollable content that hands the gesture back to the sheet when scrolled to the top. |
 
 ## Use cases

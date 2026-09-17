@@ -54,7 +54,7 @@ export default function BottomSheetScreen() {
           </BottomSheet.Trigger>
           <BottomSheet.Content dismissible={dismissible} onDismiss={() => record('onDismiss')}>
             <BottomSheet.Handle />
-            <BottomSheet.Header title="report.pdf" />
+            <BottomSheet.Header title="report.pdf" closeButton />
             <View style={{ padding: tokens.metrics.screenMargin, gap: tokens.spacing[2] }}>
               <Button variant="outline" fullWidth>
                 Share
@@ -110,7 +110,7 @@ export default function BottomSheetScreen() {
             footer={<Button fullWidth>Apply</Button>}
           >
             <BottomSheet.Handle />
-            <BottomSheet.Header title="Places" />
+            <BottomSheet.Header title="Places" closeButton />
             <BottomSheet.ScrollView>
               <Rows count={30} />
             </BottomSheet.ScrollView>

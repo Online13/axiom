@@ -26,7 +26,7 @@ description: "A button made of a single icon, with a guaranteed minimum touch ta
 npx axiom add icon-button
 ```
 
-Also copies: [`tappable`](/core/tappable).
+Also copies: [`tappable`](/core/tappable), [`icon`](/atoms/icon).
 
 ## Usage
 
@@ -40,17 +40,19 @@ import { IconButton } from '@/components/ui/icon-button';
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `icon` | `IconName \| ReactNode` | — | The icon to render. A name is looked up in your [Icon](/atoms/icon) registry. |
+| `icon` | `IconName` | — | The icon to render, from your [icon registry](/atoms/icon#the-registry). |
 | `accessibilityLabel` | `string` | — | Required. There is no visible text, so this is the only thing a screen reader can announce. |
 | `variant` | `'ghost' \| 'tinted' \| 'outline' \| 'solid'` | `'ghost'` | `ghost` has no background until pressed, `tinted` sits on a subtle fill, `outline` adds a border, `solid` is for a single prominent action. |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Visual size: 32, 44 or 56pt. The touch area never goes below 44pt, `sm` gets `hitSlop` to reach it. |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Visual size from the `control` size tokens: 32, 44 or 52pt. The touch area never goes below 44pt, `sm` gets `hitSlop` to reach it. |
 | `shape` | `'circle' \| 'square'` | `'circle'` | Corner style. `square` uses the `md` radius, for toolbars and grids. |
 | `onPress` | `() => void` | — | Called when the press ends on the button. |
 | `onLongPress` | `() => void` | — | Called after a long press. Useful to reveal a [Menu](/atoms/menu) of related actions. |
 | `disabled` | `boolean` | `false` | Blocks presses and dims the icon with `content.disabled`. |
 | `selected` | `boolean` | `false` | Marks a toggle button as on (like, bookmark). Sets `accessibilityState.selected`. |
-| `color` | `ContentColor` | `'default'` | Icon color from the content colors: `default`, `muted`, `link`, `error`… |
+| `color` | `IconColor` | from the variant | Overrides the icon color of the variant with a theme color: `default`, `muted`, `link`, `error`… Ignored while disabled. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra styles for the pressable container. |
+
+Colors come from `iconButton.<variant>.{default,pressed,selected,disabled}.{background,foreground,border}` in the [component tokens](/foundations/component-tokens).
 
 ## Use cases
 

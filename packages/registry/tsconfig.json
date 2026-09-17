@@ -54,6 +54,12 @@
       "@/components/ui/button": [
         "./atoms/button/stylesheet/button.tsx"
       ],
+      "@/components/ui/icon-button-tokens": [
+        "./atoms/icon-button/icon-button-tokens.ts"
+      ],
+      "@/components/ui/icon-button": [
+        "./atoms/icon-button/stylesheet/icon-button.tsx"
+      ],
       "@/components/ui/switch-tokens": [
         "./atoms/switch/switch-tokens.ts"
       ],

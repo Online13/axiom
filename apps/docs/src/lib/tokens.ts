@@ -175,6 +175,32 @@ export const componentTokens = {
       disabled: { border: 'border.subtle' },
     },
   },
+  iconButton: {
+    ghost: {
+      default: { foreground: 'content.default' },
+      pressed: { background: 'background.subtle' },
+      selected: { background: 'background.subtle' },
+      disabled: { foreground: 'content.disabled' },
+    },
+    tinted: {
+      default: { background: 'background.subtle', foreground: 'content.default' },
+      pressed: { background: 'border.default' },
+      selected: { background: 'border.default' },
+      disabled: { foreground: 'content.disabled' },
+    },
+    outline: {
+      default: { background: 'background.default', foreground: 'content.default', border: 'border.default' },
+      pressed: { background: 'background.subtle' },
+      selected: { border: 'border.focus' },
+      disabled: { foreground: 'content.disabled', border: 'border.subtle' },
+    },
+    solid: {
+      default: { background: 'background.inverse', foreground: 'content.inverse' },
+      pressed: { background: 'content.muted' },
+      selected: { background: 'content.muted' },
+      disabled: { background: 'border.default', foreground: 'content.disabled' },
+    },
+  },
   bottomSheet: {
     default: {
       default: { background: 'background.elevated', handle: 'border.strong' },

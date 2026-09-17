@@ -156,6 +156,26 @@
       ]
     },
     {
+      "name": "icon-button",
+      "type": "atoms",
+      "tokens": "atoms/icon-button/icon-button-tokens.ts",
+      "files": [
+        "atoms/icon-button/icon-button-tokens.ts"
+      ],
+      "internalDependencies": [
+        "icon",
+        "tappable",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/icon-button/stylesheet/icon-button.tsx"
+          ]
+        }
+      }
+    },
+    {
       "name": "switch",
       "type": "atoms",
       "tokens": "atoms/switch/switch-tokens.ts",
@@ -194,6 +214,7 @@
         "react-native-worklets"
       ],
       "internalDependencies": [
+        "icon-button",
         "overlay",
         "portal",
         "slot",
@@ -207,7 +228,10 @@
             "atoms/bottom-sheet/stylesheet/bottom-sheet.tsx"
           ]
         }
-      }
+      },
+      "requiredIcons": [
+        "close"
+      ]
     }
   ]
 }
