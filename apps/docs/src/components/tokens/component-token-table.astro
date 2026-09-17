@@ -13,8 +13,8 @@ const schemes = ['light', 'dark'] as const;
 ---
 
 <TokenFrame>
-  <div class="min-w-[42rem] divide-y">
-    <div class="grid gap-4 px-4 py-2 font-mono text-[0.7rem] text-fd-muted-foreground" style="grid-template-columns: 17rem 1fr 6.5rem 6.5rem;">
+  <div class="min-w-[50rem] divide-y">
+    <div class="grid gap-4 px-4 py-2 font-mono text-[0.7rem] text-fd-muted-foreground" style="grid-template-columns: 17rem 1fr 10rem 10rem;">
       <div>token</div>
       <div>reads</div>
       <div>light</div>
@@ -22,7 +22,7 @@ const schemes = ['light', 'dark'] as const;
     </div>
     {
       rows.map(({ path, ref, state }) => (
-        <div class:list={['grid items-center gap-4 px-4 py-2.5', { 'text-fd-muted-foreground': state !== 'default' }]} style="grid-template-columns: 17rem 1fr 6.5rem 6.5rem;">
+        <div class:list={['grid items-center gap-4 px-4 py-2.5', { 'text-fd-muted-foreground': state !== 'default' }]} style="grid-template-columns: 17rem 1fr 10rem 10rem;">
           <div class="font-mono text-xs text-fd-foreground">{path}</div>
           <div class="font-mono text-xs">{ref}</div>
           {schemes.map((scheme) => (

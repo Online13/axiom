@@ -15,7 +15,7 @@ Pick a component, then press the dimmed area to close it. The backdrop is the sa
 npx axiom add overlay
 ```
 
-Installs: `react-native-reanimated`.
+Installs: `react-native-reanimated`, `react-native-worklets`.
 
 ## What it does
 
@@ -116,7 +116,7 @@ Change `color` and `opacity` only when a design calls for it. Changing them on o
 | `onExited` | `() => void` | — | Called when the exit animation ends. |
 | `progress` | `SharedValue<number>` | — | Drives opacity from `0` to `1` instead of the timed animation. |
 | `opacity` | `number` | `0.4` | Opacity when fully visible. |
-| `color` | `ColorValue` | `'#000000'` | Backdrop color. |
+| `color` | `ColorValue` | `'hsla(0, 0%, 0%, 1)'` | Backdrop color. |
 | `duration` | `number` | `250` | Fade duration in ms. Ignored with `progress`. |
 | `accessibilityLabel` | `string` | `'Close'` | Label read by screen readers when `onPress` is set. |
 | `style` | `StyleProp<ViewStyle>` | — | Merged after `StyleSheet.absoluteFill`. |

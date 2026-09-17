@@ -99,14 +99,14 @@ Axiom ships two complete themes, `light` and `dark`. Both implement the same `Th
 
 ```ts title="Conceptual"
 export const lightColors = {
-  background: { default: '#FFFFFF', subtle: palette.gray[50], elevated: '#FFFFFF', inverse: palette.gray[950] },
+  background: { default: 'hsla(0, 0%, 100%, 1)', subtle: palette.gray[50], elevated: 'hsla(0, 0%, 100%, 1)', inverse: palette.gray[950] },
   content: { default: palette.gray[950], muted: palette.gray[600], /* … */ },
   border: { default: palette.gray[200], /* … */ },
   feedback: { error: palette.red[500], errorSubtle: palette.red[50], /* … */ },
 } satisfies ThemeColors;
 
 export const darkColors = {
-  background: { default: '#000000', subtle: palette.gray[950], elevated: palette.gray[900], inverse: palette.gray[50] },
+  background: { default: 'hsla(0, 0%, 0%, 1)', subtle: palette.gray[950], elevated: palette.gray[900], inverse: palette.gray[50] },
   content: { default: palette.gray[50], muted: palette.gray[400], /* … */ },
   border: { default: palette.gray[800], /* … */ },
   feedback: { error: palette.red[400], errorSubtle: palette.red[950], /* … */ },

@@ -32,7 +32,7 @@ description: "The main button, with solid, outline and ghost styles, sizes, load
 npx axiom add button
 ```
 
-Also copies: [`tappable`](/core/tappable).
+Also copies: [`tappable`](/core/tappable), [`slot`](/core/slot), [`text`](/atoms/text), [`icon`](/atoms/icon).
 
 ## Usage
 
@@ -56,8 +56,8 @@ import { Button } from '@/components/ui/button';
 | `onLongPress` | `() => void` | — | Called after the finger is held on the button. |
 | `loading` | `boolean` | `false` | Replaces the leading icon with a spinner and blocks presses. The button keeps its width so the layout doesn't jump. |
 | `disabled` | `boolean` | `false` | Blocks presses, applies the `disabled` component tokens and sets `accessibilityState.disabled`. |
-| `leadingIcon` | `IconName \| ReactNode` | — | Icon before the label. An icon name renders an [Icon](/atoms/icon) sized to the button. |
-| `trailingIcon` | `IconName \| ReactNode` | — | Icon after the label, typically a chevron or an external-link mark. |
+| `leadingIcon` | `IconName` | — | Icon before the label, from your [icon registry](/atoms/icon#the-registry). Rendered with [Icon](/atoms/icon), sized and colored for the button. |
+| `trailingIcon` | `IconName` | — | Icon after the label, typically a chevron or an external-link mark. |
 | `fullWidth` | `boolean` | `false` | Stretches the button to the width of its parent. Common for the main action at the bottom of a screen. |
 | `asChild` | `boolean` | `false` | Renders the child element instead of a pressable, and merges the button props and styles into it. See [Slot](/core/slot). |
 | `accessibilityLabel` | `string` | label text | What screen readers announce. Required when the label alone is ambiguous. |

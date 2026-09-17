@@ -66,74 +66,79 @@ Every token follows the same path:
 
 States other than `default` only list what changes. A missing property falls back to `default`: a pressed outline button keeps its border and text color and only changes its background.
 
-```ts title="Conceptual"
-export type Components = {
-  button: {
-    solid: ButtonStates;
-    outline: ButtonStates;
-    ghost: ButtonStates;
-  };
-  input: { default: InputStates };
-  switch: { default: SwitchStates };
-  checkbox: { default: CheckboxStates };
-  // one entry per component added to the project
-};
-
+```ts title="components/ui/button-tokens.ts"
 type ButtonColors = { background?: string; foreground: string; border?: string };
+type ButtonStates = States<ButtonColors, 'pressed' | 'disabled'>;
 
-type ButtonStates = {
-  default: ButtonColors;
-  pressed?: Partial<ButtonColors>;
-  disabled?: Partial<ButtonColors>;
+export type ButtonTokens = {
+  solid: ButtonStates;
+  outline: ButtonStates;
+  ghost: ButtonStates;
 };
 ```
 
-## `components(colors)`
+`States` comes from the theme: `default` is complete, every other state is a `Partial` of it.
 
-Component tokens come from a single function. It takes the semantic colors and returns every component's values:
+## One file per component
 
-```ts title="Conceptual"
-export const components = (colors: ThemeColors) =>
-  ({
-    button: {
-      solid: {
-        default: { background: colors.background.inverse, foreground: colors.content.inverse },
-        pressed: { background: colors.content.muted },
-        disabled: { background: colors.border.default, foreground: colors.content.disabled },
-      },
-      outline: {
-        default: { background: colors.background.default, foreground: colors.content.default, border: colors.border.default },
-        pressed: { background: colors.background.subtle },
-        disabled: { foreground: colors.content.disabled, border: colors.border.subtle },
-      },
-      ghost: {
-        default: { foreground: colors.content.default },
-        pressed: { background: colors.background.subtle },
-        disabled: { foreground: colors.content.disabled },
-      },
-    },
-    switch: {
-      default: {
-        default: { track: colors.border.default, thumb: colors.background.elevated },
-        checked: { track: colors.feedback.success },
-        disabled: { track: colors.border.subtle },
-      },
-    },
-    // …
-  }) satisfies Components;
-```
+Each component brings its tokens in its own file, copied next to it: `button-tokens.ts` next to `button.tsx`. The file exports a pure function of the semantic colors:
 
-It is called once per color scheme:
-
-```ts title="Conceptual"
-export const light = { tokens, colors: lightColors, components: components(lightColors) } satisfies Theme;
-export const dark = { tokens, colors: darkColors, components: components(darkColors) } satisfies Theme;
+```ts title="components/ui/button-tokens.ts"
+export const buttonTokens = (colors: ThemeColors): ButtonTokens => ({
+  solid: {
+    default: { background: colors.background.inverse, foreground: colors.content.inverse },
+    pressed: { background: colors.content.muted },
+    disabled: { background: colors.border.default, foreground: colors.content.disabled },
+  },
+  outline: {
+    default: { background: colors.background.default, foreground: colors.content.default, border: colors.border.default },
+    pressed: { background: colors.background.subtle },
+    disabled: { foreground: colors.content.disabled, border: colors.border.subtle },
+  },
+  ghost: {
+    default: { foreground: colors.content.default },
+    pressed: { background: colors.background.subtle },
+    disabled: { foreground: colors.content.disabled },
+  },
+});
 ```
 
 Rules:
 
-- The function is pure and only reads `colors`. Never write raw hex values or palette steps in it.
+- The function is pure and only reads `colors`. Never write raw color values or palette steps in it.
 - Never branch on the scheme (`if (dark)`). If a component needs a different value in dark mode, that difference belongs in `ThemeColors`.
+
+## `components(colors)`
+
+The theme's `components.ts` gathers every tokens file of the project. You don't write it by hand: `npx axiom add <component>` copies the tokens file and registers it between two pairs of markers.
+
+```ts title="theme/components.ts"
+// axiom:imports:start
+import { bottomSheetTokens } from '@/components/ui/bottom-sheet-tokens';
+import { buttonTokens } from '@/components/ui/button-tokens';
+// axiom:imports:end
+
+export const components = (colors: ThemeColors) => ({
+  // axiom:components:start
+  bottomSheet: bottomSheetTokens(colors),
+  button: buttonTokens(colors),
+  // axiom:components:end
+});
+
+export type Components = ReturnType<typeof components>;
+```
+
+- The key is the component name in camelCase, the function is `<key>Tokens`.
+- The CLI only adds missing lines, and only when the tokens file is in the project. It never removes or rewrites a line.
+- Keep the markers. Without them, `add` stops and asks you to copy the theme again.
+- Removing a component: delete its two lines, then its files.
+
+`components` is called once per color scheme:
+
+```ts title="theme/theme.ts"
+export const light = { tokens, colors: lightColors, components: components(lightColors) } satisfies Theme;
+export const dark = { tokens, colors: darkColors, components: components(darkColors) } satisfies Theme;
+```
 
 ## Default values
 
@@ -155,7 +160,11 @@ Each table lists a component's tokens, the semantic color they read and the resu
 
 <ComponentTokenTable component="checkbox" />
 
-Other components get their entry when they are added: `npx axiom add <component>` adds its tokens to the copied theme.
+### BottomSheet
+
+<ComponentTokenTable component="bottomSheet" />
+
+Each table is the default tokens file of the component. A project only has the tokens of the components it added.
 
 ## In each styling variant
 
@@ -184,17 +193,15 @@ const styles = StyleSheet.create((theme) => ({
 
 ## Customizing
 
-Edit the copied `components` function:
+Edit the tokens file of the component. It belongs to your project, like the component itself:
 
-```ts title="Blue solid buttons" {4-5}
-button: {
-  solid: {
-    default: {
-      background: colors.content.link,
-      foreground: colors.content.inverse,
-    },
-    pressed: { background: colors.content.link },
+```ts title="components/ui/button-tokens.ts — blue solid buttons" {3-4}
+solid: {
+  default: {
+    background: colors.content.link,
+    foreground: colors.content.inverse,
   },
+  pressed: { background: colors.content.link },
 },
 ```
 
@@ -202,9 +209,11 @@ Pick the layer that matches the scope of the change:
 
 | You want to change | Edit |
 | --- | --- |
-| One component | Its entry in `components(colors)` |
+| One component | Its tokens file (`button-tokens.ts`) |
 | A role across the app (every border, every link) | [`ThemeColors`](/foundations/colors) |
 | The brand hue or a step everywhere | The [palette](/foundations/tokens/palette) |
+
+`npx axiom add button` asks before overwriting a tokens file you changed.
 
 ## Related
 

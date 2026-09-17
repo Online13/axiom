@@ -11,8 +11,8 @@ const schemes = ['light', 'dark'] as const;
 ---
 
 <TokenFrame>
-  <div class="divide-y min-w-[42rem]">
-    <div class="grid gap-4 px-4 py-2 font-mono text-[0.7rem] text-fd-muted-foreground" style="grid-template-columns: 11.5rem 1fr 9rem 9rem;">
+  <div class="divide-y min-w-[46rem]">
+    <div class="grid gap-4 px-4 py-2 font-mono text-[0.7rem] text-fd-muted-foreground" style="grid-template-columns: 11.5rem 1fr 11rem 11rem;">
       <div>key</div>
       <div>usage</div>
       <div>light</div>
@@ -20,7 +20,7 @@ const schemes = ['light', 'dark'] as const;
     </div>
     {
       Object.entries(colorRoles[role]).map(([key, entry]) => (
-        <div class="grid items-center gap-4 px-4 py-3" style="grid-template-columns: 11.5rem 1fr 9rem 9rem;">
+        <div class="grid items-center gap-4 px-4 py-3" style="grid-template-columns: 11.5rem 1fr 11rem 11rem;">
           <div class="font-mono text-xs">{role}.{key}</div>
           <div class="text-sm text-fd-muted-foreground">{entry.usage}</div>
           {schemes.map((scheme) => (
@@ -28,7 +28,7 @@ const schemes = ['light', 'dark'] as const;
               <div class="size-8 shrink-0 border" style={`background:${resolveColor(entry[scheme])}`} title={resolveColor(entry[scheme])} />
               <div class="flex flex-col font-mono text-[0.65rem] leading-tight">
                 <span>{entry[scheme]}</span>
-                {!entry[scheme].startsWith('#') && <span class="text-fd-muted-foreground">{resolveColor(entry[scheme])}</span>}
+                {!entry[scheme].startsWith('hsla(') && <span class="text-fd-muted-foreground">{resolveColor(entry[scheme])}</span>}
               </div>
             </div>
           ))}

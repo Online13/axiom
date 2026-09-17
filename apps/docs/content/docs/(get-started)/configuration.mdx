@@ -36,6 +36,7 @@ description: "Every key of axiom.json: styling, aliases and items."
 | --- | --- | --- | --- |
 | [`$schema`](#schema) | `string` | no | JSON Schema used by your editor. |
 | [`styling`](#styling) | `string` | yes | The styling tool of your project. |
+| [`icons`](#icons) | `string` | no | Where the icons of your project come from. |
 | [`aliases`](#aliases) | `object` | no | Where each layer is copied and imported from. |
 | [`items`](#items) | `string[]` | no | Every Axiom item copied into the project. |
 
@@ -65,6 +66,21 @@ The styling tool your project uses. It decides which variant `add` and `fetch` c
 `nativewind` and `uniwind` copy the same component files. The value is still stored separately because `init` sets up each tool differently. See [Styling](/styling).
 
 Changing `styling` only affects items copied afterwards. Files already in your project stay as they are. To move a component to another variant, run `add` again and confirm the overwrite, or port it by hand.
+
+## icons
+
+```json
+"icons": "expo-symbols"
+```
+
+Where the icons of your project come from. The CLI asks the first time you add an item that needs icons, like `icon` or `button`, and saves the answer here.
+
+| Value | Icon registry created by `add icon` |
+| --- | --- |
+| `expo-symbols` | Filled with common icons from SF Symbols (iOS) and Material Symbols (Android). Expo projects only. |
+| `custom` | Empty. You fill it with any icon set or your own SVGs. |
+
+The registry, `icons.tsx`, belongs to your project: changing `icons` doesn't rewrite it. See [Icon](/atoms/icon#the-registry).
 
 ## aliases
 

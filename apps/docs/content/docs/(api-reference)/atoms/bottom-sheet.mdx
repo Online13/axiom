@@ -30,9 +30,27 @@ description: "Compound bottom sheet with snap points, gestures and scrollable co
 npx axiom add bottom-sheet
 ```
 
-Also copies: [`portal`](/core/portal), [`overlay`](/core/overlay).
+Also copies: [`portal`](/core/portal), [`overlay`](/core/overlay), [`tappable`](/core/tappable), [`slot`](/core/slot), [`title`](/atoms/title).
 
-Installs: `react-native-reanimated`, `react-native-gesture-handler`.
+Installs: `react-native-reanimated`, `react-native-worklets`, `react-native-gesture-handler`, `react-native-safe-area-context`.
+
+The sheet renders in the root [`PortalHost`](/core/portal#setup), and its gestures need `GestureHandlerRootView` above it. Wrap your root layout once:
+
+```tsx title="app/_layout.tsx"
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { PortalHost, PortalProvider } from '@/components/core/portal';
+
+export default function RootLayout() {
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PortalProvider>
+        <Stack />
+        <PortalHost />
+      </PortalProvider>
+    </GestureHandlerRootView>
+  );
+}
+```
 
 ## Usage
 

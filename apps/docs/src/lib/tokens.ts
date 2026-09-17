@@ -5,21 +5,22 @@ export const paletteSteps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 95
 
 export type PaletteStep = (typeof paletteSteps)[number];
 
+// Colors are `hsla()` strings, rounded to whole numbers.
 // Step 500 is the iOS system color; the other steps are derived from it in OKLCH.
 export const palette = {
-  gray: { 50: '#F4F4F4', 100: '#E7E7E8', 200: '#D1D1D3', 300: '#B8B8BC', 400: '#A3A3A7', 500: '#8E8E93', 600: '#78787D', 700: '#616165', 800: '#4A4A4D', 900: '#323235', 950: '#222225' },
-  red: { 50: '#FFF0EE', 100: '#FFE0DB', 200: '#FFC0B6', 300: '#FE9B8D', 400: '#FE7464', 500: '#FF3B30', 600: '#DD2821', 700: '#B80F0E', 800: '#910305', 900: '#660002', 950: '#490001' },
-  orange: { 50: '#FFF4EC', 100: '#FFEAD9', 200: '#FFD7B5', 300: '#FFC18A', 400: '#FEAC5F', 500: '#FF9500', 600: '#D77D05', 700: '#AB630A', 800: '#824A03', 900: '#573001', 950: '#3B1E00' },
-  yellow: { 50: '#FEF9E9', 100: '#FFF4D6', 200: '#FEEBB5', 300: '#FEE18E', 400: '#FED764', 500: '#FFCC00', 600: '#D6AB02', 700: '#A98606', 800: '#7E6406', 900: '#524003', 950: '#352801' },
-  green: { 50: '#ECFAED', 100: '#D7F6DA', 200: '#B4ECB9', 300: '#8DE097', 400: '#66D479', 500: '#34C759', 600: '#1CA945', 700: '#038832', 800: '#006724', 900: '#004516', 950: '#002F0C' },
-  mint: { 50: '#EBFAF8', 100: '#D6F5F2', 200: '#B0EBE5', 300: '#86DFD7', 400: '#5AD3CB', 500: '#00C7BE', 600: '#08A8A0', 700: '#0D857F', 800: '#066560', 900: '#024340', 950: '#012D2B' },
-  teal: { 50: '#ECF8FA', 100: '#D6F0F6', 200: '#B1E1EB', 300: '#89D0DF', 400: '#62C0D3', 500: '#30B0C7', 600: '#1A95AA', 700: '#04788A', 800: '#025C69', 900: '#023D47', 950: '#002A31' },
-  cyan: { 50: '#EBF7FE', 100: '#D6EFFE', 200: '#B1E0FB', 300: '#89CEF5', 400: '#63BEEE', 500: '#32ADE6', 600: '#1D92C6', 700: '#0875A1', 800: '#04597C', 900: '#033C54', 950: '#00283B' },
-  blue: { 50: '#ECF3FF', 100: '#D5E6FF', 200: '#ACCEFE', 300: '#7DB2FE', 400: '#5098FD', 500: '#007AFF', 600: '#0768D9', 700: '#0554B1', 800: '#01418D', 900: '#012C64', 950: '#001F4B' },
-  indigo: { 50: '#EEF0FF', 100: '#D9DEFE', 200: '#B5BDFB', 300: '#919AF1', 400: '#7379E4', 500: '#5856D6', 600: '#4B48BC', 700: '#3D39A0', 800: '#2F2A85', 900: '#211A67', 950: '#170E54' },
-  purple: { 50: '#F9EFFF', 100: '#F1DCFE', 200: '#E3BBFC', 300: '#D197F3', 400: '#C076E9', 500: '#AF52DE', 600: '#9742C1', 700: '#7C30A1', 800: '#631E83', 900: '#480862', 950: '#35014A' },
-  pink: { 50: '#FFF0F0', 100: '#FFDEDE', 200: '#FEBEBF', 300: '#FF979B', 400: '#FF6E79', 500: '#FF2D55', 600: '#DD1845', 700: '#B60434', 800: '#8D0527', 900: '#630118', 950: '#48000F' },
-  brown: { 50: '#F7F3EE', 100: '#EDE5DB', 200: '#DBCDBA', 300: '#C7B299', 400: '#B59B7B', 500: '#A2845E', 600: '#8B704D', 700: '#71593B', 800: '#594429', 900: '#3F2E17', 950: '#2E1F0B' },
+  gray: { 50: 'hsla(0, 0%, 96%, 1)', 100: 'hsla(240, 2%, 91%, 1)', 200: 'hsla(240, 2%, 82%, 1)', 300: 'hsla(240, 3%, 73%, 1)', 400: 'hsla(240, 2%, 65%, 1)', 500: 'hsla(240, 2%, 57%, 1)', 600: 'hsla(240, 2%, 48%, 1)', 700: 'hsla(240, 2%, 39%, 1)', 800: 'hsla(240, 2%, 30%, 1)', 900: 'hsla(240, 3%, 20%, 1)', 950: 'hsla(240, 4%, 14%, 1)' },
+  red: { 50: 'hsla(7, 100%, 97%, 1)', 100: 'hsla(8, 100%, 93%, 1)', 200: 'hsla(8, 100%, 86%, 1)', 300: 'hsla(7, 98%, 77%, 1)', 400: 'hsla(6, 99%, 69%, 1)', 500: 'hsla(3, 100%, 59%, 1)', 600: 'hsla(2, 74%, 50%, 1)', 700: 'hsla(0, 86%, 39%, 1)', 800: 'hsla(359, 96%, 29%, 1)', 900: 'hsla(359, 100%, 20%, 1)', 950: 'hsla(359, 100%, 14%, 1)' },
+  orange: { 50: 'hsla(25, 100%, 96%, 1)', 100: 'hsla(27, 100%, 93%, 1)', 200: 'hsla(28, 100%, 85%, 1)', 300: 'hsla(28, 100%, 77%, 1)', 400: 'hsla(29, 99%, 68%, 1)', 500: 'hsla(35, 100%, 50%, 1)', 600: 'hsla(34, 95%, 43%, 1)', 700: 'hsla(33, 89%, 35%, 1)', 800: 'hsla(34, 95%, 26%, 1)', 900: 'hsla(33, 98%, 17%, 1)', 950: 'hsla(31, 100%, 12%, 1)' },
+  yellow: { 50: 'hsla(46, 91%, 95%, 1)', 100: 'hsla(44, 100%, 92%, 1)', 200: 'hsla(44, 97%, 85%, 1)', 300: 'hsla(44, 98%, 78%, 1)', 400: 'hsla(45, 99%, 69%, 1)', 500: 'hsla(48, 100%, 50%, 1)', 600: 'hsla(48, 98%, 42%, 1)', 700: 'hsla(47, 93%, 34%, 1)', 800: 'hsla(47, 91%, 26%, 1)', 900: 'hsla(46, 93%, 17%, 1)', 950: 'hsla(45, 96%, 11%, 1)' },
+  green: { 50: 'hsla(124, 58%, 95%, 1)', 100: 'hsla(126, 63%, 90%, 1)', 200: 'hsla(125, 60%, 82%, 1)', 300: 'hsla(127, 57%, 72%, 1)', 400: 'hsla(130, 56%, 62%, 1)', 500: 'hsla(135, 59%, 49%, 1)', 600: 'hsla(137, 72%, 39%, 1)', 700: 'hsla(141, 96%, 27%, 1)', 800: 'hsla(141, 100%, 20%, 1)', 900: 'hsla(139, 100%, 14%, 1)', 950: 'hsla(135, 100%, 9%, 1)' },
+  mint: { 50: 'hsla(172, 60%, 95%, 1)', 100: 'hsla(174, 61%, 90%, 1)', 200: 'hsla(174, 60%, 81%, 1)', 300: 'hsla(175, 58%, 70%, 1)', 400: 'hsla(176, 58%, 59%, 1)', 500: 'hsla(177, 100%, 39%, 1)', 600: 'hsla(177, 91%, 35%, 1)', 700: 'hsla(177, 82%, 29%, 1)', 800: 'hsla(177, 89%, 21%, 1)', 900: 'hsla(177, 94%, 14%, 1)', 950: 'hsla(177, 96%, 9%, 1)' },
+  teal: { 50: 'hsla(189, 58%, 95%, 1)', 100: 'hsla(191, 64%, 90%, 1)', 200: 'hsla(190, 59%, 81%, 1)', 300: 'hsla(190, 57%, 71%, 1)', 400: 'hsla(190, 56%, 61%, 1)', 500: 'hsla(189, 61%, 48%, 1)', 600: 'hsla(189, 73%, 38%, 1)', 700: 'hsla(188, 94%, 28%, 1)', 800: 'hsla(188, 96%, 21%, 1)', 900: 'hsla(189, 95%, 14%, 1)', 950: 'hsla(189, 100%, 10%, 1)' },
+  cyan: { 50: 'hsla(202, 90%, 96%, 1)', 100: 'hsla(202, 95%, 92%, 1)', 200: 'hsla(202, 90%, 84%, 1)', 300: 'hsla(202, 84%, 75%, 1)', 400: 'hsla(201, 80%, 66%, 1)', 500: 'hsla(199, 78%, 55%, 1)', 600: 'hsla(198, 74%, 45%, 1)', 700: 'hsla(197, 91%, 33%, 1)', 800: 'hsla(198, 94%, 25%, 1)', 900: 'hsla(198, 93%, 17%, 1)', 950: 'hsla(199, 100%, 12%, 1)' },
+  blue: { 50: 'hsla(218, 100%, 96%, 1)', 100: 'hsla(216, 100%, 92%, 1)', 200: 'hsla(215, 98%, 84%, 1)', 300: 'hsla(215, 98%, 74%, 1)', 400: 'hsla(215, 98%, 65%, 1)', 500: 'hsla(211, 100%, 50%, 1)', 600: 'hsla(212, 94%, 44%, 1)', 700: 'hsla(212, 95%, 36%, 1)', 800: 'hsla(213, 99%, 28%, 1)', 900: 'hsla(214, 98%, 20%, 1)', 950: 'hsla(215, 100%, 15%, 1)' },
+  indigo: { 50: 'hsla(233, 100%, 97%, 1)', 100: 'hsla(232, 95%, 92%, 1)', 200: 'hsla(233, 90%, 85%, 1)', 300: 'hsla(234, 77%, 76%, 1)', 400: 'hsla(237, 68%, 67%, 1)', 500: 'hsla(241, 61%, 59%, 1)', 600: 'hsla(242, 46%, 51%, 1)', 700: 'hsla(242, 47%, 43%, 1)', 800: 'hsla(243, 52%, 34%, 1)', 900: 'hsla(245, 60%, 25%, 1)', 950: 'hsla(248, 71%, 19%, 1)' },
+  purple: { 50: 'hsla(278, 100%, 97%, 1)', 100: 'hsla(277, 94%, 93%, 1)', 200: 'hsla(277, 92%, 86%, 1)', 300: 'hsla(278, 79%, 77%, 1)', 400: 'hsla(279, 72%, 69%, 1)', 500: 'hsla(280, 68%, 60%, 1)', 600: 'hsla(280, 51%, 51%, 1)', 700: 'hsla(280, 54%, 41%, 1)', 800: 'hsla(281, 63%, 32%, 1)', 900: 'hsla(283, 85%, 21%, 1)', 950: 'hsla(283, 97%, 15%, 1)' },
+  pink: { 50: 'hsla(0, 100%, 97%, 1)', 100: 'hsla(0, 100%, 94%, 1)', 200: 'hsla(359, 97%, 87%, 1)', 300: 'hsla(358, 100%, 80%, 1)', 400: 'hsla(355, 100%, 72%, 1)', 500: 'hsla(349, 100%, 59%, 1)', 600: 'hsla(346, 80%, 48%, 1)', 700: 'hsla(344, 96%, 36%, 1)', 800: 'hsla(345, 93%, 29%, 1)', 900: 'hsla(346, 98%, 20%, 1)', 950: 'hsla(348, 100%, 14%, 1)' },
+  brown: { 50: 'hsla(33, 36%, 95%, 1)', 100: 'hsla(33, 33%, 89%, 1)', 200: 'hsla(35, 31%, 79%, 1)', 300: 'hsla(33, 29%, 69%, 1)', 400: 'hsla(33, 28%, 60%, 1)', 500: 'hsla(34, 27%, 50%, 1)', 600: 'hsla(34, 29%, 42%, 1)', 700: 'hsla(33, 31%, 34%, 1)', 800: 'hsla(34, 37%, 25%, 1)', 900: 'hsla(34, 47%, 17%, 1)', 950: 'hsla(34, 61%, 11%, 1)' },
 } satisfies Record<string, Record<PaletteStep, string>>;
 
 export const spacing = {
@@ -70,18 +71,18 @@ export const metrics = {
 };
 
 // Semantic colors shown on the Foundations > Colors page.
-// A value is either a palette reference (`hue.step`) or a raw hex for pure white and black.
+// A value is either a palette reference (`hue.step`) or a raw `hsla()` value for pure white and black.
 
 type PaletteRef = `${keyof typeof palette}.${PaletteStep}`;
-type ColorValue = PaletteRef | `#${string}`;
+type ColorValue = PaletteRef | `hsla(${string})`;
 
 type ColorEntry = { usage: string; light: ColorValue; dark: ColorValue };
 
 export const colorRoles = {
   background: {
-    default: { usage: 'Screen background', light: '#FFFFFF', dark: '#000000' },
+    default: { usage: 'Screen background', light: 'hsla(0, 0%, 100%, 1)', dark: 'hsla(0, 0%, 0%, 1)' },
     subtle: { usage: 'Grouped lists, secondary areas', light: 'gray.50', dark: 'gray.950' },
-    elevated: { usage: 'Cards, sheets, dialogs, menus', light: '#FFFFFF', dark: 'gray.900' },
+    elevated: { usage: 'Cards, sheets, dialogs, menus', light: 'hsla(0, 0%, 100%, 1)', dark: 'gray.900' },
     inverse: { usage: 'Toasts, snackbars, tooltips', light: 'gray.950', dark: 'gray.50' },
   },
   content: {
@@ -89,7 +90,7 @@ export const colorRoles = {
     muted: { usage: 'Secondary text, descriptions', light: 'gray.600', dark: 'gray.400' },
     subtle: { usage: 'Placeholders, captions', light: 'gray.400', dark: 'gray.600' },
     disabled: { usage: 'Disabled labels and icons', light: 'gray.300', dark: 'gray.700' },
-    inverse: { usage: 'Text on inverse backgrounds', light: '#FFFFFF', dark: 'gray.950' },
+    inverse: { usage: 'Text on inverse backgrounds', light: 'hsla(0, 0%, 100%, 1)', dark: 'gray.950' },
     link: { usage: 'Links and text actions', light: 'blue.500', dark: 'blue.400' },
   },
   border: {
@@ -114,7 +115,7 @@ export type ColorRole = keyof typeof colorRoles;
 export type ColorScheme = 'light' | 'dark';
 
 export function resolveColor(value: ColorValue): string {
-  if (value.startsWith('#')) return value;
+  if (value.startsWith('hsla(')) return value;
   const [hue, step] = value.split('.') as [keyof typeof palette, `${PaletteStep}`];
   return palette[hue][Number(step) as PaletteStep];
 }
@@ -172,6 +173,11 @@ export const componentTokens = {
       default: { border: 'border.strong', indicator: 'content.inverse' },
       checked: { background: 'content.link', border: 'content.link' },
       disabled: { border: 'border.subtle' },
+    },
+  },
+  bottomSheet: {
+    default: {
+      default: { background: 'background.elevated', handle: 'border.strong' },
     },
   },
 } satisfies Record<string, Record<string, ComponentStates>>;
