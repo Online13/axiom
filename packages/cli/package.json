@@ -1,0 +1,17 @@
+{
+  "name": "@axiom/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Copies Axiom items into a React Native project",
+  "bin": {
+    "axiom": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "~6.0.3"
+  }
+}
