@@ -5,6 +5,7 @@ import Animated, {
   Extrapolation,
   interpolate,
   scrollTo,
+  useAnimatedReaction,
   useAnimatedRef,
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -12,6 +13,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
+import { KeyboardController, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnRN } from 'react-native-worklets';
 
@@ -19,6 +21,13 @@ import { useBottomSheet } from './bottom-sheet-root';
 
 /** Points (`320`), a percentage of the screen (`'50%'`), or `'content'` to fit the children. */
 export type SnapPoint = number | `${number}%` | 'content';
+
+/**
+ * - `interactive`: the sheet rises with the keyboard, frame by frame.
+ * - `extend`: same, and the sheet also moves to its highest snap point.
+ * - `none`: the sheet stays where it is.
+ */
+export type KeyboardBehavior = 'interactive' | 'extend' | 'none';
 
 export type UseBottomSheetContentOptions = {
   snapPoints?: SnapPoint[];
@@ -31,6 +40,8 @@ export type UseBottomSheetContentOptions = {
   onDismiss?: () => void;
   /** Distance between the bottom of the sheet and the bottom of the screen, for a detached sheet. */
   bottomOffset?: number;
+  /** How the sheet reacts when an input inside it opens the keyboard. */
+  keyboardBehavior?: KeyboardBehavior;
 };
 
 // Critically damped: settles fast without bouncing.
@@ -46,6 +57,7 @@ export function useBottomSheetContent({
   dismissible = true,
   onDismiss,
   bottomOffset = 0,
+  keyboardBehavior = 'interactive',
 }: UseBottomSheetContentOptions) {
   const { open, setOpen } = useBottomSheet();
   const { height: screenHeight } = useWindowDimensions();
@@ -86,6 +98,12 @@ export function useBottomSheetContent({
   const canDismiss = useSharedValue(dismissible);
   const start = useSharedValue(0);
 
+  // The keyboard covers the bottom safe area, so the sheet only rises by what's above it.
+  const keyboard = useReanimatedKeyboardAnimation();
+  const followsKeyboard = useSharedValue(keyboardBehavior !== 'none');
+  const safeBottom = useSharedValue(insets.bottom);
+  const topLimit = useSharedValue(maxHeight - sheetHeight);
+
   // Scrollable content (BottomSheet.ScrollView) takes the gesture back when it isn't at the top.
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useSharedValue(0);
@@ -123,6 +141,9 @@ export function useBottomSheetContent({
     positions.value = snapPositions;
     closed.value = closedPosition;
     canDismiss.value = dismissible;
+    followsKeyboard.value = keyboardBehavior !== 'none';
+    safeBottom.value = insets.bottom;
+    topLimit.value = maxHeight - sheetHeight;
     if (!mounted || !ready) return;
 
     if (open) {
@@ -133,12 +154,32 @@ export function useBottomSheetContent({
       translateY.value = withSpring(snapPositions[index], SPRING);
     } else if (wasOpen.current) {
       wasOpen.current = false;
+      if (KeyboardController.isVisible()) KeyboardController.dismiss();
       translateY.value = withSpring(closedPosition, SPRING, (finished) => {
         if (finished) scheduleOnRN(onClosed);
       });
     }
     // `positionsKey` stands for `snapPositions`, which is a new array on every render.
-  }, [open, mounted, ready, index, positionsKey, closedPosition, dismissible, restore]);
+  }, [open, mounted, ready, index, positionsKey, closedPosition, dismissible, restore, keyboardBehavior, insets.bottom, maxHeight, sheetHeight]);
+
+  // `extend`: go to the highest snap point when the keyboard opens.
+  const highestIndex = snapPositions.indexOf(Math.min(...snapPositions));
+  useAnimatedReaction(
+    () => keyboard.progress.value > 0.5,
+    (visible, previous) => {
+      if (keyboardBehavior === 'extend' && visible && previous === false && positions.value.length > 0) {
+        scheduleOnRN(requestIndex, highestIndex);
+      }
+    },
+    [keyboardBehavior, highestIndex, requestIndex],
+  );
+
+  /** How far the sheet rises above its snap position. It stops when the top of the sheet reaches the top limit. */
+  const keyboardLift = useDerivedValue(() => {
+    if (!followsKeyboard.value) return 0;
+    const lift = Math.max(0, Math.abs(keyboard.height.value) - safeBottom.value);
+    return Math.min(lift, Math.max(0, topLimit.value + translateY.value));
+  });
 
   useEffect(() => {
     if (!open) return;
@@ -243,7 +284,7 @@ export function useBottomSheetContent({
   });
 
   const sheetStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
+    transform: [{ translateY: translateY.value - keyboardLift.value }],
   }));
 
   // Keeps the footer at the bottom of the screen at every snap point, and lets it leave with the sheet.

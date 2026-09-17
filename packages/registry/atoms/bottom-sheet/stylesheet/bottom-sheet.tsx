@@ -25,6 +25,8 @@ import {
   type UseBottomSheetContentOptions,
 } from '../use-bottom-sheet';
 
+export type { KeyboardBehavior, SnapPoint } from '../use-bottom-sheet';
+
 export type BottomSheetContentProps = Omit<UseBottomSheetContentOptions, 'bottomOffset'> & {
   /** Dims the screen behind the sheet. The dimming follows the sheet position. */
   overlay?: boolean;

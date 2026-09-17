@@ -333,6 +333,90 @@
       }
     },
     {
+      "name": "input",
+      "type": "atoms",
+      "tokens": "atoms/input/input-tokens.ts",
+      "files": [
+        "atoms/input/input-tokens.ts",
+        "atoms/input/use-input.ts"
+      ],
+      "internalDependencies": [
+        "text",
+        "theme",
+        "use-controllable-state"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/input/stylesheet/input.tsx",
+            "atoms/input/stylesheet/field.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "text-area",
+      "type": "atoms",
+      "internalDependencies": [
+        "input",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/text-area/stylesheet/text-area.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "input-group",
+      "type": "atoms",
+      "tokens": "atoms/input-group/input-group-tokens.ts",
+      "files": [
+        "atoms/input-group/input-group-tokens.ts",
+        "atoms/input-group/use-input-group.ts"
+      ],
+      "internalDependencies": [
+        "button",
+        "input",
+        "tappable",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/input-group/stylesheet/input-group.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "input-otp",
+      "type": "atoms",
+      "tokens": "atoms/input-otp/input-otp-tokens.ts",
+      "files": [
+        "atoms/input-otp/input-otp-tokens.ts",
+        "atoms/input-otp/use-input-otp.ts"
+      ],
+      "dependencies": [
+        "react-native-reanimated"
+      ],
+      "internalDependencies": [
+        "theme",
+        "use-controllable-state"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/input-otp/stylesheet/input-otp.tsx"
+          ]
+        }
+      }
+    },
+    {
       "name": "bottom-sheet",
       "type": "atoms",
       "tokens": "atoms/bottom-sheet/bottom-sheet-tokens.ts",
@@ -343,6 +427,7 @@
       ],
       "dependencies": [
         "react-native-gesture-handler",
+        "react-native-keyboard-controller",
         "react-native-reanimated",
         "react-native-safe-area-context",
         "react-native-worklets"

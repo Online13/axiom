@@ -111,6 +111,39 @@
       "@/components/ui/slider": [
         "./atoms/slider/stylesheet/slider.tsx"
       ],
+      "@/components/ui/input-tokens": [
+        "./atoms/input/input-tokens.ts"
+      ],
+      "@/components/ui/use-input": [
+        "./atoms/input/use-input.ts"
+      ],
+      "@/components/ui/input": [
+        "./atoms/input/stylesheet/input.tsx"
+      ],
+      "@/components/ui/field": [
+        "./atoms/input/stylesheet/field.tsx"
+      ],
+      "@/components/ui/text-area": [
+        "./atoms/text-area/stylesheet/text-area.tsx"
+      ],
+      "@/components/ui/input-group-tokens": [
+        "./atoms/input-group/input-group-tokens.ts"
+      ],
+      "@/components/ui/use-input-group": [
+        "./atoms/input-group/use-input-group.ts"
+      ],
+      "@/components/ui/input-group": [
+        "./atoms/input-group/stylesheet/input-group.tsx"
+      ],
+      "@/components/ui/input-otp-tokens": [
+        "./atoms/input-otp/input-otp-tokens.ts"
+      ],
+      "@/components/ui/use-input-otp": [
+        "./atoms/input-otp/use-input-otp.ts"
+      ],
+      "@/components/ui/input-otp": [
+        "./atoms/input-otp/stylesheet/input-otp.tsx"
+      ],
       "@/components/ui/bottom-sheet-tokens": [
         "./atoms/bottom-sheet/bottom-sheet-tokens.ts"
       ],
