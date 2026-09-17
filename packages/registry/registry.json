@@ -66,6 +66,13 @@
       ]
     },
     {
+      "name": "use-controllable-state",
+      "type": "hooks",
+      "files": [
+        "hooks/use-controllable-state/use-controllable-state.ts"
+      ]
+    },
+    {
       "name": "text",
       "type": "typography",
       "internalDependencies": [
@@ -188,12 +195,113 @@
       ],
       "internalDependencies": [
         "tappable",
-        "theme"
+        "theme",
+        "use-controllable-state"
       ],
       "variants": {
         "stylesheet": {
           "files": [
             "atoms/switch/stylesheet/switch.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "checkbox",
+      "type": "atoms",
+      "tokens": "atoms/checkbox/checkbox-tokens.ts",
+      "files": [
+        "atoms/checkbox/checkbox-tokens.ts"
+      ],
+      "requiredIcons": [
+        "check",
+        "minus"
+      ],
+      "internalDependencies": [
+        "icon",
+        "tappable",
+        "text",
+        "theme",
+        "use-controllable-state"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/checkbox/stylesheet/checkbox.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "radio",
+      "type": "atoms",
+      "tokens": "atoms/radio/radio-tokens.ts",
+      "files": [
+        "atoms/radio/radio-tokens.ts"
+      ],
+      "internalDependencies": [
+        "tappable",
+        "text",
+        "theme",
+        "use-controllable-state"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/radio/stylesheet/radio.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "segmented-control",
+      "type": "atoms",
+      "tokens": "atoms/segmented-control/segmented-control-tokens.ts",
+      "files": [
+        "atoms/segmented-control/segmented-control-tokens.ts",
+        "atoms/segmented-control/use-segmented-control.ts"
+      ],
+      "dependencies": [
+        "react-native-gesture-handler",
+        "react-native-reanimated",
+        "react-native-worklets"
+      ],
+      "internalDependencies": [
+        "icon",
+        "tappable",
+        "text",
+        "theme",
+        "use-controllable-state"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/segmented-control/stylesheet/segmented-control.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "slider",
+      "type": "atoms",
+      "tokens": "atoms/slider/slider-tokens.ts",
+      "files": [
+        "atoms/slider/slider-tokens.ts",
+        "atoms/slider/use-slider.ts"
+      ],
+      "dependencies": [
+        "react-native-gesture-handler",
+        "react-native-reanimated",
+        "react-native-worklets"
+      ],
+      "internalDependencies": [
+        "theme",
+        "use-controllable-state"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/slider/stylesheet/slider.tsx"
           ]
         }
       }
@@ -220,7 +328,8 @@
         "slot",
         "tappable",
         "theme",
-        "title"
+        "title",
+        "use-controllable-state"
       ],
       "variants": {
         "stylesheet": {

@@ -38,6 +38,7 @@ export const icons = {
   error: symbol('exclamationmark.circle', 'error'),
   favorite: symbol('heart', 'favorite'),
   info: symbol('info.circle', 'info'),
+  minus: symbol('minus', 'remove'),
   search: symbol('magnifyingglass', 'search'),
   settings: symbol('gearshape', 'settings'),
   share: symbol('square.and.arrow.up', 'share'),

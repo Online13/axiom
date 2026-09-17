@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import type { AccessibilityActionEvent } from 'react-native';
 import { useSharedValue, withTiming, type SharedValue } from 'react-native-reanimated';
+
+import { useControllableState } from '@/hooks/use-controllable-state';
 
 export type UseSwitchOptions = {
   value?: boolean;
@@ -29,9 +31,7 @@ export function useSwitch({
   onValueChange,
   disabled = false,
 }: UseSwitchOptions): UseSwitchResult {
-  const [uncontrolled, setUncontrolled] = useState(defaultValue);
-  const controlled = value !== undefined;
-  const checked = controlled ? value : uncontrolled;
+  const [checked, setChecked] = useControllableState({ value, defaultValue, onChange: onValueChange });
 
   const progress = useSharedValue(checked ? 1 : 0);
 
@@ -41,10 +41,7 @@ export function useSwitch({
   }, [checked, progress]);
 
   const toggle = () => {
-    if (disabled) return;
-    const next = !checked;
-    if (!controlled) setUncontrolled(next);
-    onValueChange?.(next);
+    if (!disabled) setChecked(!checked);
   };
 
   return {

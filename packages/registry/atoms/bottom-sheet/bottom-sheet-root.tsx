@@ -1,8 +1,9 @@
-import { createContext, use, useState, type ReactNode } from 'react';
+import { createContext, use, type ReactNode } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 
 import { Slot } from '@/components/core/slot';
 import { Tappable, type TappableProps } from '@/components/core/tappable';
+import { useControllableState } from '@/hooks/use-controllable-state';
 
 type BottomSheetContextValue = {
   open: boolean;
@@ -28,14 +29,9 @@ export type BottomSheetRootProps = {
 };
 
 export function BottomSheetRoot({ open, defaultOpen = false, onOpenChange, children }: BottomSheetRootProps) {
-  const [uncontrolled, setUncontrolled] = useState(defaultOpen);
+  const [current, setOpen] = useControllableState({ value: open, defaultValue: defaultOpen, onChange: onOpenChange });
 
-  const setOpen = (next: boolean) => {
-    if (open === undefined) setUncontrolled(next);
-    onOpenChange?.(next);
-  };
-
-  return <BottomSheetContext value={{ open: open ?? uncontrolled, setOpen }}>{children}</BottomSheetContext>;
+  return <BottomSheetContext value={{ open: current, setOpen }}>{children}</BottomSheetContext>;
 }
 
 export type BottomSheetTriggerProps = TappableProps & {

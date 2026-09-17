@@ -7,5 +7,7 @@ export const SCREENS = [
   { name: 'icon-button', title: 'IconButton', group: 'Atoms', description: 'Variants, sizes, shapes, toggles' },
   { name: 'button', title: 'Button', group: 'Atoms', description: 'Variants, sizes, loading, disabled, icons' },
   { name: 'switch', title: 'Switch', group: 'Atoms', description: 'Controlled, uncontrolled, sizes, disabled' },
+  { name: 'checkbox', title: 'Checkbox & Radio', group: 'Atoms', description: 'Indeterminate, error, groups, custom rows' },
+  { name: 'segmented-control', title: 'SegmentedControl & Slider', group: 'Atoms', description: 'Sliding indicator, drag, range, steps' },
   { name: 'bottom-sheet', title: 'BottomSheet', group: 'Atoms', description: 'Snap points, gestures, scroll, footer, detached' },
 ] as const;

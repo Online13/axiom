@@ -21,7 +21,9 @@ description: "Pick a single value or a range by dragging."
 npx axiom add slider
 ```
 
-Installs: `react-native-reanimated`, `react-native-gesture-handler`.
+Installs: `react-native-reanimated`, `react-native-worklets`, `react-native-gesture-handler`.
+
+The value logic and gestures live in `use-slider.ts`, shared by every styling variant. Colors come from `slider.default.{default,disabled}.{track,fill,thumb}` in the [component tokens](/foundations/component-tokens).
 
 ## Usage
 

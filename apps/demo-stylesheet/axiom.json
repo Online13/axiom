@@ -12,16 +12,21 @@
   "items": [
     "bottom-sheet",
     "button",
+    "checkbox",
     "icon",
     "icon-button",
     "overlay",
     "portal",
+    "radio",
+    "segmented-control",
+    "slider",
     "slot",
     "switch",
     "tappable",
     "text",
     "theme",
     "title",
-    "tokens"
+    "tokens",
+    "use-controllable-state"
   ]
 }

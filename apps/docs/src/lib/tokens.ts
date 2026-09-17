@@ -172,7 +172,8 @@ export const componentTokens = {
     default: {
       default: { border: 'border.strong', indicator: 'content.inverse' },
       checked: { background: 'content.link', border: 'content.link' },
-      disabled: { border: 'border.subtle' },
+      invalid: { border: 'feedback.error' },
+      disabled: { border: 'border.subtle', indicator: 'content.disabled' },
     },
   },
   iconButton: {
@@ -199,6 +200,26 @@ export const componentTokens = {
       pressed: { background: 'content.muted' },
       selected: { background: 'content.muted' },
       disabled: { background: 'border.default', foreground: 'content.disabled' },
+    },
+  },
+  radio: {
+    default: {
+      default: { border: 'border.strong', indicator: 'content.link' },
+      checked: { border: 'content.link' },
+      disabled: { border: 'border.subtle', indicator: 'content.disabled' },
+    },
+  },
+  segmentedControl: {
+    default: {
+      default: { track: 'background.subtle', indicator: 'background.elevated', border: 'border.default', foreground: 'content.muted' },
+      selected: { foreground: 'content.default' },
+      disabled: { foreground: 'content.disabled' },
+    },
+  },
+  slider: {
+    default: {
+      default: { track: 'border.default', fill: 'content.link', thumb: 'background.elevated' },
+      disabled: { fill: 'content.disabled' },
     },
   },
   bottomSheet: {

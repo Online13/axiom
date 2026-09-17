@@ -24,6 +24,8 @@ description: "Checkbox with checked, unchecked and indeterminate states."
 npx axiom add checkbox
 ```
 
+Requires the `check` and `minus` icons in your [icon registry](/atoms/icon#icons-that-components-need).
+
 ## Usage
 
 ```tsx title="Conceptual"
@@ -47,7 +49,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 | `accessibilityLabel` | `string` | label text | Required when there is no `label`. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra styles for the pressable row. |
 
-Box and check colors come from `checkbox.default.{default,checked,disabled}` in the [component tokens](/foundations/component-tokens).
+Box and check colors come from `checkbox.default.{default,checked,invalid,disabled}` in the [component tokens](/foundations/component-tokens).
 
 ## Use cases
 

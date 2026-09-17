@@ -33,6 +33,9 @@
       "@/components/core/overlay": [
         "./core/overlay/overlay.tsx"
       ],
+      "@/hooks/use-controllable-state": [
+        "./hooks/use-controllable-state/use-controllable-state.ts"
+      ],
       "@/components/ui/text": [
         "./typography/text/stylesheet/text.tsx"
       ],
@@ -68,6 +71,36 @@
       ],
       "@/components/ui/switch": [
         "./atoms/switch/stylesheet/switch.tsx"
+      ],
+      "@/components/ui/checkbox-tokens": [
+        "./atoms/checkbox/checkbox-tokens.ts"
+      ],
+      "@/components/ui/checkbox": [
+        "./atoms/checkbox/stylesheet/checkbox.tsx"
+      ],
+      "@/components/ui/radio-tokens": [
+        "./atoms/radio/radio-tokens.ts"
+      ],
+      "@/components/ui/radio": [
+        "./atoms/radio/stylesheet/radio.tsx"
+      ],
+      "@/components/ui/segmented-control-tokens": [
+        "./atoms/segmented-control/segmented-control-tokens.ts"
+      ],
+      "@/components/ui/use-segmented-control": [
+        "./atoms/segmented-control/use-segmented-control.ts"
+      ],
+      "@/components/ui/segmented-control": [
+        "./atoms/segmented-control/stylesheet/segmented-control.tsx"
+      ],
+      "@/components/ui/slider-tokens": [
+        "./atoms/slider/slider-tokens.ts"
+      ],
+      "@/components/ui/use-slider": [
+        "./atoms/slider/use-slider.ts"
+      ],
+      "@/components/ui/slider": [
+        "./atoms/slider/stylesheet/slider.tsx"
       ],
       "@/components/ui/bottom-sheet-tokens": [
         "./atoms/bottom-sheet/bottom-sheet-tokens.ts"

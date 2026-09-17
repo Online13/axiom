@@ -23,7 +23,9 @@ description: "iOS-style segmented selector with a sliding indicator."
 npx axiom add segmented-control
 ```
 
-Installs: `react-native-reanimated`.
+Installs: `react-native-reanimated`, `react-native-worklets`, `react-native-gesture-handler`.
+
+Selection, measurement and the draggable indicator live in `use-segmented-control.ts`, shared by every styling variant. Colors come from `segmentedControl.default.{default,selected,disabled}.{track,indicator,border,foreground}` in the [component tokens](/foundations/component-tokens).
 
 ## Usage
 
