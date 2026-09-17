@@ -13,5 +13,11 @@ export const SCREENS = [
   { name: 'input', title: 'Input & TextArea', group: 'Atoms', description: 'Label, helper, error, affixes, auto-grow, count' },
   { name: 'input-group', title: 'InputGroup', group: 'Atoms', description: 'Addons, inline button, shared focus border' },
   { name: 'input-otp', title: 'InputOTP', group: 'Atoms', description: 'Paste, autofill, groups, error shake, PIN' },
+  { name: 'card', title: 'Card, Item & Accordion', group: 'Atoms', description: 'Card parts, list rows, options, sections, button groups' },
+  { name: 'badge', title: 'Badge, Avatar & Chip', group: 'Atoms', description: 'Counters, initials, status, filters, tags, separators' },
+  { name: 'alert', title: 'Feedback', group: 'Atoms', description: 'Spinner, skeleton, alert, empty states' },
+  { name: 'calendar', title: 'Calendar & Carousel', group: 'Atoms', description: 'Single and range selection, swipe, autoplay, dots' },
+  { name: 'toast', title: 'Toast & Snackbar', group: 'Atoms', description: 'Stack, promise, swipe, undo, replace' },
+  { name: 'dialog', title: 'Dialog & Menu', group: 'Atoms', description: 'Confirmation, async action, context menu, submenu' },
   { name: 'bottom-sheet', title: 'BottomSheet', group: 'Atoms', description: 'Snap points, gestures, scroll, footer, detached' },
 ] as const;

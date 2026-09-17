@@ -32,6 +32,7 @@ export const icons = {
   'arrow-left': symbol('arrow.left', 'arrow_back'),
   check: symbol('checkmark', 'check'),
   'chevron-down': symbol('chevron.down', 'keyboard_arrow_down'),
+  'chevron-left': symbol('chevron.left', 'chevron_left'),
   'chevron-right': symbol('chevron.right', 'chevron_right'),
   close: symbol('xmark', 'close'),
   delete: symbol('trash', 'delete'),
@@ -42,6 +43,7 @@ export const icons = {
   search: symbol('magnifyingglass', 'search'),
   settings: symbol('gearshape', 'settings'),
   share: symbol('square.and.arrow.up', 'share'),
+  success: symbol('checkmark.circle', 'check_circle'),
   warning: symbol('exclamationmark.triangle', 'warning'),
   // Demo only: the theme button.
   'theme-dark': symbol('moon', 'dark_mode'),
