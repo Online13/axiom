@@ -13,14 +13,18 @@ export default function Index() {
   return (
     <ScrollView
       style={{ backgroundColor: colors.background.subtle }}
-      contentContainerStyle={{ padding: tokens.metrics.screenMargin, gap: tokens.spacing[6] }}
+      contentContainerStyle={{
+        padding: tokens.metrics.screenMargin,
+        paddingBottom: tokens.spacing[12] * 2,
+        gap: tokens.spacing[8],
+      }}
     >
       <Text variant="footnote" color="muted">
         Axiom demo · stylesheet
       </Text>
       {groups.map((group) => (
         <View key={group} style={{ gap: tokens.spacing[2] }}>
-          <Text variant="footnote" color="muted" weight="semibold">
+          <Text variant="footnote" color="muted" weight="semibold" style={{ paddingHorizontal: tokens.spacing[4] }}>
             {group.toUpperCase()}
           </Text>
           <View
@@ -33,23 +37,28 @@ export default function Index() {
             }}
           >
             {SCREENS.filter((screen) => screen.group === group).map((screen, i) => (
+              // Link's asChild drops style functions: the pressed state is drawn by the children instead.
               <Link key={screen.name} href={`/${screen.name}` as Href} asChild>
-                <Tappable
-                  accessibilityRole="link"
-                  style={({ pressed }) => ({
-                    padding: tokens.spacing[4],
-                    gap: tokens.spacing[1],
-                    backgroundColor: pressed ? colors.background.subtle : undefined,
-                    borderTopWidth: i === 0 ? 0 : tokens.metrics.hairline,
-                    borderTopColor: colors.border.subtle,
-                  })}
-                >
-                  <Text variant="bodyLg" weight="semibold">
-                    {screen.title}
-                  </Text>
-                  <Text variant="bodySm" color="muted">
-                    {screen.description}
-                  </Text>
+                <Tappable accessibilityRole="link">
+                  {({ pressed }) => (
+                    <View
+                      style={{
+                        paddingHorizontal: tokens.spacing[4],
+                        paddingVertical: tokens.spacing[3],
+                        gap: tokens.spacing[1],
+                        backgroundColor: pressed ? colors.background.subtle : undefined,
+                        borderTopWidth: i === 0 ? 0 : tokens.metrics.hairline,
+                        borderTopColor: colors.border.subtle,
+                      }}
+                    >
+                      <Text variant="bodyLg" weight="semibold">
+                        {screen.title}
+                      </Text>
+                      <Text variant="bodySm" color="muted">
+                        {screen.description}
+                      </Text>
+                    </View>
+                  )}
                 </Tappable>
               </Link>
             ))}

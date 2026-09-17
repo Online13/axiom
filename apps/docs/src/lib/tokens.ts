@@ -202,6 +202,18 @@ export const componentTokens = {
       disabled: { background: 'border.default', foreground: 'content.disabled' },
     },
   },
+  floatingButton: {
+    solid: {
+      default: { background: 'background.inverse', foreground: 'content.inverse' },
+      pressed: { background: 'content.muted' },
+      disabled: { background: 'border.default', foreground: 'content.disabled' },
+    },
+    tinted: {
+      default: { background: 'background.elevated', foreground: 'content.default', border: 'border.default' },
+      pressed: { background: 'background.subtle' },
+      disabled: { foreground: 'content.disabled' },
+    },
+  },
   radio: {
     default: {
       default: { border: 'border.strong', indicator: 'content.link' },
@@ -218,8 +230,8 @@ export const componentTokens = {
   },
   slider: {
     default: {
-      default: { track: 'border.default', fill: 'content.link', thumb: 'background.elevated' },
-      disabled: { fill: 'content.disabled' },
+      default: { track: 'border.default', fill: 'content.link', thumb: 'content.link' },
+      disabled: { fill: 'content.disabled', thumb: 'content.disabled' },
     },
   },
   bottomSheet: {

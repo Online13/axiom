@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Appearance, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { Icon } from '@/components/ui/icon';
 import { icons, type IconName } from '@/components/ui/icons';
@@ -12,14 +12,6 @@ import {
   type TypographyVariant,
 } from '@/theme';
 
-type SchemeChoice = 'unspecified' | 'light' | 'dark';
-
-const SCHEMES: { value: SchemeChoice; label: string }[] = [
-  { value: 'unspecified', label: 'System' },
-  { value: 'light', label: 'Light' },
-  { value: 'dark', label: 'Dark' },
-];
-
 export default function Foundations() {
   const { tokens, colors } = useTheme();
 
@@ -28,11 +20,10 @@ export default function Foundations() {
       style={{ backgroundColor: colors.background.subtle }}
       contentContainerStyle={{
         padding: tokens.metrics.screenMargin,
-        paddingBottom: tokens.spacing[12],
+        paddingBottom: tokens.spacing[12] * 2,
         gap: tokens.spacing[10],
       }}
     >
-      <SchemeSwitcher />
       <Colors />
       <Palette />
       <TypographyScale />
@@ -42,61 +33,6 @@ export default function Foundations() {
       <TapTargets />
       <States />
     </ScrollView>
-  );
-}
-
-function SchemeSwitcher() {
-  const { tokens, colors } = useTheme();
-  const [choice, setChoice] = useState<SchemeChoice>('unspecified');
-
-  const select = (value: SchemeChoice) => {
-    setChoice(value);
-    Appearance.setColorScheme(value);
-  };
-
-  return (
-    <View
-      style={[
-        styles.row,
-        {
-          padding: tokens.spacing[1],
-          gap: tokens.spacing[1],
-          borderRadius: tokens.radius.md,
-          backgroundColor: colors.background.default,
-          borderWidth: tokens.metrics.hairline,
-          borderColor: colors.border.default,
-        },
-      ]}
-    >
-      {SCHEMES.map(({ value, label }) => {
-        const selected = value === choice;
-        return (
-          <Pressable
-            key={value}
-            accessibilityRole="button"
-            accessibilityState={{ selected }}
-            onPress={() => select(value)}
-            style={[
-              styles.segment,
-              {
-                minHeight: tokens.sizes.control.sm,
-                borderRadius: tokens.radius.sm,
-                backgroundColor: selected ? colors.background.inverse : 'transparent',
-              },
-            ]}
-          >
-            <Text
-              style={[
-                tokens.typography.subheadline,
-                { color: selected ? colors.content.inverse : colors.content.default },
-              ]}
-            >
-              {label}
-            </Text>
-          </Pressable>
-        );
-      })}
-    </View>
   );
 }
 
@@ -401,7 +337,6 @@ const styles = StyleSheet.create({
   center: { alignItems: 'center' },
   centerContent: { justifyContent: 'center' },
   end: { alignItems: 'flex-end' },
-  segment: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   swatchItem: { width: '30%' },
   step: { flex: 1, height: 28 },
   stepLabel: { flex: 1, fontSize: 8, textAlign: 'center' },

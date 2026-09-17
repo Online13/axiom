@@ -127,7 +127,8 @@ export function useSlider<T extends SliderValue>({
     const thumb = (index: number) =>
       Gesture.Pan()
         .enabled(!disabled)
-        .hitSlop({ horizontal: 8, vertical: 8 })
+        // 20pt thumb, 44pt touch area.
+        .hitSlop({ horizontal: 12, vertical: 12 })
         .onBegin(() => {
           active.value = index;
           start.value = thumbs.value[index] ?? 0;

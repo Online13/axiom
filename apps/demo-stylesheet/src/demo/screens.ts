@@ -5,6 +5,7 @@ export const SCREENS = [
   { name: 'typography', title: 'Text & Title', group: 'Typography', description: 'Variants, colors, weights, nesting' },
   { name: 'icon', title: 'Icon', group: 'Atoms', description: 'Registry, sizes, colors, accessibility' },
   { name: 'icon-button', title: 'IconButton', group: 'Atoms', description: 'Variants, sizes, shapes, toggles' },
+  { name: 'floating-button', title: 'FloatingButton', group: 'Atoms', description: 'Placement, extended, visibility' },
   { name: 'button', title: 'Button', group: 'Atoms', description: 'Variants, sizes, loading, disabled, icons' },
   { name: 'switch', title: 'Switch', group: 'Atoms', description: 'Controlled, uncontrolled, sizes, disabled' },
   { name: 'checkbox', title: 'Checkbox & Radio', group: 'Atoms', description: 'Indeterminate, error, groups, custom rows' },

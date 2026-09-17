@@ -23,10 +23,8 @@ const INSET = 2;
 
 export function SegmentedControl({ size = 'md', fullWidth = true, disabled = false, style, ...options }: SegmentedControlProps) {
   const { tokens, components } = useTheme();
-  const { segments, selected, selectIndex, onSegmentLayout, gesture, indicatorStyle } = useSegmentedControl({
-    ...options,
-    disabled,
-  });
+  const { segments, selected, selectIndex, onTrackLayout, onSegmentLayout, gesture, indicatorStyle } =
+    useSegmentedControl({ ...options, disabled, fullWidth, inset: INSET });
 
   const states = components.segmentedControl.default;
   const height = size === 'md' ? tokens.sizes.control.sm : tokens.spacing[10];
@@ -36,6 +34,7 @@ export function SegmentedControl({ size = 'md', fullWidth = true, disabled = fal
     <GestureDetector gesture={gesture}>
       <View
         accessibilityRole="tablist"
+        onLayout={onTrackLayout}
         style={[
           styles.track,
           {

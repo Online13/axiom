@@ -22,6 +22,10 @@ export type UseSegmentedControlOptions = {
   defaultValue?: string;
   onValueChange?: (value: string) => void;
   disabled?: boolean;
+  /** Equal segments filling the track. Positions then come from the track width, not from each segment. */
+  fullWidth?: boolean;
+  /** Padding of the track around the segments. */
+  inset?: number;
 };
 
 type Layout = { x: number; width: number };
@@ -35,6 +39,8 @@ export function useSegmentedControl({
   defaultValue,
   onValueChange,
   disabled = false,
+  fullWidth = true,
+  inset = 0,
 }: UseSegmentedControlOptions) {
   const segments = options.map((option) => (typeof option === 'string' ? { value: option, label: option } : option));
   const [selected, select] = useControllableState({
@@ -43,9 +49,19 @@ export function useSegmentedControl({
     onChange: onValueChange,
   });
 
-  const [layouts, setLayouts] = useState<(Layout | undefined)[]>([]);
+  const [measuredLayouts, setLayouts] = useState<(Layout | undefined)[]>([]);
+  const [trackWidth, setTrackWidth] = useState(0);
   const selectedIndex = segments.findIndex((segment) => segment.value === selected);
+
+  // Equal segments: computed from the track, which always has its final width when it reports it.
+  const segmentWidth = (trackWidth - inset * 2) / segments.length;
+  const layouts = fullWidth
+    ? trackWidth > 0
+      ? segments.map((_, i) => ({ x: inset + i * segmentWidth, width: segmentWidth }))
+      : []
+    : measuredLayouts;
   const measured = layouts.length === segments.length && layouts.every(Boolean);
+  const layoutsKey = layouts.map((layout) => (layout ? `${layout.x}:${layout.width}` : '')).join(',');
 
   const indicatorX = useSharedValue(0);
   const indicatorWidth = useSharedValue(0);
@@ -65,9 +81,16 @@ export function useSegmentedControl({
     indicatorX.value = animate ? withTiming(target.x, TIMING) : target.x;
     indicatorWidth.value = animate ? withTiming(target.width, TIMING) : target.width;
     visible.value = 1;
-  }, [measured, layouts, selectedIndex, indicatorX, indicatorWidth, positions, visible]);
+    // `layoutsKey` stands for `layouts`, a new array on every render in full width.
+  }, [measured, layoutsKey, selectedIndex, indicatorX, indicatorWidth, positions, visible]);
+
+  const onTrackLayout = (event: LayoutChangeEvent) => {
+    const { width } = event.nativeEvent.layout;
+    setTrackWidth((previous) => (previous === width ? previous : width));
+  };
 
   const onSegmentLayout = (index: number) => (event: LayoutChangeEvent) => {
+    if (fullWidth) return;
     const { x, width } = event.nativeEvent.layout;
     setLayouts((previous) => {
       if (previous[index]?.x === x && previous[index]?.width === width) return previous;
@@ -131,5 +154,5 @@ export function useSegmentedControl({
     transform: [{ translateX: indicatorX.value }],
   }));
 
-  return { segments, selected, selectIndex, onSegmentLayout, gesture, indicatorStyle };
+  return { segments, selected, selectIndex, onTrackLayout, onSegmentLayout, gesture, indicatorStyle };
 }

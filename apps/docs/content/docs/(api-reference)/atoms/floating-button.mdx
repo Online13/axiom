@@ -1,0 +1,84 @@
+---
+title: FloatingButton
+description: "A button floating above the content, in thumb reach, for the main action of a screen."
+---
+
+<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+
+## Installation
+
+```npm
+npx axiom add floating-button
+```
+
+Also copies: [`tappable`](/core/tappable), [`icon`](/atoms/icon), [`text`](/atoms/text).
+
+Installs: `react-native-reanimated`, `react-native-safe-area-context`.
+
+## Usage
+
+Render it last in the screen container. It positions itself above the bottom safe area.
+
+```tsx title="Conceptual"
+import { FloatingButton } from '@/components/ui/floating-button';
+
+<View style={{ flex: 1 }}>
+  <NotesList />
+  <FloatingButton icon="edit" label="New note" onPress={createNote} />
+</View>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `icon` | `IconName` | — | Required. An icon of your [registry](/atoms/icon#the-registry). |
+| `label` | `string` | — | Makes the button extended: icon and text. |
+| `accessibilityLabel` | `string` | `label` | Required when there is no `label`. |
+| `variant` | `'solid' \| 'tinted'` | `'solid'` | `solid` for the main action, `tinted` for a quieter floating control. |
+| `size` | `'sm' \| 'md'` | `'md'` | 44 or 52pt, from the `control` size tokens. |
+| `placement` | `'bottom-end' \| 'bottom-center' \| 'bottom-start'` | `'bottom-end'` | Where it floats. The screen margin and the safe area are added for you. |
+| `offset` | `number` | `0` | Extra distance from the bottom, for instance the height of a tab bar. |
+| `visible` | `boolean` | `true` | Shows or hides the button with a scale and fade. Hidden, it ignores touches and screen readers. |
+| `onPress` | `() => void` | — | Called when the press ends on the button. |
+| `disabled` | `boolean` | `false` | Blocks presses and uses the `disabled` tokens. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the button. |
+
+Colors come from `floatingButton.<variant>.{default,pressed,disabled}.{background,foreground,border}` in the [component tokens](/foundations/component-tokens). Placement and the show / hide animation live in `use-floating-button.ts`, shared by every styling variant.
+
+## Use cases
+
+### Main action of a list
+
+The extended button says what it creates. Keep the label to one or two words.
+
+```tsx
+<FloatingButton icon="edit" label="New note" onPress={createNote} />
+```
+
+### Hide while scrolling down
+
+Content under the button stays readable. Show it again as soon as the user scrolls up.
+
+```tsx
+<FloatingButton icon="add" accessibilityLabel="New note" visible={!scrollingDown} onPress={createNote} />
+```
+
+### Above a tab bar
+
+`offset` keeps the button above the bar, never over it.
+
+```tsx
+<FloatingButton icon="add" accessibilityLabel="New post" offset={tabBarHeight} onPress={compose} />
+```
+
+## Guidelines
+
+- One floating button per screen, for the action the screen exists for.
+- Several related actions (note, checklist, photo) are a [floating action menu](/patterns/floating-action-menu).
+- Leave room at the bottom of scrolling content, so the last item isn't hidden under the button.
+
+## Related
+
+- [IconButton](/atoms/icon-button)
+- [Button](/atoms/button)

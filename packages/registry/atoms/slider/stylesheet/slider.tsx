@@ -16,19 +16,22 @@ export type SliderProps<T extends SliderValue> = UseSliderOptions<T> & {
   style?: StyleProp<ViewStyle>;
 };
 
-const THUMB = 28;
+const THUMB = 20;
 const TRACK = 4;
+const TICK = 8;
 
 export function Slider<T extends SliderValue>({ showSteps = false, accessibilityLabel, style, ...options }: SliderProps<T>) {
   const { tokens, components } = useTheme();
   const slider = useSlider(options);
   const states = components.slider.default;
   const colors = { ...states.default, ...(options.disabled ? states.disabled : undefined) };
+  // The whole 44pt height accepts a tap, not only the thumb.
+  const height = tokens.metrics.touchTarget;
 
   return (
-    <View style={[{ height: tokens.metrics.touchTarget, paddingHorizontal: THUMB / 2 }, styles.container, style]}>
+    <View style={[{ height, paddingHorizontal: THUMB / 2 }, styles.container, style]}>
       <GestureDetector gesture={slider.gestures.tap}>
-        <View style={styles.hitArea} onLayout={slider.onTrackLayout}>
+        <View style={[styles.hitArea, { height }]} onLayout={slider.onTrackLayout}>
           <View style={[styles.track, { borderRadius: tokens.radius.full, backgroundColor: colors.track }]}>
             <Animated.View style={[styles.fill, { borderRadius: tokens.radius.full, backgroundColor: colors.fill }, slider.fillStyle]} />
           </View>
@@ -38,7 +41,7 @@ export function Slider<T extends SliderValue>({ showSteps = false, accessibility
                   key={i}
                   style={[
                     styles.tick,
-                    { left: `${(i / (slider.ticks - 1)) * 100}%`, backgroundColor: colors.track },
+                    { top: (height - TICK) / 2, left: `${(i / (slider.ticks - 1)) * 100}%`, backgroundColor: colors.track },
                   ]}
                 />
               ))
@@ -52,7 +55,7 @@ export function Slider<T extends SliderValue>({ showSteps = false, accessibility
                 }
                 style={[
                   styles.thumb,
-                  { borderRadius: THUMB / 2, backgroundColor: colors.thumb },
+                  { top: (height - THUMB) / 2, borderRadius: THUMB / 2, backgroundColor: colors.thumb },
                   slider.thumbStyles[index],
                 ]}
               />
@@ -69,7 +72,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   hitArea: {
-    height: THUMB,
     justifyContent: 'center',
   },
   track: {
@@ -84,17 +86,15 @@ const styles = StyleSheet.create({
   tick: {
     position: 'absolute',
     width: 2,
-    height: 8,
+    height: TICK,
     marginLeft: -1,
     borderRadius: 1,
-    top: (THUMB - 8) / 2,
   },
   thumb: {
     position: 'absolute',
     left: -THUMB / 2,
-    top: 0,
     width: THUMB,
     height: THUMB,
-    boxShadow: '0px 2px 6px hsla(0, 0%, 0%, 0.2)',
+    boxShadow: '0px 1px 3px hsla(0, 0%, 0%, 0.25)',
   },
 });

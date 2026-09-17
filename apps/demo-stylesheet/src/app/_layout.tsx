@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { PortalHost, PortalProvider } from '@/components/core/portal';
 import { SCREENS } from '@/demo/screens';
+import { ThemeButton } from '@/demo/theme-button';
 import { useTheme } from '@/theme';
 
 export default function RootLayout() {
@@ -26,6 +27,7 @@ export default function RootLayout() {
             <Stack.Screen key={screen.name} name={screen.name} options={{ title: screen.title }} />
           ))}
         </Stack>
+        <ThemeButton />
         <PortalHost />
       </PortalProvider>
     </GestureHandlerRootView>

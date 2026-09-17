@@ -9,7 +9,7 @@ export type SliderTokens = {
 
 export const sliderTokens = (colors: ThemeColors): SliderTokens => ({
   default: {
-    default: { track: colors.border.default, fill: colors.content.link, thumb: colors.background.elevated },
-    disabled: { fill: colors.content.disabled },
+    default: { track: colors.border.default, fill: colors.content.link, thumb: colors.content.link },
+    disabled: { fill: colors.content.disabled, thumb: colors.content.disabled },
   },
 });

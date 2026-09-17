@@ -12,7 +12,8 @@ export function Screen({ children }: { children: ReactNode }) {
       style={{ backgroundColor: colors.background.subtle }}
       contentContainerStyle={{
         padding: tokens.metrics.screenMargin,
-        paddingBottom: tokens.spacing[12],
+        // Room for the theme button.
+        paddingBottom: tokens.spacing[12] * 2,
         gap: tokens.spacing[8],
       }}
     >

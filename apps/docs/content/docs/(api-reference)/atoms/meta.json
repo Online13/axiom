@@ -4,6 +4,7 @@
     "---Actions---",
     "button",
     "icon-button",
+    "floating-button",
     "button-group",
     "---Inputs---",
     "input",

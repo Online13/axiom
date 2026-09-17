@@ -183,6 +183,32 @@
       }
     },
     {
+      "name": "floating-button",
+      "type": "atoms",
+      "tokens": "atoms/floating-button/floating-button-tokens.ts",
+      "files": [
+        "atoms/floating-button/floating-button-tokens.ts",
+        "atoms/floating-button/use-floating-button.ts"
+      ],
+      "dependencies": [
+        "react-native-reanimated",
+        "react-native-safe-area-context"
+      ],
+      "internalDependencies": [
+        "icon",
+        "tappable",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/floating-button/stylesheet/floating-button.tsx"
+          ]
+        }
+      }
+    },
+    {
       "name": "switch",
       "type": "atoms",
       "tokens": "atoms/switch/switch-tokens.ts",

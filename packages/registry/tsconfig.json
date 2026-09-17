@@ -63,6 +63,15 @@
       "@/components/ui/icon-button": [
         "./atoms/icon-button/stylesheet/icon-button.tsx"
       ],
+      "@/components/ui/floating-button-tokens": [
+        "./atoms/floating-button/floating-button-tokens.ts"
+      ],
+      "@/components/ui/use-floating-button": [
+        "./atoms/floating-button/use-floating-button.ts"
+      ],
+      "@/components/ui/floating-button": [
+        "./atoms/floating-button/stylesheet/floating-button.tsx"
+      ],
       "@/components/ui/switch-tokens": [
         "./atoms/switch/switch-tokens.ts"
       ],
