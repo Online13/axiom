@@ -121,6 +121,9 @@ const ownership = [
 								<span class="prompt__cursor" aria-hidden="true">›</span>
 								{v.name}
 								{v.soon && <small>soon</small>}
+								<span class="progress" aria-hidden="true">
+									<span data-progress />
+								</span>
 							</button>
 						))
 					}
@@ -156,6 +159,8 @@ const ownership = [
 </section>
 
 <script>
+	import { autoplay } from '../../lib/autoplay';
+
 	const tabs = [...document.querySelectorAll<HTMLButtonElement>('.prompt__option')];
 	const panels = document.querySelectorAll<HTMLElement>('.code__panel');
 
@@ -169,7 +174,10 @@ const ownership = [
 	}
 
 	tabs.forEach((tab, i) => {
-		tab.addEventListener('click', () => select(tab));
+		tab.addEventListener('click', () => {
+			select(tab);
+			cycle?.restart();
+		});
 		// Arrow keys move through the options, like the CLI prompt they mimic.
 		tab.addEventListener('keydown', (event) => {
 			const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[event.key];
@@ -180,6 +188,17 @@ const ownership = [
 			next.focus();
 		});
 	});
+
+	// Cycles through the styling options; hovering or focusing the section holds the current one.
+	const root = document.querySelector<HTMLElement>('.styling');
+	const cycle =
+		root &&
+		autoplay(
+			root,
+			tabs.length,
+			() => tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true'),
+			(i) => select(tabs[i]),
+		);
 </script>
 
 <style>
@@ -294,6 +313,39 @@ const ownership = [
 
 	.prompt__option[aria-selected='true'] .prompt__cursor {
 		opacity: 1;
+	}
+
+	/* Short countdown next to the active option, shown only once autoplay is on. */
+	.progress {
+		display: none;
+		align-self: center;
+		width: 1.5rem;
+		height: 2px;
+		margin-left: 0.25rem;
+		background: var(--line);
+		overflow: hidden;
+	}
+
+	.styling[data-autoplay] .prompt__option[aria-selected='true'] .progress {
+		display: block;
+	}
+
+	.styling[data-autoplay] .prompt__option[aria-selected='true'] [data-progress] {
+		display: block;
+		height: 100%;
+		background: #ff5a1f;
+		transform-origin: left;
+		animation: autoplay-progress var(--autoplay-duration) linear forwards;
+		animation-play-state: var(--autoplay-state, paused);
+	}
+
+	@keyframes autoplay-progress {
+		from {
+			transform: scaleX(0);
+		}
+		to {
+			transform: scaleX(1);
+		}
 	}
 
 	.prompt__option small {

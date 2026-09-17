@@ -44,7 +44,12 @@ const session: Line[] = [
 				{
 					steps.map((s, i) => (
 						<button type="button" class="agents__step" data-step={s.id} aria-pressed={i === 0 ? 'true' : 'false'}>
-							<span class="agents__index">0{i + 1}</span>
+							<span class="agents__index">
+								0{i + 1}
+								<span class="progress" aria-hidden="true">
+									<span data-progress />
+								</span>
+							</span>
 							<span class="agents__text">
 								<span class="agents__name">
 									{s.name} <small>soon</small>
@@ -82,6 +87,8 @@ const session: Line[] = [
 </section>
 
 <script>
+	import { autoplay } from '../../lib/autoplay';
+
 	const buttons = [...document.querySelectorAll<HTMLButtonElement>('.agents__step')];
 	const session = document.querySelector<HTMLElement>('.session');
 
@@ -91,7 +98,10 @@ const session: Line[] = [
 	}
 
 	buttons.forEach((button, i) => {
-		button.addEventListener('click', () => select(button));
+		button.addEventListener('click', () => {
+			select(button);
+			cycle?.restart();
+		});
 		button.addEventListener('keydown', (event) => {
 			const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[event.key];
 			if (!step) return;
@@ -101,6 +111,17 @@ const session: Line[] = [
 			next.focus();
 		});
 	});
+
+	// Walks through the steps on its own; hovering or focusing the section holds the current one.
+	const root = document.querySelector<HTMLElement>('.agents');
+	const cycle =
+		root &&
+		autoplay(
+			root,
+			buttons.length,
+			() => buttons.findIndex((b) => b.getAttribute('aria-pressed') === 'true'),
+			(i) => select(buttons[i]),
+		);
 </script>
 
 <style>
@@ -162,6 +183,8 @@ const session: Line[] = [
 	}
 
 	.agents__index {
+		display: flex;
+		flex-direction: column;
 		font-family: var(--font-mono);
 		font-size: 0.75rem;
 		line-height: 1.6rem;
@@ -170,6 +193,38 @@ const session: Line[] = [
 
 	.agents__step[aria-pressed='true'] .agents__index {
 		color: #ff5a1f;
+	}
+
+	/* Short countdown under the active index, shown only once autoplay is on. */
+	.progress {
+		display: none;
+		width: 1.25rem;
+		height: 2px;
+		margin-top: 0.15rem;
+		background: var(--line);
+		overflow: hidden;
+	}
+
+	.agents[data-autoplay] .agents__step[aria-pressed='true'] .progress {
+		display: block;
+	}
+
+	.agents[data-autoplay] .agents__step[aria-pressed='true'] [data-progress] {
+		display: block;
+		height: 100%;
+		background: #ff5a1f;
+		transform-origin: left;
+		animation: autoplay-progress var(--autoplay-duration) linear forwards;
+		animation-play-state: var(--autoplay-state, paused);
+	}
+
+	@keyframes autoplay-progress {
+		from {
+			transform: scaleX(0);
+		}
+		to {
+			transform: scaleX(1);
+		}
 	}
 
 	.agents__text {
