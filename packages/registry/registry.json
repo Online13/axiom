@@ -1,0 +1,213 @@
+{
+  "items": [
+    {
+      "name": "tokens",
+      "type": "foundations",
+      "files": [
+        "foundations/tokens/tokens.ts"
+      ]
+    },
+    {
+      "name": "theme",
+      "type": "foundations",
+      "files": [
+        "foundations/theme/colors.ts",
+        "foundations/theme/components.ts",
+        "foundations/theme/theme.ts"
+      ],
+      "internalDependencies": [
+        "tokens"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "foundations/theme/stylesheet/use-theme.ts",
+            "foundations/theme/stylesheet/index.ts"
+          ]
+        }
+      }
+    },
+    {
+      "name": "slot",
+      "type": "core",
+      "files": [
+        "core/slot/slot.tsx"
+      ]
+    },
+    {
+      "name": "tappable",
+      "type": "core",
+      "files": [
+        "core/tappable/tappable.tsx"
+      ],
+      "internalDependencies": [
+        "tokens"
+      ]
+    },
+    {
+      "name": "portal",
+      "type": "core",
+      "files": [
+        "core/portal/portal.tsx"
+      ],
+      "dependencies": [
+        "react-native-teleport"
+      ]
+    },
+    {
+      "name": "overlay",
+      "type": "core",
+      "files": [
+        "core/overlay/overlay.tsx"
+      ],
+      "dependencies": [
+        "react-native-reanimated",
+        "react-native-worklets"
+      ]
+    },
+    {
+      "name": "text",
+      "type": "typography",
+      "internalDependencies": [
+        "slot",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "typography/text/stylesheet/text.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "title",
+      "type": "typography",
+      "internalDependencies": [
+        "slot",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "typography/title/stylesheet/title.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "icon",
+      "type": "atoms",
+      "files": [
+        "atoms/icon/icon-types.ts"
+      ],
+      "iconSources": {
+        "expo-symbols": {
+          "files": [
+            {
+              "path": "atoms/icon/sources/expo-symbols/icons.tsx",
+              "createOnly": true
+            }
+          ],
+          "dependencies": [
+            "expo-symbols"
+          ]
+        },
+        "custom": {
+          "files": [
+            {
+              "path": "atoms/icon/sources/custom/icons.tsx",
+              "createOnly": true
+            }
+          ]
+        }
+      },
+      "internalDependencies": [
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/icon/stylesheet/icon.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "button",
+      "type": "atoms",
+      "tokens": "atoms/button/button-tokens.ts",
+      "internalDependencies": [
+        "icon",
+        "slot",
+        "tappable",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/button/stylesheet/button.tsx"
+          ]
+        }
+      },
+      "files": [
+        "atoms/button/button-tokens.ts"
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "atoms",
+      "tokens": "atoms/switch/switch-tokens.ts",
+      "files": [
+        "atoms/switch/switch-tokens.ts",
+        "atoms/switch/use-switch.ts"
+      ],
+      "dependencies": [
+        "react-native-reanimated"
+      ],
+      "internalDependencies": [
+        "tappable",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/switch/stylesheet/switch.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "bottom-sheet",
+      "type": "atoms",
+      "tokens": "atoms/bottom-sheet/bottom-sheet-tokens.ts",
+      "files": [
+        "atoms/bottom-sheet/bottom-sheet-tokens.ts",
+        "atoms/bottom-sheet/bottom-sheet-root.tsx",
+        "atoms/bottom-sheet/use-bottom-sheet.ts"
+      ],
+      "dependencies": [
+        "react-native-gesture-handler",
+        "react-native-reanimated",
+        "react-native-safe-area-context",
+        "react-native-worklets"
+      ],
+      "internalDependencies": [
+        "overlay",
+        "portal",
+        "slot",
+        "tappable",
+        "theme",
+        "title"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "atoms/bottom-sheet/stylesheet/bottom-sheet.tsx"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  // Node scripts, checked like the CLI they import.
+  "extends": "../../cli/tsconfig.json",
+  "include": ["."]
+}
