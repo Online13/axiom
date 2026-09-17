@@ -1,0 +1,307 @@
+---
+import Title from '../Title.astro';
+import Button from '../Button.astro';
+import { docs } from '../../lib/links';
+
+// What Axiom gives coding agents (see docs/tooling/agents.md). None of it ships yet
+// except `axiom add`, so every step is marked as coming.
+const steps = [
+	{ id: 'find', name: 'Find', detail: 'Search the registry by need and read real props, not guessed ones.' },
+	{ id: 'plan', name: 'Plan', detail: 'Preview files, dependencies and your styling before anything is written.' },
+	{ id: 'verify', name: 'Verify', detail: 'Stable testIDs let the agent tap through the flow on a real device.' },
+] as const;
+
+type Line = { step: (typeof steps)[number]['id'] | 'prompt'; kind: 'prompt' | 'cmd' | 'out' | 'ok'; text: string; aside?: string };
+
+// A scripted session: the prompt names a need, never a component.
+const session: Line[] = [
+	{ step: 'prompt', kind: 'prompt', text: 'Add an SMS code screen with resend, loading and errors.' },
+	{ step: 'find', kind: 'cmd', text: 'axiom search "sms code verification" --json' },
+	{ step: 'find', kind: 'ok', text: 'otp-verification', aside: 'pattern' },
+	{ step: 'find', kind: 'out', text: 'input-otp · button · text', aside: 'uses' },
+	{ step: 'plan', kind: 'cmd', text: 'axiom plan otp-verification' },
+	{ step: 'plan', kind: 'out', text: 'styling    stylesheet', aside: 'axiom.json' },
+	{ step: 'plan', kind: 'out', text: '+ components/ui/input-otp.tsx', aside: 'new' },
+	{ step: 'plan', kind: 'out', text: '= components/ui/button.tsx', aside: 'kept' },
+	{ step: 'verify', kind: 'cmd', text: 'verify otp-verification --platform android' },
+	{ step: 'verify', kind: 'ok', text: 'tap   verify-code-input' },
+	{ step: 'verify', kind: 'ok', text: 'type  wrong code → error state' },
+	{ step: 'verify', kind: 'ok', text: 'tap   verify-code-resend → countdown' },
+];
+---
+
+<section class="section agents" id="agents">
+	<div class="container agents__inner">
+		<div class="agents__copy">
+			<p class="eyebrow">07 / Agents</p>
+			<Title>Your agent<br />knows the system.</Title>
+			<p class="agents__lede">
+				Describe the screen, not the components. The agent finds what Axiom already has, adds it in
+				your styling and checks the flow on a phone.
+			</p>
+
+			<div class="agents__steps" role="group" aria-label="Agent workflow">
+				{
+					steps.map((s, i) => (
+						<button type="button" class="agents__step" data-step={s.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+							<span class="agents__index">0{i + 1}</span>
+							<span class="agents__text">
+								<span class="agents__name">
+									{s.name} <small>soon</small>
+								</span>
+								<span class="agents__detail">{s.detail}</span>
+							</span>
+						</button>
+					))
+				}
+			</div>
+
+			<Button href={docs('/agent')} variant="ghost">Agent docs</Button>
+		</div>
+
+		<div class="session" data-active="find">
+			<div class="session__bar">
+				<span>agent session</span>
+				<span class="session__tag">preview</span>
+			</div>
+			<ol class="session__lines">
+				{
+					session.map((line) => (
+						<li class:list={['session__line', `is-${line.kind}`]} data-step={line.step}>
+							<span class="session__mark" aria-hidden="true">
+								{{ prompt: '›', cmd: '$', out: '', ok: '✓' }[line.kind]}
+							</span>
+							<span class="session__text">{line.text}</span>
+							{line.aside && <span class="session__aside">{line.aside}</span>}
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</div>
+</section>
+
+<script>
+	const buttons = [...document.querySelectorAll<HTMLButtonElement>('.agents__step')];
+	const session = document.querySelector<HTMLElement>('.session');
+
+	function select(button: HTMLButtonElement) {
+		buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+		if (session && button.dataset.step) session.dataset.active = button.dataset.step;
+	}
+
+	buttons.forEach((button, i) => {
+		button.addEventListener('click', () => select(button));
+		button.addEventListener('keydown', (event) => {
+			const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[event.key];
+			if (!step) return;
+			event.preventDefault();
+			const next = buttons[(i + step + buttons.length) % buttons.length];
+			select(next);
+			next.focus();
+		});
+	});
+</script>
+
+<style>
+	.agents {
+		padding-block: 6rem;
+	}
+
+	.agents__inner {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+		align-items: center;
+		gap: 4rem;
+	}
+
+	.agents__copy {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1.5rem;
+	}
+
+	.agents__lede {
+		color: var(--muted);
+		font-size: 1.125rem;
+		max-width: 26rem;
+	}
+
+	.agents__steps {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		max-width: 26rem;
+		border-top: 1px solid var(--line);
+	}
+
+	.agents__step {
+		display: grid;
+		grid-template-columns: 2rem 1fr;
+		gap: 0.75rem;
+		padding: 0.85rem 0;
+		background: none;
+		border: 0;
+		border-bottom: 1px solid var(--line);
+		color: var(--muted);
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+		transition: color 0.2s;
+	}
+
+	.agents__step:hover,
+	.agents__step[aria-pressed='true'] {
+		color: var(--fg);
+	}
+
+	.agents__step:focus-visible {
+		outline: 2px solid var(--fg);
+		outline-offset: 2px;
+	}
+
+	.agents__index {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		line-height: 1.6rem;
+		color: var(--line);
+	}
+
+	.agents__step[aria-pressed='true'] .agents__index {
+		color: #ff5a1f;
+	}
+
+	.agents__text {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+	}
+
+	.agents__name {
+		display: flex;
+		align-items: baseline;
+		gap: 0.5rem;
+		font-weight: 500;
+	}
+
+	.agents__name small {
+		font-size: 0.6875rem;
+		font-weight: 400;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--line);
+	}
+
+	.agents__detail {
+		font-size: 0.9rem;
+		color: var(--muted);
+	}
+
+	/* Session window: the selected step lights up its lines, the rest stays dim. */
+	.session {
+		min-width: 0;
+		border: 1px solid var(--line);
+		background: var(--bg);
+		font-family: var(--font-mono);
+	}
+
+	.session__bar {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.75rem 1.25rem;
+		border-bottom: 1px solid var(--line);
+		font-size: 0.75rem;
+		color: var(--muted);
+	}
+
+	.session__tag {
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--line);
+	}
+
+	.session__lines {
+		list-style: none;
+		margin: 0;
+		padding: 1rem 0;
+		overflow-x: auto;
+		font-size: 0.78rem;
+		line-height: 1.9;
+	}
+
+	.session__line {
+		display: grid;
+		grid-template-columns: 1.5rem max-content 1fr;
+		gap: 0.75rem;
+		min-width: max-content;
+		padding: 0 1.25rem;
+		border-left: 2px solid transparent;
+		color: var(--line);
+		white-space: pre;
+		transition:
+			color 0.25s,
+			border-color 0.25s;
+	}
+
+	.session__line.is-cmd {
+		margin-top: 0.75rem;
+	}
+
+	.session__line.is-prompt {
+		padding-bottom: 0.25rem;
+		color: var(--fg);
+		white-space: normal;
+		min-width: 0;
+		grid-template-columns: 1.5rem 1fr;
+	}
+
+	.session__mark {
+		text-align: right;
+	}
+
+	.session__line.is-prompt .session__mark {
+		color: #ff5a1f;
+	}
+
+	.session__aside {
+		justify-self: end;
+		padding-left: 2rem;
+	}
+
+	.session[data-active='find'] [data-step='find'],
+	.session[data-active='plan'] [data-step='plan'],
+	.session[data-active='verify'] [data-step='verify'] {
+		border-left-color: #ff5a1f;
+		color: var(--fg);
+	}
+
+	.session[data-active='find'] [data-step='find'] :is(.session__mark, .session__aside),
+	.session[data-active='plan'] [data-step='plan'] :is(.session__mark, .session__aside),
+	.session[data-active='verify'] [data-step='verify'] :is(.session__mark, .session__aside) {
+		color: var(--muted);
+	}
+
+	.session[data-active] .is-ok[data-step] .session__mark {
+		transition: color 0.25s;
+	}
+
+	.session[data-active='find'] .is-ok[data-step='find'] .session__mark,
+	.session[data-active='verify'] .is-ok[data-step='verify'] .session__mark {
+		color: #ff5a1f;
+	}
+
+	@media (max-width: 900px) {
+		.agents__inner {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.agents__step,
+		.session__line {
+			transition: none;
+		}
+	}
+</style>
