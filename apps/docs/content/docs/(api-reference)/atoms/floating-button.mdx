@@ -5,6 +5,20 @@ description: "A button floating above the content, in thumb reach, for the main 
 
 <Callout title="Draft">The API shown here is conceptual and may change.</Callout>
 
+<PhonePreview half="bottom">
+  <div class="ax-list" data-variant="plain">
+    <div class="ax-item"><span class="ax-tile" data-color="blue"><Glyph name="mail" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Weekly report</span><span class="ax-item-desc">Numbers are up 12%</span></div></div>
+    <div class="ax-item"><span class="ax-tile" data-color="orange"><Glyph name="star" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Ideas</span><span class="ax-item-desc">Offline mode, share sheet</span></div></div>
+    <div class="ax-item"><span class="ax-tile" data-color="green"><Glyph name="check" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Groceries</span><span class="ax-item-desc">Milk, eggs, coffee</span></div></div>
+    <div class="ax-item"><span class="ax-tile" data-color="purple"><Glyph name="calendar" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Trip to Porto</span><span class="ax-item-desc">Flights on Friday, 9:40</span></div></div>
+    <div class="ax-item"><span class="ax-tile" data-color="pink"><Glyph name="heart" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Gift list</span><span class="ax-item-desc">Books for Ada</span></div></div>
+  </div>
+  <div class="ax-fill" />
+  <div class="ax-fab-layer"><span class="ax-fab" data-extended><Glyph name="edit" size={22} />New note</span></div>
+</PhonePreview>
+
+The button floats above the list, at the bottom of the screen and in thumb reach. It stays in place while the content scrolls under it.
+
 ## Installation
 
 ```npm
@@ -27,6 +41,19 @@ import { FloatingButton } from '@/components/ui/floating-button';
   <FloatingButton icon="edit" label="New note" onPress={createNote} />
 </View>
 ```
+
+## Variants
+
+<PhonePreview half="bottom" grouped align="center">
+  <div class="ax-body" style={{ gap: '28px' }}>
+    <span class="ax-footnote ax-muted" style={{ textAlign: 'center' }}>solid · tinted · md · sm</span>
+    <div class="ax-row" data-gap="20" data-justify="center"><span class="ax-fab"><Glyph name="plus" size={24} /></span><span class="ax-fab" data-variant="tinted"><Glyph name="plus" size={24} /></span><span class="ax-fab" data-size="sm"><Glyph name="plus" size={20} /></span><span class="ax-fab" data-size="sm" data-variant="tinted"><Glyph name="plus" size={20} /></span></div>
+    <span class="ax-footnote ax-muted" style={{ textAlign: 'center' }}>Extended</span>
+    <div class="ax-row" data-gap="12" data-justify="center"><span class="ax-fab" data-extended><Glyph name="edit" size={22} />New note</span><span class="ax-fab" data-extended data-variant="tinted"><Glyph name="map" size={22} />Map</span></div>
+  </div>
+</PhonePreview>
+
+`solid` and `tinted`, in `md` (52pt) and `sm` (44pt), icon only or extended with a label.
 
 ## Props
 
@@ -52,6 +79,16 @@ Colors come from `floatingButton.<variant>.{default,pressed,disabled}.{backgroun
 
 The extended button says what it creates. Keep the label to one or two words.
 
+<PhonePreview half="bottom" size="sm">
+  <div class="ax-list" data-variant="plain">
+    <div class="ax-item"><span class="ax-tile" data-color="blue"><Glyph name="mail" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Weekly report</span><span class="ax-item-desc">Numbers are up 12%</span></div></div>
+    <div class="ax-item"><span class="ax-tile" data-color="orange"><Glyph name="star" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Ideas</span><span class="ax-item-desc">Offline mode, share sheet</span></div></div>
+    <div class="ax-item"><span class="ax-tile" data-color="green"><Glyph name="check" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Groceries</span><span class="ax-item-desc">Milk, eggs, coffee</span></div></div>
+  </div>
+  <div class="ax-fill" />
+  <div class="ax-fab-layer"><span class="ax-fab" data-extended><Glyph name="edit" size={22} />New note</span></div>
+</PhonePreview>
+
 ```tsx
 <FloatingButton icon="edit" label="New note" onPress={createNote} />
 ```
@@ -60,6 +97,16 @@ The extended button says what it creates. Keep the label to one or two words.
 
 Content under the button stays readable. Show it again as soon as the user scrolls up.
 
+<PhonePreview half="bottom" size="sm">
+  <div class="ax-list" data-variant="plain">
+    <div class="ax-item"><span class="ax-tile" data-color="blue"><Glyph name="mail" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Weekly report</span><span class="ax-item-desc">Numbers are up 12%</span></div></div>
+    <div class="ax-item"><span class="ax-tile" data-color="orange"><Glyph name="star" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Ideas</span><span class="ax-item-desc">Offline mode, share sheet</span></div></div>
+    <div class="ax-item"><span class="ax-tile" data-color="green"><Glyph name="check" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Groceries</span><span class="ax-item-desc">Milk, eggs, coffee</span></div></div>
+  </div>
+  <div class="ax-fill" />
+  <div class="ax-fab-layer"><span class="ax-fab"><Glyph name="plus" size={24} /></span></div>
+</PhonePreview>
+
 ```tsx
 <FloatingButton icon="add" accessibilityLabel="New note" visible={!scrollingDown} onPress={createNote} />
 ```
@@ -67,6 +114,16 @@ Content under the button stays readable. Show it again as soon as the user scrol
 ### Above a tab bar
 
 `offset` keeps the button above the bar, never over it.
+
+<PhonePreview half="bottom" size="sm">
+  <div class="ax-list" data-variant="plain">
+    <div class="ax-item"><span class="ax-tile" data-color="blue"><Glyph name="mail" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Weekly report</span><span class="ax-item-desc">Numbers are up 12%</span></div></div>
+    <div class="ax-item"><span class="ax-tile" data-color="orange"><Glyph name="star" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Ideas</span><span class="ax-item-desc">Offline mode, share sheet</span></div></div>
+  </div>
+  <div class="ax-fill" />
+  <div class="ax-fab-layer" style={{ bottom: '120px' }}><span class="ax-fab"><Glyph name="plus" size={24} /></span></div>
+  <div class="ax-tabbar"><span class="ax-tabbar-item" data-active data-tone="default"><Glyph name="home" /><span>Home</span></span><span class="ax-tabbar-item"><Glyph name="search" /><span>Search</span></span><span class="ax-tabbar-item"><Glyph name="bell" /><span>Activity</span></span><span class="ax-tabbar-item"><Glyph name="user" /><span>Profile</span></span></div>
+</PhonePreview>
 
 ```tsx
 <FloatingButton icon="add" accessibilityLabel="New post" offset={tabBarHeight} onPress={compose} />

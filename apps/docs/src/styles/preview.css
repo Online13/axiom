@@ -192,6 +192,45 @@
 .ax-icon-btn[data-state='disabled'] { color: var(--ax-content-disabled); }
 .ax-icon-btn[data-shape='square'] { border-radius: var(--ax-radius-md); }
 
+/* FloatingButton: a pill floating above the content, pinned above the home indicator. */
+.ax-fab-layer {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 50px;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.ax-fab-layer[data-placement='bottom-center'] { justify-content: center; }
+.ax-fab-layer[data-placement='bottom-start'] { justify-content: flex-start; }
+
+.ax-fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: var(--ax-control-lg);
+  min-width: var(--ax-control-lg);
+  border-radius: 999px;
+  background: var(--ax-background-inverse);
+  color: var(--ax-content-inverse);
+  box-shadow: var(--ax-shadow);
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 600;
+}
+
+.ax-fab[data-extended] { padding: 0 20px; }
+.ax-fab[data-size='sm'] { height: var(--ax-control-md); min-width: var(--ax-control-md); }
+.ax-fab[data-variant='tinted'] {
+  background: var(--ax-background-elevated);
+  color: var(--ax-content-default);
+  box-shadow: var(--ax-shadow), inset 0 0 0 1px var(--ax-border-default);
+}
+.ax-fab[data-hidden] { opacity: 0; transform: scale(0.6); }
+
 /* Dashed outline on the 44pt pressable area, for touch target illustrations. */
 .ax-target {
   position: relative;
