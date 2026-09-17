@@ -48,6 +48,9 @@ export const icons = {
   'theme-light': symbol('sun.max', 'light_mode'),
   'theme-system': symbol('circle.lefthalf.filled', 'contrast'),
   edit: symbol('pencil', 'edit'),
+  // Demo only: the password field.
+  visible: symbol('eye', 'visibility'),
+  hidden: symbol('eye.slash', 'visibility_off'),
 } satisfies IconRegistry;
 
 export type IconName = keyof typeof icons;

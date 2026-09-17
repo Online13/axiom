@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { BottomSheet, type KeyboardBehavior } from '@/components/ui/bottom-sheet';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { Label, Panel, Row, Section } from '@/demo/section';
@@ -35,6 +37,9 @@ export default function BottomSheetScreen() {
   const [dismissible, setDismissible] = useState(true);
   const [mapOpen, setMapOpen] = useState(false);
   const [events, setEvents] = useState<string[]>([]);
+  const [keyboardBehavior, setKeyboardBehavior] = useState<KeyboardBehavior>('interactive');
+  const [formOpen, setFormOpen] = useState(false);
+  const [listName, setListName] = useState('');
 
   const record = (entry: string) => setEvents((list) => [entry, ...list].slice(0, 4));
 
@@ -87,6 +92,45 @@ export default function BottomSheetScreen() {
                 You will need your password to sign in again.
               </Text>
               <Button fullWidth>Sign out</Button>
+            </View>
+          </BottomSheet.Content>
+        </BottomSheet.Root>
+      </Section>
+
+      <Section title="Form above the keyboard" description={`keyboardBehavior="${keyboardBehavior}"`}>
+        <SegmentedControl
+          options={['interactive', 'extend', 'none']}
+          value={keyboardBehavior}
+          onValueChange={(value) => setKeyboardBehavior(value as KeyboardBehavior)}
+        />
+        <BottomSheet.Root open={formOpen} onOpenChange={setFormOpen}>
+          <BottomSheet.Trigger asChild>
+            <Button variant="outline" fullWidth>
+              New list
+            </Button>
+          </BottomSheet.Trigger>
+          <BottomSheet.Content
+            snapPoints={keyboardBehavior === 'extend' ? [240, '70%'] : ['content']}
+            keyboardBehavior={keyboardBehavior}
+            dismissible={dismissible}
+            footer={
+              <Button
+                fullWidth
+                disabled={!listName}
+                onPress={() => {
+                  record(`created ${listName}`);
+                  setListName('');
+                  setFormOpen(false);
+                }}
+              >
+                Create
+              </Button>
+            }
+          >
+            <BottomSheet.Handle />
+            <BottomSheet.Header title="New list" closeButton />
+            <View style={{ paddingHorizontal: tokens.metrics.screenMargin, paddingBottom: tokens.spacing[4] }}>
+              <Input autoFocus label="Name" placeholder="Groceries" value={listName} onChangeText={setListName} />
             </View>
           </BottomSheet.Content>
         </BottomSheet.Root>

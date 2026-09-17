@@ -10,5 +10,8 @@ export const SCREENS = [
   { name: 'switch', title: 'Switch', group: 'Atoms', description: 'Controlled, uncontrolled, sizes, disabled' },
   { name: 'checkbox', title: 'Checkbox & Radio', group: 'Atoms', description: 'Indeterminate, error, groups, custom rows' },
   { name: 'segmented-control', title: 'SegmentedControl & Slider', group: 'Atoms', description: 'Sliding indicator, drag, range, steps' },
+  { name: 'input', title: 'Input & TextArea', group: 'Atoms', description: 'Label, helper, error, affixes, auto-grow, count' },
+  { name: 'input-group', title: 'InputGroup', group: 'Atoms', description: 'Addons, inline button, shared focus border' },
+  { name: 'input-otp', title: 'InputOTP', group: 'Atoms', description: 'Paste, autofill, groups, error shake, PIN' },
   { name: 'bottom-sheet', title: 'BottomSheet', group: 'Atoms', description: 'Snap points, gestures, scroll, footer, detached' },
 ] as const;

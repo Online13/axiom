@@ -1,14 +1,16 @@
 import type { ReactNode } from 'react';
-import { ScrollView } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { useTheme } from '@/theme';
 
-/** Scrollable demo screen with the default margins and spacing between sections. */
+/** Scrollable demo screen with the default margins and spacing between sections. Scrolls the focused field above the keyboard. */
 export function Screen({ children }: { children: ReactNode }) {
   const { tokens, colors } = useTheme();
 
   return (
-    <ScrollView
+    <KeyboardAwareScrollView
+      bottomOffset={tokens.spacing[4]}
+      keyboardShouldPersistTaps="handled"
       style={{ backgroundColor: colors.background.subtle }}
       contentContainerStyle={{
         padding: tokens.metrics.screenMargin,
@@ -18,6 +20,6 @@ export function Screen({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
