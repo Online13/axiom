@@ -20,6 +20,8 @@ description: "One-time code entry with separate cells."
 npx axiom add input-otp
 ```
 
+The input logic, the caret blink and the error shake live in `use-input-otp.ts`. Both animations are skipped when Reduce Motion is on.
+
 ## Usage
 
 ```tsx title="Conceptual"
@@ -34,6 +36,7 @@ import { InputOTP } from '@/components/ui/input-otp';
 | --- | --- | --- | --- |
 | `length` | `number` | `6` | Number of cells. |
 | `value` | `string` | — | The code typed so far. |
+| `defaultValue` | `string` | `''` | Initial code when the component manages its own value. |
 | `onChange` | `(value: string) => void` | — | Called on every keystroke, paste or deletion. |
 | `onComplete` | `(value: string) => void` | — | Called once all cells are filled. Good place to submit. |
 | `type` | `'numeric' \| 'alphanumeric'` | `'numeric'` | Picks the keyboard and filters what can be typed or pasted. |
@@ -41,9 +44,14 @@ import { InputOTP } from '@/components/ui/input-otp';
 | `autoFocus` | `boolean` | `true` | Opens the keyboard on the first empty cell when the screen appears. |
 | `secure` | `boolean` | `false` | Shows dots instead of digits, for a PIN. |
 | `error` | `boolean` | `false` | Red borders and a shake. Clear the value to let the user retry. |
+| `success` | `boolean` | `false` | Green cells, once the code is accepted. |
 | `disabled` | `boolean` | `false` | Blocks input, for example while the code is being verified. |
+| `accessibilityLabel` | `string` | `'Verification code'` | What screen readers announce for the field. |
 | `size` | `'sm' \| 'md'` | `'md'` | Cell size: 40×48 or 48×56pt. |
-| `textContentType` | `'oneTimeCode'` | `'oneTimeCode'` | Lets iOS suggest the code from Messages above the keyboard. Android uses `autoComplete="sms-otp"`. |
+
+The field always sets `textContentType="oneTimeCode"`, so iOS suggests the code from Messages above the keyboard, and `autoComplete="sms-otp"` on Android. It also accepts `autoCapitalize`, `returnKeyType` and `onSubmitEditing`.
+
+Cell colors come from `inputOtp.default.{default,active,invalid,success,disabled}` in the [component tokens](/foundations/component-tokens).
 
 Under the cells sits one hidden `TextInput`: it receives the system keyboard, paste and SMS autofill, and the cells only draw its value. This is why deleting and pasting behave like in any text field.
 
@@ -67,6 +75,8 @@ Submit in `onComplete`, then show the result on the cells: green on success, red
   value={code}
   onChange={setCode}
   disabled={status === 'verifying'}
+  error={status === 'error'}
+  success={status === 'success'}
   onComplete={async (value) => setStatus((await verify(value)) ? 'success' : 'error')}
 />
 ```

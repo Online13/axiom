@@ -21,6 +21,8 @@ description: "Visual composition of several inputs and addons."
 npx axiom add input-group
 ```
 
+Also copies [`input`](/atoms/input), whose tokens draw the group border and text, and [`button`](/atoms/button).
+
 ## What it does
 
 `InputGroup` places inputs and addons (a currency label, a unit, a button) side by side so they read as one field. The group draws the border; the inputs inside drop theirs.
@@ -58,6 +60,9 @@ Every [Input](/atoms/input) prop except `label`, `helper`, `error` and `size`, w
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `flex` | `number` | `1` | Share of the remaining width. Two inputs with `flex={1}` and `flex={2}` split it one third / two thirds. |
+| `disabled` | `boolean` | `false` | Disables this input only. The group's `disabled` disables all of them. |
+
+Without a visible label, set `accessibilityLabel`; the placeholder is used otherwise.
 
 ### InputGroup.Addon
 
@@ -65,11 +70,12 @@ Every [Input](/atoms/input) prop except `label`, `helper`, `error` and `size`, w
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | — | Static text or an icon. |
 | `onPress` | `() => void` | — | Makes the addon pressable, for example to open a country picker. |
-| `variant` | `'subtle' \| 'plain'` | `'subtle'` | `subtle` fills the addon with `background.subtle`, `plain` leaves it transparent. |
+| `variant` | `'subtle' \| 'plain'` | `'subtle'` | `subtle` fills the addon with `inputGroup.default.default.addon`, `plain` leaves it transparent. |
+| `accessibilityLabel` | `string` | text content | Announced when the addon is pressable. |
 
 ### InputGroup.Button
 
-A [Button](/atoms/button) with its radius and border removed so it sits flush in the group. Same props as `Button`.
+A [Button](/atoms/button) with its radius and border removed so it sits flush in the group. Same props as `Button`, except `size`, `fullWidth` and `asChild`: the size follows the group.
 
 ## Use cases
 

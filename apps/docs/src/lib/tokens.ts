@@ -153,14 +153,6 @@ export const componentTokens = {
       disabled: { foreground: 'content.disabled' },
     },
   },
-  input: {
-    default: {
-      default: { background: 'background.default', foreground: 'content.default', placeholder: 'content.subtle', border: 'border.default' },
-      focused: { border: 'border.focus' },
-      invalid: { border: 'feedback.error' },
-      disabled: { background: 'background.subtle', foreground: 'content.disabled' },
-    },
-  },
   switch: {
     default: {
       default: { track: 'border.default', thumb: 'background.elevated' },
@@ -232,6 +224,35 @@ export const componentTokens = {
     default: {
       default: { track: 'border.default', fill: 'content.link', thumb: 'content.link' },
       disabled: { fill: 'content.disabled', thumb: 'content.disabled' },
+    },
+  },
+  input: {
+    outline: {
+      default: { background: 'background.default', border: 'border.default', text: 'content.default', placeholder: 'content.subtle', affix: 'content.muted', caret: 'content.link' },
+      focused: { border: 'border.focus' },
+      invalid: { border: 'feedback.error', caret: 'feedback.error' },
+      disabled: { background: 'background.subtle', border: 'border.subtle', text: 'content.disabled', affix: 'content.disabled' },
+    },
+    filled: {
+      default: { background: 'background.subtle', text: 'content.default', placeholder: 'content.subtle', affix: 'content.muted', caret: 'content.link' },
+      focused: { border: 'border.focus' },
+      invalid: { border: 'feedback.error', caret: 'feedback.error' },
+      disabled: { text: 'content.disabled', affix: 'content.disabled' },
+    },
+  },
+  inputGroup: {
+    default: {
+      default: { addon: 'background.subtle', divider: 'border.default' },
+      disabled: { divider: 'border.subtle' },
+    },
+  },
+  inputOtp: {
+    default: {
+      default: { background: 'background.default', border: 'border.default', text: 'content.default', caret: 'content.link' },
+      active: { border: 'border.focus' },
+      invalid: { background: 'feedback.errorSubtle', border: 'feedback.error', text: 'feedback.error' },
+      success: { background: 'feedback.successSubtle', border: 'feedback.success', text: 'feedback.success' },
+      disabled: { background: 'background.subtle', border: 'border.subtle', text: 'content.disabled' },
     },
   },
   bottomSheet: {

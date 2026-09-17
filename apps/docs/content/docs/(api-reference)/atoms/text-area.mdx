@@ -20,6 +20,8 @@ description: "Multiline input that can grow with its content."
 npx axiom add text-area
 ```
 
+Also copies [`input`](/atoms/input): TextArea uses its tokens, field layout and `use-input.ts`.
+
 ## Usage
 
 ```tsx title="Conceptual"
@@ -39,7 +41,7 @@ import { TextArea } from '@/components/ui/text-area';
 | `maxRows` | `number` | `8` | Height limit with `autoGrow`. Keeps the field from pushing the rest of the screen off. |
 | `maxLength` | `number` | — | Hard character limit, from `TextInput`. |
 | `showCount` | `boolean` | `false` | Shows `length / maxLength` under the field, right-aligned. Turns red at the limit. |
-| `variant` | `'outline' \| 'filled' \| 'plain'` | `'outline'` | `plain` has no border or padding, for full-screen editors. |
+| `variant` | `'outline' \| 'filled' \| 'plain'` | `'outline'` | `plain` has no border or padding, for full-screen editors. It grows to fill its container. |
 
 ## Use cases
 
@@ -102,7 +104,7 @@ import { TextArea } from '@/components/ui/text-area';
 </PhonePreview>
 
 ```tsx
-<TextArea variant="plain" autoFocus scrollEnabled value={body} onChangeText={setBody} style={{ flex: 1 }} />
+<TextArea variant="plain" autoFocus value={body} onChangeText={setBody} containerStyle={{ flex: 1 }} />
 ```
 
 ## Related

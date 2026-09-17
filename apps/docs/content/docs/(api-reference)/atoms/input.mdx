@@ -21,6 +21,10 @@ description: "Generic text field with label, helper, error, prefix and suffix."
 npx axiom add input
 ```
 
+Also copies `field.tsx`, the label and helper layout shared with [TextArea](/atoms/text-area), and `use-input.ts`, which holds the value, focus and accessibility logic.
+
+To keep a focused field above the keyboard in a long form, put the form in a `KeyboardAwareScrollView` from [`react-native-keyboard-controller`](https://kirillzyusko.github.io/react-native-keyboard-controller/docs/api/components/keyboard-aware-scroll-view).
+
 ## Usage
 
 ```tsx title="Conceptual"
@@ -43,6 +47,7 @@ import { Input } from '@/components/ui/input';
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `value` | `string` | — | Current text. Use with `onChangeText` for a controlled field. |
+| `defaultValue` | `string` | `''` | Initial text when the field manages its own value. |
 | `onChangeText` | `(text: string) => void` | — | Called on every change. |
 | `label` | `string` | — | Visible label above the field. Also used as the accessibility label. |
 | `placeholder` | `string` | — | Hint shown while the field is empty, in `content.subtle`. Don't use it as the label. |
@@ -57,6 +62,8 @@ import { Input } from '@/components/ui/input';
 | `onFocus` / `onBlur` | `(event) => void` | — | Called when the field gains or loses focus. The focused border is handled for you. |
 | `ref` | `Ref<TextInput>` | — | Gives access to `focus()`, `blur()` and `clear()`, to chain fields on submit. |
 | `containerStyle` | `StyleProp<ViewStyle>` | — | Styles for the wrapper that holds label, field and helper. |
+
+Colors come from `input.{outline,filled}.{default,focused,invalid,disabled}` in the [component tokens](/foundations/component-tokens). The label, helper and error are read by screen readers as the field's label and hint, not as separate elements.
 
 ## Use cases
 
