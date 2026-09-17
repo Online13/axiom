@@ -1,4 +1,4 @@
-import { useContext, useEffect, useId, useRef } from 'react';
+import { useContext, useEffect, useId, useLayoutEffect, useRef } from 'react';
 import { BackHandler } from 'react-native';
 import { NavigationContext, NavigationRouteContext, PreventRemoveContext } from '@react-navigation/native';
 
@@ -7,17 +7,26 @@ import { NavigationContext, NavigationRouteContext, PreventRemoveContext } from 
  * - the Android back button, even on the first screen of the stack;
  * - the back gesture and the header back button, which React Navigation would otherwise use to remove the screen.
  *
- * The action is consumed while the overlay is open, even when it can't be dismissed. This includes
- * `router.back()` or `navigation.goBack()` called while it's open: close the overlay first, and navigate
- * once it's closed.
+ * The action is consumed while the overlay is open, even when it can't be dismissed. A navigation your code
+ * starts in the same press that closes the overlay still goes through: a dialog action that calls
+ * `router.back()` closes the dialog and leaves the screen.
  *
  * Outside a screen (a root layout, for instance), only the Android back button is handled.
  */
 export function useOverlayBackHandler(open: boolean, onClose: (() => void) | undefined) {
   const latest = useRef(onClose);
-  useEffect(() => {
+  const isOpen = useRef(open);
+  useLayoutEffect(() => {
     latest.current = onClose;
+    isOpen.current = open;
   });
+  // Unmounted with the overlay (`{open && <Dialog …>}`): counts as closed.
+  useLayoutEffect(
+    () => () => {
+      isOpen.current = false;
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -47,7 +56,13 @@ export function useOverlayBackHandler(open: boolean, onClose: (() => void) | und
     if (!open || !navigation || !routeKey) return;
     return navigation.addListener('beforeRemove', (event) => {
       event.preventDefault();
-      latest.current?.();
+      const { action } = event.data;
+      // A back gesture leaves the overlay open. A press that also closes it (`setOpen(false)` then
+      // `router.back()`, in any order) has committed by the next frame: the navigation is replayed.
+      requestAnimationFrame(() => {
+        if (isOpen.current) latest.current?.();
+        else navigation.dispatch(action);
+      });
     });
   }, [navigation, routeKey, open]);
 }
