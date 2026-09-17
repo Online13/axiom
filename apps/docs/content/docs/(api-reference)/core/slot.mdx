@@ -3,8 +3,6 @@ title: Slot
 description: "Merges props and ref onto its single child. The engine behind asChild."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 ## Installation
 
 ```npm
@@ -15,7 +13,7 @@ npx axiom add slot
 
 `Slot` renders its only child and merges its own props and ref onto it. Components use it to support the `asChild` pattern: instead of rendering their default element, they pass their behavior and props to the element you provide.
 
-```tsx title="Conceptual"
+```tsx
 <Button asChild>
   <Link href="/settings">Settings</Link>
 </Button>

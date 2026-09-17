@@ -3,8 +3,6 @@ title: Snackbar
 description: "Transient bar at the bottom of the screen, with an optional action."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview half="bottom">
   <div class="ax-list" data-variant="plain">
     <div class="ax-item" data-size="lg"><span class="ax-avatar" data-photo="1">GH</span><div class="ax-item-content"><span class="ax-item-title ax-semibold">Grace Hopper</span><span class="ax-item-desc">Compiler notes attached</span></div><span class="ax-footnote ax-muted">09:41</span></div>
@@ -32,7 +30,7 @@ The store, timer and swipe live in `use-snackbar.ts`. Colors come from `snackbar
 
 Mount `<SnackbarHost />` once at the root, then show snackbars from code.
 
-```tsx title="Conceptual"
+```tsx
 import { SnackbarHost, snackbar } from '@/components/ui/snackbar';
 
 snackbar.show({

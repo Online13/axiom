@@ -3,8 +3,6 @@ title: TextArea
 description: "Multiline input that can grow with its content."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="close" /></span><span class="ax-appbar-title">Review</span><span class="ax-icon-btn ax-link ax-semibold" style={{ width: 'auto', padding: '0 8px' }}>Post</span></div>
   <div class="ax-body" style={{ gap: '16px' }}>
@@ -24,7 +22,7 @@ Also copies [`input`](/atoms/input): TextArea uses its tokens, field layout and 
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { TextArea } from '@/components/ui/text-area';
 
 <TextArea label="Message" autoGrow value={message} onChangeText={setMessage} />
@@ -32,7 +30,7 @@ import { TextArea } from '@/components/ui/text-area';
 
 ## Props
 
-`TextArea` accepts the same props as [Input](/atoms/input) (`label`, `helper`, `error`, `disabled`, and every `TextInput` prop) except `prefix`, `suffix` and `size`, plus:
+`TextArea` accepts the same props as [Input](/atoms/input) (`label`, `helper`, `error`, `disabled`, `required`, `containerStyle`, `ref`, and every `TextInput` prop) except `prefix`, `suffix` and `size`, plus:
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

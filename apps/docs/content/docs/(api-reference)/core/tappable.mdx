@@ -3,8 +3,6 @@ title: Tappable
 description: "Headless press primitive: pressed state, disabled state and a minimum touch target."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <TappablePreview />
 
 Press the close icon or a button. Each one changes its background while pressed, and slide your finger off before releasing to cancel the press. Turn on Touch areas: the icon is 20pt but its pressable area is 44pt.
@@ -30,7 +28,7 @@ You rarely render it yourself. Use it directly when you build your own pressable
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Tappable } from '@/components/core/tappable';
 
 function Tile({ title, onPress, disabled }) {

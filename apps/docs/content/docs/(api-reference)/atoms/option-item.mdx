@@ -3,8 +3,6 @@ title: OptionItem
 description: "Selectable row built on Item."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview grouped>
   <div class="ax-appbar"><span class="ax-appbar-back"><Glyph name="chevron-left" />Settings</span><span class="ax-appbar-title" style={{ marginLeft: '-80px' }}>Language</span><span class="ax-icon-btn" /></div>
   <div class="ax-section">App language</div>
@@ -30,7 +28,7 @@ Requires the `check` and `chevron-right` icons in your [icon registry](/atoms/ic
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { OptionItem } from '@/components/ui/option-item';
 
 <OptionItem label="English" selected={lang === 'en'} onPress={() => setLang('en')} />

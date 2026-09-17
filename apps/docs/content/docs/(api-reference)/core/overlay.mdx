@@ -3,8 +3,6 @@ title: Overlay
 description: "Shared backdrop for everything that covers the screen."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <OverlayPreview />
 
 Pick a component, then press the dimmed area to close it. The backdrop is the same in all three cases. Only the content above it changes.
@@ -25,7 +23,7 @@ You rarely render it yourself. `BottomSheet`, `Menu` and `Dialog` already do. Us
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Overlay } from '@/components/core/overlay';
 import { Portal } from '@/components/core/portal';
 
@@ -81,7 +79,7 @@ Move the slider. The backdrop gets darker as the sheet rises.
 
 A sheet the user drags shouldn't fade on a timer. Pass `progress`, a Reanimated shared value from `0` (closed) to `1` (open), and the opacity follows it on the UI thread, with no React render per frame:
 
-```tsx title="Conceptual"
+```tsx
 const progress = useDerivedValue(() =>
   interpolate(translateY.value, [closedY, openY], [0, 1], Extrapolation.CLAMP),
 );

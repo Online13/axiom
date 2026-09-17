@@ -3,8 +3,6 @@ title: Badge
 description: "Status or counter pill."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-appbar"><span class="ax-appbar-title" style={{ textAlign: 'left', paddingLeft: '8px' }}>Deployments</span><span class="ax-anchor"><span class="ax-icon-btn"><Glyph name="bell" /></span><span class="ax-badge" data-kind="count" style={{ top: '4px', right: '4px' }}>3</span></span><span class="ax-anchor"><span class="ax-avatar" data-size="sm" data-photo="1" style={{ margin: '0 6px' }}>A</span><span class="ax-badge" data-kind="dot" style={{ top: '0px', right: '6px' }} /></span></div>
   <div class="ax-list" data-variant="plain">
@@ -29,7 +27,7 @@ Colors come from `badge.<variant>.default.{background,foreground,border}` in the
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Badge } from '@/components/ui/badge';
 
 <Badge variant="success" dot>Ready</Badge>

@@ -3,8 +3,6 @@ title: Dialog
 description: "Compound confirmation modal."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview align="center">
   <div style={{ position: 'absolute', inset: '0px' }}><div class="ax-large-heading" style={{ paddingTop: '8px' }}>Drafts</div><div class="ax-list" data-variant="plain"><div class="ax-item"><div class="ax-item-content"><span class="ax-item-title">Launch announcement</span><span class="ax-item-desc">Edited 2h ago</span></div></div><div class="ax-item"><div class="ax-item-content"><span class="ax-item-title">Q3 letter</span><span class="ax-item-desc">Edited yesterday</span></div></div></div></div>
   <div class="ax-scrim" />
@@ -28,7 +26,7 @@ The open state and the enter and exit animation live in `use-dialog.ts`. The sur
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Dialog } from '@/components/ui/dialog';
 
 <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -63,6 +61,8 @@ import { Dialog } from '@/components/ui/dialog';
 | --- | --- | --- | --- |
 | `asChild` | `boolean` | `false` | Uses the child as the trigger. |
 
+It also accepts every [Tappable](/core/tappable) prop.
+
 ### Dialog.Content
 
 | Prop | Type | Default | Description |
@@ -72,6 +72,7 @@ import { Dialog } from '@/components/ui/dialog';
 | `width` | `number` | `290` | Dialog width, capped by the screen margins. |
 | `onDismiss` | `() => void` | — | Called after the close animation. |
 | `children` | `ReactNode` | — | Title, description, custom content, actions. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the dialog surface. |
 
 Focus moves into the dialog when it opens and returns to the trigger when it closes. Screen readers can't reach the screen behind it.
 
@@ -123,7 +124,7 @@ State what will be lost, and name the action with the verb, not "OK".
 
 ### Unsaved changes
 
-Three choices stacked vertically, the safe one at the bottom.
+Three choices stacked vertically, the safe one at the bottom. `discard` can leave the screen with `router.back()`: the dialog closes and the navigation goes through (see [useOverlayBackHandler](/hooks/use-overlay-back-handler#navigating-from-the-overlay)).
 
 <PhonePreview size="sm" align="center">
   <div class="ax-scrim" />

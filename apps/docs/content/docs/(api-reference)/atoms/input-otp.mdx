@@ -3,8 +3,6 @@ title: InputOTP
 description: "One-time code entry with separate cells."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title" /><span class="ax-icon-btn" /></div>
   <div class="ax-body" style={{ gap: '20px', paddingTop: '8px' }}>
@@ -24,7 +22,7 @@ The input logic, the caret blink and the error shake live in `use-input-otp.ts`.
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { InputOTP } from '@/components/ui/input-otp';
 
 <InputOTP length={6} value={code} onChange={setCode} onComplete={verify} />

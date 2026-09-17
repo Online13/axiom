@@ -3,8 +3,6 @@ title: Slider
 description: "Pick a single value or a range by dragging."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="close" /></span><span class="ax-appbar-title">Filters</span><span class="ax-link" style={{ padding: '0 8px' }}>Reset</span></div>
   <div class="ax-body" style={{ gap: '22px' }}>
@@ -27,7 +25,7 @@ The value logic and gestures live in `use-slider.ts`, shared by every styling va
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Slider } from '@/components/ui/slider';
 
 <Slider value={volume} onValueChange={setVolume} />
@@ -48,7 +46,6 @@ import { Slider } from '@/components/ui/slider';
 | `minRange` | `number` | `0` | Smallest gap between the two thumbs of a range. |
 | `showSteps` | `boolean` | `false` | Draws a tick for each step. Only use it when there are few steps. |
 | `disabled` | `boolean` | `false` | Blocks dragging and dims the slider. |
-| `haptics` | `boolean` | `true` | A light tap on each step, and a stronger one at `min` and `max`. |
 | `accessibilityLabel` | `string` | — | What the slider controls. Screen reader users change it with swipe up and down, by one `step`. |
 | `getAccessibilityValue` | `(value) => string` | — | Text announced for the value, such as `"5 kilometers"`. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra styles for the container. |

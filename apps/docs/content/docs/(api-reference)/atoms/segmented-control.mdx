@@ -3,8 +3,6 @@ title: SegmentedControl
 description: "iOS-style segmented selector with a sliding indicator."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Activity</span><span class="ax-icon-btn"><Glyph name="calendar" /></span></div>
   <div class="ax-body" style={{ gap: '18px' }}>
@@ -29,7 +27,7 @@ Selection, measurement and the draggable indicator live in `use-segmented-contro
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { SegmentedControl } from '@/components/ui/segmented-control';
 
 <SegmentedControl
@@ -50,7 +48,6 @@ import { SegmentedControl } from '@/components/ui/segmented-control';
 | `size` | `'md' \| 'lg'` | `'md'` | Minimum height: 32 or 40pt. Grows with larger system text. |
 | `fullWidth` | `boolean` | `true` | Stretches to the parent width with equal segments. `false` sizes it to its content. |
 | `disabled` | `boolean` | `false` | Disables the whole control. |
-| `haptics` | `boolean` | `true` | Selection feedback when the indicator lands on a new segment. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra styles for the track. |
 
 The indicator slides on the UI thread with Reanimated and can be dragged from one segment to another. Keep it to 2–5 short options: past that, labels get truncated.

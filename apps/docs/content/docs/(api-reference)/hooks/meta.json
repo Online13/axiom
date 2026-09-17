@@ -2,6 +2,8 @@
   "title": "Hooks",
   "pages": [
     "index",
+    "use-controllable-state",
+    "use-overlay-back-handler",
     "use-refresh-control",
     "use-hide-on-scroll",
     "use-collapsible-header",

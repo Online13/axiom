@@ -3,8 +3,6 @@ title: Avatar
 description: "Profile image with an initials fallback."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title" /><span class="ax-icon-btn"><Glyph name="more" /></span></div>
   <div class="ax-center" style={{ flex: 'none', gap: '8px', paddingTop: '0px' }}><span class="ax-avatar" data-size="xl" data-photo="3">GH<span class="ax-avatar-status" style={{ width: '22px', height: '22px', boxShadow: '0 0 0 4px var(--ax-background-default)', right: '2px', bottom: '2px' }} /></span><span class="ax-title2">Grace Hopper</span><span class="ax-subhead ax-muted">Active now</span></div>
@@ -26,7 +24,7 @@ Colors come from `avatar.default.default.{background,foreground,ring}` and `avat
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Avatar } from '@/components/ui/avatar';
 
 <Avatar source={{ uri: user.photoUrl }} fallback="JC" />

@@ -3,8 +3,6 @@ title: BottomSheet
 description: "Compound bottom sheet with snap points, gestures and scrollable content."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview half="bottom">
   <div class="ax-body"><div class="ax-row"><span class="ax-avatar" data-photo="4">LT</span><div class="ax-item-content"><span class="ax-headline">Linus Torvalds</span><span class="ax-footnote ax-muted">Helsinki</span></div></div><div class="ax-media" data-tone="4" style={{ height: '140px', borderRadius: '14px' }} /></div>
   <div class="ax-scrim" />
@@ -68,7 +66,7 @@ export default function RootLayout() {
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 
 <BottomSheet.Root>
@@ -121,7 +119,7 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 | Part | Props | Description |
 | --- | --- | --- |
 | `Handle` | `style` | The grab bar. Drag it to resize. Announced as "Resize sheet" with up and down actions. |
-| `Header` | `title`, `leading`, `trailing`, `closeButton` | Title row. `closeButton` adds an [IconButton](/atoms/icon-button) that closes the sheet, with the `close` icon of your registry. |
+| `Header` | `title`, `leading`, `trailing`, `closeButton`, `style` | Title row. `closeButton` adds an [IconButton](/atoms/icon-button) that closes the sheet, with the `close` icon of your registry. |
 | `ScrollView` / `FlatList` | same as React Native | Scrollable content that hands the gesture back to the sheet when scrolled to the top. |
 
 ## Use cases

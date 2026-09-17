@@ -3,8 +3,6 @@ title: Menu
 description: "Context menu modeled on modern mobile behavior, especially iOS."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Library</div>
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2px' }}><span class="ax-media" data-tone="1" style={{ height: '128px' }} /><span class="ax-media" data-tone="2" style={{ height: '128px' }} /><span class="ax-media" data-tone="3" style={{ height: '128px' }} /><span class="ax-media" data-tone="4" style={{ height: '128px' }} /><span class="ax-media" data-tone="5" style={{ height: '128px' }} /><span class="ax-media" data-tone="6" style={{ height: '128px' }} /></div>
@@ -35,7 +33,7 @@ Requires the `arrow-left`, `check` and `chevron-right` icons in your [icon regis
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Menu } from '@/components/ui/menu';
 
 <Menu.Root>
@@ -57,6 +55,7 @@ import { Menu } from '@/components/ui/menu';
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `open` | `boolean` | — | Controlled visibility. |
+| `defaultOpen` | `boolean` | `false` | Initial visibility when the menu manages its own state. |
 | `onOpenChange` | `(open: boolean) => void` | — | Called when the menu opens or closes. |
 | `children` | `ReactNode` | — | `Trigger` and `Content`. |
 
@@ -67,7 +66,9 @@ import { Menu } from '@/components/ui/menu';
 | `action` | `'longPress' \| 'press'` | `'longPress'` | `longPress` for context menus on content, `press` for a "more" button. |
 | `preview` | `boolean \| ReactNode` | `true` with `longPress` | Lifts a copy of the pressed element above the backdrop. Pass a node to show it in the element's place instead. |
 | `asChild` | `boolean` | `false` | Uses the child as the trigger. |
+| `accessibilityLabel` | `string` | — | Label of the trigger, when its content has no text. |
 | `children` | `ReactNode` | — | The element that opens the menu. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the trigger. |
 
 ### Menu.Content
 
@@ -78,6 +79,7 @@ import { Menu } from '@/components/ui/menu';
 | `width` | `number` | `250` | Menu width. |
 | `overlay` | `'dim' \| 'none'` | `'dim'` | Backdrop behind the menu. Pressing it closes the menu, even when `none`. A blur needs `expo-blur`: add it in your copy if you want one. |
 | `children` | `ReactNode` | — | Items, groups and separators. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the menu surface. |
 
 ### Menu.Item
 
@@ -90,6 +92,7 @@ import { Menu } from '@/components/ui/menu';
 | `destructive` | `boolean` | `false` | Label and icon in `feedback.error`. |
 | `disabled` | `boolean` | `false` | Dims the item and ignores presses. |
 | `checked` | `boolean` | — | Shows a checkmark, for a menu that picks a sort order or a view. |
+| `keepOpen` | `boolean` | `false` | Runs `onPress` right away without closing the menu, for a toggle inside the menu. |
 
 ### Menu.Group, Menu.Separator, Menu.Sub
 

@@ -3,8 +3,6 @@ title: Calendar
 description: "Navigable month grid with single or range selection."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="close" /></span><span class="ax-appbar-title">Check-in</span><span class="ax-icon-btn" /></div>
   <div class="ax-body" style={{ paddingTop: '4px' }}>
@@ -36,7 +34,7 @@ Requires the `chevron-left` and `chevron-right` icons in your [icon registry](/a
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Calendar } from '@/components/ui/calendar';
 
 <Calendar.Root mode="range" selected={range} onSelect={setRange}>

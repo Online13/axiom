@@ -3,8 +3,6 @@ title: Accordion
 description: "Collapsible sections."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Help</span><span class="ax-icon-btn"><Glyph name="search" /></span></div>
   <div class="ax-body" style={{ gap: '0px' }}>
@@ -28,7 +26,7 @@ Requires the `chevron-down` icon in your [icon registry](/atoms/icon#icons-that-
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Accordion } from '@/components/ui/accordion';
 
 <Accordion type="single" collapsible>
@@ -53,6 +51,7 @@ import { Accordion } from '@/components/ui/accordion';
 | `disabled` | `boolean` | `false` | Disables every section. |
 | `divider` | `boolean` | `true` | Hairline between sections. |
 | `children` | `ReactNode` | — | `Accordion.Item` elements. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles. |
 
 ### Accordion.Item
 
@@ -60,6 +59,7 @@ import { Accordion } from '@/components/ui/accordion';
 | --- | --- | --- | --- |
 | `value` | `string` | — | Required. Identifies the section. |
 | `disabled` | `boolean` | `false` | Keeps this section closed and dims its trigger. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles. |
 
 ### Accordion.Trigger
 
@@ -68,6 +68,7 @@ import { Accordion } from '@/components/ui/accordion';
 | `children` | `ReactNode` | — | The section title. |
 | `icon` | `ReactNode \| null` | chevron | Indicator on the right, rotated when open. `null` hides it. |
 | `leading` | `ReactNode` | — | Content before the title, such as an icon. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles. |
 
 The trigger sets `accessibilityRole="button"` and `accessibilityState.expanded`.
 
@@ -77,6 +78,7 @@ The trigger sets `accessibilityRole="button"` and `accessibilityState.expanded`.
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | — | The section body. It is measured once, then its height animates on the UI thread. |
 | `forceMount` | `boolean` | `false` | Keeps the content mounted while closed, to preserve its state (a form, a video position). |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles. |
 
 ## Use cases
 

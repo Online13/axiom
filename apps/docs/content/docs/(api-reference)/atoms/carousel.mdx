@@ -3,8 +3,6 @@ title: Carousel
 description: "Virtualized carousel driven by data."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-appbar"><span class="ax-appbar-title" style={{ textAlign: 'left', paddingLeft: '8px', fontSize: '28px', fontWeight: 700 }}>Explore</span><span class="ax-icon-btn"><Glyph name="search" /></span></div>
   <div class="ax-carousel" style={{ paddingTop: '8px' }}>
@@ -34,7 +32,7 @@ Scrolling, snapping, autoplay and the imperative API live in `use-carousel.ts`, 
 
 The API follows the list model: pass data and a render function.
 
-```tsx title="Conceptual"
+```tsx
 import { Carousel } from '@/components/ui/carousel';
 
 <Carousel
@@ -62,6 +60,7 @@ import { Carousel } from '@/components/ui/carousel';
 | `autoPlay` | `number` | — | Interval in ms to advance automatically. Paused while the user touches it and when reduce motion is on. |
 | `windowSize` | `number` | `5` | Items rendered around the active one. Others are unmounted to keep long carousels light. |
 | `ref` | `Ref<CarouselRef>` | — | `scrollToIndex(index, animated?)`, `next()`, `prev()`. |
+| `accessibilityLabel` | `string` | — | Names the carousel for screen readers, such as `"Product photos"`. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra styles for the container. |
 
 ## Use cases

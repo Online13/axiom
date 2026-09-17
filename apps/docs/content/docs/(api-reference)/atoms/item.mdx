@@ -3,8 +3,6 @@ title: Item
 description: "Generic row used as the base of many interfaces."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Messages</div>
   <div class="ax-list" data-variant="plain" data-inset>
@@ -38,7 +36,7 @@ An item has three areas:
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Item } from '@/components/ui/item';
 
 <Item onPress={openContact}>
@@ -70,6 +68,9 @@ import { Item } from '@/components/ui/item';
 | `divider` | `boolean \| 'inset'` | `false` | Hairline under the row. `'inset'` starts it after the leading area, like iOS lists. |
 | `align` | `'center' \| 'start'` | `'center'` | Vertical alignment of leading and trailing, `start` for rows with multi-line content. |
 | `asChild` | `boolean` | `false` | Merges the item into its child, for example a router `Link`. See [Slot](/core/slot). |
+| `accessibilityLabel` | `string` | — | Replaces the text screen readers read from the row's content. |
+| `accessibilityRole` | `AccessibilityRole` | `'button'` with `onPress` | Role announced by screen readers, such as `link`. |
+| `accessibilityState` | `AccessibilityState` | — | Merged with `selected` and `disabled`. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra styles for the row. |
 
 ### Item.Leading, Item.Trailing

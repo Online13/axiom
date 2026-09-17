@@ -3,8 +3,6 @@ title: Chip
 description: "Tag that can be selectable, removable or used as a filter."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-row" style={{ padding: '4px 16px 8px' }}><div class="ax-searchbar"><Glyph name="search" size={18} /><span class="ax-value">coffee</span></div></div>
   <div class="ax-chips" style={{ paddingBottom: '12px' }}><span class="ax-chip"><Glyph name="sliders" size={16} />Filters<span class="ax-badge" data-kind="count" style={{ height: '18px', minWidth: '18px', background: 'var(--ax-content-link)' }}>2</span></span><span class="ax-chip" data-selected>Open now</span><span class="ax-chip" data-selected>$$</span><span class="ax-chip">Rating 4+<Glyph name="chevron-down" size={14} /></span></div>
@@ -26,7 +24,7 @@ Requires the `close` icon in your [icon registry](/atoms/icon#icons-that-compone
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Chip } from '@/components/ui/chip';
 
 <Chip selected={onlyUnread} onPress={toggleUnread}>Unread</Chip>

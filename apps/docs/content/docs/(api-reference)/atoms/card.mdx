@@ -3,8 +3,6 @@ title: Card
 description: "Content container, elevated or outlined."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview grouped>
   <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Discover</div>
   <div class="ax-body" style={{ gap: '14px', paddingTop: '0px' }}>
@@ -28,7 +26,7 @@ Colors come from `card.{elevated,outlined,filled}.{default,pressed}` in the [com
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Card } from '@/components/ui/card';
 
 <Card variant="outlined">
@@ -52,6 +50,7 @@ import { Card } from '@/components/ui/card';
 | `radius` | `RadiusToken` | `'lg'` | Corner radius, 14pt by default. Media inside is clipped to it. |
 | `onPress` | `() => void` | — | Makes the whole card pressable with a pressed state. Buttons inside still receive their own presses. |
 | `disabled` | `boolean` | `false` | With `onPress`, blocks presses and lowers the opacity. |
+| `accessibilityLabel` | `string` | — | With `onPress`, read instead of the texts inside the card: say what it opens. |
 | `children` | `ReactNode` | — | The sub-components below, or any content. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra styles for the container. |
 
