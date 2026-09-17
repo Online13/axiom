@@ -7,6 +7,13 @@ export type Variant = 'stylesheet' | 'unistyles' | 'tailwind';
 export const ICON_SOURCES = ['expo-symbols', 'custom'] as const;
 export type IconSource = (typeof ICON_SOURCES)[number];
 
+/**
+ * The navigation library of the project. Decides which version of navigation-aware items (like
+ * `use-overlay-back-handler`) `add` copies. Detected from package.json the first time an item needs it.
+ */
+export const NAVIGATIONS = ['expo-router', 'react-navigation', 'react-native'] as const;
+export type Navigation = (typeof NAVIGATIONS)[number];
+
 export const VARIANT_OF: Record<Styling, Variant> = {
   stylesheet: 'stylesheet',
   unistyles: 'unistyles',
@@ -74,6 +81,8 @@ export type RegistryItem = FileSet & {
   variants?: Partial<Record<Variant, FileSet>>;
   /** Files and dependencies per icon source (`icons` in axiom.json). Asking for the source when missing. */
   iconSources?: Partial<Record<IconSource, FileSet>>;
+  /** Files and dependencies per navigation library (`navigation` in axiom.json). Detected when missing. */
+  navigationSources?: Partial<Record<Navigation, FileSet>>;
   /** Icon names the item renders itself. They must exist in the project's icon registry. */
   requiredIcons?: string[];
 };
@@ -86,6 +95,7 @@ export type ProjectConfig = {
   $schema?: string;
   styling: Styling;
   icons?: IconSource;
+  navigation?: Navigation;
   aliases: Aliases;
   items: string[];
 };

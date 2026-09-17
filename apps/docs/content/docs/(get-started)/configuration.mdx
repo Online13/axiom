@@ -1,6 +1,6 @@
 ---
 title: Configuration
-description: "Every key of axiom.json: styling, aliases and items."
+description: "Every key of axiom.json: styling, icons, navigation, aliases and items."
 ---
 
 <Callout title="Not published yet">`npx axiom` doesn't work yet: the CLI isn't on npm. This page is the specification it is being built against, so keys and defaults may still change.</Callout>
@@ -13,6 +13,8 @@ description: "Every key of axiom.json: styling, aliases and items."
 {
   "$schema": "https://axiom.dev/schema.json",
   "styling": "unistyles",
+  "icons": "expo-symbols",
+  "navigation": "expo-router",
   "aliases": {
     "theme": "@/theme",
     "core": "@/components/core",
@@ -37,6 +39,7 @@ description: "Every key of axiom.json: styling, aliases and items."
 | [`$schema`](#schema) | `string` | no | JSON Schema used by your editor. |
 | [`styling`](#styling) | `string` | yes | The styling tool of your project. |
 | [`icons`](#icons) | `string` | no | Where the icons of your project come from. |
+| [`navigation`](#navigation) | `string` | no | The navigation library of your project. |
 | [`aliases`](#aliases) | `object` | no | Where each layer is copied and imported from. |
 | [`items`](#items) | `string[]` | no | Every Axiom item copied into the project. |
 
@@ -81,6 +84,24 @@ Where the icons of your project come from. The CLI asks the first time you add a
 | `custom` | Empty. You fill it with any icon set or your own SVGs. |
 
 The registry, `icons.tsx`, belongs to your project: changing `icons` doesn't rewrite it. See [Icon](/atoms/icon#the-registry).
+
+## navigation
+
+```json
+"navigation": "expo-router"
+```
+
+The navigation library of your project. A few items behave differently with a navigator: `use-overlay-back-handler`, used by BottomSheet, Dialog and Menu, closes the overlay on the back gesture and the header back button instead of leaving the screen.
+
+The CLI doesn't ask. The first time you add an item that needs it, it reads your `package.json` and saves the result here. Pass `--navigation <library>` to set another value.
+
+| Value | Detected when | What `use-overlay-back-handler` handles |
+| --- | --- | --- |
+| `expo-router` | `expo-router` is installed | Android back button, back gesture, header back button |
+| `react-navigation` | `@react-navigation/native` is installed, without Expo Router | Android back button, back gesture, header back button |
+| `react-native` | neither is installed | Android back button |
+
+Changing `navigation` only affects items copied afterwards. Run `add use-overlay-back-handler` again to get the other version.
 
 ## aliases
 

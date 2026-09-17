@@ -6,11 +6,18 @@ import { parseArgs } from 'node:util';
 
 import { copyItems, type CopyOptions, type OverwriteAnswer } from './copy.ts';
 import { askIconSource, missingIcons, parseIconSource } from './icons.ts';
-import { aliasToDir, missingDependencies, readConfig, writeConfig } from './project.ts';
+import {
+  aliasToDir,
+  detectNavigation,
+  missingDependencies,
+  parseNavigation,
+  readConfig,
+  writeConfig,
+} from './project.ts';
 import { readRegistry, resolveItems } from './registry.ts';
 import { COMPONENTS_FILE, projectTokenEntries, registerTokens, syncTokens } from './tokens.ts';
 
-const USAGE = `Usage: axiom add [items...] --registry <path> [--icons <source>] [--overwrite] [--watch] [--cwd <path>]
+const USAGE = `Usage: axiom add [items...] --registry <path> [--icons <source>] [--navigation <library>] [--overwrite] [--watch] [--cwd <path>]
 
 Copies items and their internal dependencies into the project, using the
 styling and aliases of its axiom.json. Without items, copies again every item
@@ -25,9 +32,17 @@ Icons:
   The first item that needs icons asks where they come from, and saves the
   answer as "icons" in axiom.json: expo-symbols (Expo projects) or custom.
 
+Navigation:
+  The first item that depends on navigation detects the library from
+  package.json and saves it as "navigation" in axiom.json: expo-router,
+  react-navigation, or react-native when there is none.
+
 Options:
   --registry <path>  Registry folder (the one holding registry.json)
   --icons <source>   Icon source, when axiom.json has none: expo-symbols or custom
+  --navigation <library>
+                     Navigation library, when axiom.json has none: expo-router,
+                     react-navigation or react-native. Detected otherwise
   --overwrite        Overwrite the items you name without asking
   --watch            Copy again whenever a registry file changes. Overwrites
                      dependencies too: use it on a project that mirrors the registry
@@ -54,6 +69,7 @@ async function run(
   cwd: string,
   overwrite: CopyOptions['overwrite'],
   iconsFlag?: string,
+  navigationFlag?: string,
 ) {
   const registry = readRegistry(registryRoot);
   let config = readConfig(cwd);
@@ -66,6 +82,12 @@ async function run(
     if (iconsFlag) config = { ...config, icons: parseIconSource(iconsFlag, cwd) };
     else if (interactive) config = { ...config, icons: await askIconSource(cwd) };
     else throw new Error('Choose where icons come from: pass --icons expo-symbols or --icons custom.');
+  }
+
+  if (items.some((item) => item.navigationSources) && !config.navigation) {
+    const navigation = navigationFlag ? parseNavigation(navigationFlag) : detectNavigation(cwd);
+    config = { ...config, navigation };
+    console.log(`  navigation: ${navigation}, saved in axiom.json`);
   }
 
   const all = new Set([...config.items, ...items.map((item) => item.name)]);
@@ -121,6 +143,7 @@ async function main() {
     options: {
       registry: { type: 'string' },
       icons: { type: 'string' },
+      navigation: { type: 'string' },
       overwrite: { type: 'boolean', default: false },
       watch: { type: 'boolean', default: false },
       cwd: { type: 'string' },
@@ -144,7 +167,7 @@ async function main() {
   const cwd = resolve(values.cwd ?? process.cwd());
   const overwrite = values.watch ? 'force' : values.overwrite ? 'always' : 'ask';
 
-  const result = await run(names, registryRoot, cwd, overwrite, values.icons);
+  const result = await run(names, registryRoot, cwd, overwrite, values.icons, values.navigation);
   console.log(`\n${result.written.length} written, ${result.unchanged.length} unchanged, ${result.kept.length} kept.`);
 
   if (!values.watch) return;

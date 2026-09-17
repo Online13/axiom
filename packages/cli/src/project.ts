@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
-import { DEFAULT_ALIASES, ICON_SOURCES, STYLINGS, type ProjectConfig } from './types.ts';
+import { DEFAULT_ALIASES, ICON_SOURCES, NAVIGATIONS, STYLINGS, type Navigation, type ProjectConfig } from './types.ts';
 
 export const CONFIG_FILE = 'axiom.json';
 
@@ -20,10 +20,15 @@ export function readConfig(cwd: string): ProjectConfig {
     throw new Error(`${CONFIG_FILE}: "icons" must be one of ${ICON_SOURCES.join(', ')}.`);
   }
 
+  if (raw.navigation !== undefined && !NAVIGATIONS.includes(raw.navigation)) {
+    throw new Error(`${CONFIG_FILE}: "navigation" must be one of ${NAVIGATIONS.join(', ')}.`);
+  }
+
   return {
     ...(raw.$schema ? { $schema: raw.$schema } : {}),
     styling: raw.styling,
     ...(raw.icons ? { icons: raw.icons } : {}),
+    ...(raw.navigation ? { navigation: raw.navigation } : {}),
     aliases: { ...DEFAULT_ALIASES, ...raw.aliases },
     items: raw.items ?? [],
   };
@@ -31,8 +36,8 @@ export function readConfig(cwd: string): ProjectConfig {
 
 export function writeConfig(cwd: string, config: ProjectConfig) {
   // Always the same key order, whatever order the keys were set in.
-  const { $schema, styling, icons, aliases, items } = config;
-  const ordered = { $schema, styling, icons, aliases, items };
+  const { $schema, styling, icons, navigation, aliases, items } = config;
+  const ordered = { $schema, styling, icons, navigation, aliases, items };
   writeFileSync(join(cwd, CONFIG_FILE), JSON.stringify(ordered, null, 2) + '\n');
 }
 
@@ -61,6 +66,20 @@ export function aliasToDir(cwd: string, alias: string): string {
 export function hasDependency(cwd: string, name: string): boolean {
   const pkg = JSON.parse(readFileSync(join(cwd, 'package.json'), 'utf8'));
   return name in { ...pkg.dependencies, ...pkg.devDependencies };
+}
+
+/** The navigation library of the project, from its dependencies. Expo Router first: it depends on React Navigation. */
+export function detectNavigation(cwd: string): Navigation {
+  if (hasDependency(cwd, 'expo-router')) return 'expo-router';
+  if (hasDependency(cwd, '@react-navigation/native')) return 'react-navigation';
+  return 'react-native';
+}
+
+export function parseNavigation(value: string): Navigation {
+  if (!NAVIGATIONS.includes(value as Navigation)) {
+    throw new Error(`--navigation must be one of ${NAVIGATIONS.join(', ')}.`);
+  }
+  return value as Navigation;
 }
 
 export function missingDependencies(cwd: string, dependencies: string[]): string[] {

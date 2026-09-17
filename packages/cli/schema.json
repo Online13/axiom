@@ -29,6 +29,14 @@
         "custom"
       ]
     },
+    "navigation": {
+      "description": "The navigation library of the project. Decides which version of navigation-aware items, like `use-overlay-back-handler`, `add` copies. Detected from package.json the first time an item needs it.",
+      "enum": [
+        "expo-router",
+        "react-navigation",
+        "react-native"
+      ]
+    },
     "aliases": {
       "type": "object",
       "description": "Where each layer is copied and imported from. A missing key uses its default.",

@@ -39,9 +39,16 @@ for (const variant of VARIANTS) {
     if (item.variants && !item.variants[variant]) continue;
 
     const alias = DEFAULT_ALIASES[ALIAS_OF[item.type]];
-    // Aliases point to the first icon source; the others are still typechecked through the include globs.
+    // Aliases point to the first icon and navigation source; the others are still typechecked through the include globs.
     const [iconSource] = Object.values(item.iconSources ?? {});
-    for (const file of [...(item.files ?? []), ...(item.variants?.[variant]?.files ?? []), ...(iconSource?.files ?? [])]) {
+    const [navigationSource] = Object.values(item.navigationSources ?? {});
+    const files = [
+      ...(item.files ?? []),
+      ...(item.variants?.[variant]?.files ?? []),
+      ...(iconSource?.files ?? []),
+      ...(navigationSource?.files ?? []),
+    ];
+    for (const file of files) {
       const path = pathOf(file);
       count++;
 

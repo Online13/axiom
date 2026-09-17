@@ -91,7 +91,7 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 | --- | --- | --- | --- |
 | `open` | `boolean` | — | Controlled visibility. |
 | `defaultOpen` | `boolean` | `false` | Initial visibility when the sheet manages its own state. |
-| `onOpenChange` | `(open: boolean) => void` | — | Called when the sheet opens or closes, including by swipe, backdrop press or the Android back button. |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when the sheet opens or closes, including by swipe, backdrop press or a back action (Android back button, back gesture with a navigator). |
 | `children` | `ReactNode` | — | `Trigger` and `Content`. |
 
 ### BottomSheet.Trigger
@@ -109,7 +109,7 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 | `index` | `number` | `0` | Controlled snap point. |
 | `onIndexChange` | `(index: number) => void` | — | Called when the sheet settles on another snap point. |
 | `overlay` | `boolean` | `true` | Dims the screen behind the sheet through [Overlay](/core/overlay). The dimming follows the sheet position. |
-| `dismissible` | `boolean` | `true` | Closes on swipe down, backdrop press and back button. `false` for a step the user must complete. |
+| `dismissible` | `boolean` | `true` | Closes on swipe down, backdrop press and back actions. `false` for a step the user must complete. |
 | `detached` | `boolean` | `false` | Floats above the bottom edge with all corners rounded, for short confirmations. |
 | `keyboardBehavior` | `'interactive' \| 'extend' \| 'none'` | `'interactive'` | How the sheet reacts when an input inside it opens the keyboard. `interactive` rises with the keyboard frame by frame, without going past the top safe area. `extend` also moves to the highest snap point. `none` leaves the sheet in place. Closing the sheet dismisses the keyboard. |
 | `footer` | `ReactNode` | — | Floating actions pinned above the bottom safe area, visible at every snap point. |

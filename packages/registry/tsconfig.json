@@ -37,7 +37,7 @@
         "./hooks/use-controllable-state/use-controllable-state.ts"
       ],
       "@/hooks/use-overlay-back-handler": [
-        "./hooks/use-overlay-back-handler/use-overlay-back-handler.ts"
+        "./hooks/use-overlay-back-handler/sources/expo-router/use-overlay-back-handler.ts"
       ],
       "@/components/ui/text": [
         "./typography/text/stylesheet/text.tsx"

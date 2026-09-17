@@ -32,6 +32,12 @@ The icon registry depends on where the project's icons come from (`icons` in axi
 
 The aliases of the typecheck point to the first source (`expo-symbols`); the other templates are still checked.
 
+### Navigation sources
+
+Some items depend on the project's navigation library (`navigation` in axiom.json): `use-overlay-back-handler` closes an overlay on the back gesture through Expo Router or React Navigation. `navigationSources` lists the files and dependencies of `expo-router`, `react-navigation` and `react-native` (no library). `add` detects the library from package.json the first time an item needs it.
+
+The aliases of the typecheck point to the first source (`expo-router`); the other versions are still checked.
+
 ### Files the project owns
 
 A file the project fills once copied, like the icon registry `icons.tsx`, is declared with `createOnly`. The CLI writes it when missing and never overwrites it, even in watch mode:

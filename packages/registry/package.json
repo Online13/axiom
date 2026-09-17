@@ -9,6 +9,7 @@
     "typecheck": "bun scripts/tsconfig.ts && tsc -p tsconfig.json && tsc -p scripts/tsconfig.json"
   },
   "devDependencies": {
+    "@react-navigation/native": "^7.4.1",
     "typescript": "~6.0.3"
   }
 }

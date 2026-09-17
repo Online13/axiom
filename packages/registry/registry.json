@@ -75,9 +75,29 @@
     {
       "name": "use-overlay-back-handler",
       "type": "hooks",
-      "files": [
-        "hooks/use-overlay-back-handler/use-overlay-back-handler.ts"
-      ]
+      "navigationSources": {
+        "expo-router": {
+          "files": [
+            "hooks/use-overlay-back-handler/sources/expo-router/use-overlay-back-handler.ts"
+          ],
+          "dependencies": [
+            "expo-router"
+          ]
+        },
+        "react-navigation": {
+          "files": [
+            "hooks/use-overlay-back-handler/sources/react-navigation/use-overlay-back-handler.ts"
+          ],
+          "dependencies": [
+            "@react-navigation/native"
+          ]
+        },
+        "react-native": {
+          "files": [
+            "hooks/use-overlay-back-handler/sources/react-native/use-overlay-back-handler.ts"
+          ]
+        }
+      }
     },
     {
       "name": "text",

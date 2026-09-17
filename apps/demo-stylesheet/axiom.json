@@ -2,6 +2,7 @@
   "$schema": "../../packages/cli/schema.json",
   "styling": "stylesheet",
   "icons": "expo-symbols",
+  "navigation": "expo-router",
   "aliases": {
     "theme": "@/theme",
     "core": "@/components/core",

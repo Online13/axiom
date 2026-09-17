@@ -65,7 +65,19 @@ function plan(items: RegistryItem[], config: ProjectConfig, registryRoot: string
       throw new Error(`"${item.name}" doesn't support the "${config.icons}" icon source.`);
     }
 
-    const sets = [item, item.variants?.[variant] ?? {}, (config.icons && item.iconSources?.[config.icons]) || {}];
+    if (item.navigationSources && !config.navigation) {
+      throw new Error(`"${item.name}" needs a navigation library: set "navigation" in axiom.json.`);
+    }
+    if (item.navigationSources && config.navigation && !item.navigationSources[config.navigation]) {
+      throw new Error(`"${item.name}" doesn't support "${config.navigation}" navigation.`);
+    }
+
+    const sets = [
+      item,
+      item.variants?.[variant] ?? {},
+      (config.icons && item.iconSources?.[config.icons]) || {},
+      (config.navigation && item.navigationSources?.[config.navigation]) || {},
+    ];
     const dir = aliasToDir(cwd, config.aliases[ALIAS_OF[item.type]]);
 
     for (const set of sets) {

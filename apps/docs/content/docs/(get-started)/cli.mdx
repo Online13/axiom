@@ -71,6 +71,10 @@ npx axiom add button --overwrite
 
 The first item that needs icons asks where they come from (`expo-symbols` or `custom`) and saves the answer as [`icons`](/configuration#icons). Pass `--icons <source>` to answer without a prompt. When a component draws icons your registry doesn't have, `add` lists them. See [Icon](/atoms/icon#icons-that-components-need).
 
+### Navigation
+
+The first item that depends on the navigation library, like `use-overlay-back-handler`, detects it from `package.json` (`expo-router`, `react-navigation` or `react-native` without one) and saves it as [`navigation`](/configuration#navigation). Pass `--navigation <library>` to override the detection.
+
 Without a terminal (CI, a script), nobody can answer: differing files are kept and the CLI lists them.
 
 ## fetch
