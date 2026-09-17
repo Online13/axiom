@@ -22,6 +22,10 @@ description: "Inline feedback: info, success, warning or error."
 npx axiom add alert
 ```
 
+Also copies: [`icon-button`](/atoms/icon-button).
+
+Requires the `info`, `success`, `warning`, `error` and `close` icons in your [icon registry](/atoms/icon#icons-that-components-need). Colors come from `alert.<variant>.default.{background,icon,border}` in the [component tokens](/foundations/component-tokens).
+
 ## Usage
 
 ```tsx title="Conceptual"
@@ -39,10 +43,10 @@ import { Alert } from '@/components/ui/alert';
 | `variant` | `'info' \| 'success' \| 'warning' \| 'error' \| 'neutral'` | `'info'` | Picks the subtle background and icon color from the feedback colors (`feedback.warningSubtle` + `feedback.warning`…). |
 | `title` | `ReactNode` | — | Short, bold summary. An alert can have only a title, only a description, or both. |
 | `children` | `ReactNode` | — | Description under the title, in `content.muted`. |
-| `icon` | `IconName \| ReactNode \| null` | per variant | Leading icon. Each variant has a default (`info`, `circle-check`, `alert`, `circle-x`); `null` removes it. |
+| `icon` | `IconName \| null` | per variant | Leading icon. Each variant has a default (`info`, `success`, `warning`, `error`; `info` for `neutral`); `null` removes it. |
 | `action` | `{ label: string; onPress: () => void }` | — | A text action under the description, such as "Manage storage" or "Retry". |
 | `onDismiss` | `() => void` | — | Shows a close button in the top-right corner. Hiding the alert is up to you. |
-| `accessibilityLiveRegion` | `'polite' \| 'assertive' \| 'none'` | `'polite'` for error | Announces the alert when it appears. `error` alerts are announced; others are read in order. |
+| `accessibilityLiveRegion` | `'polite' \| 'assertive' \| 'none'` | `'assertive'` for error, `'none'` otherwise | Announces the alert when it appears. `error` alerts are announced and get `accessibilityRole="alert"`; others are read in order. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra styles for the container. |
 
 ## Use cases

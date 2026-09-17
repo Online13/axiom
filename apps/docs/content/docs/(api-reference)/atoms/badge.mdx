@@ -23,6 +23,10 @@ description: "Status or counter pill."
 npx axiom add badge
 ```
 
+Installs: `react-native-reanimated`, for `Badge.Anchor`.
+
+Colors come from `badge.<variant>.default.{background,foreground,border}` in the [component tokens](/foundations/component-tokens). Counters and dots use `badge.count`, whose `border` is the ring.
+
 ## Usage
 
 ```tsx title="Conceptual"
@@ -39,10 +43,10 @@ import { Badge } from '@/components/ui/badge';
 | `children` | `ReactNode` | — | The label. One or two words. |
 | `variant` | `'neutral' \| 'info' \| 'success' \| 'warning' \| 'error' \| 'outline' \| 'inverse'` | `'neutral'` | Color from the theme's feedback colors: subtle background with a saturated label. `outline` and `inverse` are neutral alternatives. |
 | `dot` | `boolean` | `false` | Small dot before the label in the label color, to reinforce a status. |
-| `icon` | `IconName \| ReactNode` | — | Icon before the label. Replaces `dot`. |
+| `icon` | `IconName` | — | Icon of your registry before the label. Replaces `dot`. |
 | `count` | `number` | — | Renders a round counter instead of a label, in `feedback.error`. `0` hides the badge. |
 | `max` | `number` | `99` | Above this, the counter shows `99+`. |
-| `size` | `'sm' \| 'md'` | `'md'` | Height: 18 or 22pt. |
+| `size` | `'sm' \| 'md'` | `'md'` | Minimum height: 18 or 22pt. |
 | `accessibilityLabel` | `string` | — | For counters, what is counted: `"3 unread notifications"`. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra styles for the pill. |
 

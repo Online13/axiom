@@ -24,7 +24,9 @@ npx axiom add snackbar
 
 Also copies: [`portal`](/core/portal).
 
-Installs: `react-native-reanimated`, `react-native-gesture-handler`.
+Installs: `react-native-reanimated`, `react-native-gesture-handler`, `react-native-safe-area-context`, `react-native-worklets`.
+
+The store, timer and swipe live in `use-snackbar.ts`. Colors come from `snackbar.default.default.{background,foreground,action}` in the [component tokens](/foundations/component-tokens).
 
 ## Usage
 
@@ -48,8 +50,8 @@ snackbar.show({
 | `message` | `string` | — | One line, two at most. Describes what just happened. |
 | `action` | `{ label: string; onPress: () => void }` | — | One text action, usually "Undo" or "Retry". Pressing it also dismisses the snackbar. |
 | `duration` | `'short' \| 'long' \| 'indefinite' \| number` | `'short'` | `short` is 4s, `long` 8s (default when there is an action). `indefinite` stays until dismissed or replaced. |
-| `icon` | `IconName \| ReactNode` | — | Leading icon. Use sparingly: the message should be enough. |
-| `onDismiss` | `(reason: 'timeout' \| 'action' \| 'swipe' \| 'replaced') => void` | — | Called when the snackbar leaves, with the reason. Commit a destructive action here if it wasn't undone. |
+| `icon` | `IconName` | — | Leading icon. Use sparingly: the message should be enough. |
+| `onDismiss` | `(reason: 'timeout' \| 'action' \| 'swipe' \| 'replaced' \| 'dismiss') => void` | — | Called when the snackbar leaves, with the reason. Commit a destructive action here if it wasn't undone. |
 
 Only one snackbar is visible. Calling `show` while one is on screen replaces it: the current one slides out with reason `'replaced'`, the new one slides in.
 
@@ -61,8 +63,8 @@ Only one snackbar is visible. Calling `show` while one is on screen replaces it:
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `bottomOffset` | `number` | `0` | Extra space above the bottom safe area, to sit above a [BottomTabBar](/templates/bottom-tab-bar) or a [ToolBar](/templates/tool-bar). |
-| `swipeToDismiss` | `boolean` | `true` | Swipe down to dismiss. |
+| `bottomOffset` | `number` | `0` | Extra space on top of the default gap (bottom safe area + 16pt), to sit above a [BottomTabBar](/templates/bottom-tab-bar) or a [ToolBar](/templates/tool-bar). |
+| `swipeToDismiss` | `boolean` | `true` | Swipe down, left or right to dismiss. |
 
 The snackbar uses `background.inverse` and `content.inverse`, so it stands out in both light and dark. It is announced to screen readers when it appears, and its duration is extended when a screen reader is on.
 

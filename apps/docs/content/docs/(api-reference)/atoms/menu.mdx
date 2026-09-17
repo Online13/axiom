@@ -27,9 +27,11 @@ description: "Context menu modeled on modern mobile behavior, especially iOS."
 npx axiom add menu
 ```
 
-Also copies: [`portal`](/core/portal), [`overlay`](/core/overlay).
+Also copies: [`portal`](/core/portal), [`overlay`](/core/overlay), `use-overlay-back-handler`, which closes the menu on a back action. See [navigation](/configuration#navigation).
 
-Installs: `react-native-reanimated`, `react-native-gesture-handler`.
+Installs: `react-native-reanimated`, `react-native-safe-area-context`, `react-native-worklets`.
+
+Requires the `arrow-left`, `check` and `chevron-right` icons in your [icon registry](/atoms/icon#icons-that-components-need). Positioning and the animation live in `use-menu.ts`. Colors come from `menu.default.{default,pressed,destructive,disabled}` in the [component tokens](/foundations/component-tokens).
 
 ## Usage
 
@@ -63,7 +65,7 @@ import { Menu } from '@/components/ui/menu';
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `action` | `'longPress' \| 'press'` | `'longPress'` | `longPress` for context menus on content, `press` for a "more" button. |
-| `preview` | `boolean \| ReactNode` | `true` with `longPress` | Lifts the pressed element above the blurred screen. Pass a node to show a larger preview instead, like an opened message. |
+| `preview` | `boolean \| ReactNode` | `true` with `longPress` | Lifts a copy of the pressed element above the backdrop. Pass a node to show it in the element's place instead. |
 | `asChild` | `boolean` | `false` | Uses the child as the trigger. |
 | `children` | `ReactNode` | — | The element that opens the menu. |
 
@@ -74,8 +76,7 @@ import { Menu } from '@/components/ui/menu';
 | `placement` | `'auto' \| 'top' \| 'bottom'` | `'auto'` | Side of the trigger. `auto` picks the side with more room and keeps the menu inside the safe area. |
 | `align` | `'start' \| 'center' \| 'end'` | `'start'` | Horizontal alignment against the trigger. |
 | `width` | `number` | `250` | Menu width. |
-| `overlay` | `'blur' \| 'dim' \| 'none'` | `'blur'` | Backdrop behind the menu. Pressing it closes the menu. |
-| `haptic` | `boolean` | `true` | Haptic when the menu opens from a long press. |
+| `overlay` | `'dim' \| 'none'` | `'dim'` | Backdrop behind the menu. Pressing it closes the menu, even when `none`. A blur needs `expo-blur`: add it in your copy if you want one. |
 | `children` | `ReactNode` | — | Items, groups and separators. |
 
 ### Menu.Item
@@ -83,7 +84,7 @@ import { Menu } from '@/components/ui/menu';
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `children` | `string` | — | The label. |
-| `icon` | `IconName \| ReactNode` | — | Icon on the right, iOS style. |
+| `icon` | `IconName` | — | Icon on the right, iOS style. |
 | `subtitle` | `string` | — | Second line under the label. |
 | `onPress` | `() => void` | — | Called after the menu closes, so a navigation or a sheet doesn't fight the close animation. |
 | `destructive` | `boolean` | `false` | Label and icon in `feedback.error`. |
@@ -98,7 +99,9 @@ import { Menu } from '@/components/ui/menu';
 | `Separator` | — | A thick gap between groups, like iOS. |
 | `Sub` | `label`, `icon`, `children` | An item that opens a nested menu in place. |
 
-Items support dragging: press, slide the finger to an item, release to select it. The menu is announced as a list with its item count.
+`Menu.Sub` replaces the items in place and adds a back row at the top. `Menu.Item` also takes `keepOpen`, to run `onPress` without closing the menu. The menu has `accessibilityRole="menu"`, its items `menuitem`, and a back action closes it.
+
+Not implemented yet: dragging from the trigger to an item, and haptics (the haptics library depends on the project, see the roadmap).
 
 ## Use cases
 
@@ -138,7 +141,7 @@ Items support dragging: press, slide the finger to an item, release to select it
 
 ### Long press on a message
 
-The message is lifted as a preview above the blur; quick reactions sit above it.
+The message is lifted as a preview above the backdrop; quick reactions sit above it.
 
 <PhonePreview size="sm">
   <div class="ax-body" style={{ gap: '8px', paddingTop: '20px' }}>

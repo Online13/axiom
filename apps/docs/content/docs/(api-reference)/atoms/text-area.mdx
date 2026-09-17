@@ -37,7 +37,7 @@ import { TextArea } from '@/components/ui/text-area';
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `autoGrow` | `boolean` | `false` | The field gets taller as lines are added, between `minRows` and `maxRows`. Past `maxRows` it scrolls. |
-| `minRows` | `number` | `3` | Height when empty, in lines of body text. |
+| `minRows` | `number` | `3` | Height when empty, in lines of body text. Lines get taller with larger system text, up to 1.5×. |
 | `maxRows` | `number` | `8` | Height limit with `autoGrow`. Keeps the field from pushing the rest of the screen off. |
 | `maxLength` | `number` | — | Hard character limit, from `TextInput`. |
 | `showCount` | `boolean` | `false` | Shows `length / maxLength` under the field, right-aligned. Turns red at the limit. |

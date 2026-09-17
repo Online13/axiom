@@ -20,6 +20,10 @@ description: "Profile image with an initials fallback."
 npx axiom add avatar
 ```
 
+Also copies: [`tappable`](/core/tappable).
+
+Colors come from `avatar.default.default.{background,foreground,ring}` and `avatar.status.default.{online,away,busy,offline}` in the [component tokens](/foundations/component-tokens). `colorFromName` picks step 500 of a palette hue.
+
 ## Usage
 
 ```tsx title="Conceptual"

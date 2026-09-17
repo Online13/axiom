@@ -49,6 +49,23 @@ import { Text } from '@/components/ui/text';
 | `warning` | `feedback.warning` | Warnings |
 | `error` | `feedback.error` | Errors, validation messages |
 
+## System text size
+
+Text follows the text size set in the system settings (Dynamic Type on iOS, font size on Android). Running text has no cap: let it wrap and its container grow.
+
+Inside components, `MAX_FONT_SCALE` caps the size through `maxFontSizeMultiplier`:
+
+| Cap | Value | Used by |
+| --- | --- | --- |
+| `MAX_FONT_SCALE.control` | 1.5 | Labels of components that grow with their text: Button, Input, Chip, Segmented control |
+| `MAX_FONT_SCALE.fixed` | 1.2 | Text inside a shape that keeps its size: Avatar initials, Badge, Calendar days, Input OTP cells |
+
+```tsx
+import { MAX_FONT_SCALE, Text } from '@/components/ui/text';
+
+<Text numberOfLines={1} maxFontSizeMultiplier={MAX_FONT_SCALE.control}>Save</Text>
+```
+
 ## Props
 
 | Prop | Type | Default | Description |

@@ -50,8 +50,8 @@ import { Button } from '@/components/ui/button';
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | — | The label. Keep it to a short verb: "Save", "Continue". |
-| `variant` | `'solid' \| 'outline' \| 'ghost'` | `'solid'` | Visual weight. `solid` for the main action of the screen, `outline` for a secondary action next to it, `ghost` for a low-emphasis action like "Skip". |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Height from the `control` size tokens: 32, 44 or 52pt. `sm` still gets a 44pt touch area through `Tappable`. |
+| `variant` | `'solid' \| 'outline' \| 'ghost' \| 'destructive'` | `'solid'` | Visual weight. `solid` for the main action of the screen, `outline` for a secondary action next to it, `ghost` for a low-emphasis action like "Skip", `destructive` (red) for an irreversible action like "Delete". |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Minimum height from the `control` size tokens: 32, 44 or 52pt. Grows with larger system text. `sm` still gets a 44pt touch area through `Tappable`. |
 | `onPress` | `() => void` | — | Called when the press ends on the button. Not called while `loading` or `disabled`. |
 | `onLongPress` | `() => void` | — | Called after the finger is held on the button. |
 | `loading` | `boolean` | `false` | Replaces the leading icon with a spinner and blocks presses. The button keeps its width so the layout doesn't jump. |

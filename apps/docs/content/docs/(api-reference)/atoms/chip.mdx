@@ -22,6 +22,8 @@ npx axiom add chip
 
 Also copies: [`tappable`](/core/tappable).
 
+Requires the `close` icon in your [icon registry](/atoms/icon#icons-that-components-need). Colors come from `chip.{outline,filled}.{default,pressed,selected,disabled}` in the [component tokens](/foundations/component-tokens).
+
 ## Usage
 
 ```tsx title="Conceptual"
@@ -40,7 +42,7 @@ import { Chip } from '@/components/ui/chip';
 | `onPress` | `() => void` | — | Called when the chip is pressed. Usually toggles `selected` or opens a picker. |
 | `onRemove` | `() => void` | — | Shows a close icon on the right. Pressing it calls `onRemove`; the icon has its own 44pt touch area. |
 | `variant` | `'outline' \| 'filled'` | `'outline'` | `outline` for filters, `filled` for tags and entered values. |
-| `size` | `'sm' \| 'md'` | `'md'` | Height: 28 or 34pt. The touch area stays 44pt. |
+| `size` | `'sm' \| 'md'` | `'md'` | Minimum height: 28 or 34pt. Grows with larger system text. The touch area stays 44pt. |
 | `leading` | `IconName \| ReactNode` | — | Icon or [Avatar](/atoms/avatar) before the label. |
 | `trailing` | `IconName \| ReactNode` | — | Icon after the label, like a chevron for a chip that opens a menu. Ignored with `onRemove`. |
 | `disabled` | `boolean` | `false` | Blocks presses and dims the chip. |

@@ -70,6 +70,8 @@ const justify = align ?? (view === 'bottom' ? 'end' : 'start');
 
   [data-ax-preview] {
     --ax-scale: 0.8;
+    /* Keeps the z-index of dialogs, sheets and toasts inside the preview, so they never cover the site nav. */
+    isolation: isolate;
   }
 
   [data-ax-preview][data-size='sm'] {

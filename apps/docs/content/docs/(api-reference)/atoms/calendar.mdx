@@ -28,6 +28,12 @@ description: "Navigable month grid with single or range selection."
 npx axiom add calendar
 ```
 
+Also copies: [`icon-button`](/atoms/icon-button).
+
+Installs: `react-native-gesture-handler`, `react-native-worklets`.
+
+Requires the `chevron-left` and `chevron-right` icons in your [icon registry](/atoms/icon#icons-that-components-need). Date math, selection and the day grid live in `use-calendar.ts`, with no date library. Colors come from `calendar.day.{default,pressed,today,selected,inRange,outside,disabled}` in the [component tokens](/foundations/component-tokens).
+
 ## Usage
 
 ```tsx title="Conceptual"
@@ -161,7 +167,7 @@ Days are 40pt cells in a 7-column grid; each one is a button announced with its 
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `color` | `ColorRef` | `'brand.primary'` | Dot color. Turns to the on-selected color when the day is selected. |
+| `color` | `string` | `calendar.day.default.dot` | Dot color. Turns to `calendar.day.selected.dot` when the day is selected. |
 
 ### useCalendar
 

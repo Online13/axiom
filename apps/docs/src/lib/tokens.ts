@@ -152,6 +152,11 @@ export const componentTokens = {
       pressed: { background: 'background.subtle' },
       disabled: { foreground: 'content.disabled' },
     },
+    destructive: {
+      default: { background: 'feedback.error', foreground: 'content.inverse' },
+      pressed: { foreground: 'feedback.errorSubtle' },
+      disabled: { background: 'border.default', foreground: 'content.disabled' },
+    },
   },
   switch: {
     default: {
@@ -255,9 +260,96 @@ export const componentTokens = {
       disabled: { background: 'background.subtle', border: 'border.subtle', text: 'content.disabled' },
     },
   },
+  badge: {
+    neutral: { default: { background: 'background.subtle', foreground: 'content.muted' } },
+    info: { default: { background: 'feedback.infoSubtle', foreground: 'feedback.info' } },
+    success: { default: { background: 'feedback.successSubtle', foreground: 'feedback.success' } },
+    warning: { default: { background: 'feedback.warningSubtle', foreground: 'feedback.warning' } },
+    error: { default: { background: 'feedback.errorSubtle', foreground: 'feedback.error' } },
+    outline: { default: { foreground: 'content.default', border: 'border.default' } },
+    inverse: { default: { background: 'background.inverse', foreground: 'content.inverse' } },
+    count: { default: { background: 'feedback.error', foreground: 'content.inverse', border: 'background.default' } },
+  },
+  avatar: {
+    default: { default: { background: 'border.default', foreground: 'content.muted', ring: 'background.default' } },
+    status: { default: { online: 'feedback.success', away: 'feedback.warning', busy: 'feedback.error', offline: 'content.subtle' } },
+  },
+  chip: {
+    outline: {
+      default: { background: 'background.default', foreground: 'content.default', border: 'border.default' },
+      pressed: { background: 'background.subtle' },
+      selected: { background: 'background.inverse', foreground: 'content.inverse', border: 'background.inverse' },
+      disabled: { foreground: 'content.disabled', border: 'border.subtle' },
+    },
+    filled: {
+      default: { background: 'background.subtle', foreground: 'content.default' },
+      pressed: { background: 'border.default' },
+      selected: { background: 'background.inverse', foreground: 'content.inverse' },
+      disabled: { foreground: 'content.disabled' },
+    },
+  },
+  card: {
+    elevated: { default: { background: 'background.elevated' }, pressed: { background: 'background.subtle' } },
+    outlined: { default: { background: 'background.default', border: 'border.default' }, pressed: { background: 'background.subtle' } },
+    filled: { default: { background: 'background.subtle' }, pressed: { background: 'border.subtle' } },
+  },
+  item: {
+    default: {
+      default: { divider: 'border.default' },
+      pressed: { background: 'background.subtle' },
+      selected: { background: 'feedback.infoSubtle' },
+    },
+  },
+  skeleton: {
+    default: { default: { background: 'border.subtle', highlight: 'border.default' } },
+  },
+  alert: {
+    info: { default: { background: 'feedback.infoSubtle', icon: 'feedback.info' } },
+    success: { default: { background: 'feedback.successSubtle', icon: 'feedback.success' } },
+    warning: { default: { background: 'feedback.warningSubtle', icon: 'feedback.warning' } },
+    error: { default: { background: 'feedback.errorSubtle', icon: 'feedback.error' } },
+    neutral: { default: { background: 'background.subtle', icon: 'content.muted', border: 'border.subtle' } },
+  },
+  empty: {
+    neutral: { default: { media: 'background.subtle', icon: 'content.muted' } },
+    error: { default: { media: 'feedback.errorSubtle', icon: 'feedback.error' } },
+  },
+  toast: {
+    default: {
+      default: { background: 'background.elevated', border: 'border.subtle', icon: 'content.default' },
+      success: { icon: 'feedback.success' },
+      error: { icon: 'feedback.error' },
+      info: { icon: 'feedback.info' },
+    },
+  },
+  snackbar: {
+    default: { default: { background: 'background.inverse', foreground: 'content.inverse', action: 'feedback.info' } },
+  },
+  calendar: {
+    day: {
+      default: { foreground: 'content.default', range: 'feedback.infoSubtle', dot: 'content.link' },
+      pressed: { background: 'background.subtle' },
+      today: { foreground: 'content.link' },
+      selected: { background: 'content.link', foreground: 'content.inverse', dot: 'content.inverse' },
+      inRange: { foreground: 'content.default' },
+      outside: { foreground: 'content.subtle' },
+      disabled: { foreground: 'content.disabled' },
+    },
+  },
   bottomSheet: {
     default: {
       default: { background: 'background.elevated', handle: 'border.strong' },
+    },
+  },
+  dialog: {
+    default: { default: { background: 'background.elevated' } },
+  },
+  menu: {
+    default: {
+      default: { background: 'background.elevated', separator: 'background.subtle', foreground: 'content.default' },
+      pressed: { item: 'background.subtle' },
+      destructive: { foreground: 'feedback.error' },
+      disabled: { foreground: 'content.disabled' },
     },
   },
 } satisfies Record<string, Record<string, ComponentStates>>;

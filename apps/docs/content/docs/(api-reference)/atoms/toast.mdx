@@ -18,9 +18,11 @@ description: "Imperative, short-lived notifications stacked at the top of the sc
 npx axiom add toast
 ```
 
-Also copies: [`portal`](/core/portal).
+Also copies: [`portal`](/core/portal), [`spinner`](/atoms/spinner).
 
-Installs: `react-native-reanimated`, `react-native-gesture-handler`.
+Installs: `react-native-reanimated`, `react-native-gesture-handler`, `react-native-safe-area-context`, `react-native-worklets`.
+
+Requires the `success`, `error` and `info` icons in your [icon registry](/atoms/icon#icons-that-components-need). The store, timers and swipe live in `use-toast.ts`. Colors come from `toast.default.{default,success,error,info}` in the [component tokens](/foundations/component-tokens).
 
 ## Usage
 
@@ -48,12 +50,11 @@ Returns the toast `id`.
 | `title` | `string` | — | Main line. Keep it under 40 characters. |
 | `description` | `string` | — | Second line, in `content.muted`. |
 | `type` | `'default' \| 'success' \| 'error' \| 'info' \| 'loading'` | `'default'` | Sets the icon and the accessibility announcement. `loading` shows a spinner and never auto-dismisses. |
-| `icon` | `IconName \| ReactNode` | per type | Replaces the type icon. |
+| `icon` | `IconName` | per type | Replaces the type icon. |
 | `duration` | `number` | `4000` | Time on screen in ms. `Infinity` keeps it until dismissed. The timer pauses while the user touches the toast. |
 | `id` | `string` | generated | Passing an existing id updates that toast in place instead of adding one. |
 | `onPress` | `() => void` | — | Makes the toast pressable, for example to open the item it is about. |
 | `onDismiss` | `() => void` | — | Called when the toast leaves, by timeout or swipe. |
-| `haptic` | `boolean` | `true` | Success or error haptic for those types. |
 
 ### Shortcuts and control
 

@@ -24,7 +24,9 @@ description: "Selectable row built on Item."
 npx axiom add option-item
 ```
 
-Also copies: [`item`](/atoms/item).
+Also copies: [`item`](/atoms/item), [`radio`](/atoms/radio), [`checkbox`](/atoms/checkbox).
+
+Requires the `check` and `chevron-right` icons in your [icon registry](/atoms/icon#icons-that-components-need). The radio and checkbox indicators are `RadioIndicator` and `CheckboxIndicator`, so they match the standalone controls.
 
 ## Usage
 
@@ -42,7 +44,7 @@ import { OptionItem } from '@/components/ui/option-item';
 | --- | --- | --- | --- |
 | `label` | `string` | — | Main text of the row. |
 | `description` | `string` | — | Secondary text under the label. |
-| `icon` | `IconName \| ReactNode` | — | Leading icon. A name renders an icon on a colored tile, like iOS settings. |
+| `icon` | `IconName` | — | Leading icon on a colored tile, like iOS settings. For an avatar or custom media, compose an [Item](/atoms/item). |
 | `iconColor` | `PaletteHue` | `'gray'` | Tile color from the palette: `blue`, `green`, `orange`… |
 | `selected` | `boolean` | `false` | Shows the selection indicator and sets `accessibilityState.selected`. |
 | `indicator` | `'check' \| 'radio' \| 'checkbox' \| 'none'` | `'check'` | How `selected` is drawn: a trailing check (iOS), a leading radio, a leading checkbox. |

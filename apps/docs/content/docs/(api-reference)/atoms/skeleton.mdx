@@ -25,6 +25,8 @@ npx axiom add skeleton
 
 Installs: `react-native-reanimated`.
 
+The shared animation clock lives in `use-skeleton.ts`. Colors come from `skeleton.default.default.{background,highlight}` in the [component tokens](/foundations/component-tokens).
+
 ## Usage
 
 ```tsx title="Conceptual"
@@ -54,6 +56,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 | --- | --- | --- | --- |
 | `lines` | `number` | `3` | Number of lines. The last one is shorter, like a real paragraph. |
 | `variant` | `TextVariant` | `'body'` | Uses the line height of this [Text](/atoms/text) variant, so the placeholder has the same height as the text. |
+| `animation` | `'shimmer' \| 'pulse' \| 'none'` | `'shimmer'` | Animation of the lines. |
+| `loading` | `boolean` | `true` | When `false`, renders `children` instead of the lines. |
 
 Every skeleton on screen shares one animation clock, so shimmers stay in sync. Skeletons are hidden from screen readers; announce the loading state once on the container.
 

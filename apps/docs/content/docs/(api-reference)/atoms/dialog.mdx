@@ -20,9 +20,11 @@ description: "Compound confirmation modal."
 npx axiom add dialog
 ```
 
-Also copies: [`portal`](/core/portal), [`overlay`](/core/overlay).
+Also copies: [`portal`](/core/portal), [`overlay`](/core/overlay), [`button`](/atoms/button), `use-overlay-back-handler`, which closes the dialog on a back action (Android back button, and with a navigator the back gesture and header back button). See [navigation](/configuration#navigation).
 
-Installs: `react-native-reanimated`.
+Installs: `react-native-reanimated`, `react-native-worklets`.
+
+The open state and the enter and exit animation live in `use-dialog.ts`. The surface color comes from `dialog.default.default.background` in the [component tokens](/foundations/component-tokens).
 
 ## Usage
 
@@ -95,7 +97,7 @@ Focus moves into the dialog when it opens and returns to the trigger when it clo
 | `destructive` | `boolean` | `false` | On `Action`: red solid button, for irreversible actions. |
 | `closeOnPress` | `boolean` | `true` | Closes the dialog after `onPress`. Set to `false` with an async `onPress` and `loading` to keep it open while it runs. |
 
-`Dialog.Cancel` is an outline button that closes the dialog; it is also what the Android back button triggers.
+`Dialog.Cancel` is an outline button that closes the dialog; it is also what a back action triggers.
 
 ## Use cases
 
