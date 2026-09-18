@@ -328,6 +328,7 @@ jobs:
 
           URL="$TUNNEL/?k=$GATE_TOKEN"
           echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "tunnel=$TUNNEL" >> "$GITHUB_OUTPUT"
 
           # Commit statuses are world-readable on a public repo, so publish the
           # bare tunnel URL only. The CLI generated the access key and appends it
@@ -521,6 +522,7 @@ jobs:
           gh api "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
             -f state=success \
             -f "context=$STATUS_CONTEXT" \
+            -f "target_url=${{ steps.tunnel.outputs.tunnel }}" \
             -f "description=app installed and running" || true
 
       - name: Install agent-device

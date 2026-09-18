@@ -38,9 +38,12 @@ function workflowRun(session) {
 }
 
 function streamUrl(session) {
-  const response = JSON.parse(gh('api', `repos/${session.repo}/commits/${session.sha}/status`));
-  const status = response.statuses.find((item) => item.context === `native-sim/${session.id}`);
-  return status?.state === 'success' && status.target_url
+  // Later progress statuses can omit target_url; keep the earlier tunnel URL.
+  const statuses = JSON.parse(gh('api',
+    `repos/${session.repo}/commits/${session.sha}/statuses?per_page=100`));
+  const status = statuses.find((item) => item.context === `native-sim/${session.id}`
+    && item.state === 'success' && item.target_url);
+  return status
     ? `${status.target_url.replace(/\/$/, '')}/?k=${session.key}`
     : null;
 }
