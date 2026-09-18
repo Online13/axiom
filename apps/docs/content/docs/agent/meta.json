@@ -3,7 +3,20 @@
   "root": true,
   "pages": [
     "index",
+    "workflow",
+    "---Setup---",
+    "agents-md",
+    "skill",
     "mcp",
-    "skill"
+    "llms-txt",
+    "---CLI for agents---",
+    "search",
+    "info",
+    "plan",
+    "doctor",
+    "json-output",
+    "---Quality---",
+    "verify",
+    "evaluations"
   ]
 }

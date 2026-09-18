@@ -1,14 +1,4 @@
 ---
 title: MCP
-description: "An MCP server that lets an agent read the Axiom catalog and add components."
+description: "A local MCP server built on the CLI, so an agent can search, read and plan with your project's configuration."
 ---
-
-<Callout title="Draft">Not implemented yet. This page describes the intent, not a shipped server.</Callout>
-
-The Model Context Protocol lets an editor or agent connect to a server that exposes tools and resources. An Axiom MCP server would put the catalog and the CLI behind that interface, so an agent can look up a component instead of guessing its API.
-
-## What it would expose
-
-- The component catalog: level, description, props, dependencies.
-- The tokens of the current project, read from `axiom.json` and the copied foundations.
-- `axiom add`, so the agent copies a component through the CLI rather than writing the file by hand.
