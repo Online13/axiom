@@ -5,7 +5,7 @@ An open source system for building mobile experiences with React Native and Expo
 ![Status: pre-alpha](https://img.shields.io/badge/status-pre--alpha-orange)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 
-**Axiom is being built in the open, and is not usable yet.** No component code has been written: the documentation describes what is being built, not what you can install today. See [Current state](#current-state) for what the repository holds.
+**Axiom is in pre-alpha.** The registry, CLI, documentation site, and demo apps are under active development. APIs and component behavior may change. See [Current state](#current-state) for what the repository contains today.
 
 > **Components are only the beginning.**
 
@@ -49,15 +49,13 @@ _A preview of a real mobile flow built with Axiom will be added here._
 
 | Part | Location | Status |
 | --- | --- | --- |
-| Specification | [`docs`](./docs) | Written (in French), including the [roadmap](./docs/roadmap) |
-| Documentation site | [`apps/docs`](./apps/docs) | Runs locally, not hosted yet |
-| Landing page | [`apps/landing`](./apps/landing) | Runs locally, not hosted yet |
-| Demo apps, one per styling tool | [`apps/demo-*`](./apps) | Empty shells, run locally |
-| Registry | [`packages/registry`](./packages/registry) | Set up, no items yet |
-| CLI | [`packages/cli`](./packages/cli) | `add` works from a local registry |
-| Components, behaviors, patterns | [`packages/registry`](./packages/registry) | Not started |
+| Documentation site | [`apps/docs`](./apps/docs) | Astro app with component guides and API pages |
+| Landing page | [`apps/landing`](./apps/landing) | Astro app |
+| Demo apps | [`apps`](./apps) | Four Expo apps, one per styling tool |
+| Registry | [`packages/registry`](./packages/registry) | Source for foundations, components, and hooks |
+| CLI | [`packages/cli`](./packages/cli) | Copies selected registry items into an app |
 
-The next step is [Phase 1](./docs/roadmap/phase-1.md): foundations, core primitives and the first atoms.
+The registry currently lists 53 items. The StyleSheet demo exercises them in an Expo app; the other demos cover Unistyles, NativeWind, and Uniwind. See [apps/README.md](./apps/README.md) for the workspace layout.
 
 ## Running locally
 
@@ -71,6 +69,19 @@ bun demo:stylesheet start     # start Metro
 ```
 
 More details in [`apps/README.md`](./apps/README.md).
+
+## Test the StyleSheet demo on iOS
+
+The `native-sim` workflow builds `apps/demo-stylesheet` on a GitHub macOS runner and streams an iOS Simulator to your browser. Authenticate `gh`, then commit and push your changes to `main` before starting a session:
+
+```bash
+gh auth login                         # once, if gh is not connected
+bun run sim:ios up --minutes 60       # start the build and simulator
+bun run sim:ios status                # retrieve the Simulator URL
+bun run sim:ios down                  # stop the session
+```
+
+Open the URL on the `Simulator:` line. The GitHub Actions URL tracks the build; the app is ready when **Install and launch app** succeeds. Keep the Simulator URL private because it contains the session access key. The full procedure is in [apps/demo-stylesheet/NATIVE_SIM.md](./apps/demo-stylesheet/NATIVE_SIM.md).
 
 ## Learn more
 
