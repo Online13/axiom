@@ -14,6 +14,12 @@ const components = [
 ];
 
 const initial = ['button', 'bottom-sheet'];
+
+// Two ways to take a component: with the system behind it, or on its own.
+const modes = [
+	{ id: 'system', name: 'With the theme', flag: '', note: 'the component and everything it rests on, light / dark included' },
+	{ id: 'standalone', name: 'Standalone', flag: ' --standalone', note: 'one self-contained file, no theme, yours to restyle', soon: true },
+];
 ---
 
 <section class="section section--solid registry" id="registry">
@@ -26,6 +32,30 @@ const initial = ['button', 'bottom-sheet'];
 				need, in your styling, nothing more.
 			</p>
 			<CopyCommand class="registry__cli" command={`npx axiom add ${initial.join(' ')}`} />
+
+			<div class="modes" role="radiogroup" aria-label="Install mode">
+				{
+					modes.map((mode, i) => (
+						<button
+							type="button"
+							role="radio"
+							class="mode"
+							aria-checked={i === 0 ? 'true' : 'false'}
+							tabindex={i === 0 ? 0 : -1}
+							data-flag={mode.flag}
+						>
+							<span class="mode__dot" aria-hidden="true" />
+							<span class="mode__body">
+								<span class="mode__name">
+									{mode.name}
+									{mode.soon && <small>soon</small>}
+								</span>
+								<span class="mode__note">{mode.note}</span>
+							</span>
+						</button>
+					))
+				}
+			</div>
 		</div>
 
 		<div class="registry__browse">
@@ -55,19 +85,43 @@ const initial = ['button', 'bottom-sheet'];
 
 <script>
 	const items = document.querySelectorAll<HTMLButtonElement>('.picker__item');
+	const modes = [...document.querySelectorAll<HTMLButtonElement>('.mode')];
 	const cmd = document.querySelector('.registry__cli .copy-cmd__text');
 
 	function update() {
 		const names = [...items]
 			.filter((i) => i.getAttribute('aria-pressed') === 'true')
 			.map((i) => i.dataset.name);
-		if (cmd) cmd.textContent = `npx axiom add ${names.length ? names.join(' ') : '…'}`;
+		const flag = modes.find((m) => m.getAttribute('aria-checked') === 'true')?.dataset.flag ?? '';
+		if (cmd) cmd.textContent = `npx axiom add ${names.length ? names.join(' ') : '…'}${flag}`;
 	}
 
 	items.forEach((item) => {
 		item.addEventListener('click', () => {
 			item.setAttribute('aria-pressed', String(item.getAttribute('aria-pressed') !== 'true'));
 			update();
+		});
+	});
+
+	function select(mode: HTMLButtonElement) {
+		modes.forEach((m) => {
+			const on = m === mode;
+			m.setAttribute('aria-checked', String(on));
+			m.tabIndex = on ? 0 : -1;
+		});
+		update();
+	}
+
+	modes.forEach((mode, i) => {
+		mode.addEventListener('click', () => select(mode));
+		// Arrow keys move between the two modes, as a radio group should.
+		mode.addEventListener('keydown', (event) => {
+			const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[event.key];
+			if (!step) return;
+			event.preventDefault();
+			const next = modes[(i + step + modes.length) % modes.length];
+			select(next);
+			next.focus();
 		});
 	});
 </script>
@@ -95,6 +149,84 @@ const initial = ['button', 'bottom-sheet'];
 
 	.registry {
 		padding-block: 5rem;
+	}
+
+	/* Install mode: the same picks, with or without the system behind them. */
+	.modes {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		width: 100%;
+		max-width: 26rem;
+		margin-top: -0.75rem;
+	}
+
+	.mode {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.625rem;
+		padding: 0.4rem 0;
+		background: none;
+		border: 0;
+		color: var(--muted);
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+		transition: color 0.2s;
+	}
+
+	.mode:hover,
+	.mode[aria-checked='true'] {
+		color: var(--fg);
+	}
+
+	.mode:focus-visible {
+		outline: 2px solid var(--fg);
+		outline-offset: 2px;
+	}
+
+	.mode__dot {
+		flex: none;
+		width: 0.875rem;
+		height: 0.875rem;
+		margin-top: 0.2rem;
+		border: 1px solid var(--line);
+		border-radius: 50%;
+		transition:
+			border-color 0.2s,
+			box-shadow 0.2s;
+	}
+
+	.mode[aria-checked='true'] .mode__dot {
+		border-color: var(--fg);
+		box-shadow: inset 0 0 0 3px var(--bg), inset 0 0 0 0.875rem var(--fg);
+	}
+
+	.mode__body {
+		display: flex;
+		min-width: 0;
+		flex-direction: column;
+		gap: 0.1rem;
+	}
+
+	.mode__name {
+		display: flex;
+		align-items: baseline;
+		gap: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+	}
+
+	.mode__name small {
+		font-size: 0.6875rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--line);
+	}
+
+	.mode__note {
+		font-size: 0.85rem;
+		color: var(--muted);
 	}
 
 	.registry__browse {
