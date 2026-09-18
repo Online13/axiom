@@ -46,6 +46,8 @@ Each demo has its own app id (`dev.axiom.demo.<variant>`), so all four install s
 
 ## iOS simulator in the browser
 
+For the repeatable test procedure, see [native-sim testing](demo-stylesheet/NATIVE_SIM.md).
+
 The root [native-sim workflow](../.github/workflows/native-sim.yml) builds `demo-stylesheet` on a GitHub macOS runner. It installs the Bun workspace from the repo root, regenerates Axiom components, then builds the Expo app from `apps/demo-stylesheet`.
 
 Before the first run, commit and push the workflow, its auth gate, and the launcher on the default branch. Authenticate the GitHub CLI with `gh auth login`. The launcher checks that the current commit is on GitHub, then dispatches the workflow without staging or committing local changes.
