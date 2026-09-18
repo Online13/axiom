@@ -3,8 +3,6 @@ title: Attachment
 description: "File attachment with preview, upload progress, removal and error state."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="close" /></span><span class="ax-appbar-title">Expense report</span><span class="ax-link ax-semibold" style={{ padding: '0 8px' }}>Submit</span></div>
   <div class="ax-body" style={{ gap: '10px' }}>
@@ -22,11 +20,13 @@ description: "File attachment with preview, upload progress, removal and error s
 npx axiom add attachment
 ```
 
-Also copies: [`icon-button`](/atoms/icon-button), [`spinner`](/atoms/spinner).
+Also copies: [`icon`](/atoms/icon), [`icon-button`](/atoms/icon-button), [`spinner`](/atoms/spinner), [`text`](/atoms/text) and [`tappable`](/core/tappable).
+
+Requires the `close`, `error`, `file`, `image` and `refresh` icons in your [icon registry](/atoms/icon#icons-that-components-need). Colors come from `attachment.{row,tile}.{default,uploading,done,error}` in the [component tokens](/foundations/component-tokens).
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Attachment } from '@/components/ui/attachment';
 
 <Attachment
@@ -42,7 +42,7 @@ import { Attachment } from '@/components/ui/attachment';
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `file` | `{ name: string; size?: number; mimeType?: string; uri?: string }` | — | The file to show. `mimeType` picks the icon; image and video `uri`s render a thumbnail. |
+| `file` | `{ name: string; size?: number; mimeType?: string; uri?: string }` | — | The file to show. An `image/*` or `video/*` `mimeType` gets the `image` icon and, with a `uri`, a thumbnail; anything else gets `file`. |
 | `status` | `'idle' \| 'uploading' \| 'done' \| 'error'` | derived | Upload state. Derived from `progress` and `error` when not set. |
 | `progress` | `number` | — | Upload progress from 0 to 1. Shows a bar (row) or a ring (tile). |
 | `error` | `string \| boolean` | — | Error state: red border and the message instead of the size. |

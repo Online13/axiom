@@ -3,8 +3,6 @@ title: BottomTabBar
 description: "Bottom navigation with safe areas, active states, badges and an optional main action."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview half="bottom">
   <div class="ax-appbar"><span class="ax-appbar-slot" /><span class="ax-appbar-title">Home</span><span class="ax-appbar-slot" data-side="end"><span class="ax-icon-btn"><Glyph name="bell" /></span></span></div>
   <div class="ax-body"><span class="ax-title2">Good morning, Ada</span><div class="ax-card" data-variant="filled"><div class="ax-card-content"><span class="ax-subhead ax-muted">This week</span><span class="ax-title1">12 tasks</span></div></div></div>
@@ -18,11 +16,13 @@ description: "Bottom navigation with safe areas, active states, badges and an op
 npx axiom add bottom-tab-bar
 ```
 
-Also copies: [`icon`](/atoms/icon) and [`badge`](/atoms/badge).
+Also copies: [`icon`](/atoms/icon), [`icon-button`](/atoms/icon-button), [`badge`](/atoms/badge), [`text`](/atoms/text), [`tappable`](/core/tappable) and [`useControllableState`](/hooks/use-controllable-state). Installs `react-native-safe-area-context`.
+
+Colors come from `bottomTabBar.{fixed,floating}` and `bottomTabBar.item.{default,active,disabled}` in the [component tokens](/foundations/component-tokens).
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { BottomTabBar } from '@/components/ui/bottom-tab-bar';
 
 <BottomTabBar value={route} onValueChange={navigate}>
@@ -44,7 +44,7 @@ import { BottomTabBar } from '@/components/ui/bottom-tab-bar';
 | `variant` | `'fixed' \| 'floating'` | `'fixed'` | Pins the bar to the screen edge or renders it as an inset pill. |
 | `hideOnKeyboard` | `boolean` | `true` | Hides the bar while the software keyboard is open, leaving more room for the field. |
 | `safeArea` | `boolean` | `true` | Adds the bottom safe-area inset. Disable it only when the parent already provides that space. |
-| `mainAction` | `ReactElement<IconButtonProps>` | — | Optional raised action between navigation items. It performs an action and never becomes the selected route. |
+| `mainAction` | `ReactElement<IconButtonProps>` | — | Optional raised action, dropped in the middle of the row whatever the number of items. It performs an action and never becomes the selected route. |
 | `children` | `ReactNode` | — | Two to five `BottomTabBar.Item` elements. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra styles for the outer bar. |
 

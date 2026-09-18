@@ -1,0 +1,46 @@
+---
+// Three frozen frames of a swipe between two tabs. The pages follow the finger 1:1;
+// the indicator reads the same progress, so it is always where the pages are.
+import TokenFrame from '@/components/tokens/token-frame.astro';
+
+const width = 104;
+const tab = width / 2;
+
+const frames = [
+  { progress: 0, caption: 'At rest on Active. The indicator sits under its tab, the next page is off screen.' },
+  { progress: 0.4, caption: 'Dragging. Pages and indicator share one progress value, so nothing lags behind the finger.' },
+  { progress: 1, caption: 'Released past a third of the width. The value changes now; the pager only finishes the travel.' },
+] as const;
+---
+
+<TokenFrame>
+  <div class="grid min-w-[28rem] grid-cols-3 gap-px bg-fd-border">
+    {
+      frames.map(({ progress, caption }) => (
+        <div class="flex flex-col gap-3 bg-fd-card p-3">
+          <div class="mx-auto h-[9.5rem] w-[104px] overflow-hidden rounded-md border bg-fd-card">
+            <div class="relative flex border-b text-[9px]">
+              <span class:list={['flex-1 py-1.5 text-center', progress < 0.5 ? 'font-semibold' : 'text-fd-muted-foreground']}>Active</span>
+              <span class:list={['flex-1 py-1.5 text-center', progress >= 0.5 ? 'font-semibold' : 'text-fd-muted-foreground']}>Past</span>
+              <span class="absolute bottom-0 h-0.5 bg-blue-500" style={`width:${tab}px;transform:translateX(${progress * tab}px)`} />
+            </div>
+            <div class="flex" style={`width:${width * 2}px;transform:translateX(${-progress * width}px)`}>
+              {[0, 1].map((page) => (
+                <div class="flex flex-col gap-1.5 p-2" style={`width:${width}px`}>
+                  {[0, 1, 2, 3].map((row) => (
+                    <div class="flex items-center gap-1.5">
+                      <span class:list={['size-4 flex-none rounded', page === 0 ? 'rounded-full bg-fd-muted' : 'bg-fd-muted']} />
+                      <span class="h-1.5 flex-1 rounded-full bg-fd-muted" style={`opacity:${1 - row * 0.15}`} />
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="font-mono text-xs text-fd-muted-foreground">progress {progress.toFixed(2)}</div>
+          <p class="text-xs text-fd-muted-foreground">{caption}</p>
+        </div>
+      ))
+    }
+  </div>
+</TokenFrame>

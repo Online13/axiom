@@ -3,8 +3,6 @@ title: "Pull-to-refresh"
 description: "Drag a list down from the top to reload its content."
 ---
 
-<Callout title="Draft">Specified, not implemented yet. The API is described in [useRefreshControl](/hooks/use-refresh-control) and may change.</Callout>
-
 <RefreshControlPreview />
 
 The user drags the list down while it is at the top. An indicator follows the finger. Releasing past a threshold reloads the content; releasing before it cancels.
@@ -72,26 +70,30 @@ drag = -contentOffset.y                drag = translationY
 ```
 
 - **iOS**: `useAnimatedScrollHandler` reads the overscroll. During `refreshing`, a top `contentInset` equal to `threshold` holds the list open.
-- **Android**: the `Pan` gesture runs alongside `Gesture.Native()` on the list. It turns off as soon as the list scrolls, and moves the content with an animated `translateY`.
+- **Android**: the `Pan` gesture runs alongside `Gesture.Native()` on the list, composed into one `Gesture.Simultaneous`. It gives the gesture back as soon as the list scrolls away from the top, and moves the list with an animated `translateY`.
 
-An indicator written once works on both.
+Both open the same gap above the list, so an indicator written once works on both. The indicator doesn't create that gap: it is positioned over it, `threshold` tall. Giving it a height that follows `distance` would move the content twice on iOS, where the bounce has already moved it.
 
 ### On release
 
 <PullToRefreshMachine />
 
-`minDuration` prevents the spinner from flashing when the request answers in 50ms. If `onRefresh` rejects, the list still settles; show the error with a [Toast](/atoms/toast).
+`minDuration` prevents the spinner from flashing when the request answers in 50ms. If `onRefresh` rejects, the list still settles; the hook doesn't catch the error, so show it from `onRefresh` with a [Toast](/atoms/toast).
 
 ### In a screen
 
-```tsx title="Conceptual"
+```tsx
 const refresh = useRefreshControl({ onRefresh: refetch, onArmed: haptics.light });
 
-<PullIndicator control={refresh} />
-<Animated.FlatList data={data} renderItem={renderItem} {...refresh.scrollProps} />
+<View style={{ flex: 1 }}>
+  <PullIndicator control={refresh} />
+  <GestureDetector gesture={refresh.gesture}>
+    <Animated.FlatList data={data} renderItem={renderItem} {...refresh.scrollProps} />
+  </GestureDetector>
+</View>
 ```
 
-`scrollProps` carries the scroll handler, the inset and the gesture. It works with `ScrollView`, `FlatList`, `SectionList` and `FlashList`. Options, return value and a custom indicator are documented in [useRefreshControl](/hooks/use-refresh-control).
+`scrollProps` carries the scroll handler, the inset and the animated style; `gesture` goes on the `GestureDetector` around the list, because a gesture can't travel as a prop. The list must be an `Animated` one. It works with `ScrollView`, `FlatList`, `SectionList` and FlashList. Options, return value and a custom indicator are documented in [useRefreshControl](/hooks/use-refresh-control).
 
 ## Accessibility
 

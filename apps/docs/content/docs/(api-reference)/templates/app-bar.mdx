@@ -3,8 +3,6 @@ title: AppBar
 description: "Mobile top bar with leading, title, actions and large-title search layouts."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview>
   <div class="ax-appbar"><span class="ax-appbar-slot"><span class="ax-appbar-back"><Glyph name="chevron-left" />Back</span></span><span class="ax-appbar-title">Inbox</span><span class="ax-appbar-slot" data-side="end"><span class="ax-icon-btn"><Glyph name="search" /></span><span class="ax-icon-btn"><Glyph name="more" /></span></span></div>
   <div class="ax-body">
@@ -22,11 +20,13 @@ description: "Mobile top bar with leading, title, actions and large-title search
 npx axiom add app-bar
 ```
 
-Also copies: [`icon-button`](/atoms/icon-button).
+Also copies: [`search-bar`](/molecules/search-bar), [`title`](/atoms/title) and their dependencies. Installs `react-native-reanimated` and `react-native-safe-area-context`.
+
+Colors come from `appBar.default` in the [component tokens](/foundations/component-tokens). The controls in the slots are yours: pass [IconButton](/atoms/icon-button), [Button](/atoms/button) or anything else.
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { AppBar } from '@/components/ui/app-bar';
 
 <AppBar>
@@ -50,7 +50,7 @@ import { AppBar } from '@/components/ui/app-bar';
 | `variant` | `'compact' \| 'large'` | `'compact'` | Uses a centered 17pt title or a 34pt title on a second row. Use `large` at the root of a section. |
 | `bordered` | `boolean` | `false` | Draws a hairline under the bar. Useful when content can scroll behind it. |
 | `safeArea` | `boolean` | `true` | Adds the top safe-area inset. Set it to `false` when `Scaffold` already owns that inset. |
-| `collapseProgress` | `number \| SharedValue<number>` | `0` | Progress from `0` to `1` used to collapse a large title and its search field into the compact bar. |
+| `collapseProgress` | `number \| SharedValue<number>` | `0` | From `0` to `1`: the large title fades and folds away first, the compact title takes its place, then the search field folds in turn. At `1` only the compact bar is left. A plain number or a shared value driven by a scroll handler. |
 | `elevationProgress` | `number \| SharedValue<number>` | — | From `0` to `1`: fades in the background and the hairline. Overrides `bordered`. See [Scroll-aware AppBar](/behaviors/scroll-aware-app-bar). |
 | `titleProgress` | `number \| SharedValue<number>` | `1` | From `0` to `1`: fades in the compact title, when the page shows its own title first. |
 | `backgroundColor` | `ColorValue` | background token | Overrides the bar background without changing the screen background. |
@@ -75,9 +75,11 @@ The two side slots keep equal minimum widths. That leaves the compact title visu
 
 ### AppBar.Search
 
+The slots can be written in any order: AppBar puts `Leading`, `Title` and `Actions` in the bar row, and the large title and `Search` under it.
+
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `collapsible` | `boolean` | `true` | Moves the search field into the compact bar as `collapseProgress` reaches `1`. |
+| `collapsible` | `boolean` | `true` | Folds the field away as `collapseProgress` passes `0.6`. `false` pins it under the bar at every progress. |
 | `...SearchBarProps` | — | — | Every [SearchBar](/molecules/search-bar) prop, including `value`, `onChangeText` and `onCancel`. |
 
 ## Use cases

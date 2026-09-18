@@ -3,8 +3,6 @@ title: Scaffold
 description: "Screen structure for safe areas, top chrome, scrollable content and a fixed footer."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <ScaffoldAnatomy />
 
 ## Installation
@@ -13,9 +11,13 @@ description: "Screen structure for safe areas, top chrome, scrollable content an
 npx axiom add scaffold
 ```
 
+Also copies: [`app-bar`](/templates/app-bar) and its dependencies. Installs `react-native-keyboard-controller` and `react-native-safe-area-context`. Scaffold brings no tokens of its own: it uses the screen background and the bar's.
+
+Your app needs `KeyboardProvider` at its root for `keyboardAvoiding` to work.
+
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Scaffold } from '@/components/ui/scaffold';
 
 <Scaffold>
@@ -65,7 +67,7 @@ import { Scaffold } from '@/components/ui/scaffold';
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | — | Fixed actions shown after the content region. |
 | `bordered` | `boolean` | `false` | Draws a hairline above the footer when scrolling content passes behind it. |
-| `safeArea` | `boolean` | `true` | Adds the bottom inset when the root owns the bottom safe area. |
+| `safeArea` | `boolean` | `false` | Adds the bottom safe-area inset to the footer. Leave it off while the root owns the `bottom` edge, which it does by default — otherwise the inset lands twice. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra footer styles. |
 
 ## Use cases

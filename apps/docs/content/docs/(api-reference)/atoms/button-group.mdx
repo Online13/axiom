@@ -62,6 +62,8 @@ import { ButtonGroup } from '@/components/ui/button-group';
 
 `ButtonGroup` only handles layout. It doesn't track a selection: for one choice among several, use [SegmentedControl](/atoms/segmented-control).
 
+Use `ButtonGroup.Item` for an action wrapped by another component. Its `render` callback provides `containerStyle` for the wrapper and `buttonStyle` for the visible button. Set `grow={false}` to keep that action compact in a full-width group.
+
 ## Use cases
 
 ### Split button
@@ -78,15 +80,28 @@ The main action and a chevron that opens a [Menu](/atoms/menu) of alternatives.
 </PhonePreview>
 
 ```tsx
-<ButtonGroup fullWidth>
-  <Button onPress={downloadPdf}>Download PDF</Button>
-  <Menu.Root>
-    <Menu.Trigger asChild>
-      <IconButton icon="chevron-down" accessibilityLabel="Other formats" />
-    </Menu.Trigger>
-    <Menu.Content>…</Menu.Content>
-  </Menu.Root>
-</ButtonGroup>
+<Menu.Root>
+  <ButtonGroup fullWidth>
+    <Button onPress={downloadPdf}>Download PDF</Button>
+    <ButtonGroup.Item
+      grow={false}
+      render={({ containerStyle, buttonStyle, size, disabled }) => (
+        <Menu.Trigger action="press" asChild style={containerStyle}>
+          <IconButton
+            icon="chevron-down"
+            accessibilityLabel="Other formats"
+            variant="solid"
+            shape="square"
+            size={size}
+            disabled={disabled}
+            style={buttonStyle}
+          />
+        </Menu.Trigger>
+      )}
+    />
+  </ButtonGroup>
+  <Menu.Content>…</Menu.Content>
+</Menu.Root>
 ```
 
 ### Stepper
@@ -121,9 +136,9 @@ Minus and plus around a value, read as one control.
 
 ```tsx
 <Dialog.Actions>
-  <ButtonGroup attached={false} fullWidth>
-    <Button variant="outline" onPress={close}>Stay</Button>
-    <Button onPress={leave}>Leave</Button>
+  <ButtonGroup attached={false} fullWidth style={{ flex: 1 }}>
+    <Dialog.Cancel>Stay</Dialog.Cancel>
+    <Dialog.Action onPress={leave}>Leave</Dialog.Action>
   </ButtonGroup>
 </Dialog.Actions>
 ```

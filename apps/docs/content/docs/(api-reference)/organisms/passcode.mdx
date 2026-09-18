@@ -3,8 +3,6 @@ title: Passcode
 description: "Complete experience for entering a secret code."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview half="bottom">
   <div class="ax-center" style={{ gap: '14px', paddingTop: '0px' }}><Glyph name="lock" size={26} /><span class="ax-title3">Enter passcode</span><div class="ax-pin"><span data-filled /><span data-filled /><span /><span /></div></div>
   <div class="ax-keypad" style={{ paddingBottom: '20px' }}>
@@ -22,7 +20,9 @@ description: "Complete experience for entering a secret code."
 npx axiom add passcode
 ```
 
-Installs: `expo-haptics`.
+Also copies: [`icon`](/atoms/icon), [`text`](/atoms/text), [`tappable`](/core/tappable) and [`useControllableState`](/hooks/use-controllable-state). Installs `react-native-reanimated`.
+
+Requires the `backspace` and `biometrics` icons in your [icon registry](/atoms/icon#icons-that-components-need). Colors come from `passcode.slot.{dot,box}` and `passcode.key.{round,flat}` in the [component tokens](/foundations/component-tokens).
 
 ## Anatomy
 
@@ -38,7 +38,7 @@ Passcode is a compound component built from:
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Passcode } from '@/components/ui/passcode';
 
 <Passcode length={4} value={code} onChange={setCode} onComplete={unlock}>
@@ -64,11 +64,10 @@ import { Passcode } from '@/components/ui/passcode';
 | `length` | `number` | `4` | Number of digits. |
 | `value` | `string` | — | The code typed so far. Use with `onChange` for a controlled passcode. |
 | `onChange` | `(value: string) => void` | — | Called on each key press and deletion. |
-| `onComplete` | `(value: string) => void \| Promise<boolean>` | — | Called when the last digit is typed. Return `false` (or a promise of `false`) to play the error animation and clear the code. |
+| `onComplete` | `(value: string) => void \| boolean \| Promise<boolean \| void>` | — | Called when the last digit is typed. Return `false`, or a promise of `false`, to play the error animation and clear the code. A promise puts the keypad in `verifying` until it settles. |
 | `status` | `'idle' \| 'verifying' \| 'error' \| 'success'` | `'idle'` | Drives the slots: `verifying` blocks the keypad, `error` shakes and turns the slots red, `success` fills them green. |
 | `secure` | `boolean` | `true` | Slots show filled dots. `false` shows the digits, for a code the user reads from somewhere. |
-| `haptics` | `boolean` | `true` | Light tap on each key, error pattern on a wrong code. |
-| `children` | `ReactNode` | — | `Group` and `Keyboard`, in any layout. |
+| `children` | `ReactNode` | — | `Group` and `Keyboard`, in any layout. Left out, both are rendered in order. |
 
 ### Passcode.Group, Passcode.Slot
 
@@ -84,17 +83,21 @@ import { Passcode } from '@/components/ui/passcode';
 | --- | --- | --- | --- |
 | `variant` | `'round' \| 'flat'` | `'round'` | `round`: iOS lock screen keys. `flat`: full-width keys like the system number pad. |
 | `letters` | `boolean` | `true` | Shows `ABC`, `DEF`… under the digits. |
-| `children` | `ReactNode` | — | 12 keys, laid out in a 3×4 grid. |
+| `children` | `ReactNode` | — | 12 keys, laid out in a 3×4 grid. Left out, the digits with a delete key. |
 
 ### Passcode.Key, Passcode.KeyAction
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `value` | `string` | — | On `Key`: the digit it types. |
-| `action` | `'delete' \| 'biometrics' \| 'custom'` | — | On `KeyAction`: `delete` removes the last digit (long press clears all), `biometrics` shows a Face ID or fingerprint icon depending on the device. |
+| `action` | `'delete' \| 'biometrics' \| 'custom'` | — | On `KeyAction`: `delete` removes the last digit (long press clears all), `biometrics` draws the `biometrics` icon of your registry — map it to Face ID or a fingerprint as your app sees fit. |
 | `onPress` | `() => void` | — | On `KeyAction`: required for `biometrics` and `custom`. |
 | `children` | `ReactNode` | — | Replaces the default content of the key. |
 | `accessibilityLabel` | `string` | digit / action | Keys are announced as buttons; slots announce "2 of 4 digits entered", never the digits. |
+
+### Haptics
+
+Keys have no haptic feedback yet. The library that produces it depends on the project, like the icon source, so Axiom waits to ask for it once rather than pull in one per component. Wire your own in `onComplete` and on the keys meanwhile.
 
 ## In-app keypad
 

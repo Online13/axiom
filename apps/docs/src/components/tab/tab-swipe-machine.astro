@@ -1,0 +1,21 @@
+---
+// What the pager does with a horizontal drag. On release, velocity decides first, distance second.
+import StateMachine, { type StateEdge, type StateNode } from '@/components/state-machine/state-machine.astro';
+
+const nodes: StateNode[] = [
+  { id: 'resting', label: 'resting', x: 130, y: 90, caption: 'One page fills the pager, the indicator sits under its tab. A horizontal drag past 10pt takes it; a vertical one goes to the list inside the page.' },
+  { id: 'dragging', label: 'dragging', x: 400, y: 90, caption: 'Pages and indicator follow the finger on one shared progress value. At the first and last page, movement outward meets resistance.' },
+  { id: 'settling', label: 'settling', x: 640, y: 90, caption: 'The value has already changed. The pager animates to the page it committed to; a new drag interrupts it.' },
+];
+
+const edges: StateEdge[] = [
+  { from: 'resting', to: 'dragging', label: 'drag past 10pt', via: [265, 30] },
+  { from: 'dragging', to: 'resting', label: 'cancelled · the list takes over', via: [265, 165] },
+  { from: 'dragging', to: 'settling', label: 'release · flick over 500pt/s or past w/3', via: [520, 30], labelOffset: [0, -6] },
+  { from: 'settling', to: 'dragging', label: 'drag', via: [520, 155] },
+  { from: 'settling', to: 'resting', label: 'travel ends', via: [385, 265] },
+  { from: 'resting', to: 'settling', label: 'tab pressed', via: [385, 320], labelOffset: [0, 10] },
+];
+---
+
+<StateMachine nodes={nodes} edges={edges} initial="resting" width={760} height={350} />

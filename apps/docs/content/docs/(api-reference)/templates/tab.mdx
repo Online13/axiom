@@ -1,9 +1,7 @@
 ---
 title: Tab
-description: "Presentational top tabs with controlled selection, badges and scrollable layouts."
+description: "Presentational top tabs with controlled selection, badges, scrollable layouts and optional swipe between panels."
 ---
-
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
 
 <PhonePreview>
   <div class="ax-appbar"><span class="ax-appbar-slot"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span></span><span class="ax-appbar-title">Activity</span><span class="ax-appbar-slot" data-side="end"><span class="ax-icon-btn"><Glyph name="filter" /></span></span></div>
@@ -17,9 +15,13 @@ description: "Presentational top tabs with controlled selection, badges and scro
 npx axiom add tab
 ```
 
+Also copies: [`icon`](/atoms/icon), [`badge`](/atoms/badge), [`text`](/atoms/text), [`tappable`](/core/tappable) and [`useControllableState`](/hooks/use-controllable-state). Installs `react-native-reanimated` and `react-native-gesture-handler`.
+
+Colors come from `tab.{underline,pill}.{default,selected,disabled}` in the [component tokens](/foundations/component-tokens).
+
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { Tab } from '@/components/ui/tab';
 
 <Tab value={section} onValueChange={setSection}>
@@ -40,8 +42,8 @@ import { Tab } from '@/components/ui/tab';
 | `onValueChange` | `(value: string) => void` | — | Called after an enabled tab is pressed. Use it to swap nearby content, not to push a new screen. |
 | `variant` | `'underline' \| 'pill'` | `'underline'` | Uses an indicator below the label or a filled capsule behind it. |
 | `scrollable` | `boolean` | `false` | Lets items keep their natural width and scroll horizontally. Use it when four or more labels do not fit. |
-| `indicatorTransition` | `Transition` | spring token | Animation used when the underline moves between items. |
-| `children` | `ReactNode` | — | Two or more `Tab.Item` elements. |
+| `swipeEnabled` | `boolean` | `false` | Also switches tab on a horizontal drag across the panels. Requires `Tab.Panel` children. |
+| `children` | `ReactNode` | — | Two or more `Tab.Item` elements, and one `Tab.Panel` per item when the screen owns its content. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra styles for the tab list. |
 
 ### Tab.Item
@@ -55,7 +57,55 @@ import { Tab } from '@/components/ui/tab';
 | `disabled` | `boolean` | `false` | Blocks selection and exposes the disabled accessibility state. |
 | `accessibilityLabel` | `string` | label text | Spoken label when the visible text needs more context. |
 
-`Tab` sets the tab list, tab and selected accessibility roles. It does not mount or unmount the corresponding panels.
+### Tab.Panel
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | — | Value of the `Tab.Item` this panel belongs to. |
+| `children` | `ReactNode` | — | Content shown while that tab is selected. |
+| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the panel. |
+
+The indicator travels on a spring, and lands without animating the first time: it has nothing to travel from until the items have been measured. Reduced motion moves it without animation.
+
+`Tab` sets the tab list, tab and selected accessibility roles. Panels are optional: without them `Tab` is only a row, and the screen decides what to render under it.
+
+## Swipe to switch
+
+`swipeEnabled` changes what the component is. A tab row is a set of buttons; a swipeable tab row is a pager whose tabs are a map of where the finger can go. Both are correct, and which one a screen wants is not something the component can guess — so it is a choice, off by default.
+
+Turn it on when the tabs are peers over the same kind of content, the way a feed, an inbox or an order list reads. Leave it off when the panel owns the horizontal axis — a carousel, a pannable chart, rows with [swipe actions](/behaviors/swipe-actions) — or when the panels are unrelated enough that landing on the next one by accident is a mistake rather than a shortcut.
+
+The markup is the same either way: panels are declared with `Tab.Panel`, next to the items.
+
+```tsx
+<Tab swipeEnabled value={section} onValueChange={setSection}>
+  <Tab.Item value="all">All</Tab.Item>
+  <Tab.Item value="mentions">Mentions</Tab.Item>
+
+  <Tab.Panel value="all"><Feed /></Tab.Panel>
+  <Tab.Panel value="mentions"><Mentions /></Tab.Panel>
+</Tab>
+```
+
+With `swipeEnabled` off, the selected panel is rendered and the others are not; the layout is the row plus its content. With it on, `Tab` fills its parent and lays the panels side by side in a row that follows the finger, so it needs a bounded height — inside a [Scaffold](/templates/scaffold) body, that is already the case.
+
+<TabSwipeFrames />
+
+The pages and the indicator read one progress value. The indicator is not animated toward the new tab on release: it is already where the finger left it, and only finishes the last part of the travel.
+
+<TabSwipeMachine />
+
+- The drag activates past 10pt horizontally and gives up on vertical movement, so a list inside a panel still scrolls.
+- On release, velocity decides first: a flick over 500pt/s switches tab whatever the distance. Otherwise a drag past a third of the width switches, and anything shorter returns.
+- `onValueChange` fires on release, not when the travel ends. The screen sees the new value while the pages are still moving.
+- At the first and last panel, movement outward meets resistance and springs back. The pager does not wrap.
+- Pressing an adjacent tab animates the pager. Pressing a farther one jumps, rather than flying through the panels in between.
+- Reduced motion leaves dragging untouched — it is direct manipulation, not animation — and makes the settle and the tab-press travel instant.
+- A panel mounts the first time it is reached and stays mounted. The panel next to the finger mounts as soon as the drag starts, so it is never blank while entering.
+- Panels that are off screen are hidden from the screen reader, which switches tab by pressing them. Nothing in the behavior is gesture-only.
+- A horizontal gesture that starts inside a panel wins: the pager waits for it to fail before claiming the drag.
+
+With `scrollable`, the item row scrolls the selected item into view as the pager moves, not after it lands.
 
 ## Use cases
 

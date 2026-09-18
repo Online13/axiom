@@ -3,8 +3,6 @@ title: ToolBar
 description: "Contextual action bar with docked and floating placements."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview half="bottom">
   <div class="ax-appbar" data-border><span class="ax-appbar-slot"><span class="ax-btn" data-variant="ghost" data-size="sm">Cancel</span></span><span class="ax-appbar-title">3 selected</span><span class="ax-appbar-slot" /></div>
   <div class="ax-list" data-variant="plain"><div class="ax-item"><span class="ax-checkbox" data-state="checked"><Glyph name="check" size={14} /></span><div class="ax-item-content"><span class="ax-item-title">IMG_1842.jpg</span><span class="ax-item-desc">Today, 09:42</span></div></div><div class="ax-item"><span class="ax-checkbox" data-state="checked"><Glyph name="check" size={14} /></span><div class="ax-item-content"><span class="ax-item-title">IMG_1839.jpg</span><span class="ax-item-desc">Yesterday, 18:07</span></div></div></div>
@@ -18,11 +16,13 @@ description: "Contextual action bar with docked and floating placements."
 npx axiom add tool-bar
 ```
 
-Also copies: [`icon-button`](/atoms/icon-button).
+Also copies: [`icon`](/atoms/icon), [`text`](/atoms/text) and [`tappable`](/core/tappable). Installs `react-native-reanimated` and `react-native-safe-area-context`.
+
+Colors come from `toolBar.{docked,floating}` and `toolBar.action.{default,selected,destructive,disabled}` in the [component tokens](/foundations/component-tokens).
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { ToolBar } from '@/components/ui/tool-bar';
 
 <ToolBar placement="floating">
@@ -40,7 +40,7 @@ import { ToolBar } from '@/components/ui/tool-bar';
 | `children` | `ReactNode` | — | Actions and optional separators. Keep the most useful actions visible. |
 | `placement` | `'docked' \| 'floating'` | `'docked'` | Attaches to the bottom edge or renders as an inset capsule over content. |
 | `safeArea` | `boolean` | `true` | Adds the bottom safe-area inset for a docked bar. Floating bars use an inset margin instead. |
-| `visible` | `boolean` | `true` | Shows or hides the bar with its enter and exit transition. |
+| `visible` | `boolean` | `true` | Shows or hides the bar with its enter and exit transition. A hidden bar keeps its space and takes no touches. |
 | `justify` | `'start' \| 'center' \| 'between' \| 'around'` | `'around'` | Distributes actions across the available width. |
 | `accessibilityLabel` | `string` | `'Actions'` | Name announced for the toolbar landmark. |
 | `style` | `StyleProp<ViewStyle>` | — | Extra styles for the outer bar. |

@@ -3,8 +3,6 @@ title: DatePicker
 description: "Date selection built from Calendar and BottomSheet."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
-
 <PhonePreview half="bottom">
   <div class="ax-body" style={{ gap: '12px' }}>
     <div class="ax-field"><span class="ax-label">Departure</span><div class="ax-control" data-state="focused"><Glyph name="calendar" size={20} /><span class="ax-value">Thu 17 Sep 2026</span></div></div>
@@ -30,11 +28,13 @@ description: "Date selection built from Calendar and BottomSheet."
 npx axiom add date-picker
 ```
 
-Also copies: [`calendar`](/atoms/calendar), [`bottom-sheet`](/atoms/bottom-sheet) and their dependencies.
+Also copies: [`calendar`](/atoms/calendar), [`bottom-sheet`](/atoms/bottom-sheet), [`button`](/atoms/button), [`chip`](/atoms/chip), [`input`](/atoms/input) and their dependencies.
+
+Requires the `calendar` icon in your [icon registry](/atoms/icon#icons-that-components-need). The field borrows the colors of [Input](/atoms/input): DatePicker brings no tokens of its own.
 
 ## Usage
 
-```tsx title="Conceptual"
+```tsx
 import { DatePicker } from '@/components/ui/date-picker';
 
 <DatePicker label="Departure" value={date} onChange={setDate} />
@@ -62,7 +62,8 @@ The field opens a sheet containing a calendar, so the user picks a date without 
 | `confirm` | `'done' \| 'instant'` | `'done'` | `done`: the value changes on Done, Cancel reverts it. `instant`: the sheet closes on the first press (single mode only). |
 | `label` | `string` | — | Label above the field, like [Input](/atoms/input). |
 | `placeholder` | `string` | `'Select a date'` | Text in the empty field. |
-| `helper` / `error` | `string` | — | Same as Input. |
+| `helper` | `string` | — | Note under the field, like [Input](/atoms/input). |
+| `error` | `string \| boolean` | — | Puts the field in the `invalid` state. A string also replaces `helper`. |
 | `format` | `(value) => string` | locale medium date | How the value is written in the field, e.g. "Thu 17 Sep 2026". |
 | `title` | `string` | `label` | Title of the sheet. |
 | `minDate` / `maxDate` | `Date` | — | Limits, passed to the calendar. |
