@@ -11,7 +11,7 @@ import { Label, Panel, Row, Section } from '@/demo/section';
 import { Screen } from '@/demo/screen';
 import { useTheme } from '@/theme';
 
-export default function OverlayScreen() {
+export default function OverlayScreen({ focus = 'overlay' }: { focus?: 'overlay' | 'portal' }) {
   const { tokens, colors } = useTheme();
   const { isHostAvailable } = usePortal();
   const [open, setOpen] = useState(false);
@@ -24,7 +24,12 @@ export default function OverlayScreen() {
 
   return (
     <Screen>
-      <Section title="Portal" description="The dialog below is declared in this screen but drawn in the root PortalHost.">
+      <Section
+        title={focus === 'portal' ? 'Portal' : 'Overlay'}
+        description={focus === 'portal'
+          ? 'This content is declared here and rendered in the root PortalHost.'
+          : 'The backdrop fades, blocks touches and can close its content.'}
+      >
         <Panel>
           <Label muted>Root host mounted: {isHostAvailable ? 'yes' : 'no'}</Label>
           <Row label="Close on backdrop press" description="Off: the overlay blocks the screen but ignores presses">

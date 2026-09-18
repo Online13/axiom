@@ -7,7 +7,6 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { PortalHost, PortalProvider } from '@/components/core/portal';
 import { SnackbarHost } from '@/components/ui/snackbar';
 import { Toaster } from '@/components/ui/toast';
-import { SCREENS } from '@/demo/screens';
 import { ThemeButton } from '@/demo/theme-button';
 import { useTheme } from '@/theme';
 
@@ -19,18 +18,13 @@ export default function RootLayout() {
       <KeyboardProvider>
         <PortalProvider>
           <StatusBar style="auto" />
+          {/* Every screen draws its own AppBar, so the navigator has no header of its own. */}
           <Stack
             screenOptions={{
-              headerStyle: { backgroundColor: colors.background.default },
-              headerTintColor: colors.content.default,
+              headerShown: false,
               contentStyle: { backgroundColor: colors.background.subtle },
             }}
-          >
-            <Stack.Screen name="index" options={{ title: 'Axiom' }} />
-            {SCREENS.map((screen) => (
-              <Stack.Screen key={screen.name} name={screen.name} options={{ title: screen.title }} />
-            ))}
-          </Stack>
+          />
           <ThemeButton />
           <Toaster />
           <SnackbarHost />

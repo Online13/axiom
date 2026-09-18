@@ -30,6 +30,9 @@ function symbol(ios: IosSymbol, android: AndroidSymbol): IconComponent {
 export const icons = {
   add: symbol('plus', 'add'),
   'arrow-left': symbol('arrow.left', 'arrow_back'),
+  backspace: symbol('delete.left', 'backspace'),
+  biometrics: symbol('faceid', 'fingerprint'),
+  calendar: symbol('calendar', 'calendar_today'),
   check: symbol('checkmark', 'check'),
   'chevron-down': symbol('chevron.down', 'keyboard_arrow_down'),
   'chevron-left': symbol('chevron.left', 'chevron_left'),
@@ -38,8 +41,11 @@ export const icons = {
   delete: symbol('trash', 'delete'),
   error: symbol('exclamationmark.circle', 'error'),
   favorite: symbol('heart', 'favorite'),
+  file: symbol('doc', 'description'),
+  image: symbol('photo', 'image'),
   info: symbol('info.circle', 'info'),
   minus: symbol('minus', 'remove'),
+  refresh: symbol('arrow.clockwise', 'refresh'),
   search: symbol('magnifyingglass', 'search'),
   settings: symbol('gearshape', 'settings'),
   share: symbol('square.and.arrow.up', 'share'),
@@ -48,7 +54,6 @@ export const icons = {
   // Demo only: the theme button.
   'theme-dark': symbol('moon', 'dark_mode'),
   'theme-light': symbol('sun.max', 'light_mode'),
-  'theme-system': symbol('circle.lefthalf.filled', 'contrast'),
   edit: symbol('pencil', 'edit'),
   // Demo only: the password field.
   visible: symbol('eye', 'visibility'),

@@ -5,7 +5,6 @@ import { Accordion } from '@/components/ui/accordion';
 import { Avatar } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ButtonGroup } from '@/components/ui/button-group';
 import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { IconButton } from '@/components/ui/icon-button';
@@ -40,7 +39,6 @@ export default function CardScreen() {
   const [language, setLanguage] = useState('en');
   const [wifi, setWifi] = useState(true);
   const [notify, setNotify] = useState<Set<string>>(new Set(['mentions']));
-  const [range, setRange] = useState('week');
   const [open, setOpen] = useState<string[]>(['shipping']);
 
   return (
@@ -200,30 +198,6 @@ export default function CardScreen() {
         </Panel>
       </Section>
 
-      <Section title="ButtonGroup" description="Attached, spaced, vertical, full width.">
-        <Panel>
-          <ButtonGroup variant="outline" size="sm">
-            {['day', 'week', 'month'].map((value) => (
-              <Button key={value} variant={range === value ? 'solid' : undefined} onPress={() => setRange(value)}>
-                {value[0].toUpperCase() + value.slice(1)}
-              </Button>
-            ))}
-          </ButtonGroup>
-          <ButtonGroup attached={false} fullWidth>
-            <Button variant="outline">Cancel</Button>
-            <Button>Continue</Button>
-          </ButtonGroup>
-          <ButtonGroup orientation="vertical" variant="outline">
-            <Button>Top</Button>
-            <Button>Middle</Button>
-            <Button>Bottom</Button>
-          </ButtonGroup>
-          <ButtonGroup variant="outline" disabled>
-            <Button>Disabled</Button>
-            <Button>Group</Button>
-          </ButtonGroup>
-        </Panel>
-      </Section>
     </Screen>
   );
 }

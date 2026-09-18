@@ -13,9 +13,12 @@
   "items": [
     "accordion",
     "alert",
+    "app-bar",
+    "attachment",
     "avatar",
     "badge",
     "bottom-sheet",
+    "bottom-tab-bar",
     "button",
     "button-group",
     "calendar",
@@ -23,6 +26,7 @@
     "carousel",
     "checkbox",
     "chip",
+    "date-picker",
     "dialog",
     "empty",
     "floating-button",
@@ -35,8 +39,11 @@
     "menu",
     "option-item",
     "overlay",
+    "passcode",
     "portal",
     "radio",
+    "scaffold",
+    "search-bar",
     "segmented-control",
     "separator",
     "skeleton",
@@ -45,6 +52,7 @@
     "snackbar",
     "spinner",
     "switch",
+    "tab",
     "tappable",
     "text",
     "text-area",
@@ -52,7 +60,9 @@
     "title",
     "toast",
     "tokens",
+    "tool-bar",
     "use-controllable-state",
-    "use-overlay-back-handler"
+    "use-overlay-back-handler",
+    "use-refresh-control"
   ]
 }

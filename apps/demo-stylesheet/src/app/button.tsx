@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { Button, type ButtonSize, type ButtonVariant } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label, Panel, Row, Section } from '@/demo/section';
 import { Screen } from '@/demo/screen';
@@ -16,6 +17,7 @@ export default function ButtonScreen() {
   const [loading, setLoading] = useState(false);
   const [presses, setPresses] = useState(0);
   const [paying, setPaying] = useState(false);
+  const [formValid, setFormValid] = useState(false);
 
   const pay = () => {
     setPaying(true);
@@ -79,21 +81,53 @@ export default function ButtonScreen() {
         </Panel>
       </Section>
 
-      <Section title="Use cases">
+      <Section title="Main action at the bottom of a form">
         <Panel>
-          <Button size="lg" fullWidth leadingIcon="check" loading={paying} onPress={pay}>
+          <Button size="lg" fullWidth onPress={() => setPresses((value) => value + 1)}>
+            Sign in
+          </Button>
+          <Button variant="ghost" fullWidth>
+            Create an account
+          </Button>
+        </Panel>
+      </Section>
+
+      <Section title="Waiting for a request">
+        <Panel>
+          <Button size="lg" fullWidth loading={paying} onPress={pay}>
             {paying ? 'Paying' : 'Pay $88.90'}
           </Button>
-          <View style={{ flexDirection: 'row', gap: tokens.spacing[2] }}>
-            <Button variant="outline" style={{ flex: 1 }} disabled={disabled}>
-              Decline
-            </Button>
-            <Button style={{ flex: 1 }} disabled={disabled}>
-              Accept
-            </Button>
-          </View>
-          <Button variant="ghost" fullWidth>
-            Skip
+        </Panel>
+      </Section>
+
+      <Section title="Disabled until the form is valid">
+        <Panel>
+          <Row label="Form is valid">
+            <Switch value={formValid} onValueChange={setFormValid} accessibilityLabel="Form is valid" />
+          </Row>
+          <Button fullWidth disabled={!formValid} onPress={() => setPresses((value) => value + 1)}>
+            Save
+          </Button>
+        </Panel>
+      </Section>
+
+      <Section title="Primary and secondary side by side">
+        <Card variant="outlined">
+          <Card.Header>
+            <Card.Title>Team offsite</Card.Title>
+            <Card.Description>Friday, 10:00 · Lisbon</Card.Description>
+          </Card.Header>
+          <Card.Footer>
+            <Button variant="outline" style={{ flex: 1 }} onPress={() => setPresses((value) => value + 1)}>Decline</Button>
+            <Button style={{ flex: 1 }} onPress={() => setPresses((value) => value + 1)}>Accept</Button>
+          </Card.Footer>
+        </Card>
+      </Section>
+
+      <Section title="Label with an icon">
+        <Panel>
+          <Button size="lg" leadingIcon="add" style={{ flex: 1 }} onPress={() => setPresses((value) => value + 1)}>
+            Add to cart
           </Button>
         </Panel>
       </Section>

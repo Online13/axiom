@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
 import { View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
@@ -11,8 +11,18 @@ type SectionProps = {
   children: ReactNode;
 };
 
+const SectionFilter = createContext<readonly string[] | null>(null);
+
+/** Selects the examples shown by a component route. */
+export function SectionScope({ titles, children }: { titles: readonly string[]; children: ReactNode }) {
+  return <SectionFilter value={titles}>{children}</SectionFilter>;
+}
+
 export function Section({ title, description, children }: SectionProps) {
+  const visible = useContext(SectionFilter);
   const { tokens } = useTheme();
+
+  if (visible && !visible.includes(title)) return null;
 
   return (
     <View style={{ gap: tokens.spacing[3] }}>

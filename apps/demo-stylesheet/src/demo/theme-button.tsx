@@ -1,37 +1,29 @@
 import { useState } from 'react';
-import { Appearance } from 'react-native';
+import { Appearance, useColorScheme } from 'react-native';
 
 import { FloatingButton } from '@/components/ui/floating-button';
-import type { IconName } from '@/components/ui/icons';
 
-type Scheme = 'unspecified' | 'light' | 'dark';
+type Scheme = 'light' | 'dark';
 
-const NEXT: Record<Scheme, Scheme> = { unspecified: 'light', light: 'dark', dark: 'unspecified' };
+const LABEL: Record<Scheme, string> = { light: 'Light', dark: 'Dark' };
 
-const LABEL: Record<Scheme, string> = { unspecified: 'System', light: 'Light', dark: 'Dark' };
-
-const ICON: Record<Scheme, IconName> = {
-  unspecified: 'theme-system',
-  light: 'theme-light',
-  dark: 'theme-dark',
-};
-
-/** Cycles System → Light → Dark on every screen, to check each component in both themes. */
+/** Toggles Light ↔ Dark on every screen, to check each component in both themes. */
 export function ThemeButton() {
-  const [scheme, setScheme] = useState<Scheme>('unspecified');
+  const system = useColorScheme();
+  const [scheme, setScheme] = useState<Scheme>(system === 'dark' ? 'dark' : 'light');
 
-  const cycle = () => {
-    const next = NEXT[scheme];
+  const toggle = () => {
+    const next: Scheme = scheme === 'dark' ? 'light' : 'dark';
     setScheme(next);
     Appearance.setColorScheme(next);
   };
 
   return (
     <FloatingButton
-      icon={ICON[scheme]}
+      icon={scheme === 'dark' ? 'theme-dark' : 'theme-light'}
       variant="tinted"
-      accessibilityLabel={`Theme: ${LABEL[scheme]}. Switch to ${LABEL[NEXT[scheme]]}`}
-      onPress={cycle}
+      accessibilityLabel={`Theme: ${LABEL[scheme]}. Switch to ${LABEL[scheme === 'dark' ? 'light' : 'dark']}`}
+      onPress={toggle}
     />
   );
 }
