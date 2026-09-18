@@ -28,8 +28,31 @@ type ChildProps = {
   style?: StyleProp<ViewStyle>;
 };
 
+export type ButtonGroupItemRenderProps = {
+  size?: ButtonSize;
+  variant?: ButtonVariant;
+  disabled: boolean;
+  /** Layout for a wrapper such as Menu.Trigger. */
+  containerStyle: StyleProp<ViewStyle>;
+  /** Corner shape for the visible button inside the wrapper. */
+  buttonStyle: StyleProp<ViewStyle>;
+};
+
+export type ButtonGroupItemProps = {
+  /** Use when a button must sit inside a wrapper such as Menu.Trigger. */
+  render: (props: ButtonGroupItemRenderProps) => ReactNode;
+  /** Set to false for a compact action in a full-width group. */
+  grow?: boolean;
+};
+
+type InternalItemProps = ButtonGroupItemProps & { groupProps?: ButtonGroupItemRenderProps };
+
+function ButtonGroupItem({ render, groupProps }: InternalItemProps) {
+  return groupProps ? render(groupProps) : null;
+}
+
 /** Lays out buttons side by side. It doesn't track a selection: see SegmentedControl for that. */
-export function ButtonGroup({
+function ButtonGroupRoot({
   children,
   attached = true,
   orientation = 'horizontal',
@@ -62,8 +85,10 @@ export function ButtonGroup({
             ? {
                 // Overlap by the border width so two borders read as one.
                 marginStart: first ? 0 : -1,
-                ...(!first && { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }),
-                ...(!end && { borderTopRightRadius: 0, borderBottomRightRadius: 0 }),
+                borderTopLeftRadius: first ? tokens.radius.md : 0,
+                borderBottomLeftRadius: first ? tokens.radius.md : 0,
+                borderTopRightRadius: end ? tokens.radius.md : 0,
+                borderBottomRightRadius: end ? tokens.radius.md : 0,
               }
             : {
                 marginTop: first ? 0 : -1,
@@ -71,6 +96,25 @@ export function ButtonGroup({
                 ...(!end && { borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }),
               }
           : undefined;
+
+        if (button.type === ButtonGroupItem) {
+          const item = button as ReactElement<InternalItemProps>;
+          const { marginStart, marginTop, ...corners } = attachedStyle ?? {};
+          return cloneElement(item, {
+            key: item.key ?? i,
+            groupProps: {
+              size,
+              variant,
+              disabled,
+              containerStyle: [
+                { marginStart, marginTop },
+                fullWidth && horizontal && item.props.grow !== false && styles.equal,
+                !horizontal && styles.stretchSelf,
+              ],
+              buttonStyle: attached ? corners : undefined,
+            },
+          });
+        }
 
         return cloneElement(button, {
           key: button.key ?? i,
@@ -88,6 +132,8 @@ export function ButtonGroup({
     </View>
   );
 }
+
+export const ButtonGroup = Object.assign(ButtonGroupRoot, { Item: ButtonGroupItem });
 
 const styles = StyleSheet.create({
   row: {

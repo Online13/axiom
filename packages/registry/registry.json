@@ -100,6 +100,18 @@
       }
     },
     {
+      "name": "use-refresh-control",
+      "type": "hooks",
+      "files": [
+        "hooks/use-refresh-control/use-refresh-control.ts"
+      ],
+      "dependencies": [
+        "react-native-gesture-handler",
+        "react-native-reanimated",
+        "react-native-worklets"
+      ]
+    },
+    {
       "name": "text",
       "type": "typography",
       "internalDependencies": [
@@ -944,6 +956,252 @@
         "stylesheet": {
           "files": [
             "atoms/carousel/stylesheet/carousel.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "search-bar",
+      "type": "molecules",
+      "tokens": "molecules/search-bar/search-bar-tokens.ts",
+      "files": [
+        "molecules/search-bar/search-bar-tokens.ts",
+        "molecules/search-bar/use-search-bar.ts"
+      ],
+      "requiredIcons": [
+        "search",
+        "close"
+      ],
+      "dependencies": [
+        "react-native-reanimated"
+      ],
+      "internalDependencies": [
+        "icon",
+        "spinner",
+        "tappable",
+        "text",
+        "theme",
+        "use-controllable-state"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "molecules/search-bar/stylesheet/search-bar.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "attachment",
+      "type": "molecules",
+      "tokens": "molecules/attachment/attachment-tokens.ts",
+      "files": [
+        "molecules/attachment/attachment-tokens.ts",
+        "molecules/attachment/use-attachment.ts"
+      ],
+      "requiredIcons": [
+        "close",
+        "error",
+        "file",
+        "image",
+        "refresh"
+      ],
+      "internalDependencies": [
+        "icon",
+        "icon-button",
+        "spinner",
+        "tappable",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "molecules/attachment/stylesheet/attachment.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "date-picker",
+      "type": "molecules",
+      "files": [
+        "molecules/date-picker/use-date-picker.ts"
+      ],
+      "requiredIcons": [
+        "calendar"
+      ],
+      "internalDependencies": [
+        "bottom-sheet",
+        "button",
+        "calendar",
+        "chip",
+        "icon",
+        "input",
+        "tappable",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "molecules/date-picker/stylesheet/date-picker.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "passcode",
+      "type": "organisms",
+      "tokens": "organisms/passcode/passcode-tokens.ts",
+      "files": [
+        "organisms/passcode/passcode-tokens.ts",
+        "organisms/passcode/use-passcode.ts"
+      ],
+      "requiredIcons": [
+        "backspace",
+        "biometrics"
+      ],
+      "dependencies": [
+        "react-native-reanimated"
+      ],
+      "internalDependencies": [
+        "icon",
+        "tappable",
+        "text",
+        "theme",
+        "use-controllable-state"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "organisms/passcode/stylesheet/passcode.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "app-bar",
+      "type": "templates",
+      "tokens": "templates/app-bar/app-bar-tokens.ts",
+      "files": [
+        "templates/app-bar/app-bar-tokens.ts",
+        "templates/app-bar/use-app-bar.ts"
+      ],
+      "dependencies": [
+        "react-native-reanimated",
+        "react-native-safe-area-context"
+      ],
+      "internalDependencies": [
+        "search-bar",
+        "title",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "templates/app-bar/stylesheet/app-bar.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "tool-bar",
+      "type": "templates",
+      "tokens": "templates/tool-bar/tool-bar-tokens.ts",
+      "files": [
+        "templates/tool-bar/tool-bar-tokens.ts",
+        "templates/tool-bar/use-tool-bar.ts"
+      ],
+      "dependencies": [
+        "react-native-reanimated",
+        "react-native-safe-area-context"
+      ],
+      "internalDependencies": [
+        "icon",
+        "tappable",
+        "text",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "templates/tool-bar/stylesheet/tool-bar.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "bottom-tab-bar",
+      "type": "templates",
+      "tokens": "templates/bottom-tab-bar/bottom-tab-bar-tokens.ts",
+      "files": [
+        "templates/bottom-tab-bar/bottom-tab-bar-tokens.ts",
+        "templates/bottom-tab-bar/use-bottom-tab-bar.ts"
+      ],
+      "dependencies": [
+        "react-native-safe-area-context"
+      ],
+      "internalDependencies": [
+        "badge",
+        "icon",
+        "icon-button",
+        "tappable",
+        "text",
+        "theme",
+        "use-controllable-state"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "templates/bottom-tab-bar/stylesheet/bottom-tab-bar.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "tab",
+      "type": "templates",
+      "tokens": "templates/tab/tab-tokens.ts",
+      "files": [
+        "templates/tab/tab-tokens.ts",
+        "templates/tab/use-tab.ts"
+      ],
+      "dependencies": [
+        "react-native-reanimated"
+      ],
+      "internalDependencies": [
+        "badge",
+        "icon",
+        "tappable",
+        "text",
+        "theme",
+        "use-controllable-state"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "templates/tab/stylesheet/tab.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "name": "scaffold",
+      "type": "templates",
+      "files": [],
+      "dependencies": [
+        "react-native-keyboard-controller",
+        "react-native-safe-area-context"
+      ],
+      "internalDependencies": [
+        "app-bar",
+        "theme"
+      ],
+      "variants": {
+        "stylesheet": {
+          "files": [
+            "templates/scaffold/stylesheet/scaffold.tsx"
           ]
         }
       }

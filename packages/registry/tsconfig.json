@@ -39,6 +39,9 @@
       "@/hooks/use-overlay-back-handler": [
         "./hooks/use-overlay-back-handler/sources/expo-router/use-overlay-back-handler.ts"
       ],
+      "@/hooks/use-refresh-control": [
+        "./hooks/use-refresh-control/use-refresh-control.ts"
+      ],
       "@/components/ui/text": [
         "./typography/text/stylesheet/text.tsx"
       ],
@@ -278,6 +281,78 @@
       ],
       "@/components/ui/carousel": [
         "./atoms/carousel/stylesheet/carousel.tsx"
+      ],
+      "@/components/ui/search-bar-tokens": [
+        "./molecules/search-bar/search-bar-tokens.ts"
+      ],
+      "@/components/ui/use-search-bar": [
+        "./molecules/search-bar/use-search-bar.ts"
+      ],
+      "@/components/ui/search-bar": [
+        "./molecules/search-bar/stylesheet/search-bar.tsx"
+      ],
+      "@/components/ui/attachment-tokens": [
+        "./molecules/attachment/attachment-tokens.ts"
+      ],
+      "@/components/ui/use-attachment": [
+        "./molecules/attachment/use-attachment.ts"
+      ],
+      "@/components/ui/attachment": [
+        "./molecules/attachment/stylesheet/attachment.tsx"
+      ],
+      "@/components/ui/use-date-picker": [
+        "./molecules/date-picker/use-date-picker.ts"
+      ],
+      "@/components/ui/date-picker": [
+        "./molecules/date-picker/stylesheet/date-picker.tsx"
+      ],
+      "@/components/ui/passcode-tokens": [
+        "./organisms/passcode/passcode-tokens.ts"
+      ],
+      "@/components/ui/use-passcode": [
+        "./organisms/passcode/use-passcode.ts"
+      ],
+      "@/components/ui/passcode": [
+        "./organisms/passcode/stylesheet/passcode.tsx"
+      ],
+      "@/components/ui/app-bar-tokens": [
+        "./templates/app-bar/app-bar-tokens.ts"
+      ],
+      "@/components/ui/use-app-bar": [
+        "./templates/app-bar/use-app-bar.ts"
+      ],
+      "@/components/ui/app-bar": [
+        "./templates/app-bar/stylesheet/app-bar.tsx"
+      ],
+      "@/components/ui/tool-bar-tokens": [
+        "./templates/tool-bar/tool-bar-tokens.ts"
+      ],
+      "@/components/ui/use-tool-bar": [
+        "./templates/tool-bar/use-tool-bar.ts"
+      ],
+      "@/components/ui/tool-bar": [
+        "./templates/tool-bar/stylesheet/tool-bar.tsx"
+      ],
+      "@/components/ui/bottom-tab-bar-tokens": [
+        "./templates/bottom-tab-bar/bottom-tab-bar-tokens.ts"
+      ],
+      "@/components/ui/use-bottom-tab-bar": [
+        "./templates/bottom-tab-bar/use-bottom-tab-bar.ts"
+      ],
+      "@/components/ui/bottom-tab-bar": [
+        "./templates/bottom-tab-bar/stylesheet/bottom-tab-bar.tsx"
+      ],
+      "@/components/ui/tab-tokens": [
+        "./templates/tab/tab-tokens.ts"
+      ],
+      "@/components/ui/use-tab": [
+        "./templates/tab/use-tab.ts"
+      ],
+      "@/components/ui/tab": [
+        "./templates/tab/stylesheet/tab.tsx"
+      ],
+      "@/components/ui/scaffold": [
+        "./templates/scaffold/stylesheet/scaffold.tsx"
       ]
     }
   },
