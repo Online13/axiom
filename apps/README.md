@@ -44,6 +44,23 @@ Build again only after adding a library with native code, changing `app.json` or
 
 Each demo has its own app id (`dev.axiom.demo.<variant>`), so all four install side by side.
 
+## iOS simulator in the browser
+
+The root [native-sim workflow](../.github/workflows/native-sim.yml) builds `demo-stylesheet` on a GitHub macOS runner. It installs the Bun workspace from the repo root, regenerates Axiom components, then builds the Expo app from `apps/demo-stylesheet`.
+
+Before the first run, commit and push the workflow, its auth gate, and the launcher on the default branch. Authenticate the GitHub CLI with `gh auth login`. The launcher checks that the current commit is on GitHub, then dispatches the workflow without staging or committing local changes.
+
+```bash
+bun run sim:ios up --minutes 60       # build and print the simulator URL
+bun run sim:ios up --agent            # also enable agent-device control
+bun run sim:ios status                # show the current run and URL
+bun run sim:ios down                  # stop the current run
+```
+
+For `--agent`, install `agent-device` locally first. The launcher prints the proxy connection command. The session URL includes an access key; keep it private. Session details are stored locally under `.git/` and are not committed.
+
+The first build can take around 30 minutes. The native `.app` is cached by Expo fingerprint; later JavaScript-only changes reuse it. See the [native-sim guide](https://reactnativefeel.com/sim/llm.txt) for simulator controls and limitations. Use the `sim:ios` script for this monorepo: the upstream `native-sim up` command assumes the Expo app is at the Git root and automatically commits and pushes the whole working tree.
+
 ## Running an app
 
 From the repo root, pass the script name after the app shortcut:
