@@ -1,0 +1,167 @@
+---
+import Title from '../Title.astro';
+import Phone from '../Phone.astro';
+
+const variants = ['solid', 'outline', 'ghost'] as const;
+const palettes = [
+	{ name: 'Axiom', value: '#b83d12' },
+	{ name: 'Iris', value: '#6550c8' },
+	{ name: 'Forest', value: '#237355' },
+];
+---
+
+<section class="section section--solid customization" id="customization">
+	<div class="container">
+		<header>
+			<p class="eyebrow">04 / Customization</p>
+			<Title>Make it yours.</Title>
+			<p class="customization__lede">Change the look. Keep the behavior. Each component has its own visual tokens.</p>
+		</header>
+		<div class="customization__grid">
+			<div class="customization__preview">
+				<div class="controls" role="group" aria-label="Preview theme">
+					<button type="button" data-theme="light" aria-pressed="true">Light</button>
+					<button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+				</div>
+				<div class="customization__phone">
+					<Phone>
+						<div class="checkout">
+							<span class="checkout__step">CHECKOUT / 02</span>
+							<h3>Your next<br />weekend away.</h3>
+							<div class="checkout__booking"><span class="checkout__art" aria-hidden="true">A</span><div><strong>Atelier stay</strong><small>2 nights · 2 guests</small></div></div>
+							<div class="checkout__row"><span>Room</span><span>€240.00</span></div>
+							<div class="checkout__row"><span>Service fee</span><span>€12.00</span></div>
+							<div class="checkout__row checkout__total"><strong>Total</strong><strong>€252.00</strong></div>
+							<div class="checkout__actions">
+								<button type="button" class="token-button" data-variant="solid" data-preview-state="default">Continue</button>
+								<button type="button" class="checkout__back">Back to details</button>
+								<p class="checkout__status" role="status">Try the button.</p>
+							</div>
+						</div>
+					</Phone>
+				</div>
+			</div>
+			<div class="customization__editor">
+				<div class="controls" role="group" aria-label="Button variant">
+					{variants.map((variant, i) => <button type="button" data-variant-choice={variant} aria-pressed={String(i === 0)}>{variant}</button>)}
+				</div>
+				<div class="token-code">
+					<p class="token-code__file">button-tokens.ts</p>
+					<pre><code><span>button: {'{'}<br />{'  '}<span data-code-variant>solid</span>: {'{'}<br />{'    '}default: {'{'}<br /></span><span class="token-code__target">{'      '}background: <span data-code-background>'#b83d12'</span>,<br /></span><span>{'      '}foreground: <span data-code-foreground>'#ffffff'</span>,<br />{'    },'}<br />{'    '}pressed: {'{'}<br /><span class="token-code__pressed">{'      '}background: <span data-code-pressed>'#92300e'</span>,</span><br />{'    },'}<br />{'  },'}<br />{'}'}</span></code></pre>
+				</div>
+				<div class="token-colors" role="group" aria-label="Background token color">
+					<span class="eyebrow">Change background</span>
+					{palettes.map((palette, i) => <button type="button" data-color={palette.value} aria-pressed={String(i === 0)}><i style={`background: ${palette.value}`} aria-hidden="true" />{palette.name}</button>)}
+				</div>
+				<div class="controls" role="group" aria-label="Button state">
+					<button type="button" data-state="default" aria-pressed="true">Default</button>
+					<button type="button" data-state="pressed" aria-pressed="false">Pressed</button>
+				</div>
+				<code class="customization__usage">&lt;Button variant="<span data-code-usage>solid</span>"&gt;Continue&lt;/Button&gt;</code>
+				<p class="customization__path"><span data-token-path>button.solid.default.background</span><br /><span>One token. One targeted visual change.</span></p>
+				<p class="customization__note">Variants are driven by component tokens. A new variant also needs its component type updated.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	const root = document.querySelector<HTMLElement>('.customization')!;
+	const phone = root.querySelector<HTMLElement>('.phone')!;
+	const preview = root.querySelector<HTMLButtonElement>('.token-button')!;
+	const status = root.querySelector<HTMLElement>('.checkout__status')!;
+	let variant = 'solid';
+	let state = 'default';
+	const overrides: Record<string, string> = {};
+	const lightColors: Record<string, string> = { '#b83d12': '#f5c8b7', '#6550c8': '#d9d1f8', '#237355': '#bfe4d4' };
+	let dark = false;
+	let presses = 0;
+
+	function update() {
+		const key = `${dark ? 'dark' : 'light'}.${variant}`;
+		const background = overrides[`${key}.default`] ?? (variant === 'solid' ? '#b83d12' : variant === 'outline' ? (dark ? '#0e0e0e' : '#f4f4f2') : 'transparent');
+		const foreground = variant === 'solid' ? '#ffffff' : dark ? '#f5f5f5' : '#111111';
+		const pressedBackground = overrides[`${key}.pressed`] ?? (variant === 'solid' ? '#92300e' : dark ? '#262626' : '#e5e5e2');
+		root.querySelectorAll<HTMLButtonElement>('[data-color]').forEach((button) => {
+			const value = !dark && variant !== 'solid' ? lightColors[button.dataset.color!] : button.dataset.color!;
+			button.setAttribute('aria-pressed', String(value === (state === 'default' ? background : pressedBackground)));
+			button.querySelector('i')!.style.background = value;
+		});
+		root.querySelector('.token-code')!.setAttribute('data-state', state);
+		preview.style.setProperty('--token-bg', background);
+		preview.style.setProperty('--token-fg', foreground);
+		preview.style.setProperty('--token-pressed', pressedBackground);
+		preview.dataset.variant = variant;
+		preview.dataset.previewState = state;
+		phone.classList.toggle('phone--dark', dark);
+		const values: Record<string, string> = {
+			'[data-code-variant]': variant, '[data-code-usage]': variant,
+			'[data-code-background]': `'${background}'`, '[data-code-foreground]': `'${foreground}'`,
+			'[data-code-pressed]': `'${pressedBackground}'`,
+			'[data-token-path]': `button.${variant}.${state}.background`,
+		};
+		for (const [selector, value] of Object.entries(values)) root.querySelector(selector)!.textContent = value;
+	}
+
+	for (const attribute of ['theme', 'variant-choice', 'state', 'color']) {
+		const buttons = root.querySelectorAll<HTMLButtonElement>(`[data-${attribute}]`);
+		buttons.forEach((button) => button.addEventListener('click', () => {
+			buttons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+			const value = button.getAttribute(`data-${attribute}`)!;
+			if (attribute === 'theme') dark = value === 'dark';
+			if (attribute === 'variant-choice') variant = value;
+			if (attribute === 'state') state = value;
+			if (attribute === 'color') overrides[`${dark ? 'dark' : 'light'}.${variant}.${state}`] = !dark && variant !== 'solid' ? lightColors[value] : value;
+			update();
+		}));
+	}
+	preview.addEventListener('click', () => { status.textContent = `Continued ${++presses} ${presses === 1 ? 'time' : 'times'}. Same action, any style.`; });
+	root.querySelector('.checkout__back')!.addEventListener('click', () => { presses = 0; status.textContent = 'Back to details. Try again.'; });
+	update();
+</script>
+
+<style>
+	.customization { padding-block: clamp(4rem, 7vw, 7rem); }
+	header { display: flex; flex-direction: column; gap: 1.5rem; }
+	.customization__lede { color: var(--muted); max-width: 34rem; font-size: 1.125rem; }
+	.customization__grid { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: clamp(2rem, 6vw, 6rem); margin-top: 3rem; }
+	.customization__preview { display: grid; justify-items: center; gap: 1.5rem; min-width: 0; }
+	.customization__phone { height: 560px; max-width: 100%; }
+	.customization__editor { display: flex; flex-direction: column; gap: 1.5rem; min-width: 0; }
+	.controls, .token-colors { display: flex; flex-wrap: wrap; gap: .5rem; }
+	.controls button, .token-colors button { border: 1px solid var(--line); background: transparent; color: var(--muted); padding: .65rem 1rem; font: inherit; font-size: .8125rem; cursor: pointer; min-height: 44px; }
+	.controls button { text-transform: capitalize; }
+	.controls button[aria-pressed='true'], .token-colors button[aria-pressed='true'] { border-color: var(--fg); color: var(--fg); }
+	button:focus-visible { outline: 2px solid #ff5a1f; outline-offset: 4px; }
+	.token-colors { align-items: center; }
+	.token-colors > span { flex-basis: 100%; margin-bottom: .25rem; }
+	.token-colors button { display: inline-flex; align-items: center; gap: .5rem; }
+	.token-colors i { width: .75rem; height: .75rem; border-radius: 50%; }
+	.token-code { border: 1px solid var(--line); background: var(--bg); }
+	.token-code__file { border-bottom: 1px solid var(--line); padding: .75rem 1.25rem; font: .75rem var(--font-mono); color: var(--muted); }
+	pre { margin: 0; padding: 1.5rem 0; overflow-x: auto; font-size: clamp(.7rem, 1.1vw, .875rem); line-height: 1.8; }
+	pre code { display: block; width: max-content; min-width: 100%; padding-inline: 1.25rem; }
+	code { font-family: var(--font-mono); }
+	.token-code:not([data-state='pressed']) .token-code__target, .token-code[data-state='pressed'] .token-code__pressed { color: #ff986f; background: #ff5a1f12; }
+	.customization__usage { font-size: .75rem; overflow-wrap: anywhere; }
+	.customization__path { font: .75rem/1.8 var(--font-mono); overflow-wrap: anywhere; }
+	.customization__path > span:last-child, .customization__note { color: var(--muted); }
+	.customization__note { font-size: .8125rem; max-width: 30rem; }
+	.checkout { display: flex; flex: 1; flex-direction: column; padding: 1.4em; gap: 1.4em; }
+	.checkout__step { font-size: .7em; letter-spacing: .1em; color: var(--s-muted); }
+	.checkout h3 { font-size: 2.3em; line-height: 1.05; letter-spacing: -.04em; }
+	.checkout__booking { display: flex; align-items: center; gap: 1em; padding: 1em; background: var(--s-surface); border-radius: 1em; }
+	.checkout__booking small { display: block; margin-top: .4em; color: var(--s-muted); }
+	.checkout__art { display: grid; place-items: center; width: 2.5em; height: 3em; background: #dfd7c6; color: #4b463b; font: 1.5em Georgia, serif; border-radius: .25em; }
+	.checkout__row { display: flex; justify-content: space-between; gap: 1em; }
+	.checkout__total { padding-top: 1em; border-top: 1px solid var(--s-line); }
+	.checkout__actions { margin-top: auto; display: grid; gap: .75em; padding-bottom: 1em; }
+	.token-button, .checkout__back { font: inherit; font-weight: 600; border-radius: 1em; padding: 1em; min-height: 44px; cursor: pointer; }
+	.token-button { background: var(--token-bg, #b83d12); color: var(--token-fg, #fff); border: 1px solid transparent; transition: transform .15s; }
+	.token-button[data-variant='outline'] { border-color: var(--s-muted); }
+	.token-button:active, .token-button[data-preview-state='pressed'] { background: var(--token-pressed, #92300e); transform: scale(.97); }
+	.checkout__back { background: transparent; color: var(--s-fg); border: 1px solid var(--s-line); }
+	.checkout__status { min-height: 2.6em; color: var(--s-muted); text-align: center; font-size: .8em; }
+	@media (max-width: 800px) { .customization__grid { grid-template-columns: 1fr; } .customization__phone { height: 520px; } }
+	@media (prefers-reduced-motion: reduce) { .token-button { transition: none; } }
+</style>

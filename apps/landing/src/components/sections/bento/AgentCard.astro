@@ -1,0 +1,424 @@
+---
+import { docs } from "../../../lib/links";
+
+const steps = [
+	{
+		id: "find",
+		name: "Find",
+		detail: "Search the registry by need and read real props, not guessed ones.",
+	},
+	{
+		id: "plan",
+		name: "Plan",
+		detail:
+			"Preview files, dependencies and your styling before anything is written.",
+	},
+	{
+		id: "verify",
+		name: "Verify",
+		detail: "Stable testIDs let the agent tap through the flow on a real device.",
+	},
+] as const;
+
+type Step = (typeof steps)[number]["id"];
+type Line = {
+	step: "prompt" | Step;
+	kind: "prompt" | "cmd" | "out" | "ok";
+	text: string;
+	aside?: string;
+};
+
+// A scripted session: the prompt names a need, never a component.
+const session: Line[] = [
+	{
+		step: "prompt",
+		kind: "prompt",
+		text: "Add an SMS code screen with resend, loading and errors.",
+	},
+	{
+		step: "find",
+		kind: "cmd",
+		text: 'axiom search "sms code verification" --json',
+	},
+	{ step: "find", kind: "ok", text: "otp-verification", aside: "pattern" },
+	{
+		step: "find",
+		kind: "out",
+		text: "input-otp · button · text",
+		aside: "uses",
+	},
+	{ step: "plan", kind: "cmd", text: "axiom plan otp-verification" },
+	{
+		step: "plan",
+		kind: "out",
+		text: "styling    stylesheet",
+		aside: "axiom.json",
+	},
+	{
+		step: "plan",
+		kind: "out",
+		text: "+ components/ui/input-otp.tsx",
+		aside: "new",
+	},
+	{
+		step: "plan",
+		kind: "out",
+		text: "= components/ui/button.tsx",
+		aside: "kept",
+	},
+	{
+		step: "verify",
+		kind: "cmd",
+		text: "verify otp-verification --platform android",
+	},
+	{ step: "verify", kind: "ok", text: "tap   verify-code-input" },
+	{ step: "verify", kind: "ok", text: "type  wrong code → error state" },
+	{ step: "verify", kind: "ok", text: "tap   verify-code-resend → countdown" },
+];
+---
+
+<article class="bento__card bento__agents">
+	<div class="bento__agents__content">
+		<header>
+			<p class="eyebrow">Agents</p>
+			<h3>Your agent<br />knows the system.</h3>
+			<p class="subtitle">
+				Describe the screen. Your agent finds the right Axiom pieces, adds
+				them in your styling and checks the flow on a phone.
+			</p>
+		</header>
+		<div class="agents__steps" role="group" aria-label="Agent workflow">
+			{
+				steps.map((step, i) => (
+					<button
+						type="button"
+						class="agents__step"
+						data-step={step.id}
+						aria-pressed={i === 0 ? "true" : "false"}
+					>
+						<span class="agents__index">0{i + 1}</span>
+						<span class="agents__text">
+							<span class="agents__name">
+								{step.name} <small>soon</small>
+							</span>
+							<span class="agents__detail">{step.detail}</span>
+						</span>
+					</button>
+				))
+			}
+		</div>
+		<a href={docs("/agent")}
+			>Read the agent docs <span aria-hidden="true">&#8599;</span></a
+		>
+	</div>
+	<div class="bento__agents__session">
+		<div class="session" data-active="find">
+			<div class="session__bar">
+				<span>agent session</span>
+				<span class="session__tag">preview</span>
+			</div>
+			<ol class="session__lines">
+				{
+					session.map((line) => (
+						<li
+							class:list={["session__line", `is-${line.kind}`]}
+							data-step={line.step}
+						>
+							<span class="session__mark" aria-hidden="true">
+								{
+									{ prompt: "›", cmd: "$", out: "", ok: "✓" }[
+										line.kind
+									]
+								}
+							</span>
+							<span class="session__text">{line.text}</span>
+							{line.aside && (
+								<span class="session__aside">{line.aside}</span>
+							)}
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</div>
+</article>
+
+<script>
+	const root = document.querySelector<HTMLElement>(".bento__agents");
+
+	if (root) {
+		const buttons = [
+			...root.querySelectorAll<HTMLButtonElement>(".agents__step"),
+		];
+		const session = root.querySelector<HTMLElement>(".session");
+
+		function select(button: HTMLButtonElement) {
+			buttons.forEach((item) =>
+				item.setAttribute("aria-pressed", String(item === button)),
+			);
+			if (session && button.dataset.step) {
+				session.dataset.active = button.dataset.step;
+			}
+		}
+
+		buttons.forEach((button, index) => {
+			button.addEventListener("click", () => select(button));
+			button.addEventListener("keydown", (event) => {
+				const offset = {
+					ArrowDown: 1,
+					ArrowRight: 1,
+					ArrowUp: -1,
+					ArrowLeft: -1,
+				}[event.key];
+				if (!offset) return;
+				event.preventDefault();
+				const next = buttons[(index + offset + buttons.length) % buttons.length];
+				select(next);
+				next.focus();
+			});
+		});
+	}
+</script>
+
+<style>
+	.bento__agents {
+		grid-area: agents;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		align-items: start;
+		gap: clamp(2rem, 4vw, 4rem);
+		padding: clamp(2rem, 4vw, 3.5rem);
+	}
+	.bento__agents__content {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+	.bento__agents__content > a,
+	.bento__open a {
+		position: relative;
+		font-size: 0.85rem;
+		color: var(--muted);
+	}
+	.bento__agents__content > a:hover,
+	.bento__agents__content > a:focus-visible,
+	.bento__open a:hover,
+	.bento__open a:focus-visible {
+		color: var(--fg);
+	}
+	.bento__agents__content > a:focus-visible,
+	.bento__open a:focus-visible {
+		outline: 2px solid var(--fg);
+		outline-offset: 3px;
+	}
+	.bento__agents__content > a {
+		align-self: flex-start;
+		margin-top: auto;
+	}
+
+	.bento__agents__session {
+		min-width: 0;
+	}
+
+	.agents__steps {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		max-width: 26rem;
+		border-top: 1px solid var(--line);
+	}
+
+	.agents__step {
+		display: grid;
+		grid-template-columns: 2rem 1fr;
+		gap: 0.75rem;
+		padding: 0.85rem 0;
+		background: none;
+		border: 0;
+		border-bottom: 1px solid var(--line);
+		color: var(--muted);
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+		transition: color 0.2s;
+	}
+
+	.agents__step:hover,
+	.agents__step[aria-pressed="true"] {
+		color: var(--fg);
+	}
+
+	.agents__step:focus-visible {
+		outline: 2px solid var(--fg);
+		outline-offset: 2px;
+	}
+
+	.agents__index {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		line-height: 1.6rem;
+		color: var(--line);
+	}
+
+	.agents__step[aria-pressed="true"] .agents__index {
+		color: #ff5a1f;
+	}
+
+	.agents__text {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+	}
+
+	.agents__name {
+		display: flex;
+		align-items: baseline;
+		gap: 0.5rem;
+		font-weight: 500;
+	}
+
+	.agents__name small {
+		font-size: 0.6875rem;
+		font-weight: 400;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--line);
+	}
+
+	.agents__detail {
+		font-size: 0.9rem;
+		color: var(--muted);
+	}
+
+	/* Session window: the selected step lights up its lines, the rest stays dim. */
+	.session {
+		min-width: 0;
+		border: 1px solid var(--line);
+		background: var(--bg);
+		font-family: var(--font-mono);
+	}
+
+	.session__bar {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.75rem 1.25rem;
+		border-bottom: 1px solid var(--line);
+		font-size: 0.75rem;
+		color: var(--muted);
+	}
+
+	.session__tag {
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--line);
+	}
+
+	.session__lines {
+		list-style: none;
+		margin: 0;
+		padding: 1rem 0;
+		overflow-x: auto;
+		font-size: 0.78rem;
+		line-height: 1.9;
+	}
+
+	.session__line {
+		display: grid;
+		grid-template-columns: 1.5rem max-content 1fr;
+		gap: 0.75rem;
+		min-width: max-content;
+		padding: 0 1.25rem;
+		border-left: 2px solid transparent;
+		color: var(--line);
+		white-space: pre;
+		transition:
+			color 0.25s,
+			border-color 0.25s;
+	}
+
+	.session__line.is-cmd {
+		margin-top: 0.75rem;
+	}
+
+	.session__line.is-prompt {
+		padding-bottom: 0.25rem;
+		color: var(--fg);
+		white-space: normal;
+		min-width: 0;
+		grid-template-columns: 1.5rem 1fr;
+	}
+
+	.session__mark {
+		text-align: right;
+	}
+
+	.session__line.is-prompt .session__mark {
+		color: #ff5a1f;
+	}
+
+	.session__aside {
+		justify-self: end;
+		padding-left: 2rem;
+	}
+
+	.session[data-active="find"] [data-step="find"],
+	.session[data-active="plan"] [data-step="plan"],
+	.session[data-active="verify"] [data-step="verify"] {
+		border-left-color: #ff5a1f;
+		color: var(--fg);
+	}
+
+	.session[data-active="find"]
+		[data-step="find"]
+		:is(.session__mark, .session__aside),
+	.session[data-active="plan"]
+		[data-step="plan"]
+		:is(.session__mark, .session__aside),
+	.session[data-active="verify"]
+		[data-step="verify"]
+		:is(.session__mark, .session__aside) {
+		color: var(--muted);
+	}
+
+	.session[data-active] .is-ok[data-step] .session__mark {
+		transition: color 0.25s;
+	}
+
+	.session[data-active="find"] .is-ok[data-step="find"] .session__mark,
+	.session[data-active="verify"] .is-ok[data-step="verify"] .session__mark {
+		color: #ff5a1f;
+	}
+
+	@media (max-width: 900px) {
+		.bento__agents {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.agents__steps {
+			max-width: 100%;
+		}
+	}
+
+	@media (max-width: 600px) {
+		.session__bar,
+		.session__line {
+			padding-inline: 1rem;
+		}
+
+		.session__lines {
+			font-size: 0.72rem;
+		}
+
+		.session__aside {
+			padding-left: 1rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.agents__step,
+		.session__line {
+			transition: none;
+		}
+	}
+</style>

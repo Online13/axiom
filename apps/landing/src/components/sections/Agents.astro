@@ -89,8 +89,9 @@ const session: Line[] = [
 <script>
 	import { autoplay } from '../../lib/autoplay';
 
-	const buttons = [...document.querySelectorAll<HTMLButtonElement>('.agents__step')];
-	const session = document.querySelector<HTMLElement>('.session');
+	const root = document.querySelector<HTMLElement>('.agents');
+	const buttons = root ? [...root.querySelectorAll<HTMLButtonElement>('.agents__step')] : [];
+	const session = root?.querySelector<HTMLElement>('.session');
 
 	function select(button: HTMLButtonElement) {
 		buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
@@ -113,7 +114,6 @@ const session: Line[] = [
 	});
 
 	// Walks through the steps on its own; hovering or focusing the section holds the current one.
-	const root = document.querySelector<HTMLElement>('.agents');
 	const cycle =
 		root &&
 		autoplay(

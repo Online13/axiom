@@ -1,5 +1,5 @@
 ---
-import Title from '../Title.astro';
+const styling = ["StyleSheet", "Unistyles", "NativeWind", "Uniwind"];
 
 // The same Button in every styling variant (see docs/architecture/styling.md).
 // NativeWind and Uniwind share the tailwind code; only their setup differs.
@@ -62,75 +62,57 @@ export function Button({ label, variant = 'solid', ...props }: ButtonProps) {
 }`;
 
 const variants = [
-	{ id: 'stylesheet', name: 'StyleSheet', code: stylesheet, note: 'No dependency. Theme through useTheme().' },
-	{ id: 'unistyles', name: 'Unistyles', code: unistyles, note: 'Adaptive themes and native variants.', soon: true },
-	{ id: 'nativewind', name: 'NativeWind', code: tailwind, note: 'Tokens exposed to your Tailwind config.', soon: true },
-	{ id: 'uniwind', name: 'Uniwind', code: tailwind, note: 'Same classes as NativeWind, different setup.', soon: true },
+	{
+		id: "stylesheet",
+		label: "StyleSheet",
+		code: stylesheet,
+		note: "No dependency. Theme through useTheme().",
+		soon: false,
+	},
+	{
+		id: "unistyles",
+		label: "Unistyles",
+		code: unistyles,
+		note: "Adaptive themes and native variants.",
+		soon: true,
+	},
+	{
+		id: "nativewind",
+		label: "NativeWind",
+		code: tailwind,
+		note: "Tokens exposed to your Tailwind config.",
+		soon: true,
+	},
+	{
+		id: "uniwind",
+		label: "Uniwind",
+		code: tailwind,
+		note: "The same classes with a different setup.",
+		soon: true,
+	},
+] as const;
+
+const ownership = [
+	{ kind: "Package", from: "node_modules", to: "black box" },
+	{ kind: "Axiom", from: "your repo", to: "your code" },
 ];
 
 // A line is "shared" when every variant contains it: that is the behavior Axiom keeps identical.
-const sets = [stylesheet, unistyles, tailwind].map((code) => new Set(code.split('\n').map((l) => l.trim())));
-const isShared = (line: string) => line.trim() !== '' && sets.every((set) => set.has(line.trim()));
-
-const ownership = [
-	{ kind: 'Package', from: 'node_modules', to: 'black box' },
-	{ kind: 'Axiom', from: 'your repo', to: 'your code' },
-];
+const sets = [stylesheet, unistyles, tailwind].map(
+	(code) => new Set(code.split("\n").map((l) => l.trim())),
+);
+const isShared = (line: string) =>
+	line.trim() !== "" && sets.every((set) => set.has(line.trim()));
 ---
 
-<section class="section section--solid styling" id="styling">
-	<div class="container styling__inner">
-		<div class="styling__copy">
-			<p class="eyebrow">08 / Ownership</p>
-			<Title>Your code.<br />Your styling.</Title>
-			<p class="styling__lede">
-				Components are copied as source, written for the styling tool you already use. Axiom handles
-				the behavior; the look stays in your hands.
-			</p>
+<article class="bento__card bento__ownership">
+	<!-- <ul class="styling" aria-label="Styling options"></ul> -->
+	<!-- <p class="bento__note">
+		Edit the installed files like the rest of your app. There is no hidden
+		package implementation.
+	</p> -->
 
-			<dl class="styling__own">
-				{
-					ownership.map((row) => (
-						<div class:list={{ 'is-axiom': row.kind === 'Axiom' }}>
-							<dt>{row.kind}</dt>
-							<dd>
-								{row.from} <span aria-hidden="true">→</span> {row.to}
-							</dd>
-						</div>
-					))
-				}
-			</dl>
-
-			<div class="prompt">
-				<p class="prompt__cmd"><span aria-hidden="true">$</span> npx axiom init</p>
-				<p class="prompt__question" id="styling-question">
-					<span aria-hidden="true">?</span> Styling
-				</p>
-				<div class="prompt__options" role="tablist" aria-labelledby="styling-question">
-					{
-						variants.map((v, i) => (
-							<button
-								type="button"
-								role="tab"
-								class="prompt__option"
-								id={`styling-tab-${v.id}`}
-								aria-controls={`styling-panel-${v.id}`}
-								aria-selected={i === 0 ? 'true' : 'false'}
-								tabindex={i === 0 ? 0 : -1}
-							>
-								<span class="prompt__cursor" aria-hidden="true">›</span>
-								{v.name}
-								{v.soon && <small>soon</small>}
-								<span class="progress" aria-hidden="true">
-									<span data-progress />
-								</span>
-							</button>
-						))
-					}
-				</div>
-			</div>
-		</div>
-
+	<div class="code__container">
 		<div class="code">
 			<div class="code__bar">
 				<span class="code__file">components/ui/button.tsx</span>
@@ -143,10 +125,11 @@ const ownership = [
 					<div
 						class="code__panel"
 						role="tabpanel"
-						id={`style-panel-${variant.id}`}
-						aria-labelledby={`style-tab-${variant.id}`}
+						id={`ownership-style-panel-${variant.id}`}
+						aria-labelledby={`ownership-style-tab-${variant.id}`}
 						hidden={i !== 0}
 					>
+						<!-- prettier-ignore -->
 						<pre><code>{variant.code.split('\n').map((line) => (
 							<span class:list={['code__line', { 'is-shared': isShared(line), 'is-empty': line.trim() === '' }]}>{line || ' '}</span>
 						))}</code></pre>
@@ -156,29 +139,97 @@ const ownership = [
 			}
 		</div>
 	</div>
-</section>
+	<header>
+		<p class="eyebrow">Ownership</p>
+		<h3>Your code. Your styling.</h3>
+		<p class="subtitle">
+			Axiom copies each component into your app. The source and styling stay
+			yours.
+		</p>
+
+		<dl class="styling__own">
+			{
+				ownership.map((row) => (
+					<div class:list={{ "is-axiom": row.kind === "Axiom" }}>
+						<dt>{row.kind}</dt>
+						<dd>
+							{row.from} <span aria-hidden="true">→</span> {row.to}
+						</dd>
+					</div>
+				))
+			}
+		</dl>
+
+		<div class="prompt">
+			<p class="prompt__cmd"><span aria-hidden="true">$</span> npx axiom init</p>
+			<p class="prompt__question" id="ownership-styling-question">
+				<span aria-hidden="true">?</span> Styling
+			</p>
+			<div
+				class="prompt__options"
+				role="tablist"
+				aria-labelledby="ownership-styling-question"
+			>
+				{
+					variants.map((variant, i) => (
+						<button
+							type="button"
+							role="tab"
+							class="prompt__option"
+							id={`ownership-style-tab-${variant.id}`}
+							aria-controls={`ownership-style-panel-${variant.id}`}
+							aria-selected={i === 0 ? "true" : "false"}
+							tabindex={i === 0 ? 0 : -1}
+						>
+							<span class="prompt__cursor" aria-hidden="true">›</span>
+							{variant.label}
+							{variant.soon && <small>soon</small>}
+						</button>
+					))
+				}
+			</div>
+		</div>
+	</header>
+</article>
 
 <script>
-	const root = document.querySelector<HTMLElement>('.styling .code');
+	const root = document.querySelector<HTMLElement>(".bento__ownership");
 
 	if (root) {
-		const tabs = [...root.querySelectorAll<HTMLButtonElement>('.code__tab')];
+		const tabs = [
+			...root.querySelectorAll<HTMLButtonElement>(".prompt__option"),
+		];
 		const panels = root.querySelectorAll<HTMLElement>('[role="tabpanel"]');
 
 		function select(tab: HTMLButtonElement) {
 			tabs.forEach((item) => {
 				const selected = item === tab;
-				item.setAttribute('aria-selected', String(selected));
+				item.setAttribute("aria-selected", String(selected));
 				item.tabIndex = selected ? 0 : -1;
 			});
-			panels.forEach((panel) => (panel.hidden = panel.id !== tab.getAttribute('aria-controls')));
+			panels.forEach(
+				(panel) =>
+					(panel.hidden = panel.id !== tab.getAttribute("aria-controls")),
+			);
 		}
 
 		tabs.forEach((tab, index) => {
-			tab.addEventListener('click', () => select(tab));
-			tab.addEventListener('keydown', (event) => {
-				const offset = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
-				const target = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : offset ? (index + offset + tabs.length) % tabs.length : -1;
+			tab.addEventListener("click", () => select(tab));
+			tab.addEventListener("keydown", (event) => {
+				const offset = {
+					ArrowDown: 1,
+					ArrowRight: 1,
+					ArrowUp: -1,
+					ArrowLeft: -1,
+				}[event.key];
+				const target =
+					event.key === "Home"
+						? 0
+						: event.key === "End"
+							? tabs.length - 1
+							: offset
+								? (index + offset + tabs.length) % tabs.length
+								: -1;
 				if (target < 0) return;
 				event.preventDefault();
 				select(tabs[target]);
@@ -187,36 +238,39 @@ const ownership = [
 		});
 	}
 </script>
-
 <style>
-	.styling {
-		min-height: 50svh;
-		display: flex;
-		align-items: center;
-		padding-block: clamp(4rem, 7svh, 6rem);
-	}
-
-	.styling__inner {
+	.bento__ownership {
+		grid-area: ownership;
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-		align-items: center;
+		grid-template-columns: 1fr 1fr 1fr;
+		align-content: start;
 		gap: 4rem;
+		padding: clamp(2rem, 4vw, 3.5rem);
 	}
-
-	.styling__copy {
+	.bento__ownership header {
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
 		gap: 1.25rem;
 	}
-
-	.styling__lede {
+	.styling {
+		margin-top: 0;
+	}
+	.styling {
+		position: relative;
+		list-style: none;
+		margin: 2rem 0 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.styling li {
+		padding: 0.55rem 0.75rem;
+		border: 1px solid var(--line);
+		font-size: 0.78rem;
 		color: var(--muted);
-		font-size: 1.125rem;
-		max-width: 26rem;
 	}
 
-	/* Ownership: a package ends in a black box, Axiom ends in your code. */
 	.styling__own {
 		margin: 0;
 		display: flex;
@@ -229,12 +283,13 @@ const ownership = [
 
 	.styling__own div {
 		display: grid;
-		grid-template-columns: 5rem 1fr;
+		grid-template-columns: minmax(4rem, 5rem) minmax(0, 1fr);
 		gap: 1rem;
 	}
 
 	.styling__own dd {
 		margin: 0;
+		overflow-wrap: anywhere;
 	}
 
 	.styling__own dd span {
@@ -245,7 +300,6 @@ const ownership = [
 		color: var(--fg);
 	}
 
-	/* CLI prompt: its options are the tabs that switch the code panel. */
 	.prompt {
 		width: 100%;
 		max-width: 22rem;
@@ -286,7 +340,7 @@ const ownership = [
 	}
 
 	.prompt__option:hover,
-	.prompt__option[aria-selected='true'] {
+	.prompt__option[aria-selected="true"] {
 		color: var(--fg);
 	}
 
@@ -301,41 +355,8 @@ const ownership = [
 		color: #ff5a1f;
 	}
 
-	.prompt__option[aria-selected='true'] .prompt__cursor {
+	.prompt__option[aria-selected="true"] .prompt__cursor {
 		opacity: 1;
-	}
-
-	/* Short countdown next to the active option, shown only once autoplay is on. */
-	.progress {
-		display: none;
-		align-self: center;
-		width: 1.5rem;
-		height: 2px;
-		margin-left: 0.25rem;
-		background: var(--line);
-		overflow: hidden;
-	}
-
-	.styling[data-autoplay] .prompt__option[aria-selected='true'] .progress {
-		display: block;
-	}
-
-	.styling[data-autoplay] .prompt__option[aria-selected='true'] [data-progress] {
-		display: block;
-		height: 100%;
-		background: #ff5a1f;
-		transform-origin: left;
-		animation: autoplay-progress var(--autoplay-duration) linear forwards;
-		animation-play-state: var(--autoplay-state, paused);
-	}
-
-	@keyframes autoplay-progress {
-		from {
-			transform: scaleX(0);
-		}
-		to {
-			transform: scaleX(1);
-		}
 	}
 
 	.prompt__option small {
@@ -346,8 +367,17 @@ const ownership = [
 	}
 
 	/* Code window */
+	.code__container {
+		min-width: 0;
+		width: 100%;
+		position: relative;
+		grid-column-start: 1;
+		grid-column-end: 3;
+	}
+
 	.code {
 		min-width: 0;
+		width: 100%;
 		border: 1px solid var(--line);
 		background: var(--bg);
 	}
@@ -382,43 +412,15 @@ const ownership = [
 		background: var(--line);
 	}
 
-	.code__tabs {
-		display: flex;
-		overflow-x: auto;
-		border-bottom: 1px solid var(--line);
-		scrollbar-width: none;
-	}
-
-	.code__tab {
-		flex: 0 0 auto;
-		padding: 0.65rem 1rem;
-		border: 0;
-		border-right: 1px solid var(--line);
-		background: transparent;
-		color: var(--muted);
-		font-family: var(--font-mono);
-		font-size: 0.75rem;
-		cursor: pointer;
-	}
-
-	.code__tab:hover,
-	.code__tab[aria-selected='true'] {
-		color: var(--fg);
-	}
-
-	.code__tab[aria-selected='true'] {
-		box-shadow: inset 0 -2px #ff5a1f;
-	}
-
-	.code__tab:focus-visible {
-		outline: 2px solid var(--fg);
-		outline-offset: -3px;
+	.code__panel {
+		width: 100%;
 	}
 
 	.code__panel pre {
 		margin: 0;
 		padding: 1rem 0;
 		overflow-x: auto;
+		width: 100%;
 		font-family: var(--font-mono);
 		font-size: 0.78rem;
 		line-height: 1.7;
@@ -426,11 +428,13 @@ const ownership = [
 
 	.code__panel code {
 		display: grid;
+		width: 100%;
 		min-width: max-content;
 		counter-reset: line;
 	}
 
 	.code__line {
+		width: 100%;
 		padding: 0 1.25rem 0 0;
 		border-left: 2px solid #ff5a1f;
 		color: var(--fg);
@@ -464,13 +468,37 @@ const ownership = [
 	}
 
 	@media (max-width: 900px) {
-		.styling {
-			min-height: 0;
+		.bento__ownership {
+			grid-template-columns: minmax(0, 1fr);
 		}
 
-		.styling__inner {
-			grid-template-columns: 1fr;
-			gap: 3rem;
+		.bento__ownership header {
+			order: -1;
+			grid-column: 1;
+		}
+
+		.prompt {
+			max-width: 26rem;
+		}
+	}
+
+	@media (max-width: 600px) {
+		.code__bar,
+		.code__note {
+			padding-inline: 1rem;
+		}
+
+		.code__panel pre {
+			font-size: 0.72rem;
+		}
+
+		.code__line {
+			padding-right: 1rem;
+		}
+
+		.code__line::before {
+			width: 2.5rem;
+			padding-right: 1rem;
 		}
 	}
 </style>

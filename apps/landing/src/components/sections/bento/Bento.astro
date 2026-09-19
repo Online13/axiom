@@ -1,0 +1,241 @@
+---
+import Title from "../../Title.astro";
+import RegistryCard from "./RegistryCard.astro";
+import OwnershipCard from "./OwnershipCard.astro";
+import AgentCard from "./AgentCard.astro";
+---
+
+<section class="section section--solid workflow" id="workflow">
+	<div class="container workflow__inner">
+		<header class="workflow__header">
+			<div>
+				<p class="eyebrow">05 / Workflow</p>
+				<Title>Fits the way<br />you build.</Title>
+			</div>
+			<p>
+				Choose the source you need, put it in your project and keep working
+				with your stack.
+			</p>
+		</header>
+
+		<div class="bento">
+			<RegistryCard />
+			<OwnershipCard />
+			<AgentCard />
+		</div>
+	</div>
+</section>
+
+<style is:global>
+	.bento__card {
+		position: relative;
+		min-width: 0;
+		overflow: hidden;
+		border: 1px solid var(--line);
+		background: #0d0d0d;
+	}
+	.bento__card::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background-image:
+			linear-gradient(#ffffff04 1px, transparent 1px),
+			linear-gradient(90deg, #ffffff04 1px, transparent 1px);
+		background-size: 32px 32px;
+		mask-image: linear-gradient(to bottom right, #000, transparent 65%);
+	}
+	.bento__card .subtitle {
+		color: var(--muted);
+		font-size: 1.125rem;
+		max-width: 26rem;
+	}
+	.bento__card header,
+	.bento__open > div {
+		position: relative;
+		display: grid;
+		gap: 0.65rem;
+	}
+	.bento__card h3 {
+		font-size: clamp(1.3rem, 2vw, 1.8rem);
+		font-weight: 500;
+		letter-spacing: -0.03em;
+		line-height: 1.15;
+	}
+	.bento__note {
+		position: relative;
+		max-width: 31rem;
+		color: var(--muted);
+		font-size: 0.9rem;
+	}
+</style>
+
+<style>
+	.workflow {
+		padding-block: clamp(5rem, 9vw, 8rem);
+	}
+	.workflow__inner {
+		display: grid;
+		gap: clamp(3rem, 5vw, 4.5rem);
+	}
+	.workflow__header {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.65fr);
+		align-items: end;
+		gap: 2rem 5rem;
+	}
+	.workflow__header > div {
+		display: grid;
+		gap: 1.25rem;
+	}
+	.workflow__header > p {
+		max-width: 30rem;
+		padding-bottom: 0.25rem;
+		color: var(--muted);
+		font-size: 1.05rem;
+	}
+	.bento {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-areas:
+			"registry"
+			"ownership"
+			"agents";
+		gap: 1rem;
+	}
+	.dependency {
+		position: relative;
+		grid-column: 2;
+		grid-row: 1 / span 3;
+		align-self: stretch;
+		display: grid;
+		align-content: center;
+		justify-items: center;
+		gap: 2rem;
+		padding: 1.5rem;
+	}
+	.dependency::before {
+		content: "";
+		position: absolute;
+		top: 25%;
+		bottom: 25%;
+		left: 50%;
+		width: 1px;
+		background: var(--line);
+	}
+	.dependency span {
+		position: relative;
+		z-index: 1;
+		min-width: 9rem;
+		padding: 0.75rem 1rem;
+		border: 1px solid var(--line);
+		background: #0d0d0d;
+		font: 0.78rem var(--font-mono);
+		text-align: center;
+		color: var(--muted);
+	}
+	.dependency .dependency__root {
+		border-color: var(--fg);
+		color: var(--fg);
+	}
+	.source-flow {
+		position: relative;
+		display: grid;
+		grid-template-columns:
+			max-content auto minmax(10rem, max-content)
+			auto minmax(10rem, 1fr);
+		align-items: center;
+		gap: 0.8rem;
+		padding-block: 1.5rem;
+		font: 0.8rem var(--font-mono);
+	}
+	.source-flow > span,
+	.source-flow > code {
+		padding: 0.75rem 0.9rem;
+		border: 1px solid var(--line);
+	}
+	.source-flow > i {
+		font-style: normal;
+		color: var(--muted);
+	}
+	.file-tree {
+		display: grid;
+		gap: 0.35rem;
+		padding: 1rem;
+		border: 1px solid var(--fg);
+	}
+	.file-tree span:nth-child(2) {
+		padding-left: 1rem;
+		color: var(--muted);
+	}
+	.file-tree strong {
+		padding-left: 2rem;
+		font-weight: 500;
+		color: #ff875d;
+	}
+	.bento__agents {
+		grid-area: agents;
+		padding: 2rem;
+	}
+	.bento__open a {
+		position: relative;
+		font-size: 0.85rem;
+		color: var(--muted);
+	}
+	.bento__open a:hover,
+	.bento__open a:focus-visible {
+		color: var(--fg);
+	}
+	.bento__open a:focus-visible {
+		outline: 2px solid var(--fg);
+		outline-offset: 3px;
+	}
+	.bento__open {
+		grid-area: open;
+		display: flex;
+		align-items: end;
+		justify-content: space-between;
+		gap: 2rem;
+		padding: 2rem;
+	}
+	.bento__open nav {
+		position: relative;
+		display: grid;
+		gap: 0.55rem;
+		text-align: right;
+	}
+	@media (max-width: 900px) {
+		.workflow__header {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 1.5rem;
+		}
+	}
+
+	@media (max-width: 600px) {
+		.workflow__header > p {
+			padding-bottom: 0;
+		}
+		.dependency {
+			grid-column: 1;
+			grid-row: auto;
+		}
+		.dependency {
+			min-height: 18rem;
+		}
+		.source-flow {
+			grid-template-columns: 1fr;
+			justify-items: stretch;
+		}
+		.source-flow > i {
+			transform: rotate(90deg);
+			justify-self: center;
+		}
+		.bento__open {
+			align-items: start;
+			flex-direction: column;
+		}
+		.bento__open nav {
+			text-align: left;
+		}
+	}
+</style>

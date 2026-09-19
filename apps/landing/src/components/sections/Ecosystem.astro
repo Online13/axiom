@@ -1,0 +1,737 @@
+---
+import Title from '../Title.astro';
+
+const primitives = ['Reanimated', 'Gesture Handler', 'Safe Area', 'Screens'];
+const styling = ['StyleSheet', 'Unistyles', 'NativeWind', 'Uniwind'];
+const layers = ['Components', 'Behaviors', 'Patterns', 'Experiences'];
+---
+
+<section class="section section--solid ecosystem" id="ecosystem" aria-labelledby="ecosystem-title">
+	<div class="container ecosystem__inner">
+		<header class="ecosystem__header">
+			<div class="ecosystem__heading" id="ecosystem-title">
+				<p class="eyebrow">02 / Ecosystem</p>
+				<Title as="h2" class="ecosystem__title">Where Axiom fits.</Title>
+			</div>
+			<p class="ecosystem__intro">
+				React Native gives you the platform. The ecosystem gives you primitives. Axiom turns them into reusable mobile experiences.
+			</p>
+		</header>
+
+		<figure class="ecosystem__diagram" aria-describedby="ecosystem-caption">
+			<figcaption class="sr-only" id="ecosystem-caption">
+				Axiom sits between React Native and Expo, mobile primitives, and your app. Developers, agents, and the styling system connect to Axiom.
+			</figcaption>
+
+			<div class="diagram__node diagram__app">
+				<div>
+					<p class="diagram__label">Product</p>
+					<h3>Your app</h3>
+					<p>Your brand · Your experience</p>
+				</div>
+				<div class="app-preview" aria-hidden="true">
+					<span class="app-preview__bar"></span>
+					<span class="app-preview__card"></span>
+					<span class="app-preview__row"></span>
+					<span class="app-preview__row app-preview__row--short"></span>
+				</div>
+			</div>
+
+			<div class="diagram__flow diagram__flow--product" aria-hidden="true">
+				<span>reusable UI</span>
+				<svg viewBox="0 0 16 58">
+					<path d="M8 56V4"></path>
+					<path d="m3 9 5-5 5 5"></path>
+				</svg>
+			</div>
+
+			<div class="diagram__node diagram__satellite diagram__developer">
+				<p class="diagram__label">People</p>
+				<h3>Developers</h3>
+				<p>Browse · install · customize · own</p>
+				<span class="diagram__relation">Axiom ↔ developers</span>
+			</div>
+
+			<div class="diagram__node diagram__satellite diagram__styling">
+				<p class="diagram__label">Bring your styling</p>
+				<h3>Styling</h3>
+				<ul aria-label="Supported styling approaches">
+					{styling.map((item) => <li>{item}</li>)}
+				</ul>
+				<span class="diagram__relation">Styling → component tokens</span>
+			</div>
+
+			<div class="diagram__node diagram__axiom">
+				<div class="axiom__topline">
+					<div>
+						<p class="diagram__label">The reusable layer</p>
+						<h3>Axiom</h3>
+					</div>
+					<span>Own the source</span>
+				</div>
+
+				<ol class="axiom__layers">
+					{
+						layers.map((layer, index) => (
+							<li>
+								<span class="axiom__index">0{index + 1}</span>
+								<strong>{layer}</strong>
+								{index < layers.length - 1 && <span class="axiom__arrow" aria-hidden="true">→</span>}
+							</li>
+						))
+					}
+				</ol>
+
+				<div class="axiom__foundation">
+					<span>Component tokens</span>
+					<span>Registry</span>
+					<span>CLI</span>
+				</div>
+				<p class="axiom__note">The layer you rebuild in every app.</p>
+			</div>
+
+			<div class="diagram__node diagram__satellite diagram__agents">
+				<p class="diagram__label">Structured access</p>
+				<h3>Agents</h3>
+				<p>Discover · understand · compose · verify</p>
+				<span class="diagram__relation">Agents ↔ registry</span>
+			</div>
+
+			<div class="diagram__flow diagram__flow--primitives" aria-hidden="true">
+				<span>primitives</span>
+				<svg viewBox="0 0 16 58">
+					<path d="M8 56V4"></path>
+					<path d="m3 9 5-5 5 5"></path>
+				</svg>
+			</div>
+
+			<div class="diagram__node diagram__primitives">
+				<div>
+					<p class="diagram__label">Mobile primitives</p>
+					<h3>Proven building blocks</h3>
+				</div>
+				<ul>
+					{primitives.map((item) => <li>{item}</li>)}
+				</ul>
+			</div>
+
+			<div class="diagram__flow diagram__flow--foundation" aria-hidden="true">
+				<span>foundation</span>
+				<svg viewBox="0 0 16 58">
+					<path d="M8 56V4"></path>
+					<path d="m3 9 5-5 5 5"></path>
+				</svg>
+			</div>
+
+			<div class="diagram__node diagram__platform">
+				<p class="diagram__label">Platform</p>
+				<div class="platform__names">
+					<h3>React Native</h3>
+					<span aria-hidden="true">+</span>
+					<h3>Expo</h3>
+				</div>
+				<p>iOS · Android</p>
+			</div>
+		</figure>
+	</div>
+</section>
+
+<style>
+	.ecosystem {
+		--ecosystem-accent: #ff5a1f;
+		padding-block: clamp(6rem, 10vw, 10rem);
+		overflow: hidden;
+	}
+
+	.ecosystem__inner {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(4rem, 7vw, 7rem);
+	}
+
+	.ecosystem__header {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.72fr);
+		align-items: end;
+		gap: 3rem;
+	}
+
+	.ecosystem__heading {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.ecosystem__intro {
+		max-width: 34rem;
+		color: var(--muted);
+		font-size: clamp(1rem, 1.45vw, 1.2rem);
+	}
+
+	.ecosystem__diagram {
+		margin: 0;
+		display: grid;
+		grid-template-columns: minmax(12rem, 0.8fr) minmax(32rem, 1.8fr) minmax(12rem, 0.8fr);
+		grid-template-rows: auto 4.5rem auto auto 5rem auto 4.5rem auto;
+		column-gap: clamp(2rem, 5vw, 6rem);
+		align-items: stretch;
+	}
+
+	.diagram__node {
+		position: relative;
+		border: 1px solid var(--line);
+		background: #0d0d0d;
+	}
+
+	.diagram__node h3 {
+		margin: 0;
+		font-size: 1.05rem;
+		font-weight: 550;
+		letter-spacing: -0.02em;
+	}
+
+	.diagram__node p {
+		color: var(--muted);
+	}
+
+	.diagram__label {
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.diagram__app {
+		grid-column: 2;
+		grid-row: 1;
+		min-height: 8rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 2rem;
+		padding: 1.25rem 1.5rem;
+		border-color: #343434;
+	}
+
+	.diagram__app > div:first-child {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.diagram__app h3 {
+		font-size: clamp(1.25rem, 2vw, 1.75rem);
+	}
+
+	.app-preview {
+		width: 4.25rem;
+		height: 6.5rem;
+		flex: none;
+		display: flex;
+		flex-direction: column;
+		gap: 0.45rem;
+		padding: 0.7rem 0.55rem;
+		border: 1px solid #3a3a3a;
+		border-radius: 0.75rem;
+		background: #181818;
+	}
+
+	.app-preview span {
+		display: block;
+		border-radius: 999px;
+		background: #3a3a3a;
+	}
+
+	.app-preview__bar {
+		width: 45%;
+		height: 0.25rem;
+		margin-inline: auto;
+	}
+
+	.app-preview__card {
+		height: 2.1rem;
+		margin-top: 0.2rem;
+		border-radius: 0.35rem !important;
+		background: var(--ecosystem-accent) !important;
+		opacity: 0.9;
+	}
+
+	.app-preview__row {
+		height: 0.3rem;
+	}
+
+	.app-preview__row--short {
+		width: 65%;
+	}
+
+	.diagram__flow {
+		position: relative;
+		grid-column: 2;
+		display: grid;
+		place-items: center;
+		min-height: 100%;
+		color: #5d5d5d;
+	}
+
+	.diagram__flow span {
+		position: absolute;
+		left: calc(50% + 1rem);
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	.diagram__flow svg {
+		width: 1rem;
+		height: 100%;
+		fill: none;
+		stroke: #484848;
+		stroke-width: 1;
+		stroke-linecap: square;
+		stroke-linejoin: miter;
+	}
+
+	.diagram__flow--product { grid-row: 2; }
+	.diagram__flow--primitives { grid-row: 5; }
+	.diagram__flow--foundation { grid-row: 7; }
+
+	.diagram__satellite {
+		align-self: stretch;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0.55rem;
+		padding: 1.25rem;
+		background: #0b0b0b;
+	}
+
+	.diagram__satellite > p:not(.diagram__label) {
+		font-size: 0.8rem;
+	}
+
+	.diagram__developer {
+		grid-column: 1;
+		grid-row: 3;
+	}
+
+	.diagram__styling {
+		grid-column: 1;
+		grid-row: 4;
+		margin-top: 1rem;
+	}
+
+	.diagram__agents {
+		grid-column: 3;
+		grid-row: 3 / 5;
+		align-self: center;
+		min-height: 9.5rem;
+	}
+
+	.diagram__developer::after,
+	.diagram__styling::after,
+	.diagram__agents::before {
+		content: '';
+		position: absolute;
+		top: 50%;
+		width: clamp(2rem, 5vw, 6rem);
+		border-top: 1px solid #3b3b3b;
+	}
+
+	.diagram__developer::after,
+	.diagram__styling::after {
+		left: 100%;
+	}
+
+	.diagram__agents::before {
+		right: 100%;
+	}
+
+	.diagram__relation {
+		margin-top: 0.35rem;
+		color: #666;
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+
+	.diagram__styling ul,
+	.diagram__primitives ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.diagram__styling ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem 0.75rem;
+		color: var(--muted);
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+	}
+
+	.diagram__axiom {
+		grid-column: 2;
+		grid-row: 3 / 5;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		min-height: 24rem;
+		padding: clamp(1.5rem, 3vw, 2.5rem);
+		border-color: color-mix(in srgb, var(--ecosystem-accent) 45%, var(--line));
+		background:
+			radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--ecosystem-accent) 12%, transparent), transparent 42%),
+			#111;
+		box-shadow: 0 0 5rem color-mix(in srgb, var(--ecosystem-accent) 6%, transparent);
+	}
+
+	.axiom__topline {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.axiom__topline > div {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.axiom__topline h3 {
+		font-size: clamp(2rem, 4vw, 3.5rem);
+		font-weight: 600;
+		letter-spacing: -0.045em;
+		text-transform: uppercase;
+	}
+
+	.axiom__topline > span {
+		padding: 0.4rem 0.65rem;
+		border: 1px solid #373737;
+		color: var(--muted);
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	.axiom__layers {
+		list-style: none;
+		margin: auto 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		border: 1px solid #303030;
+	}
+
+	.axiom__layers li {
+		position: relative;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.65rem;
+		padding: 1rem;
+		border-right: 1px solid #303030;
+	}
+
+	.axiom__layers li:last-child {
+		border-right: 0;
+	}
+
+	.axiom__index {
+		color: #676767;
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+	}
+
+	.axiom__layers strong {
+		overflow: hidden;
+		font-size: clamp(0.72rem, 1vw, 0.9rem);
+		font-weight: 500;
+		text-overflow: ellipsis;
+	}
+
+	.axiom__arrow {
+		position: absolute;
+		top: 50%;
+		right: -0.55rem;
+		z-index: 1;
+		width: 1.1rem;
+		background: #111;
+		color: var(--ecosystem-accent);
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		text-align: center;
+		transform: translateY(-50%);
+	}
+
+	.axiom__foundation {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.axiom__foundation span {
+		padding: 0.4rem 0.65rem;
+		background: #1b1b1b;
+		color: #aaa;
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+	}
+
+	.axiom__note {
+		font-size: 0.85rem;
+	}
+
+	.diagram__primitives {
+		grid-column: 2;
+		grid-row: 6;
+		display: grid;
+		grid-template-columns: minmax(12rem, 0.8fr) 1.2fr;
+		align-items: center;
+		gap: 2rem;
+		padding: 1.5rem;
+	}
+
+	.diagram__primitives > div {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.diagram__primitives ul {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.5rem;
+	}
+
+	.diagram__primitives li {
+		padding: 0.55rem 0.65rem;
+		border: 1px solid #282828;
+		color: #aaa;
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+	}
+
+	.diagram__platform {
+		grid-column: 2;
+		grid-row: 8;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 2rem;
+		padding: 1.25rem 1.5rem;
+		background: #0b0b0b;
+	}
+
+	.platform__names {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.25rem;
+	}
+
+	.platform__names h3 {
+		font-size: clamp(1rem, 1.8vw, 1.4rem);
+	}
+
+	.platform__names span {
+		color: var(--ecosystem-accent);
+		font-family: var(--font-mono);
+	}
+
+	.diagram__platform > p:last-child {
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		text-align: right;
+	}
+
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	@media (max-width: 1050px) {
+		.ecosystem__diagram {
+			grid-template-columns: minmax(10rem, 0.7fr) minmax(28rem, 1.8fr) minmax(10rem, 0.7fr);
+			column-gap: 2rem;
+		}
+
+		.diagram__developer::after,
+		.diagram__styling::after,
+		.diagram__agents::before {
+			width: 2rem;
+		}
+
+		.diagram__satellite {
+			padding: 1rem;
+		}
+	}
+
+	@media (max-width: 820px) {
+		.ecosystem__header {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+		}
+
+		.ecosystem__diagram {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			grid-template-rows: none;
+			gap: 0;
+		}
+
+		.diagram__developer,
+		.diagram__agents {
+			grid-row: 1;
+			min-height: 10rem;
+			margin: 0;
+			align-self: stretch;
+		}
+
+		.diagram__developer { grid-column: 1; }
+		.diagram__agents { grid-column: 2; }
+
+		.diagram__developer::after,
+		.diagram__styling::after,
+		.diagram__agents::before {
+			display: none;
+		}
+
+		.diagram__app {
+			grid-column: 1 / -1;
+			grid-row: 2;
+			margin-top: 2rem;
+		}
+
+		.diagram__flow--product {
+			grid-column: 1 / -1;
+			grid-row: 3;
+			height: 4.5rem;
+		}
+
+		.diagram__axiom {
+			grid-column: 1 / -1;
+			grid-row: 4;
+			min-height: 0;
+		}
+
+		.diagram__styling {
+			grid-column: 1 / -1;
+			grid-row: 5;
+			margin-top: 1rem;
+		}
+
+		.diagram__styling::before {
+			content: 'works with';
+			position: absolute;
+			bottom: 100%;
+			left: 50%;
+			padding-bottom: 0.25rem;
+			color: #5d5d5d;
+			font-family: var(--font-mono);
+			font-size: 0.55rem;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			transform: translateX(-50%);
+		}
+
+		.diagram__flow--primitives {
+			grid-column: 1 / -1;
+			grid-row: 6;
+			height: 4.5rem;
+		}
+
+		.diagram__primitives {
+			grid-column: 1 / -1;
+			grid-row: 7;
+		}
+
+		.diagram__flow--foundation {
+			grid-column: 1 / -1;
+			grid-row: 8;
+			height: 4.5rem;
+		}
+
+		.diagram__platform {
+			grid-column: 1 / -1;
+			grid-row: 9;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.ecosystem {
+			padding-block: 5rem;
+		}
+
+		.ecosystem__inner {
+			gap: 3rem;
+		}
+
+		.diagram__developer,
+		.diagram__agents {
+			min-height: 9rem;
+		}
+
+		.diagram__satellite > p:not(.diagram__label) {
+			font-size: 0.72rem;
+		}
+
+		.diagram__relation {
+			display: none;
+		}
+
+		.diagram__app {
+			padding: 1rem;
+		}
+
+		.axiom__topline {
+			align-items: flex-end;
+		}
+
+		.axiom__topline > span {
+			display: none;
+		}
+
+		.axiom__layers {
+			grid-template-columns: 1fr 1fr;
+		}
+
+		.axiom__layers li:nth-child(2) {
+			border-right: 0;
+		}
+
+		.axiom__layers li:nth-child(-n + 2) {
+			border-bottom: 1px solid #303030;
+		}
+
+		.axiom__layers li:nth-child(2) .axiom__arrow {
+			display: none;
+		}
+
+		.diagram__primitives {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+			padding: 1rem;
+		}
+
+		.diagram__platform {
+			grid-template-columns: 1fr;
+			gap: 0.75rem;
+			text-align: center;
+		}
+
+		.diagram__platform > p:last-child {
+			text-align: center;
+		}
+	}
+</style>

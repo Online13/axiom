@@ -1,0 +1,235 @@
+---
+import CopyCommand from "../../CopyCommand.astro";
+
+const initial = ["button", "bottom-sheet"];
+const components = [
+	"button",
+	"icon-button",
+	"tappable",
+	"text",
+	"icon",
+	"avatar",
+	"badge",
+	"chip",
+	"divider",
+	"item",
+	"list",
+	"section-header",
+	"app-bar",
+	"bottom-tab-bar",
+	"search-bar",
+	"text-field",
+	"textarea",
+	"checkbox",
+	"radio",
+	"switch",
+	"slider",
+	"stepper",
+	"segmented-control",
+	"select",
+	"date-picker",
+	"otp-input",
+	"progress",
+	"spinner",
+	"skeleton",
+	"toast",
+	"alert",
+	"dialog",
+	"bottom-sheet",
+	"action-sheet",
+	"menu",
+	"popover",
+	"tooltip",
+	"tabs",
+	"carousel",
+	"pull-to-refresh",
+	"swipeable",
+	"empty-state",
+];
+---
+
+<article class="bento__card bento__registry" id="registry">
+	<header>
+		<p class="eyebrow">Registry</p>
+		<h3>Use only what you need.</h3>
+		<p class="subtitle">
+			Pick the pieces you want. Axiom resolves their dependencies and copies
+			exactly what they need, in your styling, nothing more.
+		</p>
+	</header>
+	<CopyCommand command="npx axiom add button bottom-sheet" />
+	<div
+		class="dependency"
+		aria-label="A bottom sheet installs its overlay and portal dependencies"
+	>
+		<div class="picker" role="group" aria-label="Registry components">
+			{
+				components.map((name) => (
+					<button
+						type="button"
+						class="picker__item"
+						aria-pressed={initial.includes(name) ? "true" : "false"}
+						data-name={name}
+					>
+						<span class="picker__check" aria-hidden="true">
+							<svg viewBox="0 0 12 12">
+								<path d="M2.5 6.2 5 8.5l4.5-5" />
+							</svg>
+						</span>
+						<span class="picker__name">{name}</span>
+					</button>
+				))
+			}
+		</div>
+	</div>
+	<p class="bento__note">
+		The CLI resolves dependencies and copies only the selected source.
+	</p>
+</article>
+<style>
+	.bento__registry {
+		grid-area: registry;
+		display: grid;
+		grid-template-columns: minmax(14rem, 1.1fr) minmax(14rem, 1.1fr);
+		align-items: center;
+		gap: 2rem;
+		padding: clamp(2rem, 4vw, 3.5rem);
+	}
+	.bento__registry header,
+	.bento__registry .bento__note {
+		grid-column: 1;
+	}
+	.bento__registry :global(.copy-cmd) {
+		grid-column: 1;
+		justify-self: start;
+	}
+	.dependency {
+		min-width: 0;
+		width: 100%;
+		height: 100%;
+		position: relative;
+		grid-column-start: 2;
+		grid-row-start: 1;
+		grid-row-end: 4;
+	}
+	.dependency .picker {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		/* transform: translateY(-50%); */
+	}
+
+	@media (max-width: 900px) {
+		.bento__registry {
+			grid-template-columns: minmax(0, 1fr);
+			align-items: start;
+		}
+
+		.bento__registry header,
+		.bento__registry :global(.copy-cmd),
+		.bento__registry .bento__note,
+		.dependency {
+			grid-column: 1;
+			grid-row: auto;
+		}
+
+		.dependency {
+			height: 20rem;
+		}
+	}
+
+	@media (max-width: 600px) {
+		.dependency {
+			height: 16rem;
+		}
+	}
+
+	/* picker */
+
+	.picker {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(10rem, 1fr));
+	}
+
+	.picker__item {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		min-width: 0;
+		padding: 0.55rem 0.75rem;
+		background: none;
+		border: 1px solid var(--line);
+		color: var(--muted);
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+		transition:
+			border-color 0.2s,
+			background-color 0.2s,
+			color 0.2s;
+	}
+
+	.picker__item:hover {
+		border-color: color-mix(in srgb, var(--fg) 30%, var(--line));
+		color: var(--fg);
+	}
+
+	.picker__item:focus-visible {
+		outline: 2px solid var(--fg);
+		outline-offset: 2px;
+	}
+
+	.picker__item[aria-pressed="true"] {
+		border-color: var(--fg);
+		background: color-mix(in srgb, var(--fg) 6%, transparent);
+		color: var(--fg);
+	}
+
+
+	.picker__check {
+		flex: none;
+		display: grid;
+		place-items: center;
+		width: 0.875rem;
+		height: 0.875rem;
+		border: 1px solid var(--line);
+		transition:
+			background-color 0.2s,
+			border-color 0.2s;
+	}
+
+	.picker__check svg {
+		width: 0.625rem;
+		height: 0.625rem;
+		fill: none;
+		stroke: var(--bg);
+		stroke-width: 1.8;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		opacity: 0;
+	}
+
+	.picker__item[aria-pressed='true'] .picker__check {
+		background: var(--fg);
+		border-color: var(--fg);
+	}
+
+	.picker__item[aria-pressed='true'] .picker__check svg {
+		opacity: 1;
+	}
+
+	.picker__name {
+		overflow: hidden;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	@media (max-width: 600px) {
+		.picker {
+			grid-template-columns: repeat(3, minmax(8rem, 1fr));
+		}
+	}
+</style>
