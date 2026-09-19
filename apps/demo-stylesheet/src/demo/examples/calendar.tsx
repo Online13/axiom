@@ -69,6 +69,7 @@ function Slide({
 export default function CalendarScreen() {
 	const { tokens } = useTheme();
 	const [date, setDate] = useState<CalendarSelection>(new Date());
+	const [month, setMonth] = useState<CalendarSelection>(new Date());
 	const [range, setRange] = useState<CalendarSelection>();
 	const [index, setIndex] = useState(0);
 	const carousel = useRef<CarouselRef>(null);
@@ -79,17 +80,17 @@ export default function CalendarScreen() {
 	return (
 		<Screen>
 			<Section
-				title="Calendar"
-				description={`Single: ${format(date instanceof Date ? date : undefined)}. Swipe the grid to change month.`}
+				title="Events"
+				description={`Selected: ${format(date instanceof Date ? date : undefined)}. The navigation sits before the month title.`}
 			>
 				<Panel>
 					<Calendar.Root selected={date} onSelect={setDate}>
 						<Calendar.Header>
-							<Calendar.Title />
 							<Calendar.Nav>
-								<Calendar.PrevButton />
-								<Calendar.NextButton />
+								<Calendar.PrevButton variant="outline" shape="square" />
+								<Calendar.NextButton variant="outline" shape="square" />
 							</Calendar.Nav>
+							<Calendar.Title />
 						</Calendar.Header>
 						<Calendar.Grid>
 							<Calendar.Weekdays />
@@ -109,8 +110,37 @@ export default function CalendarScreen() {
 			</Section>
 
 			<Section
-				title="Range"
-				description={`From ${format(nights?.from)} to ${format(nights?.to)}. Up to 14 nights, from today, no Sundays.`}
+				title="Compact month"
+				description={`Selected: ${format(month instanceof Date ? month : undefined)}. This version places the title between standalone arrows.`}
+			>
+				<Panel>
+					<Calendar.Root selected={month} onSelect={setMonth}>
+						<Calendar.Header style={{ paddingStart: 0 }}>
+							<Calendar.PrevButton variant="tinted" />
+							<Calendar.Title>
+								{(visibleMonth) => (
+									<View style={{ alignItems: "center" }}>
+										<Text variant="bodyLg" weight="bold">
+											{visibleMonth.toLocaleDateString(undefined, {
+												month: "long",
+											})}
+										</Text>
+									</View>
+								)}
+							</Calendar.Title>
+							<Calendar.NextButton variant="tinted" />
+						</Calendar.Header>
+						<Calendar.Grid>
+							<Calendar.Weekdays format="narrow" />
+							<Calendar.Days showOutsideDays={false} />
+						</Calendar.Grid>
+					</Calendar.Root>
+				</Panel>
+			</Section>
+
+			<Section
+				title="Stay"
+				description={`From ${format(nights?.from)} to ${format(nights?.to)}. The grid comes first and the month controls sit below it.`}
 			>
 				<Panel>
 					<Calendar.Root
@@ -122,17 +152,17 @@ export default function CalendarScreen() {
 						isDateDisabled={(d) => d.getDay() === 0}
 						weekStartsOn={1}
 					>
-						<Calendar.Header>
-							<Calendar.Title format="month" />
-							<Calendar.Nav>
-								<Calendar.PrevButton />
-								<Calendar.NextButton />
-							</Calendar.Nav>
-						</Calendar.Header>
 						<Calendar.Grid>
 							<Calendar.Weekdays format="narrow" />
 							<Calendar.Days showOutsideDays={false} />
 						</Calendar.Grid>
+						<Calendar.Header style={{ justifyContent: "center" }}>
+							<Calendar.Nav>
+								<Calendar.PrevButton variant="outline" />
+								<Calendar.NextButton variant="outline" />
+							</Calendar.Nav>
+							<Calendar.Title format="month" />
+						</Calendar.Header>
 					</Calendar.Root>
 				</Panel>
 			</Section>

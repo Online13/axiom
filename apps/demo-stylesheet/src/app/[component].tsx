@@ -45,7 +45,10 @@ const EXAMPLES = {
 	avatar: { Component: BadgeExamples, titles: ["Avatar"] },
 	chip: { Component: BadgeExamples, titles: ["Chip"] },
 	separator: { Component: BadgeExamples, titles: ["Separator"] },
-	calendar: { Component: CalendarExamples, titles: ["Calendar"] },
+	calendar: {
+		Component: CalendarExamples,
+		titles: ["Events", "Compact month", "Stay"],
+	},
 	carousel: { Component: CalendarExamples, titles: ["Carousel"] },
 	card: { Component: CardExamples, titles: ["Card"] },
 	item: { Component: CardExamples, titles: ["Item"] },
