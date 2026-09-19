@@ -18,57 +18,57 @@ Your app needs `KeyboardProvider` at its root for `keyboardAvoiding` to work.
 ## Usage
 
 ```tsx
-import { Scaffold } from '@/components/ui/scaffold';
+import { Scaffold } from "@/components/ui/scaffold";
 
 <Scaffold>
-  <Scaffold.AppBar title="Settings" />
-  <Scaffold.Content>{/* screen content */}</Scaffold.Content>
-  <Scaffold.Footer>
-    <Button fullWidth>Save</Button>
-  </Scaffold.Footer>
-</Scaffold>
+	<Scaffold.AppBar title="Settings" />
+	<Scaffold.Content>{/* screen content */}</Scaffold.Content>
+	<Scaffold.Footer>
+		<Button fullWidth>Save</Button>
+	</Scaffold.Footer>
+</Scaffold>;
 ```
 
 ## Props
 
 ### Scaffold
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | — | Screen regions, usually `AppBar`, `Content` and an optional `Footer`. |
-| `safeAreaEdges` | `Edge[]` | `['top', 'bottom']` | Safe-area edges owned by the screen. Child regions avoid applying the same inset twice. |
-| `background` | `'default' \| 'subtle'` | `'default'` | Uses the standard screen background or the grouped-list background. |
-| `keyboardAvoiding` | `boolean` | `true` | Moves the footer above the keyboard on iOS and resizes available content on Android. |
-| `statusBarStyle` | `'auto' \| 'light' \| 'dark'` | `'auto'` | Status bar content style. `auto` follows the resolved color scheme. |
-| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the screen container. |
+| Prop               | Type                          | Default             | Description                                                                             |
+| ------------------ | ----------------------------- | ------------------- | --------------------------------------------------------------------------------------- |
+| `children`         | `ReactNode`                   | —                   | Screen regions, usually `AppBar`, `Content` and an optional `Footer`.                   |
+| `safeAreaEdges`    | `Edge[]`                      | `['top', 'bottom']` | Safe-area edges owned by the screen. Child regions avoid applying the same inset twice. |
+| `background`       | `'default' \| 'subtle'`       | `'default'`         | Uses the standard screen background or the grouped-list background.                     |
+| `keyboardAvoiding` | `boolean`                     | `true`              | Moves the footer above the keyboard on iOS and resizes available content on Android.    |
+| `statusBarStyle`   | `'auto' \| 'light' \| 'dark'` | `'auto'`            | Status bar content style. `auto` follows the resolved color scheme.                     |
+| `style`            | `StyleProp<ViewStyle>`        | —                   | Extra styles for the screen container.                                                  |
 
 ### Scaffold.AppBar
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `title` | `string` | — | Convenience title for a standard compact [AppBar](/templates/app-bar). |
-| `leading` | `ReactNode` | — | Leading navigation control. |
-| `actions` | `ReactNode` | — | Trailing screen actions. |
-| `...AppBarProps` | — | — | Every AppBar prop. Use children instead when you need the compound slots. |
+| Prop             | Type        | Default | Description                                                               |
+| ---------------- | ----------- | ------- | ------------------------------------------------------------------------- |
+| `title`          | `string`    | —       | Convenience title for a standard compact [AppBar](/templates/app-bar).    |
+| `leading`        | `ReactNode` | —       | Leading navigation control.                                               |
+| `actions`        | `ReactNode` | —       | Trailing screen actions.                                                  |
+| `...AppBarProps` | —           | —       | Every AppBar prop. Use children instead when you need the compound slots. |
 
 ### Scaffold.Content
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | — | Main screen content. |
-| `scrollable` | `boolean` | `true` | Uses a `ScrollView`. Set it to `false` for lists, maps or another child that owns scrolling. |
-| `contentContainerStyle` | `StyleProp<ViewStyle>` | — | Styles the inner scroll container, including padding and gaps. |
-| `keyboardShouldPersistTaps` | `ScrollViewProps['keyboardShouldPersistTaps']` | `'handled'` | Controls whether tapping content dismisses the keyboard. |
-| `...ScrollViewProps` | — | — | Remaining scroll props when `scrollable` is `true`. |
+| Prop                        | Type                                           | Default     | Description                                                                                  |
+| --------------------------- | ---------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------- |
+| `children`                  | `ReactNode`                                    | —           | Main screen content.                                                                         |
+| `scrollable`                | `boolean`                                      | `true`      | Uses a `ScrollView`. Set it to `false` for lists, maps or another child that owns scrolling. |
+| `contentContainerStyle`     | `StyleProp<ViewStyle>`                         | —           | Styles the inner scroll container, including padding and gaps.                               |
+| `keyboardShouldPersistTaps` | `ScrollViewProps['keyboardShouldPersistTaps']` | `'handled'` | Controls whether tapping content dismisses the keyboard.                                     |
+| `...ScrollViewProps`        | —                                              | —           | Remaining scroll props when `scrollable` is `true`.                                          |
 
 ### Scaffold.Footer
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | — | Fixed actions shown after the content region. |
-| `bordered` | `boolean` | `false` | Draws a hairline above the footer when scrolling content passes behind it. |
-| `safeArea` | `boolean` | `false` | Adds the bottom safe-area inset to the footer. Leave it off while the root owns the `bottom` edge, which it does by default — otherwise the inset lands twice. |
-| `style` | `StyleProp<ViewStyle>` | — | Extra footer styles. |
+| Prop       | Type                   | Default | Description                                                                                                                                                    |
+| ---------- | ---------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `children` | `ReactNode`            | —       | Fixed actions shown after the content region.                                                                                                                  |
+| `bordered` | `boolean`              | `false` | Draws a hairline above the footer when scrolling content passes behind it.                                                                                     |
+| `safeArea` | `boolean`              | `false` | Adds the bottom safe-area inset to the footer. Leave it off while the root owns the `bottom` edge, which it does by default — otherwise the inset lands twice. |
+| `style`    | `StyleProp<ViewStyle>` | —       | Extra footer styles.                                                                                                                                           |
 
 ## Use cases
 
@@ -77,17 +77,56 @@ import { Scaffold } from '@/components/ui/scaffold';
 Let the fields scroll while the main action stays reachable. The footer moves above the keyboard instead of covering the focused field.
 
 <PhonePreview half="bottom" size="sm">
-  <div class="ax-appbar" data-border><span class="ax-appbar-slot"><span class="ax-icon-btn"><Glyph name="close" /></span></span><span class="ax-appbar-title">New address</span><span class="ax-appbar-slot" /></div>
-  <div class="ax-body"><div class="ax-field"><span class="ax-label">Street</span><div class="ax-control"><span class="ax-value">12 Computing Lane</span></div></div><div class="ax-row"><div class="ax-field ax-grow"><span class="ax-label">City</span><div class="ax-control"><span class="ax-value">London</span></div></div><div class="ax-field" style={{ width: '100px' }}><span class="ax-label">Postcode</span><div class="ax-control"><span class="ax-value">N1 9GU</span></div></div></div></div>
-  <div class="ax-fill" />
-  <div class="ax-body" style={{ paddingBottom: '40px' }}><span class="ax-btn" data-size="lg" data-block>Save address</span></div>
+	<div class="ax-appbar" data-border>
+		<span class="ax-appbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="close" />
+			</span>
+		</span>
+		<span class="ax-appbar-title">New address</span>
+		<span class="ax-appbar-slot" />
+	</div>
+	<div class="ax-body">
+		<div class="ax-field">
+			<span class="ax-label">Street</span>
+			<div class="ax-control">
+				<span class="ax-value">12 Computing Lane</span>
+			</div>
+		</div>
+		<div class="ax-row">
+			<div class="ax-field ax-grow">
+				<span class="ax-label">City</span>
+				<div class="ax-control">
+					<span class="ax-value">London</span>
+				</div>
+			</div>
+			<div class="ax-field" style={{ width: "100px" }}>
+				<span class="ax-label">Postcode</span>
+				<div class="ax-control">
+					<span class="ax-value">N1 9GU</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ax-fill" />
+	<div class="ax-body" style={{ paddingBottom: "40px" }}>
+		<span class="ax-btn" data-size="lg" data-block>
+			Save address
+		</span>
+	</div>
 </PhonePreview>
 
 ```tsx
 <Scaffold keyboardAvoiding>
-  <Scaffold.AppBar title="New address" leading={<CloseButton />} />
-  <Scaffold.Content contentContainerStyle={styles.form}><AddressFields /></Scaffold.Content>
-  <Scaffold.Footer><Button size="lg" fullWidth onPress={save}>Save address</Button></Scaffold.Footer>
+	<Scaffold.AppBar title="New address" leading={<CloseButton />} />
+	<Scaffold.Content contentContainerStyle={styles.form}>
+		<AddressFields />
+	</Scaffold.Content>
+	<Scaffold.Footer>
+		<Button size="lg" fullWidth onPress={save}>
+			Save address
+		</Button>
+	</Scaffold.Footer>
 </Scaffold>
 ```
 
@@ -96,17 +135,61 @@ Let the fields scroll while the main action stays reachable. The footer moves ab
 Use the subtle background with inset lists. A `FlatList` owns scrolling here, so `Scaffold.Content` renders a plain view.
 
 <PhonePreview size="sm" grouped>
-  <div class="ax-appbar"><span class="ax-appbar-slot"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span></span><span class="ax-appbar-title">Settings</span><span class="ax-appbar-slot" /></div>
-  <div class="ax-section">Account</div><div class="ax-body" style={{ paddingTop: '0' }}><div class="ax-list" data-inset><div class="ax-item"><span class="ax-item-leading"><Glyph name="user" /></span><div class="ax-item-content"><span class="ax-item-title">Profile</span></div><Glyph name="chevron-right" size={18} /></div><div class="ax-item"><span class="ax-item-leading"><Glyph name="bell" /></span><div class="ax-item-content"><span class="ax-item-title">Notifications</span></div><Glyph name="chevron-right" size={18} /></div></div></div>
-  <div class="ax-section">App</div><div class="ax-body" style={{ paddingTop: '0' }}><div class="ax-list" data-inset><div class="ax-item"><span class="ax-item-leading"><Glyph name="moon" /></span><div class="ax-item-content"><span class="ax-item-title">Appearance</span></div><span class="ax-item-value">System</span><Glyph name="chevron-right" size={18} /></div></div></div>
+	<div class="ax-appbar">
+		<span class="ax-appbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="chevron-left" />
+			</span>
+		</span>
+		<span class="ax-appbar-title">Settings</span>
+		<span class="ax-appbar-slot" />
+	</div>
+	<div class="ax-section">Account</div>
+	<div class="ax-body" style={{ paddingTop: "0" }}>
+		<div class="ax-list" data-inset>
+			<div class="ax-item">
+				<span class="ax-item-leading">
+					<Glyph name="user" />
+				</span>
+				<div class="ax-item-content">
+					<span class="ax-item-title">Profile</span>
+				</div>
+				<Glyph name="chevron-right" size={18} />
+			</div>
+			<div class="ax-item">
+				<span class="ax-item-leading">
+					<Glyph name="bell" />
+				</span>
+				<div class="ax-item-content">
+					<span class="ax-item-title">Notifications</span>
+				</div>
+				<Glyph name="chevron-right" size={18} />
+			</div>
+		</div>
+	</div>
+	<div class="ax-section">App</div>
+	<div class="ax-body" style={{ paddingTop: "0" }}>
+		<div class="ax-list" data-inset>
+			<div class="ax-item">
+				<span class="ax-item-leading">
+					<Glyph name="moon" />
+				</span>
+				<div class="ax-item-content">
+					<span class="ax-item-title">Appearance</span>
+				</div>
+				<span class="ax-item-value">System</span>
+				<Glyph name="chevron-right" size={18} />
+			</div>
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
 <Scaffold background="subtle">
-  <Scaffold.AppBar title="Settings" leading={<BackButton />} />
-  <Scaffold.Content scrollable={false}>
-    <FlatList data={sections} renderItem={renderSection} />
-  </Scaffold.Content>
+	<Scaffold.AppBar title="Settings" leading={<BackButton />} />
+	<Scaffold.Content scrollable={false}>
+		<FlatList data={sections} renderItem={renderSection} />
+	</Scaffold.Content>
 </Scaffold>
 ```
 
@@ -115,16 +198,46 @@ Use the subtle background with inset lists. A `FlatList` owns scrolling here, so
 Turn off the content scroller when the child needs every available pixel and handles gestures itself. Screen chrome remains in its own regions.
 
 <PhonePreview half="bottom" size="sm">
-  <div class="ax-appbar"><span class="ax-appbar-slot"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span></span><span class="ax-appbar-title">Choose a place</span><span class="ax-appbar-slot" /></div>
-  <div class="ax-fill ax-media" data-tone="4"><div class="ax-center"><Glyph name="pin" size={44} /><span class="ax-badge" data-variant="inverse">Current location</span></div></div>
-  <div class="ax-body" style={{ paddingBottom: '40px' }}><div class="ax-card" data-variant="outlined"><div class="ax-card-content"><span class="ax-headline">King's Cross</span><span class="ax-subhead ax-muted">London N1 9AL</span></div></div><span class="ax-btn" data-block>Use this place</span></div>
+	<div class="ax-appbar">
+		<span class="ax-appbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="chevron-left" />
+			</span>
+		</span>
+		<span class="ax-appbar-title">Choose a place</span>
+		<span class="ax-appbar-slot" />
+	</div>
+	<div class="ax-fill ax-media" data-tone="4">
+		<div class="ax-center">
+			<Glyph name="pin" size={44} />
+			<span class="ax-badge" data-variant="inverse">
+				Current location
+			</span>
+		</div>
+	</div>
+	<div class="ax-body" style={{ paddingBottom: "40px" }}>
+		<div class="ax-card" data-variant="outlined">
+			<div class="ax-card-content">
+				<span class="ax-headline">King's Cross</span>
+				<span class="ax-subhead ax-muted">London N1 9AL</span>
+			</div>
+		</div>
+		<span class="ax-btn" data-block>
+			Use this place
+		</span>
+	</div>
 </PhonePreview>
 
 ```tsx
 <Scaffold>
-  <Scaffold.AppBar title="Choose a place" leading={<BackButton />} />
-  <Scaffold.Content scrollable={false}><MapView style={StyleSheet.absoluteFill} /></Scaffold.Content>
-  <Scaffold.Footer><PlaceSummary /><Button fullWidth>Use this place</Button></Scaffold.Footer>
+	<Scaffold.AppBar title="Choose a place" leading={<BackButton />} />
+	<Scaffold.Content scrollable={false}>
+		<MapView style={StyleSheet.absoluteFill} />
+	</Scaffold.Content>
+	<Scaffold.Footer>
+		<PlaceSummary />
+		<Button fullWidth>Use this place</Button>
+	</Scaffold.Footer>
 </Scaffold>
 ```
 

@@ -3,7 +3,10 @@ title: Undoable action
 description: "An action that happens right away and can be cancelled for a few seconds."
 ---
 
-<Callout title="Draft">Specified, not implemented yet. It relies on [Snackbar](/atoms/snackbar) and its `onDismiss` reason. The API may change.</Callout>
+<Callout title="Draft">
+	Specified, not implemented yet. It relies on [Snackbar](/atoms/snackbar) and
+	its `onDismiss` reason. The API may change.
+</Callout>
 
 Instead of asking "Are you sure?", the app does what the user asked and gives them a few seconds to take it back. Common actions stay fast, and a mistake costs one tap.
 
@@ -45,14 +48,19 @@ const [removed, setRemoved] = useState<string[]>([]);
 const visible = messages.filter((m) => !removed.includes(m.id));
 
 const remove = (message: Message) => {
-  setRemoved((ids) => [...ids, message.id]);
-  snackbar.show({
-    message: 'Conversation deleted',
-    duration: 'short',
-    action: { label: 'Undo', onPress: () => setRemoved((ids) => ids.filter((id) => id !== message.id)) },
-    // 'timeout', 'swipe' and 'replaced' (the next action) all commit.
-    onDismiss: (reason) => reason !== 'action' && api.deleteMessage(message.id),
-  });
+	setRemoved((ids) => [...ids, message.id]);
+	snackbar.show({
+		message: "Conversation deleted",
+		duration: "short",
+		action: {
+			label: "Undo",
+			onPress: () =>
+				setRemoved((ids) => ids.filter((id) => id !== message.id)),
+		},
+		// 'timeout', 'swipe' and 'replaced' (the next action) all commit.
+		onDismiss: (reason) =>
+			reason !== "action" && api.deleteMessage(message.id),
+	});
 };
 ```
 

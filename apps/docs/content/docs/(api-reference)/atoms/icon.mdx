@@ -4,12 +4,60 @@ description: "Themed icon component backed by an icon registry you fill."
 ---
 
 <PhonePreview>
-  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Icons</span><span class="ax-icon-btn" /></div>
-  <div class="ax-body" style={{ gap: '18px' }}>
-    <div class="ax-stack" data-gap="8"><span class="ax-footnote ax-muted">Your registry</span><div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '14px', justifyItems: 'center' }}><Glyph name="home" /><Glyph name="search" /><Glyph name="bell" /><Glyph name="user" /><Glyph name="settings" /><Glyph name="heart" /><Glyph name="share" /><Glyph name="trash" /><Glyph name="camera" /><Glyph name="calendar" /><Glyph name="mail" /><Glyph name="lock" /></div></div>
-    <div class="ax-stack" data-gap="8"><span class="ax-footnote ax-muted">Sizes · sm 16 · md 20 · lg 24</span><div class="ax-row" data-gap="16"><Glyph name="star" size={16} /><Glyph name="star" size={20} /><Glyph name="star" size={24} /><Glyph name="star" size={32} /></div></div>
-    <div class="ax-stack" data-gap="8"><span class="ax-footnote ax-muted">Content colors</span><div class="ax-row" data-gap="16"><Glyph name="bell" /><Glyph name="bell" class="ax-muted" /><Glyph name="bell" class="ax-subtle" /><Glyph name="bell" class="ax-disabled" /><Glyph name="bell" class="ax-link" /><Glyph name="bell" class="ax-success" /><Glyph name="bell" class="ax-danger" /></div></div>
-  </div>
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Icons</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body" style={{ gap: "18px" }}>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">Your registry</span>
+			<div
+				style={{
+					display: "grid",
+					gridTemplateColumns: "repeat(6, 1fr)",
+					gap: "14px",
+					justifyItems: "center",
+				}}
+			>
+				<Glyph name="home" />
+				<Glyph name="search" />
+				<Glyph name="bell" />
+				<Glyph name="user" />
+				<Glyph name="settings" />
+				<Glyph name="heart" />
+				<Glyph name="share" />
+				<Glyph name="trash" />
+				<Glyph name="camera" />
+				<Glyph name="calendar" />
+				<Glyph name="mail" />
+				<Glyph name="lock" />
+			</div>
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">Sizes · sm 16 · md 20 · lg 24</span>
+			<div class="ax-row" data-gap="16">
+				<Glyph name="star" size={16} />
+				<Glyph name="star" size={20} />
+				<Glyph name="star" size={24} />
+				<Glyph name="star" size={32} />
+			</div>
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">Content colors</span>
+			<div class="ax-row" data-gap="16">
+				<Glyph name="bell" />
+				<Glyph name="bell" class="ax-muted" />
+				<Glyph name="bell" class="ax-subtle" />
+				<Glyph name="bell" class="ax-disabled" />
+				<Glyph name="bell" class="ax-link" />
+				<Glyph name="bell" class="ax-success" />
+				<Glyph name="bell" class="ax-danger" />
+			</div>
+		</div>
+	</div>
 </PhonePreview>
 
 ## Installation
@@ -28,10 +76,10 @@ Where do the icons of your app come from?
   2. custom        An empty registry you fill with your own icons or any icon set.
 ```
 
-| Source | Registry created | Installs |
-| --- | --- | --- |
+| Source         | Registry created                                                                                                      | Installs       |
+| -------------- | --------------------------------------------------------------------------------------------------------------------- | -------------- |
 | `expo-symbols` | Filled with common icons (`close`, `check`, `chevron-right`, `search`…), ready to use. Offered only in Expo projects. | `expo-symbols` |
-| `custom` | Empty, with examples in comments. You fill it with any set or your own SVGs. | nothing |
+| `custom`       | Empty, with examples in comments. You fill it with any set or your own SVGs.                                          | nothing        |
 
 Without a terminal, pass the source: `npx axiom add icon --icons custom`.
 
@@ -51,15 +99,15 @@ Axiom doesn't pick an icon set for you. Your app builds its own base of icons, a
 `axiom add icon` creates `icons.tsx`, where you map names to components from any set: Lucide, Phosphor, SF Symbols through `expo-symbols`, or your own SVGs. The CLI creates the file once and [never overwrites it](/cli#existing-files): it's yours.
 
 ```tsx title="components/ui/icons.tsx"
-import { Bell, House, Search, Settings } from 'lucide-react-native';
+import { Bell, House, Search, Settings } from "lucide-react-native";
 
-import type { IconRegistry } from './icon-types';
+import type { IconRegistry } from "./icon-types";
 
 export const icons = {
-  home: House,
-  search: Search,
-  notifications: Bell,
-  settings: Settings,
+	home: House,
+	search: Search,
+	notifications: Bell,
+	settings: Settings,
 } satisfies IconRegistry;
 
 export type IconName = keyof typeof icons;
@@ -98,32 +146,34 @@ Axiom holds every project to these rules. The components are built on them.
 Sets don't share prop names. Wrap them once, in the registry:
 
 ```tsx title="components/ui/icons.tsx"
-import { SymbolView } from 'expo-symbols';
+import { SymbolView } from "expo-symbols";
 
-import type { IconComponent, IconRegistry } from './icon-types';
+import type { IconComponent, IconRegistry } from "./icon-types";
 
 function symbol(ios: SFSymbol, android: AndroidSymbol): IconComponent {
-  return function SymbolIcon({ size, color }) {
-    return <SymbolView name={{ ios, android }} size={size} tintColor={color} />;
-  };
+	return function SymbolIcon({ size, color }) {
+		return (
+			<SymbolView name={{ ios, android }} size={size} tintColor={color} />
+		);
+	};
 }
 
 export const icons = {
-  close: symbol('xmark', 'close'),
-  settings: symbol('gearshape', 'settings'),
+	close: symbol("xmark", "close"),
+	settings: symbol("gearshape", "settings"),
 } satisfies IconRegistry;
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `name` | `IconName` | — | Required. Key in your registry. |
-| `size` | `'sm' \| 'md' \| 'lg' \| number` | `'md'` | From the `icon` size tokens: 16, 20, 24pt. A number sets it directly. |
-| `color` | `IconColor \| string` | `'default'` | A content color name (`default`, `muted`, `subtle`, `disabled`, `link`, `inverse`) or a feedback color (`info`, `success`, `warning`, `error`), resolved from the theme so it follows light and dark. A raw color string is accepted but won't follow the scheme. |
-| `strokeWidth` | `number` | set-dependent | Passed to the icon component for sets that support it. |
-| `accessibilityLabel` | `string` | — | Makes the icon visible to screen readers. Without it the icon is decorative and hidden (`accessible={false}`). |
-| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the icon. |
+| Prop                 | Type                             | Default       | Description                                                                                                                                                                                                                                                       |
+| -------------------- | -------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`               | `IconName`                       | —             | Required. Key in your registry.                                                                                                                                                                                                                                   |
+| `size`               | `'sm' \| 'md' \| 'lg' \| number` | `'md'`        | From the `icon` size tokens: 16, 20, 24pt. A number sets it directly.                                                                                                                                                                                             |
+| `color`              | `IconColor \| string`            | `'default'`   | A content color name (`default`, `muted`, `subtle`, `disabled`, `link`, `inverse`) or a feedback color (`info`, `success`, `warning`, `error`), resolved from the theme so it follows light and dark. A raw color string is accepted but won't follow the scheme. |
+| `strokeWidth`        | `number`                         | set-dependent | Passed to the icon component for sets that support it.                                                                                                                                                                                                            |
+| `accessibilityLabel` | `string`                         | —             | Makes the icon visible to screen readers. Without it the icon is decorative and hidden (`accessible={false}`).                                                                                                                                                    |
+| `style`              | `StyleProp<ViewStyle>`           | —             | Extra styles for the icon.                                                                                                                                                                                                                                        |
 
 ## Use cases
 
@@ -132,18 +182,36 @@ export const icons = {
 A decorative icon: no accessibility label, since the row label already says it all.
 
 <PhonePreview size="sm" grouped>
-  <div class="ax-list" data-inset style={{ marginTop: '16px' }}>
-    <div class="ax-item"><Glyph name="user" class="ax-muted" /><span class="ax-item-title ax-grow">Profile</span><Glyph name="chevron-right" size={18} class="ax-subtle" /></div>
-    <div class="ax-item"><Glyph name="lock" class="ax-muted" /><span class="ax-item-title ax-grow">Privacy</span><Glyph name="chevron-right" size={18} class="ax-subtle" /></div>
-    <div class="ax-item"><Glyph name="download" class="ax-muted" /><span class="ax-item-title ax-grow">Storage</span><Glyph name="chevron-right" size={18} class="ax-subtle" /></div>
-  </div>
+	<div class="ax-list" data-inset style={{ marginTop: "16px" }}>
+		<div class="ax-item">
+			<Glyph name="user" class="ax-muted" />
+			<span class="ax-item-title ax-grow">Profile</span>
+			<Glyph name="chevron-right" size={18} class="ax-subtle" />
+		</div>
+		<div class="ax-item">
+			<Glyph name="lock" class="ax-muted" />
+			<span class="ax-item-title ax-grow">Privacy</span>
+			<Glyph name="chevron-right" size={18} class="ax-subtle" />
+		</div>
+		<div class="ax-item">
+			<Glyph name="download" class="ax-muted" />
+			<span class="ax-item-title ax-grow">Storage</span>
+			<Glyph name="chevron-right" size={18} class="ax-subtle" />
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
 <Item>
-  <Item.Leading><Icon name="lock" color="muted" /></Item.Leading>
-  <Item.Content><Item.Title>Privacy</Item.Title></Item.Content>
-  <Item.Trailing><Icon name="chevron-right" size="sm" color="subtle" /></Item.Trailing>
+	<Item.Leading>
+		<Icon name="lock" color="muted" />
+	</Item.Leading>
+	<Item.Content>
+		<Item.Title>Privacy</Item.Title>
+	</Item.Content>
+	<Item.Trailing>
+		<Icon name="chevron-right" size="sm" color="subtle" />
+	</Item.Trailing>
 </Item>
 ```
 
@@ -152,8 +220,29 @@ A decorative icon: no accessibility label, since the row label already says it a
 When the icon is the only signal (a verified mark, a warning), give it an `accessibilityLabel`.
 
 <PhonePreview size="sm">
-  <div class="ax-center" style={{ flex: 'none', paddingTop: '24px', gap: '6px' }}><span class="ax-avatar" data-size="xl" data-photo="5">AL</span><div class="ax-row" data-gap="4"><span class="ax-title2">Ada Lovelace</span><Glyph name="circle-check" size={22} class="ax-link" /></div><span class="ax-subhead ax-muted">@ada · 18.2k followers</span></div>
-  <div class="ax-body"><div class="ax-row ax-footnote" data-justify="center" style={{ color: 'var(--ax-feedback-warning)' }}><Glyph name="alert" size={16} />Last seen 3 days ago</div></div>
+	<div
+		class="ax-center"
+		style={{ flex: "none", paddingTop: "24px", gap: "6px" }}
+	>
+		<span class="ax-avatar" data-size="xl" data-photo="5">
+			AL
+		</span>
+		<div class="ax-row" data-gap="4">
+			<span class="ax-title2">Ada Lovelace</span>
+			<Glyph name="circle-check" size={22} class="ax-link" />
+		</div>
+		<span class="ax-subhead ax-muted">@ada · 18.2k followers</span>
+	</div>
+	<div class="ax-body">
+		<div
+			class="ax-row ax-footnote"
+			data-justify="center"
+			style={{ color: "var(--ax-feedback-warning)" }}
+		>
+			<Glyph name="alert" size={16} />
+			Last seen 3 days ago
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
@@ -165,19 +254,32 @@ When the icon is the only signal (a verified mark, a warning), give it an `acces
 The registry can point to different sets, so you keep one API when a set lacks an icon.
 
 <PhonePreview size="sm">
-  <div class="ax-body" style={{ gap: '14px', paddingTop: '20px' }}>
-    <span class="ax-title3">Sign in with</span>
-    <span class="ax-btn" data-variant="outline" data-block data-size="lg"><Glyph name="mail" size={20} />Continue with email</span>
-    <span class="ax-btn" data-variant="outline" data-block data-size="lg"><Glyph name="face" size={20} />Continue with Face ID</span>
-    <span class="ax-btn" data-variant="outline" data-block data-size="lg"><Glyph name="globe" size={20} />Continue with SSO</span>
-  </div>
+	<div class="ax-body" style={{ gap: "14px", paddingTop: "20px" }}>
+		<span class="ax-title3">Sign in with</span>
+		<span class="ax-btn" data-variant="outline" data-block data-size="lg">
+			<Glyph name="mail" size={20} />
+			Continue with email
+		</span>
+		<span class="ax-btn" data-variant="outline" data-block data-size="lg">
+			<Glyph name="face" size={20} />
+			Continue with Face ID
+		</span>
+		<span class="ax-btn" data-variant="outline" data-block data-size="lg">
+			<Glyph name="globe" size={20} />
+			Continue with SSO
+		</span>
+	</div>
 </PhonePreview>
 
 ```tsx title="components/ui/icons.tsx"
-import { Mail, Globe } from 'lucide-react-native';
-import { FaceIdIcon } from '@/assets/icons/face-id';
+import { Mail, Globe } from "lucide-react-native";
+import { FaceIdIcon } from "@/assets/icons/face-id";
 
-export const icons = { mail: Mail, globe: Globe, 'face-id': FaceIdIcon } satisfies IconRegistry;
+export const icons = {
+	mail: Mail,
+	globe: Globe,
+	"face-id": FaceIdIcon,
+} satisfies IconRegistry;
 ```
 
 ## Related

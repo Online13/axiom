@@ -3,7 +3,10 @@ title: OTP verification
 description: "Complete verification flow built around InputOTP."
 ---
 
-<Callout title="Draft">Specified, not implemented yet. The screen is built on [InputOTP](/atoms/input-otp). The API may change.</Callout>
+<Callout title="Draft">
+	Specified, not implemented yet. The screen is built on
+	[InputOTP](/atoms/input-otp). The API may change.
+</Callout>
 
 The user gets a code by text or email and types it. That's the easy part. The screen also has to check the code, say when it's wrong, stop guessing after a few tries, and let the user ask for a new code without spamming the server.
 
@@ -24,13 +27,13 @@ Don't use it for something the user types often. A code costs a trip to another 
 
 ## How it works
 
-| State | Cells | Line under the cells | Keys |
-| --- | --- | --- | --- |
-| Typing | Cursor in the next empty cell | Empty | On |
-| Verifying | Dimmed | Spinner, "Verifying…" | Off |
-| Invalid | Red, shake | "That code doesn't match. 2 attempts left." | On, the next key starts over |
-| Locked | Red, dimmed | "Too many attempts. Request a new code." | Off until resend |
-| Success | Green | "Verified" | Off, then the next screen |
+| State     | Cells                         | Line under the cells                        | Keys                         |
+| --------- | ----------------------------- | ------------------------------------------- | ---------------------------- |
+| Typing    | Cursor in the next empty cell | Empty                                       | On                           |
+| Verifying | Dimmed                        | Spinner, "Verifying…"                       | Off                          |
+| Invalid   | Red, shake                    | "That code doesn't match. 2 attempts left." | On, the next key starts over |
+| Locked    | Red, dimmed                   | "Too many attempts. Request a new code."    | Off until resend             |
+| Success   | Green                         | "Verified"                                  | Off, then the next screen    |
 
 ### Submit on the last digit
 
@@ -51,11 +54,11 @@ Filling the sixth cell sends the code. A **Verify** button would add a tap for n
 
 ## Implementation
 
-| Library | Used for |
-| --- | --- |
-| [InputOTP](/atoms/input-otp) | The cells, paste handling and `onComplete`. |
-| React state | The code, the state, attempts left and the countdown. |
-| `textContentType="oneTimeCode"` / `autoComplete="sms-otp"` | The code suggestion from the SMS on iOS and Android. |
+| Library                                                    | Used for                                              |
+| ---------------------------------------------------------- | ----------------------------------------------------- |
+| [InputOTP](/atoms/input-otp)                               | The cells, paste handling and `onComplete`.           |
+| React state                                                | The code, the state, attempts left and the countdown. |
+| `textContentType="oneTimeCode"` / `autoComplete="sms-otp"` | The code suggestion from the SMS on iOS and Android.  |
 
 ### In a screen
 

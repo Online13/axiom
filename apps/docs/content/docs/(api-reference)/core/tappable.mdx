@@ -29,45 +29,52 @@ You rarely render it yourself. Use it directly when you build your own pressable
 ## Usage
 
 ```tsx
-import { Tappable } from '@/components/core/tappable';
+import { Tappable } from "@/components/core/tappable";
 
 function Tile({ title, onPress, disabled }) {
-  const { components } = useTheme();
+	const { components } = useTheme();
 
-  return (
-    <Tappable onPress={onPress} disabled={disabled} accessibilityLabel={title}>
-      {({ pressed }) => (
-        <View
-          style={{
-            backgroundColor: pressed
-              ? components.button.outline.pressed.background
-              : components.button.outline.default.background,
-          }}
-        >
-          <Text color={disabled ? 'disabled' : 'default'}>{title}</Text>
-        </View>
-      )}
-    </Tappable>
-  );
+	return (
+		<Tappable
+			onPress={onPress}
+			disabled={disabled}
+			accessibilityLabel={title}
+		>
+			{({ pressed }) => (
+				<View
+					style={{
+						backgroundColor: pressed
+							? components.button.outline.pressed.background
+							: components.button.outline.default.background,
+					}}
+				>
+					<Text color={disabled ? "disabled" : "default"}>{title}</Text>
+				</View>
+			)}
+		</Tappable>
+	);
 }
 ```
 
 `children` can be a function that receives `{ pressed }`, or a plain element when the look doesn't change on press. `style` accepts the same kind of function:
 
 ```tsx
-<Tappable onPress={onPress} style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}>
-  <Text>Settings</Text>
+<Tappable
+	onPress={onPress}
+	style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+>
+	<Text>Settings</Text>
 </Tappable>
 ```
 
 ## Pressed state
 
-| Step | What happens |
-| --- | --- |
-| Finger down | `onPressIn` fires and `pressed` becomes `true`. |
-| Finger up on the element | `pressed` becomes `false`, `onPressOut` then `onPress` fire. |
+| Step                          | What happens                                                         |
+| ----------------------------- | -------------------------------------------------------------------- |
+| Finger down                   | `onPressIn` fires and `pressed` becomes `true`.                      |
+| Finger up on the element      | `pressed` becomes `false`, `onPressOut` then `onPress` fire.         |
 | Finger slides off the element | `pressed` becomes `false` and `onPressOut` fires. `onPress` doesn't. |
-| Held for `delayLongPress` ms | `onLongPress` fires instead of `onPress`. |
+| Held for `delayLongPress` ms  | `onLongPress` fires instead of `onPress`.                            |
 
 A press also cancels when the parent `ScrollView` starts scrolling, so scrolling a list doesn't press its rows.
 
@@ -78,7 +85,7 @@ A press also cancels when the parent `ScrollView` starts scrolling, so scrolling
 A blue outline is the area that accepts the press. `Tappable` measures the element and adds `hitSlop` on each axis where it is smaller than [`touchTarget`](/foundations/tokens/metrics) (44pt):
 
 ```ts
-hitSlop = Math.max(0, (touchTarget - size) / 2)
+hitSlop = Math.max(0, (touchTarget - size) / 2);
 ```
 
 A 24pt icon gets `10` on each side. A 64×32 chip gets `6` above and below and nothing on the sides. A 44pt tall button gets nothing.
@@ -101,20 +108,20 @@ A disabled element still takes up its touch area. A press on it does nothing and
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `onPress` | `(event: GestureResponderEvent) => void` | — | Called when a press ends on the element. |
-| `onPressIn` | `(event: GestureResponderEvent) => void` | — | Called when the finger touches the element. |
-| `onPressOut` | `(event: GestureResponderEvent) => void` | — | Called when the finger lifts or leaves the element. |
-| `onLongPress` | `(event: GestureResponderEvent) => void` | — | Called after `delayLongPress` ms. Replaces `onPress` for that press. |
-| `delayLongPress` | `number` | `500` | Duration in ms before `onLongPress`. |
-| `disabled` | `boolean` | `false` | Blocks every press callback and the pressed state. |
-| `hitSlop` | `number \| Insets` | computed | Extra touch area around the element. Overrides the computed value. |
-| `minTouchTarget` | `boolean` | `true` | Computes `hitSlop` from `touchTarget` when `hitSlop` isn't set. |
-| `children` | `ReactNode \| ({ pressed }) => ReactNode` | — | Content, or a function of the pressed state. |
-| `style` | `StyleProp<ViewStyle> \| ({ pressed }) => StyleProp<ViewStyle>` | — | Style, or a function of the pressed state. |
-| `accessibilityRole` | `AccessibilityRole` | `'button'` | Role announced by screen readers. |
-| `accessibilityLabel` | `string` | — | Label announced by screen readers. Required when the content has no text. |
+| Prop                 | Type                                                            | Default    | Description                                                               |
+| -------------------- | --------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------- |
+| `onPress`            | `(event: GestureResponderEvent) => void`                        | —          | Called when a press ends on the element.                                  |
+| `onPressIn`          | `(event: GestureResponderEvent) => void`                        | —          | Called when the finger touches the element.                               |
+| `onPressOut`         | `(event: GestureResponderEvent) => void`                        | —          | Called when the finger lifts or leaves the element.                       |
+| `onLongPress`        | `(event: GestureResponderEvent) => void`                        | —          | Called after `delayLongPress` ms. Replaces `onPress` for that press.      |
+| `delayLongPress`     | `number`                                                        | `500`      | Duration in ms before `onLongPress`.                                      |
+| `disabled`           | `boolean`                                                       | `false`    | Blocks every press callback and the pressed state.                        |
+| `hitSlop`            | `number \| Insets`                                              | computed   | Extra touch area around the element. Overrides the computed value.        |
+| `minTouchTarget`     | `boolean`                                                       | `true`     | Computes `hitSlop` from `touchTarget` when `hitSlop` isn't set.           |
+| `children`           | `ReactNode \| ({ pressed }) => ReactNode`                       | —          | Content, or a function of the pressed state.                              |
+| `style`              | `StyleProp<ViewStyle> \| ({ pressed }) => StyleProp<ViewStyle>` | —          | Style, or a function of the pressed state.                                |
+| `accessibilityRole`  | `AccessibilityRole`                                             | `'button'` | Role announced by screen readers.                                         |
+| `accessibilityLabel` | `string`                                                        | —          | Label announced by screen readers. Required when the content has no text. |
 
 Other `Pressable` props are passed through.
 

@@ -4,12 +4,64 @@ description: "Radio button and its RadioGroup."
 ---
 
 <PhonePreview>
-  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Choose a plan</span><span class="ax-icon-btn" /></div>
-  <div class="ax-body" style={{ gap: '10px' }}>
-    <div class="ax-card" data-variant="outlined" style={{ boxShadow: 'inset 0 0 0 2px var(--ax-content-link)' }}><div class="ax-choice" style={{ padding: '14px' }}><span class="ax-radio" data-checked /><div class="ax-item-content"><div class="ax-row" data-justify="between"><span class="ax-headline">Yearly</span><span class="ax-headline">$48</span></div><div class="ax-row" data-justify="between"><span class="ax-subhead ax-muted">$4 / month, billed yearly</span><span class="ax-badge" data-variant="success">Save 33%</span></div></div></div></div>
-    <div class="ax-card" data-variant="outlined"><div class="ax-choice" style={{ padding: '14px' }}><span class="ax-radio" /><div class="ax-item-content"><div class="ax-row" data-justify="between"><span class="ax-headline">Monthly</span><span class="ax-headline">$6</span></div><span class="ax-subhead ax-muted">Cancel anytime</span></div></div></div>
-    <div class="ax-card" data-variant="outlined"><div class="ax-choice" style={{ padding: '14px' }}><span class="ax-radio" data-disabled /><div class="ax-item-content"><div class="ax-row" data-justify="between"><span class="ax-headline ax-disabled">Family</span><span class="ax-headline ax-disabled">$96</span></div><span class="ax-subhead ax-disabled">Not available in your region</span></div></div></div>
-  </div>
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Choose a plan</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body" style={{ gap: "10px" }}>
+		<div
+			class="ax-card"
+			data-variant="outlined"
+			style={{ boxShadow: "inset 0 0 0 2px var(--ax-content-link)" }}
+		>
+			<div class="ax-choice" style={{ padding: "14px" }}>
+				<span class="ax-radio" data-checked />
+				<div class="ax-item-content">
+					<div class="ax-row" data-justify="between">
+						<span class="ax-headline">Yearly</span>
+						<span class="ax-headline">$48</span>
+					</div>
+					<div class="ax-row" data-justify="between">
+						<span class="ax-subhead ax-muted">
+							$4 / month, billed yearly
+						</span>
+						<span class="ax-badge" data-variant="success">
+							Save 33%
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="ax-card" data-variant="outlined">
+			<div class="ax-choice" style={{ padding: "14px" }}>
+				<span class="ax-radio" />
+				<div class="ax-item-content">
+					<div class="ax-row" data-justify="between">
+						<span class="ax-headline">Monthly</span>
+						<span class="ax-headline">$6</span>
+					</div>
+					<span class="ax-subhead ax-muted">Cancel anytime</span>
+				</div>
+			</div>
+		</div>
+		<div class="ax-card" data-variant="outlined">
+			<div class="ax-choice" style={{ padding: "14px" }}>
+				<span class="ax-radio" data-disabled />
+				<div class="ax-item-content">
+					<div class="ax-row" data-justify="between">
+						<span class="ax-headline ax-disabled">Family</span>
+						<span class="ax-headline ax-disabled">$96</span>
+					</div>
+					<span class="ax-subhead ax-disabled">
+						Not available in your region
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
 </PhonePreview>
 
 ## Installation
@@ -23,40 +75,40 @@ Colors come from `radio.default.{default,checked,disabled}.{border,indicator}` i
 ## Usage
 
 ```tsx
-import { Radio, RadioGroup } from '@/components/ui/radio';
+import { Radio, RadioGroup } from "@/components/ui/radio";
 
 <RadioGroup value={plan} onValueChange={setPlan}>
-  <Radio value="monthly" label="Monthly" />
-  <Radio value="yearly" label="Yearly" />
-</RadioGroup>
+	<Radio value="monthly" label="Monthly" />
+	<Radio value="yearly" label="Yearly" />
+</RadioGroup>;
 ```
 
 ## Props
 
 ### RadioGroup
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `value` | `string` | — | Value of the selected radio. |
-| `defaultValue` | `string` | — | Initial selection when the group manages its own state. |
-| `onValueChange` | `(value: string) => void` | — | Called with the value of the radio the user pressed. |
-| `orientation` | `'vertical' \| 'horizontal'` | `'vertical'` | Layout direction of the radios. |
-| `gap` | `SpacingToken` | `3` | Space between radios. |
-| `disabled` | `boolean` | `false` | Disables every radio in the group. |
-| `accessibilityLabel` | `string` | — | Name of the question, announced once for the group (`accessibilityRole="radiogroup"`). |
-| `children` | `ReactNode` | — | `Radio` elements, or any element wrapping them. |
-| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the group. |
+| Prop                 | Type                         | Default      | Description                                                                            |
+| -------------------- | ---------------------------- | ------------ | -------------------------------------------------------------------------------------- |
+| `value`              | `string`                     | —            | Value of the selected radio.                                                           |
+| `defaultValue`       | `string`                     | —            | Initial selection when the group manages its own state.                                |
+| `onValueChange`      | `(value: string) => void`    | —            | Called with the value of the radio the user pressed.                                   |
+| `orientation`        | `'vertical' \| 'horizontal'` | `'vertical'` | Layout direction of the radios.                                                        |
+| `gap`                | `SpacingToken`               | `3`          | Space between radios.                                                                  |
+| `disabled`           | `boolean`                    | `false`      | Disables every radio in the group.                                                     |
+| `accessibilityLabel` | `string`                     | —            | Name of the question, announced once for the group (`accessibilityRole="radiogroup"`). |
+| `children`           | `ReactNode`                  | —            | `Radio` elements, or any element wrapping them.                                        |
+| `style`              | `StyleProp<ViewStyle>`       | —            | Extra styles for the group.                                                            |
 
 ### Radio
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `value` | `string` | — | Required. Identifies the option within the group. |
-| `label` | `ReactNode` | — | Text next to the circle. The whole row is pressable. |
-| `description` | `ReactNode` | — | Secondary text under the label. |
-| `disabled` | `boolean` | `false` | Blocks this option only. |
-| `children` | `(state: { checked: boolean; pressed: boolean }) => ReactNode` | — | Replaces the default row, to build a selectable card around the radio. |
-| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the row. |
+| Prop          | Type                                                           | Default | Description                                                            |
+| ------------- | -------------------------------------------------------------- | ------- | ---------------------------------------------------------------------- |
+| `value`       | `string`                                                       | —       | Required. Identifies the option within the group.                      |
+| `label`       | `ReactNode`                                                    | —       | Text next to the circle. The whole row is pressable.                   |
+| `description` | `ReactNode`                                                    | —       | Secondary text under the label.                                        |
+| `disabled`    | `boolean`                                                      | `false` | Blocks this option only.                                               |
+| `children`    | `(state: { checked: boolean; pressed: boolean }) => ReactNode` | —       | Replaces the default row, to build a selectable card around the radio. |
+| `style`       | `StyleProp<ViewStyle>`                                         | —       | Extra styles for the row.                                              |
 
 A `Radio` outside a `RadioGroup` doesn't do anything useful: the group owns the selection.
 
@@ -67,19 +119,54 @@ A `Radio` outside a `RadioGroup` doesn't do anything useful: the group owns the 
 Label and description on each option, with the price as trailing content.
 
 <PhonePreview size="sm">
-  <div class="ax-appbar" data-border><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Delivery</span><span class="ax-icon-btn" /></div>
-  <div class="ax-body" style={{ gap: '18px', paddingTop: '16px' }}>
-    <div class="ax-choice"><span class="ax-radio" /><div class="ax-item-content"><span class="ax-text">Standard</span><span class="ax-subhead ax-muted">3–5 business days</span></div><span>Free</span></div>
-    <div class="ax-choice"><span class="ax-radio" data-checked /><div class="ax-item-content"><span class="ax-text">Express</span><span class="ax-subhead ax-muted">Tomorrow before 12:00</span></div><span>$9.90</span></div>
-    <div class="ax-choice"><span class="ax-radio" /><div class="ax-item-content"><span class="ax-text">Pick up in store</span><span class="ax-subhead ax-muted">Rue de Rivoli, ready in 2h</span></div><span>Free</span></div>
-  </div>
+	<div class="ax-appbar" data-border>
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Delivery</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body" style={{ gap: "18px", paddingTop: "16px" }}>
+		<div class="ax-choice">
+			<span class="ax-radio" />
+			<div class="ax-item-content">
+				<span class="ax-text">Standard</span>
+				<span class="ax-subhead ax-muted">3–5 business days</span>
+			</div>
+			<span>Free</span>
+		</div>
+		<div class="ax-choice">
+			<span class="ax-radio" data-checked />
+			<div class="ax-item-content">
+				<span class="ax-text">Express</span>
+				<span class="ax-subhead ax-muted">Tomorrow before 12:00</span>
+			</div>
+			<span>$9.90</span>
+		</div>
+		<div class="ax-choice">
+			<span class="ax-radio" />
+			<div class="ax-item-content">
+				<span class="ax-text">Pick up in store</span>
+				<span class="ax-subhead ax-muted">Rue de Rivoli, ready in 2h</span>
+			</div>
+			<span>Free</span>
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
-<RadioGroup value={delivery} onValueChange={setDelivery} accessibilityLabel="Delivery">
-  <Radio value="standard" label="Standard" description="3–5 business days" />
-  <Radio value="express" label="Express" description="Tomorrow before 12:00" />
-  <Radio value="pickup" label="Pick up in store" description="Rue de Rivoli, ready in 2h" />
+<RadioGroup
+	value={delivery}
+	onValueChange={setDelivery}
+	accessibilityLabel="Delivery"
+>
+	<Radio value="standard" label="Standard" description="3–5 business days" />
+	<Radio value="express" label="Express" description="Tomorrow before 12:00" />
+	<Radio
+		value="pickup"
+		label="Pick up in store"
+		description="Rue de Rivoli, ready in 2h"
+	/>
 </RadioGroup>
 ```
 
@@ -88,24 +175,58 @@ Label and description on each option, with the price as trailing content.
 The render function of `Radio` gives `checked`, to highlight the whole card and not only the circle.
 
 <PhonePreview size="sm">
-  <div class="ax-body" style={{ gap: '12px', paddingTop: '20px' }}>
-    <span class="ax-title2">How will you use Axiom?</span>
-    <div class="ax-row" style={{ alignItems: 'stretch' }}>
-      <div class="ax-card ax-grow" data-variant="outlined" style={{ boxShadow: 'inset 0 0 0 2px var(--ax-content-link)', padding: '14px', gap: '10px' }}><div class="ax-row" data-justify="between"><span class="ax-tile" data-color="blue"><Glyph name="user" size={18} /></span><span class="ax-radio" data-checked /></div><span class="ax-headline">Personal</span><span class="ax-footnote ax-muted">Side projects and learning</span></div>
-      <div class="ax-card ax-grow" data-variant="outlined" style={{ padding: '14px', gap: '10px' }}><div class="ax-row" data-justify="between"><span class="ax-tile" data-color="subtle"><Glyph name="users" size={18} /></span><span class="ax-radio" /></div><span class="ax-headline">Team</span><span class="ax-footnote ax-muted">Shared apps and reviews</span></div>
-    </div>
-    <span class="ax-btn" data-size="lg" data-block>Continue</span>
-  </div>
+	<div class="ax-body" style={{ gap: "12px", paddingTop: "20px" }}>
+		<span class="ax-title2">How will you use Axiom?</span>
+		<div class="ax-row" style={{ alignItems: "stretch" }}>
+			<div
+				class="ax-card ax-grow"
+				data-variant="outlined"
+				style={{
+					boxShadow: "inset 0 0 0 2px var(--ax-content-link)",
+					padding: "14px",
+					gap: "10px",
+				}}
+			>
+				<div class="ax-row" data-justify="between">
+					<span class="ax-tile" data-color="blue">
+						<Glyph name="user" size={18} />
+					</span>
+					<span class="ax-radio" data-checked />
+				</div>
+				<span class="ax-headline">Personal</span>
+				<span class="ax-footnote ax-muted">Side projects and learning</span>
+			</div>
+			<div
+				class="ax-card ax-grow"
+				data-variant="outlined"
+				style={{ padding: "14px", gap: "10px" }}
+			>
+				<div class="ax-row" data-justify="between">
+					<span class="ax-tile" data-color="subtle">
+						<Glyph name="users" size={18} />
+					</span>
+					<span class="ax-radio" />
+				</div>
+				<span class="ax-headline">Team</span>
+				<span class="ax-footnote ax-muted">Shared apps and reviews</span>
+			</div>
+		</div>
+		<span class="ax-btn" data-size="lg" data-block>
+			Continue
+		</span>
+	</div>
 </PhonePreview>
 
 ```tsx
 <RadioGroup value={usage} onValueChange={setUsage} orientation="horizontal">
-  <Radio value="personal">
-    {({ checked }) => (
-      <Card variant="outlined" style={checked && styles.selected}>…</Card>
-    )}
-  </Radio>
-  <Radio value="team">{/* same */}</Radio>
+	<Radio value="personal">
+		{({ checked }) => (
+			<Card variant="outlined" style={checked && styles.selected}>
+				…
+			</Card>
+		)}
+	</Radio>
+	<Radio value="team">{/* same */}</Radio>
 </RadioGroup>
 ```
 
@@ -114,19 +235,39 @@ The render function of `Radio` gives `checked`, to highlight the whole card and 
 Horizontal orientation for a few short labels that fit on one line.
 
 <PhonePreview size="sm">
-  <div class="ax-body" style={{ gap: '20px', paddingTop: '20px' }}>
-    <span class="ax-caption ax-muted">QUESTION 3 OF 5</span>
-    <span class="ax-title3">Would you recommend us to a friend?</span>
-    <div class="ax-row" data-gap="16"><div class="ax-choice"><span class="ax-radio" data-checked /><span>Yes</span></div><div class="ax-choice"><span class="ax-radio" /><span>Maybe</span></div><div class="ax-choice"><span class="ax-radio" /><span>No</span></div></div>
-    <div class="ax-progress"><span style={{ width: '60%' }} /></div>
-  </div>
+	<div class="ax-body" style={{ gap: "20px", paddingTop: "20px" }}>
+		<span class="ax-caption ax-muted">QUESTION 3 OF 5</span>
+		<span class="ax-title3">Would you recommend us to a friend?</span>
+		<div class="ax-row" data-gap="16">
+			<div class="ax-choice">
+				<span class="ax-radio" data-checked />
+				<span>Yes</span>
+			</div>
+			<div class="ax-choice">
+				<span class="ax-radio" />
+				<span>Maybe</span>
+			</div>
+			<div class="ax-choice">
+				<span class="ax-radio" />
+				<span>No</span>
+			</div>
+		</div>
+		<div class="ax-progress">
+			<span style={{ width: "60%" }} />
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
-<RadioGroup orientation="horizontal" gap={4} value={answer} onValueChange={setAnswer}>
-  <Radio value="yes" label="Yes" />
-  <Radio value="maybe" label="Maybe" />
-  <Radio value="no" label="No" />
+<RadioGroup
+	orientation="horizontal"
+	gap={4}
+	value={answer}
+	onValueChange={setAnswer}
+>
+	<Radio value="yes" label="Yes" />
+	<Radio value="maybe" label="Maybe" />
+	<Radio value="no" label="No" />
 </RadioGroup>
 ```
 

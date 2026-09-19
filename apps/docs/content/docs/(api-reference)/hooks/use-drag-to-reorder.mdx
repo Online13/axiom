@@ -3,7 +3,9 @@ title: useDragToReorder
 description: "Lift a row and drag it to a new position in a list."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+<Callout title="Draft">
+	The API shown here is conceptual and may change.
+</Callout>
 
 The hook behind [Drag-to-reorder](/behaviors/drag-to-reorder). That page explains how the drag starts, the target slot, auto-scroll, the drop and accessibility. This one covers the API.
 
@@ -20,36 +22,42 @@ Installs: `react-native-reanimated`, `react-native-gesture-handler`.
 The hook owns the gesture state. `ReorderableRow` moves each row, `DragHandle` starts the drag.
 
 ```tsx title="Conceptual"
-import { useDragToReorder, ReorderableRow, DragHandle } from '@/hooks/use-drag-to-reorder';
+import {
+	useDragToReorder,
+	ReorderableRow,
+	DragHandle,
+} from "@/hooks/use-drag-to-reorder";
 
 function Queue() {
-  const [tracks, setTracks] = useState(initialTracks);
+	const [tracks, setTracks] = useState(initialTracks);
 
-  const reorder = useDragToReorder({
-    data: tracks,
-    keyExtractor: (track) => track.id,
-    onReorder: (from, to) => setTracks((list) => move(list, from, to)),
-  });
+	const reorder = useDragToReorder({
+		data: tracks,
+		keyExtractor: (track) => track.id,
+		onReorder: (from, to) => setTracks((list) => move(list, from, to)),
+	});
 
-  return (
-    <Animated.ScrollView {...reorder.scrollProps}>
-      {tracks.map((track, index) => (
-        <ReorderableRow key={track.id} control={reorder} index={index}>
-          <Item trailing={<DragHandle control={reorder} index={index} />}>…</Item>
-        </ReorderableRow>
-      ))}
-    </Animated.ScrollView>
-  );
+	return (
+		<Animated.ScrollView {...reorder.scrollProps}>
+			{tracks.map((track, index) => (
+				<ReorderableRow key={track.id} control={reorder} index={index}>
+					<Item trailing={<DragHandle control={reorder} index={index} />}>
+						…
+					</Item>
+				</ReorderableRow>
+			))}
+		</Animated.ScrollView>
+	);
 }
 ```
 
 `move` returns a new array with the item at `from` moved to `to`. The hook ships one:
 
 ```ts
-export const move = <T,>(list: T[], from: number, to: number) => {
-  const next = [...list];
-  next.splice(to, 0, next.splice(from, 1)[0]);
-  return next;
+export const move = <T>(list: T[], from: number, to: number) => {
+	const next = [...list];
+	next.splice(to, 0, next.splice(from, 1)[0]);
+	return next;
 };
 ```
 
@@ -58,7 +66,12 @@ export const move = <T,>(list: T[], from: number, to: number) => {
 Drop `DragHandle` and set `trigger: 'longPress'`. The whole row starts the drag after `longPressDelay`, and a tap still reaches the row's `onPress`.
 
 ```tsx title="Conceptual"
-const reorder = useDragToReorder({ data, keyExtractor, onReorder, trigger: 'longPress' });
+const reorder = useDragToReorder({
+	data,
+	keyExtractor,
+	onReorder,
+	trigger: "longPress",
+});
 ```
 
 ### Saving the order
@@ -67,28 +80,28 @@ const reorder = useDragToReorder({ data, keyExtractor, onReorder, trigger: 'long
 
 ## Options
 
-| Option | Type | Default | Description |
-| --- | --- | --- | --- |
-| `data` | `T[]` | — | Items in their current order. |
-| `keyExtractor` | `(item: T) => string` | — | Stable key, used to keep measurements across re-renders. |
-| `onReorder` | `(from: number, to: number) => void` | — | Called on drop when the position changed. |
-| `trigger` | `'handle' \| 'longPress'` | `'handle'` | What starts the drag. |
-| `longPressDelay` | `number` | `300` | Delay in ms with `trigger: 'longPress'`. |
-| `autoScrollEdge` | `number` | `60` | Distance in pt from the list's edges where auto-scroll starts. |
-| `autoScrollSpeed` | `number` | `600` | Maximum auto-scroll speed in pt/s, at the very edge. |
-| `onDragStart` / `onDragEnd` | `(index: number) => void` | — | Called when a row lifts and when it's dropped. Default: a light haptic on start. |
-| `enabled` | `boolean` | `true` | Turns reordering off. |
+| Option                      | Type                                 | Default    | Description                                                                      |
+| --------------------------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
+| `data`                      | `T[]`                                | —          | Items in their current order.                                                    |
+| `keyExtractor`              | `(item: T) => string`                | —          | Stable key, used to keep measurements across re-renders.                         |
+| `onReorder`                 | `(from: number, to: number) => void` | —          | Called on drop when the position changed.                                        |
+| `trigger`                   | `'handle' \| 'longPress'`            | `'handle'` | What starts the drag.                                                            |
+| `longPressDelay`            | `number`                             | `300`      | Delay in ms with `trigger: 'longPress'`.                                         |
+| `autoScrollEdge`            | `number`                             | `60`       | Distance in pt from the list's edges where auto-scroll starts.                   |
+| `autoScrollSpeed`           | `number`                             | `600`      | Maximum auto-scroll speed in pt/s, at the very edge.                             |
+| `onDragStart` / `onDragEnd` | `(index: number) => void`            | —          | Called when a row lifts and when it's dropped. Default: a light haptic on start. |
+| `enabled`                   | `boolean`                            | `true`     | Turns reordering off.                                                            |
 
 ## Return value
 
-| Key | Type | Description |
-| --- | --- | --- |
-| `activeIndex` | `SharedValue<number>` | Index of the lifted row, `-1` when idle. |
-| `targetIndex` | `SharedValue<number>` | Slot the row would drop into. |
-| `translateY` | `SharedValue<number>` | Offset of the lifted row from its slot, in pt. |
-| `dragging` | `boolean` | `true` while a row is lifted. React state. |
-| `moveItem` | `(from: number, to: number) => void` | Moves without a gesture, for the accessibility actions. Calls `onReorder`. |
-| `scrollProps` | `object` | Ref, scroll handler and native gesture, for an `Animated.ScrollView` or `Animated.FlatList`. |
+| Key           | Type                                 | Description                                                                                  |
+| ------------- | ------------------------------------ | -------------------------------------------------------------------------------------------- |
+| `activeIndex` | `SharedValue<number>`                | Index of the lifted row, `-1` when idle.                                                     |
+| `targetIndex` | `SharedValue<number>`                | Slot the row would drop into.                                                                |
+| `translateY`  | `SharedValue<number>`                | Offset of the lifted row from its slot, in pt.                                               |
+| `dragging`    | `boolean`                            | `true` while a row is lifted. React state.                                                   |
+| `moveItem`    | `(from: number, to: number) => void` | Moves without a gesture, for the accessibility actions. Calls `onReorder`.                   |
+| `scrollProps` | `object`                             | Ref, scroll handler and native gesture, for an `Animated.ScrollView` or `Animated.FlatList`. |
 
 ## Related
 

@@ -3,7 +3,10 @@ title: "Scroll-to-top"
 description: "A way back to the top of a long list, without scrolling all the way up."
 ---
 
-<Callout title="Draft">Specified, not implemented yet. The API is described in [useScrollToTop](/hooks/use-scroll-to-top) and may change.</Callout>
+<Callout title="Draft">
+	Specified, not implemented yet. The API is described in
+	[useScrollToTop](/hooks/use-scroll-to-top) and may change.
+</Callout>
 
 After the user scrolls far down a long list, a button appears. Tapping it brings the list back to the top, then the button goes away.
 
@@ -41,31 +44,43 @@ offset    900 ─────────────────────ani
 
 The return always takes the same short time, whatever the distance.
 
-| Rule | Why |
-| --- | --- |
-| **Show past `threshold`** | Near the top, the user can scroll back in one flick. |
-| **Hide while returning** | The button did its job. It shouldn't flash back on the way up. |
-| **Jump, then animate** | A 12 000pt animation is slow and renders every row on the way. |
-| **A user scroll cancels the return** | The user always wins over an animation in progress. |
-| **Tab press and status bar tap** do the same | Users expect them, and they work without a visible button. |
+| Rule                                         | Why                                                            |
+| -------------------------------------------- | -------------------------------------------------------------- |
+| **Show past `threshold`**                    | Near the top, the user can scroll back in one flick.           |
+| **Hide while returning**                     | The button did its job. It shouldn't flash back on the way up. |
+| **Jump, then animate**                       | A 12 000pt animation is slow and renders every row on the way. |
+| **A user scroll cancels the return**         | The user always wins over an animation in progress.            |
+| **Tab press and status bar tap** do the same | Users expect them, and they work without a visible button.     |
 
 ## Implementation
 
 Axiom implements it with one hook, [`useScrollToTop`](/hooks/use-scroll-to-top). It tracks the offset and exposes `visible` and `scrollToTop()`. The button is yours.
 
-| Library | Used for |
-| --- | --- |
-| `react-native-reanimated` | The offset as a shared value, read in `useAnimatedScrollHandler`. `visible` is derived on the UI thread and sent to React only when it changes. |
-| React Native | `scrollToOffset` / `scrollTo` through the list ref for the jump (`animated: false`) and the return (`animated: true`). `scrollsToTop` on iOS for the status bar tap. |
-| `@react-navigation/native` (optional) | Its `useScrollToTop(ref)` scrolls on a tab press. The hook calls it when React Navigation is present. |
+| Library                               | Used for                                                                                                                                                             |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `react-native-reanimated`             | The offset as a shared value, read in `useAnimatedScrollHandler`. `visible` is derived on the UI thread and sent to React only when it changes.                      |
+| React Native                          | `scrollToOffset` / `scrollTo` through the list ref for the jump (`animated: false`) and the return (`animated: true`). `scrollsToTop` on iOS for the status bar tap. |
+| `@react-navigation/native` (optional) | Its `useScrollToTop(ref)` scrolls on a tab press. The hook calls it when React Navigation is present.                                                                |
 
 ### In a screen
 
 ```tsx title="Conceptual"
 const top = useScrollToTop();
 
-<Animated.FlatList data={articles} renderItem={renderArticle} {...top.scrollProps} />
-{top.visible && <Fab icon="arrow-up" accessibilityLabel="Scroll to top" onPress={top.scrollToTop} />}
+<Animated.FlatList
+	data={articles}
+	renderItem={renderArticle}
+	{...top.scrollProps}
+/>;
+{
+	top.visible && (
+		<Fab
+			icon="arrow-up"
+			accessibilityLabel="Scroll to top"
+			onPress={top.scrollToTop}
+		/>
+	);
+}
 ```
 
 Installation, options and return value are documented in [useScrollToTop](/hooks/use-scroll-to-top).

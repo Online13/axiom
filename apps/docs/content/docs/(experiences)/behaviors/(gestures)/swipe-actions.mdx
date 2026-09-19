@@ -3,7 +3,10 @@ title: "Swipe actions"
 description: "Swipe a row sideways to reveal the actions behind it."
 ---
 
-<Callout title="Draft">Specified, not implemented yet. The API is described in [useSwipeActions](/hooks/use-swipe-actions) and may change.</Callout>
+<Callout title="Draft">
+	Specified, not implemented yet. The API is described in
+	[useSwipeActions](/hooks/use-swipe-actions) and may change.
+</Callout>
 
 The user drags a row sideways. The row follows the finger and uncovers buttons underneath: archive, flag, mark as read. Released far enough, it stays open on the buttons; otherwise it closes.
 
@@ -28,17 +31,17 @@ Swipe actions are invisible until someone tries. Keep every action reachable ano
 
 ### While dragging
 
-| Rule | Why |
-| --- | --- |
+| Rule                                                                           | Why                                           |
+| ------------------------------------------------------------------------------ | --------------------------------------------- |
 | **Direction lock** after 8pt: horizontal goes to the row, vertical to the list | A slightly diagonal scroll doesn't move rows. |
-| **1:1** up to the actions' width | The row sticks to the finger. |
-| **Resistance** past it, the buttons stretch to fill the gap | The user feels the end without a hard stop. |
-| **One open row**: starting a swipe closes the other one | The list never has two rows half-open. |
+| **1:1** up to the actions' width                                               | The row sticks to the finger.                 |
+| **Resistance** past it, the buttons stretch to fill the gap                    | The user feels the end without a hard stop.   |
+| **One open row**: starting a swipe closes the other one                        | The list never has two rows half-open.        |
 
 Past the actions' width `w`, each point counts less:
 
 ```ts
-x = w + (over * resistance) / (over + resistance)   // resistance: 60pt
+x = w + (over * resistance) / (over + resistance); // resistance: 60pt
 ```
 
 ### On release
@@ -67,11 +70,11 @@ Swipe a row a little, then all the way. What happens after the row leaves, with 
 
 `progress` is `|translateX| / rowWidth`. Two thresholds split the swipe:
 
-| Zone | Release does | Feedback |
-| --- | --- | --- |
-| Under half the button (40pt) | Closes. | – |
-| Button to 55% of the row | Opens on the buttons. | – |
-| Past 55% (**armed**) | Runs the outermost action. | Haptic when crossing, both ways. The button fills the row, its icon follows the row's edge. |
+| Zone                         | Release does               | Feedback                                                                                    |
+| ---------------------------- | -------------------------- | ------------------------------------------------------------------------------------------- |
+| Under half the button (40pt) | Closes.                    | –                                                                                           |
+| Button to 55% of the row     | Opens on the buttons.      | –                                                                                           |
+| Past 55% (**armed**)         | Runs the outermost action. | Haptic when crossing, both ways. The button fills the row, its icon follows the row's edge. |
 
 Crossing back under 55% before releasing disarms it: the user can change their mind until the last moment.
 
@@ -81,31 +84,51 @@ Only use a full swipe for an action that can be undone. Deleting something that 
 
 Axiom implements it with one hook, [`useSwipeActions`](/hooks/use-swipe-actions), and a `SwipeableRow` that renders the actions behind any [Item](/atoms/item).
 
-| Library | Used for |
-| --- | --- |
-| `react-native-gesture-handler` | `Gesture.Pan()` with `activeOffsetX([-8, 8])` and `failOffsetY([-8, 8])`: the direction lock, without blocking the list's vertical scroll. |
-| `react-native-reanimated` | `translateX` as a shared value, the resistance and the action widths computed in the gesture callbacks. `withSpring(target, { velocity })` for the snap. `progress` and the armed state are derived on the UI thread; `runOnJS` fires the haptic when it changes. |
-| Reanimated layout animations | `exiting` slides a removed row out, `LinearTransition` on the list closes the gap. |
-| React context | The id of the open row, shared by the rows of one list, so opening a row closes the other. |
+| Library                        | Used for                                                                                                                                                                                                                                                          |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `react-native-gesture-handler` | `Gesture.Pan()` with `activeOffsetX([-8, 8])` and `failOffsetY([-8, 8])`: the direction lock, without blocking the list's vertical scroll.                                                                                                                        |
+| `react-native-reanimated`      | `translateX` as a shared value, the resistance and the action widths computed in the gesture callbacks. `withSpring(target, { velocity })` for the snap. `progress` and the armed state are derived on the UI thread; `runOnJS` fires the haptic when it changes. |
+| Reanimated layout animations   | `exiting` slides a removed row out, `LinearTransition` on the list closes the gap.                                                                                                                                                                                |
+| React context                  | The id of the open row, shared by the rows of one list, so opening a row closes the other.                                                                                                                                                                        |
 
 ### In a screen
 
 ```tsx title="Conceptual"
 <SwipeableList>
-  <FlatList
-    data={mails}
-    renderItem={({ item }) => (
-      <SwipeableRow
-        leading={[{ key: 'read', icon: 'mail', label: 'Read', color: 'info', onPress: () => toggleRead(item) }]}
-        trailing={[
-          { key: 'flag', icon: 'flag', label: 'Flag', color: 'warning', onPress: () => flag(item) },
-          { key: 'archive', icon: 'archive', label: 'Archive', fullSwipe: true, onPress: () => archive(item) },
-        ]}
-      >
-        <Item onPress={() => open(item)}>…</Item>
-      </SwipeableRow>
-    )}
-  />
+	<FlatList
+		data={mails}
+		renderItem={({ item }) => (
+			<SwipeableRow
+				leading={[
+					{
+						key: "read",
+						icon: "mail",
+						label: "Read",
+						color: "info",
+						onPress: () => toggleRead(item),
+					},
+				]}
+				trailing={[
+					{
+						key: "flag",
+						icon: "flag",
+						label: "Flag",
+						color: "warning",
+						onPress: () => flag(item),
+					},
+					{
+						key: "archive",
+						icon: "archive",
+						label: "Archive",
+						fullSwipe: true,
+						onPress: () => archive(item),
+					},
+				]}
+			>
+				<Item onPress={() => open(item)}>…</Item>
+			</SwipeableRow>
+		)}
+	/>
 </SwipeableList>
 ```
 

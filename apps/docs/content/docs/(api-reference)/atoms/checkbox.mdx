@@ -4,16 +4,59 @@ description: "Checkbox with checked, unchecked and indeterminate states."
 ---
 
 <PhonePreview>
-  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Packing list</span><span class="ax-icon-btn"><Glyph name="plus" /></span></div>
-  <div class="ax-list" data-variant="plain">
-    <div class="ax-item"><span class="ax-checkbox" data-indeterminate><Glyph name="minus" size={16} strokeWidth={3} /></span><span class="ax-item-title ax-grow ax-semibold">Toiletries</span><span class="ax-footnote ax-muted">2 of 3</span></div>
-    <div class="ax-item" style={{ paddingLeft: '50px' }}><span class="ax-checkbox" data-checked><Glyph name="check" size={16} strokeWidth={3} /></span><span class="ax-item-title ax-grow">Toothbrush</span></div>
-    <div class="ax-item" style={{ paddingLeft: '50px' }}><span class="ax-checkbox" data-checked><Glyph name="check" size={16} strokeWidth={3} /></span><span class="ax-item-title ax-grow">Sunscreen</span></div>
-    <div class="ax-item" style={{ paddingLeft: '50px' }}><span class="ax-checkbox" /><span class="ax-item-title ax-grow">Razor</span></div>
-    <div class="ax-item"><span class="ax-checkbox" /><span class="ax-item-title ax-grow ax-semibold">Documents</span><span class="ax-footnote ax-muted">0 of 2</span></div>
-    <div class="ax-item"><span class="ax-checkbox" data-checked data-disabled><Glyph name="check" size={16} strokeWidth={3} /></span><span class="ax-item-title ax-grow ax-disabled">Passport · already packed</span></div>
-    <div class="ax-item"><span class="ax-checkbox" data-disabled /><span class="ax-item-title ax-grow ax-disabled">Visa · not required</span></div>
-  </div>
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Packing list</span>
+		<span class="ax-icon-btn">
+			<Glyph name="plus" />
+		</span>
+	</div>
+	<div class="ax-list" data-variant="plain">
+		<div class="ax-item">
+			<span class="ax-checkbox" data-indeterminate>
+				<Glyph name="minus" size={16} strokeWidth={3} />
+			</span>
+			<span class="ax-item-title ax-grow ax-semibold">Toiletries</span>
+			<span class="ax-footnote ax-muted">2 of 3</span>
+		</div>
+		<div class="ax-item" style={{ paddingLeft: "50px" }}>
+			<span class="ax-checkbox" data-checked>
+				<Glyph name="check" size={16} strokeWidth={3} />
+			</span>
+			<span class="ax-item-title ax-grow">Toothbrush</span>
+		</div>
+		<div class="ax-item" style={{ paddingLeft: "50px" }}>
+			<span class="ax-checkbox" data-checked>
+				<Glyph name="check" size={16} strokeWidth={3} />
+			</span>
+			<span class="ax-item-title ax-grow">Sunscreen</span>
+		</div>
+		<div class="ax-item" style={{ paddingLeft: "50px" }}>
+			<span class="ax-checkbox" />
+			<span class="ax-item-title ax-grow">Razor</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-checkbox" />
+			<span class="ax-item-title ax-grow ax-semibold">Documents</span>
+			<span class="ax-footnote ax-muted">0 of 2</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-checkbox" data-checked data-disabled>
+				<Glyph name="check" size={16} strokeWidth={3} />
+			</span>
+			<span class="ax-item-title ax-grow ax-disabled">
+				Passport · already packed
+			</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-checkbox" data-disabled />
+			<span class="ax-item-title ax-grow ax-disabled">
+				Visa · not required
+			</span>
+		</div>
+	</div>
 </PhonePreview>
 
 ## Installation
@@ -35,17 +78,17 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `checked` | `boolean \| 'indeterminate'` | — | Current state. `'indeterminate'` draws a dash, for a parent whose children are partly checked. |
-| `defaultChecked` | `boolean` | `false` | Initial state when the checkbox manages its own state. |
-| `onCheckedChange` | `(checked: boolean) => void` | — | Called with the new state. Pressing an indeterminate checkbox calls it with `true`. |
-| `label` | `ReactNode` | — | Text next to the box. The whole row becomes pressable, not only the 22pt box. |
-| `description` | `ReactNode` | — | Secondary text under the label. |
-| `disabled` | `boolean` | `false` | Blocks changes and uses the `disabled` tokens. |
-| `error` | `boolean` | `false` | Red border, for a required checkbox left unchecked on submit. |
-| `accessibilityLabel` | `string` | label text | Required when there is no `label`. |
-| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the pressable row. |
+| Prop                 | Type                         | Default    | Description                                                                                    |
+| -------------------- | ---------------------------- | ---------- | ---------------------------------------------------------------------------------------------- |
+| `checked`            | `boolean \| 'indeterminate'` | —          | Current state. `'indeterminate'` draws a dash, for a parent whose children are partly checked. |
+| `defaultChecked`     | `boolean`                    | `false`    | Initial state when the checkbox manages its own state.                                         |
+| `onCheckedChange`    | `(checked: boolean) => void` | —          | Called with the new state. Pressing an indeterminate checkbox calls it with `true`.            |
+| `label`              | `ReactNode`                  | —          | Text next to the box. The whole row becomes pressable, not only the 22pt box.                  |
+| `description`        | `ReactNode`                  | —          | Secondary text under the label.                                                                |
+| `disabled`           | `boolean`                    | `false`    | Blocks changes and uses the `disabled` tokens.                                                 |
+| `error`              | `boolean`                    | `false`    | Red border, for a required checkbox left unchecked on submit.                                  |
+| `accessibilityLabel` | `string`                     | label text | Required when there is no `label`.                                                             |
+| `style`              | `StyleProp<ViewStyle>`       | —          | Extra styles for the pressable row.                                                            |
 
 Box and check colors come from `checkbox.default.{default,checked,invalid,disabled}` in the [component tokens](/foundations/component-tokens).
 
@@ -56,22 +99,53 @@ Box and check colors come from `checkbox.default.{default,checked,invalid,disabl
 A required checkbox with its explanation as the label. `error` shows when the user submits without checking it.
 
 <PhonePreview half="bottom" size="sm">
-  <div class="ax-body" style={{ gap: '14px' }}>
-    <div class="ax-field"><span class="ax-label">Email</span><div class="ax-control"><span class="ax-value">barbara@liskov.dev</span></div></div>
-    <div class="ax-choice"><span class="ax-checkbox" data-invalid /><div class="ax-stack" data-gap="4"><span class="ax-subhead">I agree to the <span class="ax-link">Terms</span> and <span class="ax-link">Privacy Policy</span></span><span class="ax-footnote ax-danger">Required to create an account.</span></div></div>
-    <div class="ax-choice"><span class="ax-checkbox" data-checked><Glyph name="check" size={16} strokeWidth={3} /></span><span class="ax-subhead">Send me product updates</span></div>
-  </div>
-  <div class="ax-fill" />
-  <div class="ax-body" style={{ paddingBottom: '40px' }}><span class="ax-btn" data-size="lg" data-block>Create account</span></div>
+	<div class="ax-body" style={{ gap: "14px" }}>
+		<div class="ax-field">
+			<span class="ax-label">Email</span>
+			<div class="ax-control">
+				<span class="ax-value">barbara@liskov.dev</span>
+			</div>
+		</div>
+		<div class="ax-choice">
+			<span class="ax-checkbox" data-invalid />
+			<div class="ax-stack" data-gap="4">
+				<span class="ax-subhead">
+					I agree to the <span class="ax-link">Terms</span> and{" "}
+					<span class="ax-link">Privacy Policy</span>
+				</span>
+				<span class="ax-footnote ax-danger">
+					Required to create an account.
+				</span>
+			</div>
+		</div>
+		<div class="ax-choice">
+			<span class="ax-checkbox" data-checked>
+				<Glyph name="check" size={16} strokeWidth={3} />
+			</span>
+			<span class="ax-subhead">Send me product updates</span>
+		</div>
+	</div>
+	<div class="ax-fill" />
+	<div class="ax-body" style={{ paddingBottom: "40px" }}>
+		<span class="ax-btn" data-size="lg" data-block>
+			Create account
+		</span>
+	</div>
 </PhonePreview>
 
 ```tsx
 <Checkbox
-  checked={accepted}
-  onCheckedChange={setAccepted}
-  error={submitted && !accepted}
-  label={<Text>I agree to the <Link href="/terms">Terms</Link></Text>}
-  description={submitted && !accepted ? 'Required to create an account.' : undefined}
+	checked={accepted}
+	onCheckedChange={setAccepted}
+	error={submitted && !accepted}
+	label={
+		<Text>
+			I agree to the <Link href="/terms">Terms</Link>
+		</Text>
+	}
+	description={
+		submitted && !accepted ? "Required to create an account." : undefined
+	}
 />
 ```
 
@@ -80,13 +154,51 @@ A required checkbox with its explanation as the label. `error` shows when the us
 The header checkbox is `true`, `false` or `'indeterminate'` depending on how many rows are checked.
 
 <PhonePreview size="sm">
-  <div class="ax-appbar" data-border><span class="ax-link" style={{ padding: '0 8px' }}>Cancel</span><span class="ax-appbar-title">2 selected</span><span class="ax-link ax-semibold" style={{ padding: '0 8px' }}>Delete</span></div>
-  <div class="ax-list" data-variant="plain">
-    <div class="ax-item" style={{ background: 'var(--ax-background-subtle)' }}><span class="ax-checkbox" data-indeterminate><Glyph name="minus" size={16} strokeWidth={3} /></span><span class="ax-item-title ax-grow ax-semibold">Select all</span></div>
-    <div class="ax-item"><span class="ax-checkbox" data-checked><Glyph name="check" size={16} strokeWidth={3} /></span><div class="ax-item-content"><span class="ax-item-title">IMG_0142.HEIC</span><span class="ax-item-desc">3.1 MB</span></div></div>
-    <div class="ax-item"><span class="ax-checkbox" /><div class="ax-item-content"><span class="ax-item-title">IMG_0143.HEIC</span><span class="ax-item-desc">2.8 MB</span></div></div>
-    <div class="ax-item"><span class="ax-checkbox" data-checked><Glyph name="check" size={16} strokeWidth={3} /></span><div class="ax-item-content"><span class="ax-item-title">Screen Recording.mov</span><span class="ax-item-desc">48 MB</span></div></div>
-  </div>
+	<div class="ax-appbar" data-border>
+		<span class="ax-link" style={{ padding: "0 8px" }}>
+			Cancel
+		</span>
+		<span class="ax-appbar-title">2 selected</span>
+		<span class="ax-link ax-semibold" style={{ padding: "0 8px" }}>
+			Delete
+		</span>
+	</div>
+	<div class="ax-list" data-variant="plain">
+		<div
+			class="ax-item"
+			style={{ background: "var(--ax-background-subtle)" }}
+		>
+			<span class="ax-checkbox" data-indeterminate>
+				<Glyph name="minus" size={16} strokeWidth={3} />
+			</span>
+			<span class="ax-item-title ax-grow ax-semibold">Select all</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-checkbox" data-checked>
+				<Glyph name="check" size={16} strokeWidth={3} />
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title">IMG_0142.HEIC</span>
+				<span class="ax-item-desc">3.1 MB</span>
+			</div>
+		</div>
+		<div class="ax-item">
+			<span class="ax-checkbox" />
+			<div class="ax-item-content">
+				<span class="ax-item-title">IMG_0143.HEIC</span>
+				<span class="ax-item-desc">2.8 MB</span>
+			</div>
+		</div>
+		<div class="ax-item">
+			<span class="ax-checkbox" data-checked>
+				<Glyph name="check" size={16} strokeWidth={3} />
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title">Screen Recording.mov</span>
+				<span class="ax-item-desc">48 MB</span>
+			</div>
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
@@ -94,10 +206,12 @@ const all = selected.size === files.length;
 const some = selected.size > 0 && !all;
 
 <Checkbox
-  label="Select all"
-  checked={all ? true : some ? 'indeterminate' : false}
-  onCheckedChange={(v) => setSelected(v ? new Set(files.map((f) => f.id)) : new Set())}
-/>
+	label="Select all"
+	checked={all ? true : some ? "indeterminate" : false}
+	onCheckedChange={(v) =>
+		setSelected(v ? new Set(files.map((f) => f.id)) : new Set())
+	}
+/>;
 ```
 
 ### Filters with several choices
@@ -105,29 +219,56 @@ const some = selected.size > 0 && !all;
 Checkboxes when any number of options can be on at once. For exactly one, use [Radio](/atoms/radio).
 
 <PhonePreview half="bottom" size="sm">
-  <div class="ax-scrim" />
-  <div class="ax-sheet">
-    <span class="ax-handle" />
-    <div class="ax-sheet-header"><span class="ax-title3">Cuisine</span><span class="ax-link">Reset</span></div>
-    <div class="ax-stack" data-gap="16" style={{ padding: '8px 0 16px' }}>
-      <div class="ax-choice"><span class="ax-checkbox" data-checked><Glyph name="check" size={16} strokeWidth={3} /></span><span class="ax-grow">Italian</span><span class="ax-muted">24</span></div>
-      <div class="ax-choice"><span class="ax-checkbox" /><span class="ax-grow">Japanese</span><span class="ax-muted">18</span></div>
-      <div class="ax-choice"><span class="ax-checkbox" data-checked><Glyph name="check" size={16} strokeWidth={3} /></span><span class="ax-grow">Lebanese</span><span class="ax-muted">7</span></div>
-      <div class="ax-choice"><span class="ax-checkbox" /><span class="ax-grow">Mexican</span><span class="ax-muted">11</span></div>
-    </div>
-    <span class="ax-btn" data-size="lg" data-block>Show 31 places</span>
-  </div>
+	<div class="ax-scrim" />
+	<div class="ax-sheet">
+		<span class="ax-handle" />
+		<div class="ax-sheet-header">
+			<span class="ax-title3">Cuisine</span>
+			<span class="ax-link">Reset</span>
+		</div>
+		<div class="ax-stack" data-gap="16" style={{ padding: "8px 0 16px" }}>
+			<div class="ax-choice">
+				<span class="ax-checkbox" data-checked>
+					<Glyph name="check" size={16} strokeWidth={3} />
+				</span>
+				<span class="ax-grow">Italian</span>
+				<span class="ax-muted">24</span>
+			</div>
+			<div class="ax-choice">
+				<span class="ax-checkbox" />
+				<span class="ax-grow">Japanese</span>
+				<span class="ax-muted">18</span>
+			</div>
+			<div class="ax-choice">
+				<span class="ax-checkbox" data-checked>
+					<Glyph name="check" size={16} strokeWidth={3} />
+				</span>
+				<span class="ax-grow">Lebanese</span>
+				<span class="ax-muted">7</span>
+			</div>
+			<div class="ax-choice">
+				<span class="ax-checkbox" />
+				<span class="ax-grow">Mexican</span>
+				<span class="ax-muted">11</span>
+			</div>
+		</div>
+		<span class="ax-btn" data-size="lg" data-block>
+			Show 31 places
+		</span>
+	</div>
 </PhonePreview>
 
 ```tsx
-{cuisines.map((c) => (
-  <Checkbox
-    key={c.id}
-    label={c.name}
-    checked={filters.has(c.id)}
-    onCheckedChange={(v) => toggleFilter(c.id, v)}
-  />
-))}
+{
+	cuisines.map((c) => (
+		<Checkbox
+			key={c.id}
+			label={c.name}
+			checked={filters.has(c.id)}
+			onCheckedChange={(v) => toggleFilter(c.id, v)}
+		/>
+	));
+}
 ```
 
 ## Related

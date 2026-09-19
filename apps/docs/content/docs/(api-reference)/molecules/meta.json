@@ -1,8 +1,4 @@
 {
-  "title": "Molecules",
-  "pages": [
-    "search-bar",
-    "attachment",
-    "date-picker"
-  ]
+	"title": "Molecules",
+	"pages": ["search-bar", "attachment", "date-picker"]
 }

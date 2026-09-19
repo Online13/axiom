@@ -4,9 +4,52 @@ description: "Presentational top tabs with controlled selection, badges, scrolla
 ---
 
 <PhonePreview>
-  <div class="ax-appbar"><span class="ax-appbar-slot"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span></span><span class="ax-appbar-title">Activity</span><span class="ax-appbar-slot" data-side="end"><span class="ax-icon-btn"><Glyph name="filter" /></span></span></div>
-  <div class="ax-tabs"><span data-active>All</span><span>Mentions</span><span><span>Requests</span><span class="ax-badge" data-kind="count">2</span></span></div>
-  <div class="ax-list" data-variant="plain"><div class="ax-item"><span class="ax-avatar" data-photo="1" /><div class="ax-item-content"><span class="ax-item-title">Maya mentioned you</span><span class="ax-item-desc">In Launch checklist · 4m</span></div></div><div class="ax-item"><span class="ax-avatar" data-photo="3" /><div class="ax-item-content"><span class="ax-item-title">Jon completed a task</span><span class="ax-item-desc">Homepage review · 21m</span></div></div><div class="ax-item"><span class="ax-avatar" data-photo="5" /><div class="ax-item-content"><span class="ax-item-title">Nora requested access</span><span class="ax-item-desc">Brand assets · 1h</span></div></div></div>
+	<div class="ax-appbar">
+		<span class="ax-appbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="chevron-left" />
+			</span>
+		</span>
+		<span class="ax-appbar-title">Activity</span>
+		<span class="ax-appbar-slot" data-side="end">
+			<span class="ax-icon-btn">
+				<Glyph name="filter" />
+			</span>
+		</span>
+	</div>
+	<div class="ax-tabs">
+		<span data-active>All</span>
+		<span>Mentions</span>
+		<span>
+			<span>Requests</span>
+			<span class="ax-badge" data-kind="count">
+				2
+			</span>
+		</span>
+	</div>
+	<div class="ax-list" data-variant="plain">
+		<div class="ax-item">
+			<span class="ax-avatar" data-photo="1" />
+			<div class="ax-item-content">
+				<span class="ax-item-title">Maya mentioned you</span>
+				<span class="ax-item-desc">In Launch checklist · 4m</span>
+			</div>
+		</div>
+		<div class="ax-item">
+			<span class="ax-avatar" data-photo="3" />
+			<div class="ax-item-content">
+				<span class="ax-item-title">Jon completed a task</span>
+				<span class="ax-item-desc">Homepage review · 21m</span>
+			</div>
+		</div>
+		<div class="ax-item">
+			<span class="ax-avatar" data-photo="5" />
+			<div class="ax-item-content">
+				<span class="ax-item-title">Nora requested access</span>
+				<span class="ax-item-desc">Brand assets · 1h</span>
+			</div>
+		</div>
+	</div>
 </PhonePreview>
 
 ## Installation
@@ -15,97 +58,123 @@ description: "Presentational top tabs with controlled selection, badges, scrolla
 npx axiom add tab
 ```
 
-Also copies: [`icon`](/atoms/icon), [`badge`](/atoms/badge), [`text`](/atoms/text), [`tappable`](/core/tappable) and [`useControllableState`](/hooks/use-controllable-state). Installs `react-native-reanimated` and `react-native-gesture-handler`.
+Also copies: [`icon`](/atoms/icon), [`badge`](/atoms/badge), [`text`](/atoms/text), [`tappable`](/core/tappable) and [`useControllableState`](/hooks/use-controllable-state). Installs `react-native-reanimated`.
 
 Colors come from `tab.{underline,pill}.{default,selected,disabled}` in the [component tokens](/foundations/component-tokens).
 
 ## Usage
 
 ```tsx
-import { Tab } from '@/components/ui/tab';
+import { Tab } from "@/components/ui/tab";
 
 <Tab value={section} onValueChange={setSection}>
-  <Tab.Item value="all">All</Tab.Item>
-  <Tab.Item value="unread">Unread</Tab.Item>
-  <Tab.Item value="archived">Archived</Tab.Item>
-</Tab>
+	<Tab.List>
+		<Tab.Item value="all">All</Tab.Item>
+		<Tab.Item value="unread">Unread</Tab.Item>
+		<Tab.Item value="archived">Archived</Tab.Item>
+	</Tab.List>
+
+	<Tab.Content>
+		<Tab.Panel value="all">
+			<Feed />
+		</Tab.Panel>
+		<Tab.Panel value="unread">
+			<UnreadFeed />
+		</Tab.Panel>
+		<Tab.Panel value="archived">
+			<Archive />
+		</Tab.Panel>
+	</Tab.Content>
+</Tab>;
 ```
 
 ## Props
 
 ### Tab
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `value` | `string` | — | Value of the selected tab in controlled usage. |
-| `defaultValue` | `string` | — | Initial selection when the component owns its state. |
-| `onValueChange` | `(value: string) => void` | — | Called after an enabled tab is pressed. Use it to swap nearby content, not to push a new screen. |
-| `variant` | `'underline' \| 'pill'` | `'underline'` | Uses an indicator below the label or a filled capsule behind it. |
-| `scrollable` | `boolean` | `false` | Lets items keep their natural width and scroll horizontally. Use it when four or more labels do not fit. |
-| `swipeEnabled` | `boolean` | `false` | Also switches tab on a horizontal drag across the panels. Requires `Tab.Panel` children. |
-| `children` | `ReactNode` | — | Two or more `Tab.Item` elements, and one `Tab.Panel` per item when the screen owns its content. |
-| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the tab list. |
+| Prop            | Type                      | Default | Description                                                                                      |
+| --------------- | ------------------------- | ------- | ------------------------------------------------------------------------------------------------ |
+| `value`         | `string`                  | —       | Value of the selected tab in controlled usage.                                                   |
+| `defaultValue`  | `string`                  | —       | Initial selection when the component owns its state.                                             |
+| `onValueChange` | `(value: string) => void` | —       | Called after an enabled tab is pressed. Use it to swap nearby content, not to push a new screen. |
+| `children`      | `ReactNode`               | —       | A `Tab.List` and optional content.                                                               |
+| View props      | `ViewProps`               | —       | Passed to the root `View`, including `style`, accessibility props and `ref`.                     |
+
+### Tab.List
+
+`Tab.List` renders a `View` by default. With `scrollable`, it renders a horizontal `ScrollView` and keeps each item at its natural width.
+
+| Prop                     | Type                           | Default       | Description                                                                                              |
+| ------------------------ | ------------------------------ | ------------- | -------------------------------------------------------------------------------------------------------- |
+| `variant`                | `'underline' \| 'pill'`        | `'underline'` | Uses an indicator below the label or a filled capsule behind it.                                         |
+| `scrollable`             | `boolean`                      | `false`       | Changes the list from `View` to `ScrollView`.                                                            |
+| View or ScrollView props | `ViewProps \| ScrollViewProps` | —             | Passed to the rendered native component. `contentContainerStyle` is available when `scrollable` is true. |
 
 ### Tab.Item
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `value` | `string` | — | Stable identifier returned through `onValueChange`. |
-| `children` | `ReactNode` | — | Short label. One or two words scan best. |
-| `icon` | `IconName \| ReactNode` | — | Optional icon before the label. Avoid icons when every tab is already clear in text. |
-| `badge` | `number \| string \| boolean` | — | Count, short status or dot next to the label. |
-| `disabled` | `boolean` | `false` | Blocks selection and exposes the disabled accessibility state. |
-| `accessibilityLabel` | `string` | label text | Spoken label when the visible text needs more context. |
+| Prop                 | Type                          | Default    | Description                                                                             |
+| -------------------- | ----------------------------- | ---------- | --------------------------------------------------------------------------------------- |
+| `value`              | `string`                      | —          | Stable identifier returned through `onValueChange`.                                     |
+| `children`           | `ReactNode`                   | —          | Short label. One or two words scan best.                                                |
+| `icon`               | `IconName \| ReactNode`       | —          | Optional icon before the label. Avoid icons when every tab is already clear in text.    |
+| `badge`              | `number \| string \| boolean` | —          | Count, short status or dot next to the label.                                           |
+| `disabled`           | `boolean`                     | `false`    | Blocks selection and exposes the disabled accessibility state.                          |
+| `accessibilityLabel` | `string`                      | label text | Spoken label when the visible text needs more context.                                  |
+| Tappable props       | `TappableProps`               | —          | Passed to the press target. Internal press and layout handlers are composed with yours. |
+
+### Tab.Content
+
+`Tab.Content` is a `View`. It renders only the selected `Tab.Panel`.
+
+| Prop       | Type        | Default | Description                   |
+| ---------- | ----------- | ------- | ----------------------------- |
+| View props | `ViewProps` | —       | Passed to the content `View`. |
+
+### Tab.Pager
+
+`Tab.Pager` is a horizontal `ScrollView` with `pagingEnabled`. Use it instead of `Tab.Content` when users should be able to swipe between panels.
+
+| Prop             | Type              | Default | Description                                                                         |
+| ---------------- | ----------------- | ------- | ----------------------------------------------------------------------------------- |
+| ScrollView props | `ScrollViewProps` | —       | Passed to the pager. Internal layout and momentum handlers are composed with yours. |
 
 ### Tab.Panel
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `value` | `string` | — | Value of the `Tab.Item` this panel belongs to. |
-| `children` | `ReactNode` | — | Content shown while that tab is selected. |
-| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the panel. |
+| Prop       | Type        | Default | Description                                                            |
+| ---------- | ----------- | ------- | ---------------------------------------------------------------------- |
+| `value`    | `string`    | —       | Value of the `Tab.Item` this panel belongs to.                         |
+| `children` | `ReactNode` | —       | Content shown while that tab is selected.                              |
+| View props | `ViewProps` | —       | Passed to the panel `View`. Its layout handler is composed with yours. |
 
 The indicator travels on a spring, and lands without animating the first time: it has nothing to travel from until the items have been measured. Reduced motion moves it without animation.
 
-`Tab` sets the tab list, tab and selected accessibility roles. Panels are optional: without them `Tab` is only a row, and the screen decides what to render under it.
+`Tab` sets the tab list, tab and selected accessibility roles. Panels are optional. Without `Tab.Content` or `Tab.Pager`, the screen can render its content elsewhere from the selected value.
 
 ## Swipe to switch
 
-`swipeEnabled` changes what the component is. A tab row is a set of buttons; a swipeable tab row is a pager whose tabs are a map of where the finger can go. Both are correct, and which one a screen wants is not something the component can guess — so it is a choice, off by default.
-
-Turn it on when the tabs are peers over the same kind of content, the way a feed, an inbox or an order list reads. Leave it off when the panel owns the horizontal axis — a carousel, a pannable chart, rows with [swipe actions](/behaviors/swipe-actions) — or when the panels are unrelated enough that landing on the next one by accident is a mistake rather than a shortcut.
-
-The markup is the same either way: panels are declared with `Tab.Panel`, next to the items.
+Use `Tab.Pager` when the panels contain peer views such as feeds, inboxes or order lists. Use `Tab.Content` when a panel owns horizontal interaction, for example a carousel, a pannable chart or rows with [swipe actions](/behaviors/swipe-actions).
 
 ```tsx
-<Tab swipeEnabled value={section} onValueChange={setSection}>
-  <Tab.Item value="all">All</Tab.Item>
-  <Tab.Item value="mentions">Mentions</Tab.Item>
+<Tab value={section} onValueChange={setSection} style={{ flex: 1 }}>
+	<Tab.List>
+		<Tab.Item value="all">All</Tab.Item>
+		<Tab.Item value="mentions">Mentions</Tab.Item>
+	</Tab.List>
 
-  <Tab.Panel value="all"><Feed /></Tab.Panel>
-  <Tab.Panel value="mentions"><Mentions /></Tab.Panel>
+	<Tab.Pager>
+		<Tab.Panel value="all">
+			<Feed />
+		</Tab.Panel>
+		<Tab.Panel value="mentions">
+			<Mentions />
+		</Tab.Panel>
+	</Tab.Pager>
 </Tab>
 ```
 
-With `swipeEnabled` off, the selected panel is rendered and the others are not; the layout is the row plus its content. With it on, `Tab` fills its parent and lays the panels side by side in a row that follows the finger, so it needs a bounded height — inside a [Scaffold](/templates/scaffold) body, that is already the case.
+The pager needs a bounded width and height. It uses the native `ScrollView` paging behavior, measures each panel at runtime and updates the selected value when scrolling settles. Pressing a tab scrolls to the measured position of its panel. Off-screen panels stay hidden from the screen reader.
 
-<TabSwipeFrames />
-
-The pages and the indicator read one progress value. The indicator is not animated toward the new tab on release: it is already where the finger left it, and only finishes the last part of the travel.
-
-<TabSwipeMachine />
-
-- The drag activates past 10pt horizontally and gives up on vertical movement, so a list inside a panel still scrolls.
-- On release, velocity decides first: a flick over 500pt/s switches tab whatever the distance. Otherwise a drag past a third of the width switches, and anything shorter returns.
-- `onValueChange` fires on release, not when the travel ends. The screen sees the new value while the pages are still moving.
-- At the first and last panel, movement outward meets resistance and springs back. The pager does not wrap.
-- Pressing an adjacent tab animates the pager. Pressing a farther one jumps, rather than flying through the panels in between.
-- Reduced motion leaves dragging untouched — it is direct manipulation, not animation — and makes the settle and the tab-press travel instant.
-- A panel mounts the first time it is reached and stays mounted. The panel next to the finger mounts as soon as the drag starts, so it is never blank while entering.
-- Panels that are off screen are hidden from the screen reader, which switches tab by pressing them. Nothing in the behavior is gesture-only.
-- A horizontal gesture that starts inside a panel wins: the pager waits for it to fail before claiming the drag.
-
-With `scrollable`, the item row scrolls the selected item into view as the pager moves, not after it lands.
+`Tab.Pager` passes its props to the underlying `ScrollView`, so `scrollEnabled`, `decelerationRate`, keyboard behavior and scroll callbacks remain configurable.
 
 ## Use cases
 
@@ -114,15 +183,51 @@ With `scrollable`, the item row scrolls the selected item into view as the pager
 Tabs work when the content changes but the screen purpose stays the same. Keep the filter state local to the screen.
 
 <PhonePreview size="sm">
-  <div class="ax-appbar"><span class="ax-appbar-slot"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span></span><span class="ax-appbar-title">Orders</span><span class="ax-appbar-slot" /></div>
-  <div class="ax-tabs"><span data-active>Active</span><span>Past</span></div>
-  <div class="ax-body"><div class="ax-card" data-variant="outlined"><div class="ax-card-content"><div class="ax-row" data-justify="between"><span class="ax-headline">Order #1842</span><span class="ax-badge" data-variant="success">Shipped</span></div><span class="ax-subhead ax-muted">Arrives Thursday · $88.90</span></div></div><div class="ax-card" data-variant="outlined"><div class="ax-card-content"><div class="ax-row" data-justify="between"><span class="ax-headline">Order #1831</span><span class="ax-badge" data-variant="info">Preparing</span></div><span class="ax-subhead ax-muted">3 items · $126.00</span></div></div></div>
+	<div class="ax-appbar">
+		<span class="ax-appbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="chevron-left" />
+			</span>
+		</span>
+		<span class="ax-appbar-title">Orders</span>
+		<span class="ax-appbar-slot" />
+	</div>
+	<div class="ax-tabs">
+		<span data-active>Active</span>
+		<span>Past</span>
+	</div>
+	<div class="ax-body">
+		<div class="ax-card" data-variant="outlined">
+			<div class="ax-card-content">
+				<div class="ax-row" data-justify="between">
+					<span class="ax-headline">Order #1842</span>
+					<span class="ax-badge" data-variant="success">
+						Shipped
+					</span>
+				</div>
+				<span class="ax-subhead ax-muted">Arrives Thursday · $88.90</span>
+			</div>
+		</div>
+		<div class="ax-card" data-variant="outlined">
+			<div class="ax-card-content">
+				<div class="ax-row" data-justify="between">
+					<span class="ax-headline">Order #1831</span>
+					<span class="ax-badge" data-variant="info">
+						Preparing
+					</span>
+				</div>
+				<span class="ax-subhead ax-muted">3 items · $126.00</span>
+			</div>
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
 <Tab value={status} onValueChange={setStatus}>
-  <Tab.Item value="active">Active</Tab.Item>
-  <Tab.Item value="past">Past</Tab.Item>
+	<Tab.List>
+		<Tab.Item value="active">Active</Tab.Item>
+		<Tab.Item value="past">Past</Tab.Item>
+	</Tab.List>
 </Tab>
 ```
 
@@ -131,14 +236,44 @@ Tabs work when the content changes but the screen purpose stays the same. Keep t
 When labels cannot fit without shrinking, let the row scroll. The selected tab should be brought into view after selection.
 
 <PhonePreview size="sm">
-  <div class="ax-appbar"><span class="ax-appbar-slot" /><span class="ax-appbar-title">Discover</span><span class="ax-appbar-slot" data-side="end"><span class="ax-icon-btn"><Glyph name="search" /></span></span></div>
-  <div class="ax-tabs" data-scrollable><span>For you</span><span data-active>Technology</span><span>Design</span><span>Science</span><span>Culture</span></div>
-  <div class="ax-body"><div class="ax-media" data-tone="6" style={{ height: '140px', borderRadius: '14px' }}><Glyph name="bolt" size={48} /></div><span class="ax-title3">A smaller battery with a longer life</span><span class="ax-subhead ax-muted">8 min read</span></div>
+	<div class="ax-appbar">
+		<span class="ax-appbar-slot" />
+		<span class="ax-appbar-title">Discover</span>
+		<span class="ax-appbar-slot" data-side="end">
+			<span class="ax-icon-btn">
+				<Glyph name="search" />
+			</span>
+		</span>
+	</div>
+	<div class="ax-tabs" data-scrollable>
+		<span>For you</span>
+		<span data-active>Technology</span>
+		<span>Design</span>
+		<span>Science</span>
+		<span>Culture</span>
+	</div>
+	<div class="ax-body">
+		<div
+			class="ax-media"
+			data-tone="6"
+			style={{ height: "140px", borderRadius: "14px" }}
+		>
+			<Glyph name="bolt" size={48} />
+		</div>
+		<span class="ax-title3">A smaller battery with a longer life</span>
+		<span class="ax-subhead ax-muted">8 min read</span>
+	</div>
 </PhonePreview>
 
 ```tsx
-<Tab scrollable value={category} onValueChange={setCategory}>
-  {categories.map((item) => <Tab.Item key={item.id} value={item.id}>{item.label}</Tab.Item>)}
+<Tab value={category} onValueChange={setCategory}>
+	<Tab.List scrollable>
+		{categories.map((item) => (
+			<Tab.Item key={item.id} value={item.id}>
+				{item.label}
+			</Tab.Item>
+		))}
+	</Tab.List>
 </Tab>
 ```
 
@@ -147,15 +282,71 @@ When labels cannot fit without shrinking, let the row scroll. The selected tab s
 The pill variant works for a short, local mode switch. For two or three equally sized options inside a form, prefer [SegmentedControl](/atoms/segmented-control).
 
 <PhonePreview size="sm" grouped>
-  <div class="ax-appbar"><span class="ax-appbar-slot"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span></span><span class="ax-appbar-title">Saved</span><span class="ax-appbar-slot" /></div>
-  <div class="ax-tabs" data-variant="pill"><span data-active><Glyph name="grid" size={17} />Grid</span><span><Glyph name="map" size={17} />Map</span></div>
-  <div class="ax-body"><div class="ax-row" data-gap="12"><div class="ax-media ax-grow" data-tone="2" style={{ height: '122px', borderRadius: '14px' }}><Glyph name="pin" /></div><div class="ax-media ax-grow" data-tone="3" style={{ height: '122px', borderRadius: '14px' }}><Glyph name="heart" /></div></div><div class="ax-row" data-gap="12"><div class="ax-media ax-grow" data-tone="4" style={{ height: '122px', borderRadius: '14px' }}><Glyph name="map" /></div><div class="ax-media ax-grow" data-tone="5" style={{ height: '122px', borderRadius: '14px' }}><Glyph name="star" /></div></div></div>
+	<div class="ax-appbar">
+		<span class="ax-appbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="chevron-left" />
+			</span>
+		</span>
+		<span class="ax-appbar-title">Saved</span>
+		<span class="ax-appbar-slot" />
+	</div>
+	<div class="ax-tabs" data-variant="pill">
+		<span data-active>
+			<Glyph name="grid" size={17} />
+			Grid
+		</span>
+		<span>
+			<Glyph name="map" size={17} />
+			Map
+		</span>
+	</div>
+	<div class="ax-body">
+		<div class="ax-row" data-gap="12">
+			<div
+				class="ax-media ax-grow"
+				data-tone="2"
+				style={{ height: "122px", borderRadius: "14px" }}
+			>
+				<Glyph name="pin" />
+			</div>
+			<div
+				class="ax-media ax-grow"
+				data-tone="3"
+				style={{ height: "122px", borderRadius: "14px" }}
+			>
+				<Glyph name="heart" />
+			</div>
+		</div>
+		<div class="ax-row" data-gap="12">
+			<div
+				class="ax-media ax-grow"
+				data-tone="4"
+				style={{ height: "122px", borderRadius: "14px" }}
+			>
+				<Glyph name="map" />
+			</div>
+			<div
+				class="ax-media ax-grow"
+				data-tone="5"
+				style={{ height: "122px", borderRadius: "14px" }}
+			>
+				<Glyph name="star" />
+			</div>
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
-<Tab variant="pill" value={view} onValueChange={setView}>
-  <Tab.Item value="grid" icon="grid">Grid</Tab.Item>
-  <Tab.Item value="map" icon="map">Map</Tab.Item>
+<Tab value={view} onValueChange={setView}>
+	<Tab.List variant="pill">
+		<Tab.Item value="grid" icon="grid">
+			Grid
+		</Tab.Item>
+		<Tab.Item value="map" icon="map">
+			Map
+		</Tab.Item>
+	</Tab.List>
 </Tab>
 ```
 

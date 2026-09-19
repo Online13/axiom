@@ -3,7 +3,9 @@ title: useCollapsibleHeader
 description: "Turn a list's scroll position into a collapse progress for a large header."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+<Callout title="Draft">
+	The API shown here is conceptual and may change.
+</Callout>
 
 The hook behind [Collapsible header](/behaviors/collapsible-header). That page explains how the header follows the scroll position, the stretch, the snap and accessibility. This one covers the API.
 
@@ -20,20 +22,31 @@ Installs: `react-native-reanimated`.
 With [AppBar](/templates/app-bar), pass `progress` to `collapseProgress`:
 
 ```tsx title="Conceptual"
-import Animated from 'react-native-reanimated';
-import { useCollapsibleHeader } from '@/hooks/use-collapsible-header';
+import Animated from "react-native-reanimated";
+import { useCollapsibleHeader } from "@/hooks/use-collapsible-header";
 
 function Inbox() {
-  const header = useCollapsibleHeader({ expandedHeight: 96, collapsedHeight: 44 });
+	const header = useCollapsibleHeader({
+		expandedHeight: 96,
+		collapsedHeight: 44,
+	});
 
-  return (
-    <View style={{ flex: 1 }}>
-      <Animated.FlatList data={messages} renderItem={renderMessage} {...header.scrollProps} />
-      <AppBar variant="large" collapseProgress={header.progress} style={styles.overlay}>
-        <AppBar.Title>Inbox</AppBar.Title>
-      </AppBar>
-    </View>
-  );
+	return (
+		<View style={{ flex: 1 }}>
+			<Animated.FlatList
+				data={messages}
+				renderItem={renderMessage}
+				{...header.scrollProps}
+			/>
+			<AppBar
+				variant="large"
+				collapseProgress={header.progress}
+				style={styles.overlay}
+			>
+				<AppBar.Title>Inbox</AppBar.Title>
+			</AppBar>
+		</View>
+	);
 }
 ```
 
@@ -45,23 +58,37 @@ For a cover image or a profile, read the shared values and build the styles your
 
 ```tsx title="Conceptual"
 function ProfileHeader({ header }: { header: CollapsibleHeader }) {
-  const container = useAnimatedStyle(() => ({ height: header.height.value }));
+	const container = useAnimatedStyle(() => ({ height: header.height.value }));
 
-  const coverStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(header.progress.value, [0, 0.7], [1, 0], 'clamp'),
-    transform: [{ scale: interpolate(header.offset.value, [-80, 0], [1.3, 1], 'clamp') }],
-  }));
+	const coverStyle = useAnimatedStyle(() => ({
+		opacity: interpolate(header.progress.value, [0, 0.7], [1, 0], "clamp"),
+		transform: [
+			{
+				scale: interpolate(
+					header.offset.value,
+					[-80, 0],
+					[1.3, 1],
+					"clamp",
+				),
+			},
+		],
+	}));
 
-  const title = useAnimatedStyle(() => ({
-    opacity: interpolate(header.progress.value, [0.6, 1], [0, 1], 'clamp'),
-  }));
+	const title = useAnimatedStyle(() => ({
+		opacity: interpolate(header.progress.value, [0.6, 1], [0, 1], "clamp"),
+	}));
 
-  return (
-    <Animated.View style={[styles.header, container]}>
-      <Animated.Image source={coverImage} style={[StyleSheet.absoluteFill, coverStyle]} />
-      <Animated.Text style={[styles.compactTitle, title]}>Grace Hopper</Animated.Text>
-    </Animated.View>
-  );
+	return (
+		<Animated.View style={[styles.header, container]}>
+			<Animated.Image
+				source={coverImage}
+				style={[StyleSheet.absoluteFill, coverStyle]}
+			/>
+			<Animated.Text style={[styles.compactTitle, title]}>
+				Grace Hopper
+			</Animated.Text>
+		</Animated.View>
+	);
 }
 ```
 
@@ -73,23 +100,23 @@ function ProfileHeader({ header }: { header: CollapsibleHeader }) {
 
 ## Options
 
-| Option | Type | Default | Description |
-| --- | --- | --- | --- |
-| `expandedHeight` | `number` | — | Header height at the top of the list, in pt, safe area excluded. |
-| `collapsedHeight` | `number` | `44` | Height of the compact bar, in pt. |
-| `snap` | `boolean` | `true` | When the scroll ends between the two heights, scrolls to the nearest end. |
-| `stretch` | `boolean` | `true` | Adds the overscroll to `height`. Turned off with Reduce Motion. |
+| Option            | Type      | Default | Description                                                               |
+| ----------------- | --------- | ------- | ------------------------------------------------------------------------- |
+| `expandedHeight`  | `number`  | —       | Header height at the top of the list, in pt, safe area excluded.          |
+| `collapsedHeight` | `number`  | `44`    | Height of the compact bar, in pt.                                         |
+| `snap`            | `boolean` | `true`  | When the scroll ends between the two heights, scrolls to the nearest end. |
+| `stretch`         | `boolean` | `true`  | Adds the overscroll to `height`. Turned off with Reduce Motion.           |
 
 ## Return value
 
-| Key | Type | Description |
-| --- | --- | --- |
-| `progress` | `SharedValue<number>` | From `0` (expanded) to `1` (collapsed). |
-| `height` | `SharedValue<number>` | Current header height, stretch included. |
-| `offset` | `SharedValue<number>` | Raw scroll offset. Negative on overscroll. |
-| `expand` | `() => void` | Scrolls the list to the top. |
-| `contentInset` | `{ paddingTop: number }` | Padding to apply to the list content. |
-| `scrollProps` | `object` | `ref`, `onScroll`, `scrollEventThrottle` and `contentContainerStyle`, for an `Animated` `ScrollView`, `FlatList`, `SectionList` or `FlashList`. |
+| Key            | Type                     | Description                                                                                                                                     |
+| -------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `progress`     | `SharedValue<number>`    | From `0` (expanded) to `1` (collapsed).                                                                                                         |
+| `height`       | `SharedValue<number>`    | Current header height, stretch included.                                                                                                        |
+| `offset`       | `SharedValue<number>`    | Raw scroll offset. Negative on overscroll.                                                                                                      |
+| `expand`       | `() => void`             | Scrolls the list to the top.                                                                                                                    |
+| `contentInset` | `{ paddingTop: number }` | Padding to apply to the list content.                                                                                                           |
+| `scrollProps`  | `object`                 | `ref`, `onScroll`, `scrollEventThrottle` and `contentContainerStyle`, for an `Animated` `ScrollView`, `FlatList`, `SectionList` or `FlashList`. |
 
 ## Related
 

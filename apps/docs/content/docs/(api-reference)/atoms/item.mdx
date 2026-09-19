@@ -4,14 +4,68 @@ description: "Generic row used as the base of many interfaces."
 ---
 
 <PhonePreview>
-  <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Messages</div>
-  <div class="ax-list" data-variant="plain" data-inset>
-    <div class="ax-item" data-size="lg"><span class="ax-avatar" data-photo="1">GH</span><div class="ax-item-content"><span class="ax-item-title ax-semibold">Grace Hopper</span><span class="ax-item-desc">Found the bug. It was a moth.</span></div><div class="ax-stack" data-gap="4" style={{ alignItems: 'flex-end' }}><span class="ax-footnote ax-link">09:41</span><span class="ax-badge" data-kind="count" style={{ background: 'var(--ax-content-link)' }}>2</span></div></div>
-    <div class="ax-item" data-size="lg"><span class="ax-avatar" data-photo="2">AT</span><div class="ax-item-content"><span class="ax-item-title">Alan Turing</span><span class="ax-item-desc">Can a machine think? Lunch first.</span></div><span class="ax-footnote ax-muted">08:12</span></div>
-    <div class="ax-item" data-size="lg" data-state="pressed"><span class="ax-avatar">KJ</span><div class="ax-item-content"><span class="ax-item-title">Katherine Johnson</span><span class="ax-item-desc">Trajectory numbers attached.</span></div><span class="ax-footnote ax-muted">Yesterday</span></div>
-    <div class="ax-item" data-size="lg"><span class="ax-avatar" data-photo="4">LT</span><div class="ax-item-content"><span class="ax-item-title">Linus Torvalds</span><span class="ax-item-desc">Just a hobby, won't be big.</span></div><span class="ax-footnote ax-muted">Mon</span></div>
-    <div class="ax-item" data-size="lg"><span class="ax-avatar" data-photo="3">MH</span><div class="ax-item-content"><span class="ax-item-title">Margaret Hamilton</span><span class="ax-item-desc">Priority alarms are fine.</span></div><span class="ax-footnote ax-muted">Sun</span></div>
-  </div>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Messages
+	</div>
+	<div class="ax-list" data-variant="plain" data-inset>
+		<div class="ax-item" data-size="lg">
+			<span class="ax-avatar" data-photo="1">
+				GH
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title ax-semibold">Grace Hopper</span>
+				<span class="ax-item-desc">Found the bug. It was a moth.</span>
+			</div>
+			<div class="ax-stack" data-gap="4" style={{ alignItems: "flex-end" }}>
+				<span class="ax-footnote ax-link">09:41</span>
+				<span
+					class="ax-badge"
+					data-kind="count"
+					style={{ background: "var(--ax-content-link)" }}
+				>
+					2
+				</span>
+			</div>
+		</div>
+		<div class="ax-item" data-size="lg">
+			<span class="ax-avatar" data-photo="2">
+				AT
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title">Alan Turing</span>
+				<span class="ax-item-desc">Can a machine think? Lunch first.</span>
+			</div>
+			<span class="ax-footnote ax-muted">08:12</span>
+		</div>
+		<div class="ax-item" data-size="lg" data-state="pressed">
+			<span class="ax-avatar">KJ</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title">Katherine Johnson</span>
+				<span class="ax-item-desc">Trajectory numbers attached.</span>
+			</div>
+			<span class="ax-footnote ax-muted">Yesterday</span>
+		</div>
+		<div class="ax-item" data-size="lg">
+			<span class="ax-avatar" data-photo="4">
+				LT
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title">Linus Torvalds</span>
+				<span class="ax-item-desc">Just a hobby, won't be big.</span>
+			</div>
+			<span class="ax-footnote ax-muted">Mon</span>
+		</div>
+		<div class="ax-item" data-size="lg">
+			<span class="ax-avatar" data-photo="3">
+				MH
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title">Margaret Hamilton</span>
+				<span class="ax-item-desc">Priority alarms are fine.</span>
+			</div>
+			<span class="ax-footnote ax-muted">Sun</span>
+		</div>
+	</div>
 </PhonePreview>
 
 ## Installation
@@ -37,55 +91,55 @@ An item has three areas:
 ## Usage
 
 ```tsx
-import { Item } from '@/components/ui/item';
+import { Item } from "@/components/ui/item";
 
 <Item onPress={openContact}>
-  <Item.Leading>
-    <Avatar source={{ uri: user.photo }} fallback="JC" />
-  </Item.Leading>
-  <Item.Content>
-    <Item.Title>Jane Cooper</Item.Title>
-    <Item.Description>Product designer</Item.Description>
-  </Item.Content>
-  <Item.Trailing>
-    <Icon name="chevron-right" />
-  </Item.Trailing>
-</Item>
+	<Item.Leading>
+		<Avatar source={{ uri: user.photo }} fallback="JC" />
+	</Item.Leading>
+	<Item.Content>
+		<Item.Title>Jane Cooper</Item.Title>
+		<Item.Description>Product designer</Item.Description>
+	</Item.Content>
+	<Item.Trailing>
+		<Icon name="chevron-right" />
+	</Item.Trailing>
+</Item>;
 ```
 
 ## Props
 
 ### Item
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | — | `Item.Leading`, `Item.Content` and `Item.Trailing`, in that order. All three are optional. |
-| `onPress` | `() => void` | — | Makes the whole row pressable through [Tappable](/core/tappable), with a pressed background. Without it the row is static. |
-| `onLongPress` | `() => void` | — | Called on long press. Pair it with a [Menu](/atoms/menu) for row actions. |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Minimum height: 44, 52 or 64pt. Content can make the row taller. |
-| `selected` | `boolean` | `false` | Tints the background with `feedback.infoSubtle` and sets `accessibilityState.selected`. |
-| `disabled` | `boolean` | `false` | Blocks presses and dims title, description and icons. |
-| `divider` | `boolean \| 'inset'` | `false` | Hairline under the row. `'inset'` starts it after the leading area, like iOS lists. |
-| `align` | `'center' \| 'start'` | `'center'` | Vertical alignment of leading and trailing, `start` for rows with multi-line content. |
-| `asChild` | `boolean` | `false` | Merges the item into its child, for example a router `Link`. See [Slot](/core/slot). |
-| `accessibilityLabel` | `string` | — | Replaces the text screen readers read from the row's content. |
-| `accessibilityRole` | `AccessibilityRole` | `'button'` with `onPress` | Role announced by screen readers, such as `link`. |
-| `accessibilityState` | `AccessibilityState` | — | Merged with `selected` and `disabled`. |
-| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the row. |
+| Prop                 | Type                   | Default                   | Description                                                                                                                |
+| -------------------- | ---------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `children`           | `ReactNode`            | —                         | `Item.Leading`, `Item.Content` and `Item.Trailing`, in that order. All three are optional.                                 |
+| `onPress`            | `() => void`           | —                         | Makes the whole row pressable through [Tappable](/core/tappable), with a pressed background. Without it the row is static. |
+| `onLongPress`        | `() => void`           | —                         | Called on long press. Pair it with a [Menu](/atoms/menu) for row actions.                                                  |
+| `size`               | `'sm' \| 'md' \| 'lg'` | `'md'`                    | Minimum height: 44, 52 or 64pt. Content can make the row taller.                                                           |
+| `selected`           | `boolean`              | `false`                   | Tints the background with `feedback.infoSubtle` and sets `accessibilityState.selected`.                                    |
+| `disabled`           | `boolean`              | `false`                   | Blocks presses and dims title, description and icons.                                                                      |
+| `divider`            | `boolean \| 'inset'`   | `false`                   | Hairline under the row. `'inset'` starts it after the leading area, like iOS lists.                                        |
+| `align`              | `'center' \| 'start'`  | `'center'`                | Vertical alignment of leading and trailing, `start` for rows with multi-line content.                                      |
+| `asChild`            | `boolean`              | `false`                   | Merges the item into its child, for example a router `Link`. See [Slot](/core/slot).                                       |
+| `accessibilityLabel` | `string`               | —                         | Replaces the text screen readers read from the row's content.                                                              |
+| `accessibilityRole`  | `AccessibilityRole`    | `'button'` with `onPress` | Role announced by screen readers, such as `link`.                                                                          |
+| `accessibilityState` | `AccessibilityState`   | —                         | Merged with `selected` and `disabled`.                                                                                     |
+| `style`              | `StyleProp<ViewStyle>` | —                         | Extra styles for the row.                                                                                                  |
 
 ### Item.Leading, Item.Trailing
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | — | An [Avatar](/atoms/avatar), an [Icon](/atoms/icon), a [Checkbox](/atoms/checkbox), a [Switch](/atoms/switch), a value, a [Badge](/atoms/badge)… |
-| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the area. |
+| Prop       | Type                   | Default | Description                                                                                                                                     |
+| ---------- | ---------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `children` | `ReactNode`            | —       | An [Avatar](/atoms/avatar), an [Icon](/atoms/icon), a [Checkbox](/atoms/checkbox), a [Switch](/atoms/switch), a value, a [Badge](/atoms/badge)… |
+| `style`    | `StyleProp<ViewStyle>` | —       | Extra styles for the area.                                                                                                                      |
 
 ### Item.Content, Item.Title, Item.Description
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | — | `Item.Title` and `Item.Description` inside `Item.Content`, or anything custom. |
-| `numberOfLines` | `number` | `1` | On `Title` and `Description`: lines before truncation. |
+| Prop            | Type        | Default | Description                                                                    |
+| --------------- | ----------- | ------- | ------------------------------------------------------------------------------ |
+| `children`      | `ReactNode` | —       | `Item.Title` and `Item.Description` inside `Item.Content`, or anything custom. |
+| `numberOfLines` | `number`    | `1`     | On `Title` and `Description`: lines before truncation.                         |
 
 ## Use cases
 
@@ -94,22 +148,52 @@ import { Item } from '@/components/ui/item';
 A chevron on the right says that the row opens another screen.
 
 <PhonePreview size="sm" grouped>
-  <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Account</div>
-  <div class="ax-list" data-inset>
-    <div class="ax-item"><span class="ax-tile" data-color="blue"><Glyph name="user" size={18} /></span><span class="ax-item-title ax-grow">Personal info</span><span class="ax-item-trailing"><Glyph name="chevron-right" size={18} /></span></div>
-    <div class="ax-item"><span class="ax-tile" data-color="green"><Glyph name="card" size={18} /></span><span class="ax-item-title ax-grow">Payment methods</span><span class="ax-item-trailing">2<Glyph name="chevron-right" size={18} /></span></div>
-    <div class="ax-item"><span class="ax-tile" data-color="orange"><Glyph name="pin" size={18} /></span><span class="ax-item-title ax-grow">Addresses</span><span class="ax-item-trailing"><Glyph name="chevron-right" size={18} /></span></div>
-  </div>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Account
+	</div>
+	<div class="ax-list" data-inset>
+		<div class="ax-item">
+			<span class="ax-tile" data-color="blue">
+				<Glyph name="user" size={18} />
+			</span>
+			<span class="ax-item-title ax-grow">Personal info</span>
+			<span class="ax-item-trailing">
+				<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-tile" data-color="green">
+				<Glyph name="card" size={18} />
+			</span>
+			<span class="ax-item-title ax-grow">Payment methods</span>
+			<span class="ax-item-trailing">
+				2<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-tile" data-color="orange">
+				<Glyph name="pin" size={18} />
+			</span>
+			<span class="ax-item-title ax-grow">Addresses</span>
+			<span class="ax-item-trailing">
+				<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
-<Item onPress={() => router.push('/account/payments')} divider="inset">
-  <Item.Leading><IconTile icon="card" color="green" /></Item.Leading>
-  <Item.Content><Item.Title>Payment methods</Item.Title></Item.Content>
-  <Item.Trailing>
-    <Text color="muted">2</Text>
-    <Icon name="chevron-right" color="subtle" />
-  </Item.Trailing>
+<Item onPress={() => router.push("/account/payments")} divider="inset">
+	<Item.Leading>
+		<IconTile icon="card" color="green" />
+	</Item.Leading>
+	<Item.Content>
+		<Item.Title>Payment methods</Item.Title>
+	</Item.Content>
+	<Item.Trailing>
+		<Text color="muted">2</Text>
+		<Icon name="chevron-right" color="subtle" />
+	</Item.Trailing>
 </Item>
 ```
 
@@ -118,26 +202,69 @@ A chevron on the right says that the row opens another screen.
 The trailing area holds a button that does its own thing. The row itself stays pressable.
 
 <PhonePreview size="sm">
-  <div class="ax-appbar" data-border><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Suggestions</span><span class="ax-icon-btn" /></div>
-  <div class="ax-list" data-variant="plain" data-inset>
-    <div class="ax-item"><span class="ax-avatar" data-photo="5">DR</span><div class="ax-item-content"><span class="ax-item-title">Dennis Ritchie</span><span class="ax-item-desc">12 mutual friends</span></div><span class="ax-btn" data-size="sm">Follow</span></div>
-    <div class="ax-item"><span class="ax-avatar" data-photo="2">BL</span><div class="ax-item-content"><span class="ax-item-title">Barbara Liskov</span><span class="ax-item-desc">Follows you</span></div><span class="ax-btn" data-size="sm" data-variant="outline">Following</span></div>
-    <div class="ax-item"><span class="ax-avatar">ED</span><div class="ax-item-content"><span class="ax-item-title">Edsger Dijkstra</span><span class="ax-item-desc">New to Axiom</span></div><span class="ax-btn" data-size="sm">Follow</span></div>
-  </div>
+	<div class="ax-appbar" data-border>
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Suggestions</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-list" data-variant="plain" data-inset>
+		<div class="ax-item">
+			<span class="ax-avatar" data-photo="5">
+				DR
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title">Dennis Ritchie</span>
+				<span class="ax-item-desc">12 mutual friends</span>
+			</div>
+			<span class="ax-btn" data-size="sm">
+				Follow
+			</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-avatar" data-photo="2">
+				BL
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title">Barbara Liskov</span>
+				<span class="ax-item-desc">Follows you</span>
+			</div>
+			<span class="ax-btn" data-size="sm" data-variant="outline">
+				Following
+			</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-avatar">ED</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title">Edsger Dijkstra</span>
+				<span class="ax-item-desc">New to Axiom</span>
+			</div>
+			<span class="ax-btn" data-size="sm">
+				Follow
+			</span>
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
 <Item onPress={() => openProfile(user.id)}>
-  <Item.Leading><Avatar source={user.photo} fallback={user.initials} /></Item.Leading>
-  <Item.Content>
-    <Item.Title>{user.name}</Item.Title>
-    <Item.Description>{user.mutuals} mutual friends</Item.Description>
-  </Item.Content>
-  <Item.Trailing>
-    <Button size="sm" variant={user.following ? 'outline' : 'solid'} onPress={() => toggleFollow(user.id)}>
-      {user.following ? 'Following' : 'Follow'}
-    </Button>
-  </Item.Trailing>
+	<Item.Leading>
+		<Avatar source={user.photo} fallback={user.initials} />
+	</Item.Leading>
+	<Item.Content>
+		<Item.Title>{user.name}</Item.Title>
+		<Item.Description>{user.mutuals} mutual friends</Item.Description>
+	</Item.Content>
+	<Item.Trailing>
+		<Button
+			size="sm"
+			variant={user.following ? "outline" : "solid"}
+			onPress={() => toggleFollow(user.id)}
+		>
+			{user.following ? "Following" : "Follow"}
+		</Button>
+	</Item.Trailing>
 </Item>
 ```
 
@@ -146,11 +273,38 @@ The trailing area holds a button that does its own thing. The row itself stays p
 `align="start"` keeps the avatar at the top when the description wraps.
 
 <PhonePreview size="sm">
-  <div class="ax-appbar" data-border><span class="ax-icon-btn" /><span class="ax-appbar-title">Activity</span><span class="ax-icon-btn" /></div>
-  <div class="ax-list" data-variant="plain" data-inset>
-    <div class="ax-item" style={{ alignItems: 'flex-start' }}><span class="ax-avatar" data-photo="1">GH</span><div class="ax-item-content"><span class="ax-subhead"><b>Grace Hopper</b> commented on <b>compiler.md</b></span><span class="ax-subhead ax-muted">"Let's call it a debugger. Nobody will remember why."</span><span class="ax-footnote ax-subtle">2 min ago</span></div></div>
-    <div class="ax-item" style={{ alignItems: 'flex-start' }}><span class="ax-avatar" data-photo="3">MH</span><div class="ax-item-content"><span class="ax-subhead"><b>Margaret Hamilton</b> approved your pull request</span><span class="ax-footnote ax-subtle">1 h ago</span></div></div>
-  </div>
+	<div class="ax-appbar" data-border>
+		<span class="ax-icon-btn" />
+		<span class="ax-appbar-title">Activity</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-list" data-variant="plain" data-inset>
+		<div class="ax-item" style={{ alignItems: "flex-start" }}>
+			<span class="ax-avatar" data-photo="1">
+				GH
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-subhead">
+					<b>Grace Hopper</b> commented on <b>compiler.md</b>
+				</span>
+				<span class="ax-subhead ax-muted">
+					"Let's call it a debugger. Nobody will remember why."
+				</span>
+				<span class="ax-footnote ax-subtle">2 min ago</span>
+			</div>
+		</div>
+		<div class="ax-item" style={{ alignItems: "flex-start" }}>
+			<span class="ax-avatar" data-photo="3">
+				MH
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-subhead">
+					<b>Margaret Hamilton</b> approved your pull request
+				</span>
+				<span class="ax-footnote ax-subtle">1 h ago</span>
+			</div>
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx

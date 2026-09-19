@@ -1,12 +1,12 @@
 {
-  "$schema": "../../packages/cli/schema.json",
-  "styling": "nativewind",
-  "aliases": {
-    "theme": "@/theme",
-    "core": "@/components/core",
-    "hooks": "@/hooks",
-    "components": "@/components/ui",
-    "blocks": "@/components/blocks"
-  },
-  "items": []
+	"$schema": "../../packages/cli/schema.json",
+	"styling": "nativewind",
+	"aliases": {
+		"theme": "@/theme",
+		"core": "@/components/core",
+		"hooks": "@/hooks",
+		"components": "@/components/ui",
+		"blocks": "@/components/blocks"
+	},
+	"items": []
 }

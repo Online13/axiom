@@ -3,7 +3,9 @@ title: Spacing
 description: "Padding, margins and gaps on a 4 grid."
 ---
 
-<Callout title="Draft">The values shown here are conceptual and may change.</Callout>
+<Callout title="Draft">
+	The values shown here are conceptual and may change.
+</Callout>
 
 Every step is a multiple of 4, and the key is the multiplier: `spacing[4]` is 16.
 
@@ -11,16 +13,16 @@ Every step is a multiple of 4, and the key is the multiplier: `spacing[4]` is 16
 
 ```ts title="Conceptual"
 export const spacing = {
-  0: 0,
-  1: 4,
-  2: 8,
-  3: 12,
-  4: 16,
-  5: 20,
-  6: 24,
-  8: 32,
-  10: 40,
-  12: 48,
+	0: 0,
+	1: 4,
+	2: 8,
+	3: 12,
+	4: 16,
+	5: 20,
+	6: 24,
+	8: 32,
+	10: 40,
+	12: 48,
 } satisfies Spacing;
 ```
 
@@ -28,10 +30,10 @@ export const spacing = {
 
 ```tsx title="Conceptual"
 const styles = StyleSheet.create({
-  row: {
-    paddingHorizontal: tokens.spacing[4], // 16
-    gap: tokens.spacing[2], // 8
-  },
+	row: {
+		paddingHorizontal: tokens.spacing[4], // 16
+		gap: tokens.spacing[2], // 8
+	},
 });
 ```
 

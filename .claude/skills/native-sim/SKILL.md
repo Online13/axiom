@@ -67,10 +67,10 @@ to skip compiling entirely.
 
 ## Expected timings
 
-| | Cold | Warm cache |
-|---|---|---|
-| Stream URL | ~5 min | ~3 min |
-| App on screen | ~33 min | ~7 min |
+|               | Cold    | Warm cache |
+| ------------- | ------- | ---------- |
+| Stream URL    | ~5 min  | ~3 min     |
+| App on screen | ~33 min | ~7 min     |
 
 The native build is ~28 min. `@expo/fingerprint` keys the cached `.app`; it ignores
 app JS, so JS-only changes hit the cache and `expo export:embed` refreshes the bundle
@@ -88,7 +88,7 @@ inside the cached binary. Native dependency or config-plugin changes force a reb
   runtime. Use fixed values plus per-step `timeout-minutes`.
 - **Never rewrite `Host` in a proxy in front of serve-sim.** It derives the URLs it hands
   the browser from the request headers, so a rewritten Host makes the page open its
-  control WebSocket against the *viewer's* `127.0.0.1:3200` — surfacing as
+  control WebSocket against the _viewer's_ `127.0.0.1:3200` — surfacing as
   `control socket connect timeout` and endless "connecting". Forward the public Host
   plus `X-Forwarded-Proto`/`X-Forwarded-Host` instead.
 - **Runners must be arm64** (`macos-26`, `macos-15`). `serve-sim` ships arm64-only

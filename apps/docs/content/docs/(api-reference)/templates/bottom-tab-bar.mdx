@@ -4,10 +4,48 @@ description: "Bottom navigation with safe areas, active states, badges and an op
 ---
 
 <PhonePreview half="bottom">
-  <div class="ax-appbar"><span class="ax-appbar-slot" /><span class="ax-appbar-title">Home</span><span class="ax-appbar-slot" data-side="end"><span class="ax-icon-btn"><Glyph name="bell" /></span></span></div>
-  <div class="ax-body"><span class="ax-title2">Good morning, Ada</span><div class="ax-card" data-variant="filled"><div class="ax-card-content"><span class="ax-subhead ax-muted">This week</span><span class="ax-title1">12 tasks</span></div></div></div>
-  <div class="ax-fill" />
-  <div class="ax-tabbar"><span class="ax-tabbar-item" data-active><Glyph name="home" /><span>Home</span></span><span class="ax-tabbar-item"><span class="ax-anchor"><Glyph name="inbox" /><span class="ax-badge" data-kind="count">3</span></span><span>Inbox</span></span><span class="ax-tabbar-item"><Glyph name="calendar" /><span>Calendar</span></span><span class="ax-tabbar-item"><Glyph name="user" /><span>Profile</span></span></div>
+	<div class="ax-appbar">
+		<span class="ax-appbar-slot" />
+		<span class="ax-appbar-title">Home</span>
+		<span class="ax-appbar-slot" data-side="end">
+			<span class="ax-icon-btn">
+				<Glyph name="bell" />
+			</span>
+		</span>
+	</div>
+	<div class="ax-body">
+		<span class="ax-title2">Good morning, Ada</span>
+		<div class="ax-card" data-variant="filled">
+			<div class="ax-card-content">
+				<span class="ax-subhead ax-muted">This week</span>
+				<span class="ax-title1">12 tasks</span>
+			</div>
+		</div>
+	</div>
+	<div class="ax-fill" />
+	<div class="ax-tabbar">
+		<span class="ax-tabbar-item" data-active>
+			<Glyph name="home" />
+			<span>Home</span>
+		</span>
+		<span class="ax-tabbar-item">
+			<span class="ax-anchor">
+				<Glyph name="inbox" />
+				<span class="ax-badge" data-kind="count">
+					3
+				</span>
+			</span>
+			<span>Inbox</span>
+		</span>
+		<span class="ax-tabbar-item">
+			<Glyph name="calendar" />
+			<span>Calendar</span>
+		</span>
+		<span class="ax-tabbar-item">
+			<Glyph name="user" />
+			<span>Profile</span>
+		</span>
+	</div>
 </PhonePreview>
 
 ## Installation
@@ -23,43 +61,43 @@ Colors come from `bottomTabBar.{fixed,floating}` and `bottomTabBar.item.{default
 ## Usage
 
 ```tsx
-import { BottomTabBar } from '@/components/ui/bottom-tab-bar';
+import { BottomTabBar } from "@/components/ui/bottom-tab-bar";
 
 <BottomTabBar value={route} onValueChange={navigate}>
-  <BottomTabBar.Item value="home" icon="home" label="Home" />
-  <BottomTabBar.Item value="inbox" icon="inbox" label="Inbox" badge={3} />
-  <BottomTabBar.Item value="profile" icon="user" label="Profile" />
-</BottomTabBar>
+	<BottomTabBar.Item value="home" icon="home" label="Home" />
+	<BottomTabBar.Item value="inbox" icon="inbox" label="Inbox" badge={3} />
+	<BottomTabBar.Item value="profile" icon="user" label="Profile" />
+</BottomTabBar>;
 ```
 
 ## Props
 
 ### BottomTabBar
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `value` | `string` | — | Value of the active item. Keep it aligned with the current route name. |
-| `defaultValue` | `string` | — | Initial active item when the bar manages its own state. |
-| `onValueChange` | `(value: string) => void` | — | Called when a different enabled item is pressed. This is where a router adapter navigates. |
-| `variant` | `'fixed' \| 'floating'` | `'fixed'` | Pins the bar to the screen edge or renders it as an inset pill. |
-| `hideOnKeyboard` | `boolean` | `true` | Hides the bar while the software keyboard is open, leaving more room for the field. |
-| `safeArea` | `boolean` | `true` | Adds the bottom safe-area inset. Disable it only when the parent already provides that space. |
-| `mainAction` | `ReactElement<IconButtonProps>` | — | Optional raised action, dropped in the middle of the row whatever the number of items. It performs an action and never becomes the selected route. |
-| `children` | `ReactNode` | — | Two to five `BottomTabBar.Item` elements. |
-| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the outer bar. |
+| Prop             | Type                            | Default   | Description                                                                                                                                        |
+| ---------------- | ------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `value`          | `string`                        | —         | Value of the active item. Keep it aligned with the current route name.                                                                             |
+| `defaultValue`   | `string`                        | —         | Initial active item when the bar manages its own state.                                                                                            |
+| `onValueChange`  | `(value: string) => void`       | —         | Called when a different enabled item is pressed. This is where a router adapter navigates.                                                         |
+| `variant`        | `'fixed' \| 'floating'`         | `'fixed'` | Pins the bar to the screen edge or renders it as an inset pill.                                                                                    |
+| `hideOnKeyboard` | `boolean`                       | `true`    | Hides the bar while the software keyboard is open, leaving more room for the field.                                                                |
+| `safeArea`       | `boolean`                       | `true`    | Adds the bottom safe-area inset. Disable it only when the parent already provides that space.                                                      |
+| `mainAction`     | `ReactElement<IconButtonProps>` | —         | Optional raised action, dropped in the middle of the row whatever the number of items. It performs an action and never becomes the selected route. |
+| `children`       | `ReactNode`                     | —         | Two to five `BottomTabBar.Item` elements.                                                                                                          |
+| `style`          | `StyleProp<ViewStyle>`          | —         | Extra styles for the outer bar.                                                                                                                    |
 
 ### BottomTabBar.Item
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `value` | `string` | — | Stable value used by the root to identify this destination. |
-| `label` | `string` | — | Short destination name displayed below the icon. |
-| `icon` | `IconName \| ReactNode` | — | Icon shown when the item is inactive. |
-| `activeIcon` | `IconName \| ReactNode` | `icon` | Optional filled or heavier icon for the active state. |
-| `badge` | `number \| string \| boolean` | — | Count, short text or dot. Counts above 99 display as `99+`. |
-| `disabled` | `boolean` | `false` | Keeps the destination visible but blocks selection. |
-| `accessibilityLabel` | `string` | `label` | Spoken destination name. Badge counts are announced separately. |
-| `testID` | `string` | — | Identifier for navigation tests. |
+| Prop                 | Type                          | Default | Description                                                     |
+| -------------------- | ----------------------------- | ------- | --------------------------------------------------------------- |
+| `value`              | `string`                      | —       | Stable value used by the root to identify this destination.     |
+| `label`              | `string`                      | —       | Short destination name displayed below the icon.                |
+| `icon`               | `IconName \| ReactNode`       | —       | Icon shown when the item is inactive.                           |
+| `activeIcon`         | `IconName \| ReactNode`       | `icon`  | Optional filled or heavier icon for the active state.           |
+| `badge`              | `number \| string \| boolean` | —       | Count, short text or dot. Counts above 99 display as `99+`.     |
+| `disabled`           | `boolean`                     | `false` | Keeps the destination visible but blocks selection.             |
+| `accessibilityLabel` | `string`                      | `label` | Spoken destination name. Badge counts are announced separately. |
+| `testID`             | `string`                      | —       | Identifier for navigation tests.                                |
 
 The bar sets the tab accessibility role and selected state. It does not render navigation screens or own a history stack.
 
@@ -70,17 +108,62 @@ The bar sets the tab accessibility role and selected state. It does not render n
 Use three to five stable destinations at the top level of the app. A badge can report new content without changing the route label.
 
 <PhonePreview half="bottom" size="sm">
-  <div class="ax-body"><span class="ax-title2">Inbox</span><div class="ax-list" data-variant="plain"><div class="ax-item"><span class="ax-avatar" data-photo="2" /><div class="ax-item-content"><span class="ax-item-title">Product team</span><span class="ax-item-desc">6 unread messages</span></div></div><div class="ax-item"><span class="ax-avatar" data-photo="4" /><div class="ax-item-content"><span class="ax-item-title">Maya Chen</span><span class="ax-item-desc">Sent 4 minutes ago</span></div></div></div></div>
-  <div class="ax-fill" />
-  <div class="ax-tabbar"><span class="ax-tabbar-item"><Glyph name="home" /><span>Home</span></span><span class="ax-tabbar-item" data-active><span class="ax-anchor"><Glyph name="inbox" /><span class="ax-badge" data-kind="count">6</span></span><span>Inbox</span></span><span class="ax-tabbar-item"><Glyph name="calendar" /><span>Calendar</span></span><span class="ax-tabbar-item"><Glyph name="user" /><span>Profile</span></span></div>
+	<div class="ax-body">
+		<span class="ax-title2">Inbox</span>
+		<div class="ax-list" data-variant="plain">
+			<div class="ax-item">
+				<span class="ax-avatar" data-photo="2" />
+				<div class="ax-item-content">
+					<span class="ax-item-title">Product team</span>
+					<span class="ax-item-desc">6 unread messages</span>
+				</div>
+			</div>
+			<div class="ax-item">
+				<span class="ax-avatar" data-photo="4" />
+				<div class="ax-item-content">
+					<span class="ax-item-title">Maya Chen</span>
+					<span class="ax-item-desc">Sent 4 minutes ago</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ax-fill" />
+	<div class="ax-tabbar">
+		<span class="ax-tabbar-item">
+			<Glyph name="home" />
+			<span>Home</span>
+		</span>
+		<span class="ax-tabbar-item" data-active>
+			<span class="ax-anchor">
+				<Glyph name="inbox" />
+				<span class="ax-badge" data-kind="count">
+					6
+				</span>
+			</span>
+			<span>Inbox</span>
+		</span>
+		<span class="ax-tabbar-item">
+			<Glyph name="calendar" />
+			<span>Calendar</span>
+		</span>
+		<span class="ax-tabbar-item">
+			<Glyph name="user" />
+			<span>Profile</span>
+		</span>
+	</div>
 </PhonePreview>
 
 ```tsx
 <BottomTabBar value={route.name} onValueChange={router.replace}>
-  <BottomTabBar.Item value="home" icon="home" label="Home" />
-  <BottomTabBar.Item value="inbox" icon="inbox" label="Inbox" badge={unreadCount} />
-  <BottomTabBar.Item value="calendar" icon="calendar" label="Calendar" />
-  <BottomTabBar.Item value="profile" icon="user" label="Profile" />
+	<BottomTabBar.Item value="home" icon="home" label="Home" />
+	<BottomTabBar.Item
+		value="inbox"
+		icon="inbox"
+		label="Inbox"
+		badge={unreadCount}
+	/>
+	<BottomTabBar.Item value="calendar" icon="calendar" label="Calendar" />
+	<BottomTabBar.Item value="profile" icon="user" label="Profile" />
 </BottomTabBar>
 ```
 
@@ -89,18 +172,62 @@ Use three to five stable destinations at the top level of the app. A badge can r
 The raised middle control is for a frequent creation action. It opens a flow but does not represent a destination.
 
 <PhonePreview half="bottom" size="sm">
-  <div class="ax-body"><span class="ax-title2">Your library</span><div class="ax-row" data-gap="12"><div class="ax-media ax-grow" data-tone="2" style={{ height: '120px', borderRadius: '14px' }}><Glyph name="music" size={36} /></div><div class="ax-media ax-grow" data-tone="4" style={{ height: '120px', borderRadius: '14px' }}><Glyph name="play" size={36} /></div></div></div>
-  <div class="ax-fill" />
-  <div class="ax-tabbar"><span class="ax-tabbar-item" data-active><Glyph name="home" /><span>Library</span></span><span class="ax-tabbar-item"><Glyph name="search" /><span>Explore</span></span><span class="ax-tabbar-main"><Glyph name="plus" size={26} /></span><span class="ax-tabbar-item"><Glyph name="heart" /><span>Saved</span></span><span class="ax-tabbar-item"><Glyph name="user" /><span>Profile</span></span></div>
+	<div class="ax-body">
+		<span class="ax-title2">Your library</span>
+		<div class="ax-row" data-gap="12">
+			<div
+				class="ax-media ax-grow"
+				data-tone="2"
+				style={{ height: "120px", borderRadius: "14px" }}
+			>
+				<Glyph name="music" size={36} />
+			</div>
+			<div
+				class="ax-media ax-grow"
+				data-tone="4"
+				style={{ height: "120px", borderRadius: "14px" }}
+			>
+				<Glyph name="play" size={36} />
+			</div>
+		</div>
+	</div>
+	<div class="ax-fill" />
+	<div class="ax-tabbar">
+		<span class="ax-tabbar-item" data-active>
+			<Glyph name="home" />
+			<span>Library</span>
+		</span>
+		<span class="ax-tabbar-item">
+			<Glyph name="search" />
+			<span>Explore</span>
+		</span>
+		<span class="ax-tabbar-main">
+			<Glyph name="plus" size={26} />
+		</span>
+		<span class="ax-tabbar-item">
+			<Glyph name="heart" />
+			<span>Saved</span>
+		</span>
+		<span class="ax-tabbar-item">
+			<Glyph name="user" />
+			<span>Profile</span>
+		</span>
+	</div>
 </PhonePreview>
 
 ```tsx
 <BottomTabBar
-  value={route}
-  onValueChange={navigate}
-  mainAction={<IconButton icon="plus" accessibilityLabel="Create playlist" onPress={createPlaylist} />}
+	value={route}
+	onValueChange={navigate}
+	mainAction={
+		<IconButton
+			icon="plus"
+			accessibilityLabel="Create playlist"
+			onPress={createPlaylist}
+		/>
+	}
 >
-  {items}
+	{items}
 </BottomTabBar>
 ```
 
@@ -109,16 +236,40 @@ The raised middle control is for a frequent creation action. It opens a flow but
 Use the floating variant when content reaches every screen edge, such as a map. Keep enough bottom padding so controls remain reachable above the bar.
 
 <PhonePreview half="bottom" size="sm">
-  <div class="ax-fill ax-media" data-tone="4"><div class="ax-center"><Glyph name="map" size={52} /><span class="ax-badge" data-variant="inverse">8 places nearby</span></div></div>
-  <div class="ax-tabbar" data-variant="floating"><span class="ax-tabbar-item" data-active data-tone="default"><Glyph name="map" /><span>Map</span></span><span class="ax-tabbar-item"><Glyph name="search" /><span>Explore</span></span><span class="ax-tabbar-item"><Glyph name="heart" /><span>Saved</span></span><span class="ax-tabbar-item"><Glyph name="user" /><span>Profile</span></span></div>
+	<div class="ax-fill ax-media" data-tone="4">
+		<div class="ax-center">
+			<Glyph name="map" size={52} />
+			<span class="ax-badge" data-variant="inverse">
+				8 places nearby
+			</span>
+		</div>
+	</div>
+	<div class="ax-tabbar" data-variant="floating">
+		<span class="ax-tabbar-item" data-active data-tone="default">
+			<Glyph name="map" />
+			<span>Map</span>
+		</span>
+		<span class="ax-tabbar-item">
+			<Glyph name="search" />
+			<span>Explore</span>
+		</span>
+		<span class="ax-tabbar-item">
+			<Glyph name="heart" />
+			<span>Saved</span>
+		</span>
+		<span class="ax-tabbar-item">
+			<Glyph name="user" />
+			<span>Profile</span>
+		</span>
+	</div>
 </PhonePreview>
 
 ```tsx
 <BottomTabBar variant="floating" value={route} onValueChange={navigate}>
-  <BottomTabBar.Item value="map" icon="map" label="Map" />
-  <BottomTabBar.Item value="explore" icon="search" label="Explore" />
-  <BottomTabBar.Item value="saved" icon="heart" label="Saved" />
-  <BottomTabBar.Item value="profile" icon="user" label="Profile" />
+	<BottomTabBar.Item value="map" icon="map" label="Map" />
+	<BottomTabBar.Item value="explore" icon="search" label="Explore" />
+	<BottomTabBar.Item value="saved" icon="heart" label="Saved" />
+	<BottomTabBar.Item value="profile" icon="user" label="Profile" />
 </BottomTabBar>
 ```
 

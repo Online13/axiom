@@ -11,7 +11,11 @@ npx axiom add portal
 
 Installs: `react-native-teleport`.
 
-<Callout title="Requirements">`react-native-teleport` supports the New Architecture (Fabric) only. It ships native code, so on Expo it needs a development build and won't run in Expo Go.</Callout>
+<Callout title="Requirements">
+	`react-native-teleport` supports the New Architecture (Fabric) only. It ships
+	native code, so on Expo it needs a development build and won't run in Expo
+	Go.
+</Callout>
 
 ## What it does
 
@@ -30,15 +34,15 @@ Components never import `react-native-teleport` directly. They import `@/compone
 Wrap your app once in `PortalProvider` and put a `PortalHost` after your navigation, so it draws above every screen:
 
 ```tsx title="app/_layout.tsx"
-import { PortalHost, PortalProvider } from '@/components/core/portal';
+import { PortalHost, PortalProvider } from "@/components/core/portal";
 
 export default function RootLayout() {
-  return (
-    <PortalProvider>
-      <Stack />
-      <PortalHost />
-    </PortalProvider>
-  );
+	return (
+		<PortalProvider>
+			<Stack />
+			<PortalHost />
+		</PortalProvider>
+	);
 }
 ```
 
@@ -48,7 +52,7 @@ export default function RootLayout() {
 
 ```tsx
 <Portal>
-  <Toast />
+	<Toast />
 </Portal>
 ```
 
@@ -66,38 +70,38 @@ Without `hostName`, content goes to the default `root` host. To target another h
 
 ### PortalProvider
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | — | The app. Every `Portal` and `PortalHost` must be inside it. |
+| Prop       | Type        | Default | Description                                                 |
+| ---------- | ----------- | ------- | ----------------------------------------------------------- |
+| `children` | `ReactNode` | —       | The app. Every `Portal` and `PortalHost` must be inside it. |
 
 ### PortalHost
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `name` | `string` | `'root'` | Identifies the host. A `Portal` targets it through `hostName`. |
+| Prop    | Type                   | Default                   | Description                                                                            |
+| ------- | ---------------------- | ------------------------- | -------------------------------------------------------------------------------------- |
+| `name`  | `string`               | `'root'`                  | Identifies the host. A `Portal` targets it through `hostName`.                         |
 | `style` | `StyleProp<ViewStyle>` | `StyleSheet.absoluteFill` | Host container style. The host needs real dimensions, or its content won't be visible. |
 
 ### Portal
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `hostName` | `string` | `'root'` | Name of the target `PortalHost`. Changing it moves the content to the new host without re-rendering it. |
-| `name` | `string` | — | Identifies this portal, so `removePortal` can remove it. |
-| `children` | `ReactNode` | — | The content to teleport. |
+| Prop       | Type        | Default  | Description                                                                                             |
+| ---------- | ----------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `hostName` | `string`    | `'root'` | Name of the target `PortalHost`. Changing it moves the content to the new host without re-rendering it. |
+| `name`     | `string`    | —        | Identifies this portal, so `removePortal` can remove it.                                                |
+| `children` | `ReactNode` | —        | The content to teleport.                                                                                |
 
 Axiom changes one default from the library: there, `Portal` without `hostName` renders in place. Here it goes to `root`, because overlays are the main use case. Rendering in place isn't exposed. If a component needs it, it renders its children without `Portal`.
 
 ### usePortal
 
 ```tsx
-const { isHostAvailable, removePortal } = usePortal('toast');
+const { isHostAvailable, removePortal } = usePortal("toast");
 ```
 
-| Argument / return | Type | Description |
-| --- | --- | --- |
-| `hostName` | `string` | Host to watch. Defaults to `'root'`. |
-| `isHostAvailable` | `boolean` | Whether a `PortalHost` with that name is mounted. |
-| `removePortal` | `(name: string) => void` | Removes a portal from the host. Mounting a new portal with the same name shows it again. |
+| Argument / return | Type                     | Description                                                                              |
+| ----------------- | ------------------------ | ---------------------------------------------------------------------------------------- |
+| `hostName`        | `string`                 | Host to watch. Defaults to `'root'`.                                                     |
+| `isHostAvailable` | `boolean`                | Whether a `PortalHost` with that name is mounted.                                        |
+| `removePortal`    | `(name: string) => void` | Removes a portal from the host. Mounting a new portal with the same name shows it again. |
 
 ## Lifecycle
 
@@ -111,14 +115,14 @@ An overlay that must never render inline (a toast in the middle of a list, for i
 
 ```tsx
 function Toast() {
-  const { isHostAvailable } = usePortal();
-  if (!isHostAvailable) return null;
+	const { isHostAvailable } = usePortal();
+	if (!isHostAvailable) return null;
 
-  return (
-    <Portal>
-      <ToastContent />
-    </Portal>
-  );
+	return (
+		<Portal>
+			<ToastContent />
+		</Portal>
+	);
 }
 ```
 

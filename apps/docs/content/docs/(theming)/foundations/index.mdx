@@ -17,25 +17,25 @@ A theme puts the three layers together. Each theme is checked with `satisfies`, 
 
 ```ts title="Conceptual"
 export const light = {
-  tokens,
-  colors: lightColors,
-  components: components(lightColors),
+	tokens,
+	colors: lightColors,
+	components: components(lightColors),
 } satisfies Theme;
 ```
 
 The contracts don't depend on the styling tool. Each variant translates them into its own form. See [Styling](/styling#the-theme-in-each-variant).
 
 <Cards>
-  <Card title="Tokens" href="/foundations/tokens">
-    Spacing, radius, typography, sizes and metrics.
-  </Card>
-  <Card title="Colors" href="/foundations/colors">
-    Semantic colors and the `light` / `dark` themes.
-  </Card>
-  <Card title="Component tokens" href="/foundations/component-tokens">
-    Per-component values derived from colors.
-  </Card>
-  <Card title="Typography" href="/atoms/title">
-    Title and Text.
-  </Card>
+	<Card title="Tokens" href="/foundations/tokens">
+		Spacing, radius, typography, sizes and metrics.
+	</Card>
+	<Card title="Colors" href="/foundations/colors">
+		Semantic colors and the `light` / `dark` themes.
+	</Card>
+	<Card title="Component tokens" href="/foundations/component-tokens">
+		Per-component values derived from colors.
+	</Card>
+	<Card title="Typography" href="/atoms/title">
+		Title and Text.
+	</Card>
 </Cards>

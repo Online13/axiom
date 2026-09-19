@@ -3,7 +3,10 @@ title: "Hide-on-scroll"
 description: "Bars slide out while the user scrolls down and come back as soon as they scroll up."
 ---
 
-<Callout title="Draft">Specified, not implemented yet. The API is described in [useHideOnScroll](/hooks/use-hide-on-scroll) and may change.</Callout>
+<Callout title="Draft">
+	Specified, not implemented yet. The API is described in
+	[useHideOnScroll](/hooks/use-hide-on-scroll) and may change.
+</Callout>
 
 While the user scrolls down a list, the top and bottom bars slide out of the screen and the content gets the room. The moment they scroll up, even in the middle of the list, the bars come back.
 
@@ -27,7 +30,7 @@ Don't hide a bar that holds the main action of the screen (a checkout button, a 
 The bars don't follow the scroll position, they follow the scroll **delta**. `hidden` is how many points of the bar are out of view, between `0` and the bar height:
 
 ```ts
-hidden = clamp(hidden + (offset - previousOffset), 0, height)
+hidden = clamp(hidden + (offset - previousOffset), 0, height);
 ```
 
 ```text
@@ -39,12 +42,12 @@ hidden  0 ──────── 24 ──────── 40 ────�
 
 Four rules make it feel right:
 
-| Rule | Why |
-| --- | --- |
-| **Clamp** between `0` and `height` | Scrolling up 16pt after a long scroll down shows 16pt of bar, not nothing. |
-| **Near the top**, `hidden` never exceeds `offset` | The bars are always complete when the list is at its start. |
-| **Ignore bounces**: offsets below `0` or past the end of the content | On iOS the bounce would otherwise move the bars back and forth. |
-| **Snap on release**: at the end of the drag or the momentum, animate to `0` or `height`, whichever is nearest | A bar is never left half-hidden. |
+| Rule                                                                                                          | Why                                                                        |
+| ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **Clamp** between `0` and `height`                                                                            | Scrolling up 16pt after a long scroll down shows 16pt of bar, not nothing. |
+| **Near the top**, `hidden` never exceeds `offset`                                                             | The bars are always complete when the list is at its start.                |
+| **Ignore bounces**: offsets below `0` or past the end of the content                                          | On iOS the bounce would otherwise move the bars back and forth.            |
+| **Snap on release**: at the end of the drag or the momentum, animate to `0` or `height`, whichever is nearest | A bar is never left half-hidden.                                           |
 
 Both bars read the same `hidden`: the top bar moves by `-hidden`, the bottom bar by `+hidden`.
 
@@ -52,10 +55,10 @@ Both bars read the same `hidden`: the top bar moves by `-hidden`, the bottom bar
 
 Axiom implements it with one hook, [`useHideOnScroll`](/hooks/use-hide-on-scroll), that returns the value and the scroll props, and leaves the bars untouched.
 
-| Library | Used for |
-| --- | --- |
+| Library                   | Used for                                                                                                                                                                                                         |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `react-native-reanimated` | `hidden` as a shared value computed in `useAnimatedScrollHandler` (`onScroll`, `onEndDrag`, `onMomentumEnd`), so the bars move on the UI thread with no React render while scrolling. `withTiming` for the snap. |
-| React Native layout | The bars are positioned over the list, and the list gets top and bottom padding equal to the bar heights, so nothing is covered at rest. |
+| React Native layout       | The bars are positioned over the list, and the list gets top and bottom padding equal to the bar heights, so nothing is covered at rest.                                                                         |
 
 `react-native-gesture-handler` isn't needed: the scroll events are enough, on iOS and Android.
 
@@ -64,7 +67,11 @@ Axiom implements it with one hook, [`useHideOnScroll`](/hooks/use-hide-on-scroll
 ```tsx title="Conceptual"
 const bars = useHideOnScroll({ height: 56 });
 
-<Animated.FlatList data={posts} renderItem={renderPost} {...bars.scrollProps} />
+<Animated.FlatList
+	data={posts}
+	renderItem={renderPost}
+	{...bars.scrollProps}
+/>;
 // top bar: translateY -bars.hidden.value, bottom bar: +bars.hidden.value
 ```
 

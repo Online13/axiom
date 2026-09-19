@@ -3,7 +3,11 @@ title: Installation
 description: "Set up Axiom in an Expo or React Native project."
 ---
 
-<Callout title="Not published yet">`npx axiom` doesn't work yet: the CLI isn't on npm. This page is the specification it is being built against, so commands and options may still change.</Callout>
+<Callout title="Not published yet">
+	`npx axiom` doesn't work yet: the CLI isn't on npm. This page is the
+	specification it is being built against, so commands and options may still
+	change.
+</Callout>
 
 ## Before you start
 
@@ -42,15 +46,15 @@ Your choices are saved in a config file at the root of the project:
 
 ```json title="axiom.json"
 {
-  "$schema": "https://axiom.dev/schema.json",
-  "styling": "stylesheet",
-  "aliases": {
-    "theme": "@/theme",
-    "core": "@/components/core",
-    "hooks": "@/hooks",
-    "components": "@/components/ui",
-    "blocks": "@/components/blocks"
-  }
+	"$schema": "https://axiom.dev/schema.json",
+	"styling": "stylesheet",
+	"aliases": {
+		"theme": "@/theme",
+		"core": "@/components/core",
+		"hooks": "@/hooks",
+		"components": "@/components/ui",
+		"blocks": "@/components/blocks"
+	}
 }
 ```
 
@@ -69,10 +73,10 @@ The CLI copies the variant that matches your `styling` setting, along with any i
 ## 3. Use it
 
 ```tsx
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
 export function SaveButton() {
-  return <Button>Save</Button>;
+	return <Button>Save</Button>;
 }
 ```
 
@@ -90,16 +94,16 @@ Copy the files for your variant into your project, install the listed packages, 
 ## Next steps
 
 <Cards>
-  <Card title="CLI" href="/cli">
-    What `init` and `add` do, step by step.
-  </Card>
-  <Card title="Styling" href="/styling">
-    How the variants work and how they differ.
-  </Card>
-  <Card title="Foundations" href="/foundations">
-    Customize the theme and tokens.
-  </Card>
-  <Card title="Atoms" href="/atoms">
-    Browse the components.
-  </Card>
+	<Card title="CLI" href="/cli">
+		What `init` and `add` do, step by step.
+	</Card>
+	<Card title="Styling" href="/styling">
+		How the variants work and how they differ.
+	</Card>
+	<Card title="Foundations" href="/foundations">
+		Customize the theme and tokens.
+	</Card>
+	<Card title="Atoms" href="/atoms">
+		Browse the components.
+	</Card>
 </Cards>

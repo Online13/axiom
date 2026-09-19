@@ -3,7 +3,10 @@ title: "Dynamic toolbar"
 description: "A bottom bar that replaces navigation during a mode, with actions that follow the context."
 ---
 
-<Callout title="Draft">Specified, not implemented yet. The bar is [ToolBar](/templates/tool-bar) with its `visible` prop, driven by the screen's state. The API may change.</Callout>
+<Callout title="Draft">
+	Specified, not implemented yet. The bar is [ToolBar](/templates/tool-bar)
+	with its `visible` prop, driven by the screen's state. The API may change.
+</Callout>
 
 While the user browses, the bottom of the screen belongs to navigation. When they enter a mode that needs its own commands, such as selecting, editing or cropping, a toolbar takes that place. Its actions stay in the same spots but turn on and off as the context changes. When the mode ends, navigation comes back.
 
@@ -30,12 +33,12 @@ Two things change, at two different moments.
 
 **The actions follow the context.** Each action declares when it applies, and the toolbar recomputes whenever the context changes.
 
-| Mode | Action | Enabled when |
-| --- | --- | --- |
-| Selecting | Rename | Exactly one item is selected. |
+| Mode      | Action | Enabled when                             |
+| --------- | ------ | ---------------------------------------- |
+| Selecting | Rename | Exactly one item is selected.            |
 | Selecting | Delete | Every selected item belongs to the user. |
-| Editing | Undo | There is something to undo. |
-| Editing | Save | The content has changed and is valid. |
+| Editing   | Undo   | There is something to undo.              |
+| Editing   | Save   | The content has changed and is valid.    |
 
 ### Disable, don't remove
 
@@ -52,27 +55,44 @@ Only remove an action when it can never apply in this mode, and decide it on ent
 
 There is no dedicated hook: the mode and its context are screen state, and [ToolBar](/templates/tool-bar) renders the actions.
 
-| Library | Used for |
-| --- | --- |
-| React state | The current mode and its context. Enabled actions are derived from them, never stored. |
-| `react-native-reanimated` | The bar swap: `entering` / `exiting` slide transitions on the tab bar and the toolbar. |
-| React Navigation | `tabBarStyle: { display: 'none' }` on the tab navigator during the mode, and `beforeRemove` to exit the mode on back. |
+| Library                   | Used for                                                                                                              |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| React state               | The current mode and its context. Enabled actions are derived from them, never stored.                                |
+| `react-native-reanimated` | The bar swap: `entering` / `exiting` slide transitions on the tab bar and the toolbar.                                |
+| React Navigation          | `tabBarStyle: { display: 'none' }` on the tab navigator during the mode, and `beforeRemove` to exit the mode on back. |
 
 ### In a screen
 
 ```tsx title="Conceptual"
-const [mode, setMode] = useState<'browse' | 'edit'>('browse');
-const editing = mode === 'edit';
+const [mode, setMode] = useState<"browse" | "edit">("browse");
+const editing = mode === "edit";
 
 useLayoutEffect(() => {
-  navigation.getParent()?.setOptions({ tabBarStyle: editing ? { display: 'none' } : undefined });
+	navigation
+		.getParent()
+		?.setOptions({ tabBarStyle: editing ? { display: "none" } : undefined });
 }, [editing]);
 
 <ToolBar visible={editing}>
-  <ToolBar.Action icon="undo" label="Undo" disabled={!history.canUndo} onPress={history.undo} />
-  <ToolBar.Action icon="redo" label="Redo" disabled={!history.canRedo} onPress={history.redo} />
-  <ToolBar.Action icon="check" label="Save" disabled={!draft.dirty || !draft.valid} onPress={save} />
-</ToolBar>
+	<ToolBar.Action
+		icon="undo"
+		label="Undo"
+		disabled={!history.canUndo}
+		onPress={history.undo}
+	/>
+	<ToolBar.Action
+		icon="redo"
+		label="Redo"
+		disabled={!history.canRedo}
+		onPress={history.redo}
+	/>
+	<ToolBar.Action
+		icon="check"
+		label="Save"
+		disabled={!draft.dirty || !draft.valid}
+		onPress={save}
+	/>
+</ToolBar>;
 ```
 
 ## Accessibility

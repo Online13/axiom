@@ -1,208 +1,265 @@
-import { Children, createContext, isValidElement, use, type ReactElement, type ReactNode } from 'react';
-import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import { GestureDetector } from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
+import {
+  createContext,
+  isValidElement,
+  use,
+  useEffect,
+  useRef,
+  useState,
+  type ComponentPropsWithRef,
+  type ReactNode,
+  type Ref,
+} from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  type LayoutChangeEvent,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+} from 'react-native';
+import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withSpring } from 'react-native-reanimated';
 
-import { Tappable } from '@/components/core/tappable';
+import { Tappable, type TappableProps } from '@/components/core/tappable';
 import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/ui/icon';
 import type { IconName } from '@/components/ui/icons';
 import { MAX_FONT_SCALE, Text } from '@/components/ui/text';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { useTheme } from '@/theme';
-
-import { useTab } from '../use-tab';
 
 export type TabVariant = 'underline' | 'pill';
 
-type TabContextValue = ReturnType<typeof useTab> & {
-  variant: TabVariant;
-  scrollable: boolean;
+type TabLayout = { x: number; width: number };
+
+const SPRING = { stiffness: 380, damping: 34, mass: 1 };
+
+type UseTabOptions = {
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+};
+
+function useTab({ value: valueProp, defaultValue = '', onValueChange }: UseTabOptions) {
+  const [value, setValue] = useControllableState({ value: valueProp, defaultValue, onChange: onValueChange });
+  const [layouts, setLayouts] = useState<Record<string, TabLayout>>({});
+  const [listViewport, setListViewport] = useState(0);
+  const [listContentWidth, setListContentWidth] = useState(0);
+
+  const listRef = useRef<ScrollView>(null);
+  const reduceMotion = useReducedMotion();
+  const indicatorX = useSharedValue(0);
+  const indicatorWidth = useSharedValue(0);
+  const indicatorReady = useSharedValue(false);
+  const selectedLayout = layouts[value];
+
+  useEffect(() => {
+    if (!selectedLayout) return;
+
+    if (!indicatorReady.value || reduceMotion) {
+      indicatorX.value = selectedLayout.x;
+      indicatorWidth.value = selectedLayout.width;
+      indicatorReady.value = true;
+      return;
+    }
+
+    indicatorX.value = withSpring(selectedLayout.x, SPRING);
+    indicatorWidth.value = withSpring(selectedLayout.width, SPRING);
+  }, [indicatorReady, indicatorWidth, indicatorX, reduceMotion, selectedLayout]);
+
+  useEffect(() => {
+    if (!selectedLayout || !listViewport) return;
+    const max = Math.max(listContentWidth - listViewport, 0);
+    const x = Math.min(Math.max(selectedLayout.x + selectedLayout.width / 2 - listViewport / 2, 0), max);
+    listRef.current?.scrollTo({ x, animated: !reduceMotion });
+  }, [listContentWidth, listViewport, reduceMotion, selectedLayout]);
+
+  return {
+    value,
+    listRef,
+    select: setValue,
+    onItemLayout: (item: string) => (event: LayoutChangeEvent) => {
+      const { x, width } = event.nativeEvent.layout;
+      setLayouts((current) => {
+        const known = current[item];
+        return known?.x === x && known.width === width ? current : { ...current, [item]: { x, width } };
+      });
+    },
+    onListLayout: (event: LayoutChangeEvent) => setListViewport(event.nativeEvent.layout.width),
+    onListContentSizeChange: (width: number) => setListContentWidth(width),
+    indicatorStyle: useAnimatedStyle(() => ({
+      opacity: indicatorReady.value ? 1 : 0,
+      width: indicatorWidth.value,
+      transform: [{ translateX: indicatorX.value }],
+    })),
+  };
+}
+
+type TabContextValue = ReturnType<typeof useTab>;
+type TabListContextValue = { variant: TabVariant; scrollable: boolean };
+type TabContentContextValue = {
+  paged: boolean;
+  pageWidth: number;
+  onPanelLayout?: (value: string, event: LayoutChangeEvent) => void;
 };
 
 const TabContext = createContext<TabContextValue | null>(null);
+const TabListContext = createContext<TabListContextValue | null>(null);
+const TabContentContext = createContext<TabContentContextValue | null>(null);
 
 function useTabContext() {
   const context = use(TabContext);
-  if (!context) throw new Error('Tab.Item must be used inside <Tab>.');
+  if (!context) throw new Error('Tab components must be used inside <Tab>.');
   return context;
 }
 
-export type TabProps = {
-  /** Value of the selected tab. */
+function useTabListContext() {
+  const context = use(TabListContext);
+  if (!context) throw new Error('Tab.Item must be used inside <Tab.List>.');
+  return context;
+}
+
+export type TabProps = Omit<ComponentPropsWithRef<typeof View>, 'children'> & {
   value?: string;
   defaultValue?: string;
-  /** Called after an enabled tab is pressed. Swap nearby content, don't push a screen. */
   onValueChange?: (value: string) => void;
-  /** An indicator under the label, or a filled capsule behind it. */
-  variant?: TabVariant;
-  /** Items keep their natural width and scroll horizontally. */
-  scrollable?: boolean;
-  /** A horizontal drag across the panels also switches tab. Needs `Tab.Panel` children. */
-  swipeEnabled?: boolean;
-  /** Two or more `Tab.Item` elements, and one `Tab.Panel` per item when the tabs own their content. */
   children?: ReactNode;
-  style?: StyleProp<ViewStyle>;
 };
 
-const INDICATOR_HEIGHT = 2;
-
-function TabRoot({
-  value,
-  defaultValue,
-  onValueChange,
-  variant = 'underline',
-  scrollable = false,
-  swipeEnabled = false,
-  children,
-  style,
-}: TabProps) {
-  const { tokens, components } = useTheme();
-
-  // Items give the order of the list; panels are matched to them by value.
-  const items: ReactElement<TabItemProps>[] = [];
-  const panels = new Map<string, ReactElement<TabPanelProps>>();
-  Children.forEach(children, (child) => {
-    if (!isValidElement(child)) return;
-    if (child.type === TabPanel) {
-      const panel = child as ReactElement<TabPanelProps>;
-      panels.set(panel.props.value, panel);
-    } else {
-      items.push(child as ReactElement<TabItemProps>);
-    }
-  });
-  const values = items.map((item) => item.props.value);
-  // Nothing to swipe across without panels.
-  const swipeable = swipeEnabled && panels.size > 1;
-
-  const tab = useTab({ value, defaultValue, onValueChange, values, swipeEnabled: swipeable, scrollable });
-  const colors = components.tab[variant].default;
-
-  const pill = variant === 'pill';
-  const list = (
-    <View
-      accessibilityRole="tablist"
-      style={[
-        styles.list,
-        // Stretch, never `flex: 1`: in a column parent that would give the row a height of 0.
-        !scrollable && styles.stretch,
-        {
-          padding: pill ? tokens.spacing[1] : 0,
-          borderRadius: pill ? tokens.radius.full : 0,
-          backgroundColor: colors.background,
-          borderBottomWidth: pill ? 0 : StyleSheet.hairlineWidth,
-          borderBottomColor: colors.border,
-        },
-      ]}
-    >
-      {/* The indicator sits under the items and slides between them. */}
-      <Animated.View
-        pointerEvents="none"
-        style={[
-          pill ? styles.pillIndicator : styles.underline,
-          {
-            backgroundColor: colors.indicator,
-            borderRadius: pill ? tokens.radius.full : 0,
-            height: pill ? undefined : INDICATOR_HEIGHT,
-          },
-          tab.indicatorStyle,
-        ]}
-      />
-      {items}
-    </View>
-  );
-
-  const row = scrollable ? (
-    <Animated.ScrollView
-      ref={tab.listRef}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.scroller}
-      onLayout={tab.onListLayout}
-      onContentSizeChange={tab.onListContentSizeChange}
-      style={[styles.row, style]}
-    >
-      {list}
-    </Animated.ScrollView>
-  ) : (
-    <View style={style}>{list}</View>
-  );
-
-  const selected = panels.get(tab.value);
+function TabRoot({ value, defaultValue, onValueChange, children, ...props }: TabProps) {
+  const tab = useTab({ value, defaultValue, onValueChange });
 
   return (
-    <TabContext value={{ ...tab, variant, scrollable }}>
-      {panels.size === 0 ? (
-        row
-      ) : (
-        <View style={styles.root}>
-          {row}
-          {swipeable ? (
-            <GestureDetector gesture={tab.gesture}>
-              <View style={styles.pager} onLayout={tab.onPagerLayout}>
-                <Animated.View style={[styles.pages, tab.pagesStyle]}>
-                  {values.map((item) => (
-                    <View
-                      key={item}
-                      // Off-screen panels are there for the finger, not for the screen reader.
-                      accessibilityElementsHidden={item !== tab.value}
-                      importantForAccessibility={item === tab.value ? 'auto' : 'no-hide-descendants'}
-                      style={{ width: tab.pageWidth }}
-                    >
-                      {tab.isMounted(item) ? panels.get(item) : null}
-                    </View>
-                  ))}
-                </Animated.View>
-              </View>
-            </GestureDetector>
-          ) : (
-            selected
-          )}
-        </View>
-      )}
+    <TabContext value={tab}>
+      <View {...props}>{children}</View>
     </TabContext>
   );
 }
 
-export type TabItemProps = {
-  /** Stable identifier returned through `onValueChange`. */
-  value: string;
-  /** Short label. One or two words scan best. */
+const INDICATOR_HEIGHT = 2;
+
+type TabListSharedProps = {
+  variant?: TabVariant;
   children?: ReactNode;
-  /** An icon before the label. */
-  icon?: IconName | ReactNode;
-  /** Count, short status or dot next to the label. */
-  badge?: number | string | boolean;
-  disabled?: boolean;
-  accessibilityLabel?: string;
-  style?: StyleProp<ViewStyle>;
 };
 
-function TabItem({ value, children, icon, badge, disabled = false, accessibilityLabel, style }: TabItemProps) {
+export type TabListViewProps = Omit<ComponentPropsWithRef<typeof View>, 'children'> &
+  TabListSharedProps & { scrollable?: false };
+export type TabListScrollViewProps = Omit<ComponentPropsWithRef<typeof ScrollView>, 'children'> &
+  TabListSharedProps & { scrollable: true };
+export type TabListProps = TabListViewProps | TabListScrollViewProps;
+
+function TabList(props: TabListScrollViewProps): ReactNode;
+function TabList(props: TabListViewProps): ReactNode;
+function TabList({ scrollable = false, variant = 'underline', children, ...props }: TabListProps) {
   const { tokens, components } = useTheme();
   const tab = useTabContext();
-  const states = components.tab[tab.variant];
+  const colors = components.tab[variant].default;
+  const pill = variant === 'pill';
+  const indicator = (
+    <Animated.View
+      pointerEvents="none"
+      style={[
+        pill ? styles.pillIndicator : styles.underline,
+        {
+          backgroundColor: colors.indicator,
+          borderRadius: pill ? tokens.radius.full : 0,
+          height: pill ? undefined : INDICATOR_HEIGHT,
+        },
+        tab.indicatorStyle,
+      ]}
+    />
+  );
+  const listStyle = {
+    padding: pill ? tokens.spacing[1] : 0,
+    borderRadius: pill ? tokens.radius.full : 0,
+    backgroundColor: colors.background,
+    borderBottomWidth: pill ? 0 : StyleSheet.hairlineWidth,
+    borderBottomColor: colors.border,
+  };
 
+  if (scrollable) {
+    const {
+      ref,
+      style,
+      contentContainerStyle,
+      onLayout,
+      onContentSizeChange,
+      ...scrollViewProps
+    } = props as TabListScrollViewProps;
+    return (
+      <TabListContext value={{ variant, scrollable }}>
+        <ScrollView
+          {...scrollViewProps}
+          ref={mergeRefs(tab.listRef, ref)}
+          accessibilityRole="tablist"
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          onLayout={(event) => {
+            tab.onListLayout(event);
+            onLayout?.(event);
+          }}
+          onContentSizeChange={(width, height) => {
+            tab.onListContentSizeChange(width);
+            onContentSizeChange?.(width, height);
+          }}
+          style={[styles.row, style]}
+          contentContainerStyle={[styles.list, listStyle, contentContainerStyle]}
+        >
+          {indicator}
+          {children}
+        </ScrollView>
+      </TabListContext>
+    );
+  }
+
+  const { style, ...viewProps } = props as TabListViewProps;
+  return (
+    <TabListContext value={{ variant, scrollable }}>
+      <View {...viewProps} accessibilityRole="tablist" style={[styles.list, styles.stretch, listStyle, style]}>
+        {indicator}
+        {children}
+      </View>
+    </TabListContext>
+  );
+}
+
+export type TabItemProps = Omit<TappableProps, 'children' | 'disabled' | 'onPress' | 'style'> & {
+  value: string;
+  children?: ReactNode;
+  icon?: IconName | ReactNode;
+  badge?: number | string | boolean;
+  disabled?: boolean;
+  onPress?: TappableProps['onPress'];
+  style?: TappableProps['style'];
+};
+
+function TabItem({ value, children, icon, badge, disabled = false, onLayout, onPress, style, ...props }: TabItemProps) {
+  const { tokens, components } = useTheme();
+  const tab = useTabContext();
+  const list = useTabListContext();
+  const states = components.tab[list.variant];
   const selected = tab.value === value;
   const colors = { ...states.default, ...(disabled ? states.disabled : selected ? states.selected : undefined) };
 
   return (
     <Tappable
+      {...props}
       accessibilityRole="tab"
-      accessibilityLabel={accessibilityLabel}
-      accessibilityState={{ selected, disabled }}
+      accessibilityState={{ ...props.accessibilityState, selected, disabled }}
       disabled={disabled}
-      onLayout={tab.onItemLayout(value)}
-      onPress={() => tab.select(value)}
-      style={[
-        styles.item,
-        !tab.scrollable && styles.fill,
-        {
-          minHeight: tokens.metrics.touchTarget,
-          paddingHorizontal: tokens.spacing[3],
-          gap: tokens.spacing[1],
-        },
-        style,
-      ]}
+      onLayout={(event) => {
+        tab.onItemLayout(value)(event);
+        onLayout?.(event);
+      }}
+      onPress={(event) => {
+        tab.select(value);
+        onPress?.(event);
+      }}
+      style={
+        typeof style === 'function'
+          ? (state) => [styles.item, !list.scrollable && styles.fill, itemStyle(tokens), style(state)]
+          : [styles.item, !list.scrollable && styles.fill, itemStyle(tokens), style]
+      }
     >
       {icon !== undefined ? (
         isValidElement(icon) ? (
@@ -233,28 +290,131 @@ function TabItem({ value, children, icon, badge, disabled = false, accessibility
   );
 }
 
-export type TabPanelProps = {
-  /** Value of the `Tab.Item` this panel belongs to. */
+export type TabContentProps = ComponentPropsWithRef<typeof View>;
+
+function TabContent({ children, ...props }: TabContentProps) {
+  return (
+    <TabContentContext value={{ paged: false, pageWidth: 0 }}>
+      <View {...props}>{children}</View>
+    </TabContentContext>
+  );
+}
+
+export type TabPagerProps = ComponentPropsWithRef<typeof ScrollView>;
+
+function TabPager({
+  children,
+  ref,
+  style,
+  onLayout,
+  onMomentumScrollEnd,
+  ...props
+}: TabPagerProps) {
+  const tab = useTabContext();
+  const [pageWidth, setPageWidth] = useState(0);
+  const [panelLayouts, setPanelLayouts] = useState<Record<string, TabLayout>>({});
+  const pagerRef = useRef<ScrollView>(null);
+  const selectedLayout = panelLayouts[tab.value];
+
+  useEffect(() => {
+    if (!selectedLayout) return;
+    pagerRef.current?.scrollTo({ x: selectedLayout.x, animated: true });
+  }, [selectedLayout]);
+
+  const handleLayout = (event: LayoutChangeEvent) => {
+    setPageWidth(event.nativeEvent.layout.width);
+    onLayout?.(event);
+  };
+  const handleMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offset = event.nativeEvent.contentOffset.x;
+    const closest = Object.entries(panelLayouts).reduce<[string, TabLayout] | undefined>((nearest, panel) => {
+      if (!nearest) return panel;
+      return Math.abs(panel[1].x - offset) < Math.abs(nearest[1].x - offset) ? panel : nearest;
+    }, undefined);
+    if (closest) tab.select(closest[0]);
+    onMomentumScrollEnd?.(event);
+  };
+  const handlePanelLayout = (value: string, event: LayoutChangeEvent) => {
+    const { x, width } = event.nativeEvent.layout;
+    setPanelLayouts((current) => {
+      const known = current[value];
+      return known?.x === x && known.width === width ? current : { ...current, [value]: { x, width } };
+    });
+  };
+
+  return (
+    <TabContentContext value={{ paged: true, pageWidth, onPanelLayout: handlePanelLayout }}>
+      <ScrollView
+        {...props}
+        ref={mergeRefs(pagerRef, ref)}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onLayout={handleLayout}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
+        style={[styles.pager, style]}
+      >
+        {children}
+      </ScrollView>
+    </TabContentContext>
+  );
+}
+
+export type TabPanelProps = Omit<ComponentPropsWithRef<typeof View>, 'children'> & {
   value: string;
-  /** Content shown while that tab is selected. */
   children?: ReactNode;
-  style?: StyleProp<ViewStyle>;
 };
 
-/** The content of one tab. `Tab` decides which panels are rendered; this only fills the space left. */
-function TabPanel({ children, style }: TabPanelProps) {
-  return <View style={[styles.panel, style]}>{children}</View>;
+function TabPanel({ value, children, style, onLayout, ...props }: TabPanelProps) {
+  const tab = useTabContext();
+  const content = use(TabContentContext);
+
+  if (!content) throw new Error('Tab.Panel must be used inside <Tab.Content> or <Tab.Pager>.');
+  if (!content.paged && tab.value !== value) return null;
+
+  const selected = tab.value === value;
+  return (
+    <View
+      {...props}
+      accessibilityElementsHidden={!selected}
+      importantForAccessibility={selected ? 'auto' : 'no-hide-descendants'}
+      onLayout={(event) => {
+        content.onPanelLayout?.(value, event);
+        onLayout?.(event);
+      }}
+      style={[styles.panel, content.paged && { width: content.pageWidth }, style]}
+    >
+      {children}
+    </View>
+  );
 }
 
 export const Tab = Object.assign(TabRoot, {
+  List: TabList,
   Item: TabItem,
+  Content: TabContent,
+  Pager: TabPager,
   Panel: TabPanel,
 });
 
+function itemStyle(tokens: ReturnType<typeof useTheme>['tokens']) {
+  return {
+    minHeight: tokens.metrics.touchTarget,
+    paddingHorizontal: tokens.spacing[3],
+    gap: tokens.spacing[1],
+  };
+}
+
+function mergeRefs<T>(...refs: (Ref<T> | undefined)[]) {
+  return (value: T | null) => {
+    for (const ref of refs) {
+      if (typeof ref === 'function') ref(value);
+      else if (ref) ref.current = value;
+    }
+  };
+}
+
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-  },
   list: {
     flexDirection: 'row',
     alignItems: 'stretch',
@@ -268,16 +428,8 @@ const styles = StyleSheet.create({
   row: {
     flexGrow: 0,
   },
-  scroller: {
-    flexGrow: 1,
-  },
   pager: {
     flex: 1,
-    overflow: 'hidden',
-  },
-  pages: {
-    flex: 1,
-    flexDirection: 'row',
   },
   panel: {
     flex: 1,

@@ -1,17 +1,17 @@
 {
-  "title": "API Reference",
-  "root": true,
-  "pages": [
-    "api-reference",
-    "---Core---",
-    "...core",
-    "---Components---",
-    "components",
-    "atoms",
-    "molecules",
-    "organisms",
-    "templates",
-    "---Hooks---",
-    "...hooks"
-  ]
+	"title": "API Reference",
+	"root": true,
+	"pages": [
+		"api-reference",
+		"---Components---",
+		"components",
+		"atoms",
+		"molecules",
+		"organisms",
+		"templates",
+		"---Hooks---",
+		"...hooks",
+		"---Core---",
+		"...core"
+	]
 }

@@ -3,7 +3,11 @@ title: CLI
 description: "Initialize a project and add components with the axiom CLI."
 ---
 
-<Callout title="Not published yet">`npx axiom` doesn't work yet: the CLI isn't on npm. This page is the specification it is being built against, so commands and options may still change.</Callout>
+<Callout title="Not published yet">
+	`npx axiom` doesn't work yet: the CLI isn't on npm. This page is the
+	specification it is being built against, so commands and options may still
+	change.
+</Callout>
 
 The CLI copies source files into your project. It is the only thing Axiom publishes, and it never becomes a runtime dependency of your app: once the files are copied, your app doesn't need it.
 
@@ -55,11 +59,11 @@ npx axiom add button     # → components/ui/button.tsx
 
 Copied files belong to your project, so `add` protects your changes. A file identical to the registry is skipped silently. When a file differs:
 
-| File | What happens |
-| --- | --- |
-| A file of the component you named | The CLI asks: `[y]es`, `[n]o`, `[a]ll` for every remaining file, `[N]one` to keep all of them. |
-| A file of an internal dependency already in your project | Kept. `add button` never touches your `tappable.tsx`. Name the dependency to update it: `add tappable`. |
-| A file your project owns once created, like the [icon registry](/atoms/icon#the-registry) | Kept, always. |
+| File                                                                                      | What happens                                                                                            |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| A file of the component you named                                                         | The CLI asks: `[y]es`, `[n]o`, `[a]ll` for every remaining file, `[N]one` to keep all of them.          |
+| A file of an internal dependency already in your project                                  | Kept. `add button` never touches your `tappable.tsx`. Name the dependency to update it: `add tappable`. |
+| A file your project owns once created, like the [icon registry](/atoms/icon#the-registry) | Kept, always.                                                                                           |
 
 ```npm
 npx axiom add button --overwrite

@@ -3,27 +3,29 @@ title: Radius
 description: "Corner rounding of surfaces and controls."
 ---
 
-<Callout title="Draft">The values shown here are conceptual and may change.</Callout>
+<Callout title="Draft">
+	The values shown here are conceptual and may change.
+</Callout>
 
 <RadiusScale />
 
 ```ts title="Conceptual"
 export const radius = {
-  none: 0,
-  sm: 6,
-  md: 10,
-  lg: 14,
-  xl: 20,
-  full: 9999,
+	none: 0,
+	sm: 6,
+	md: 10,
+	lg: 14,
+	xl: 20,
+	full: 9999,
 } satisfies Radius;
 ```
 
-| Key | Typical use |
-| --- | --- |
-| `sm` | Badges, chips, checkboxes |
-| `md` | Buttons, inputs |
-| `lg` | Cards, list groups |
-| `xl` | Bottom sheets, dialogs |
-| `full` | Avatars, pills, switches |
+| Key    | Typical use               |
+| ------ | ------------------------- |
+| `sm`   | Badges, chips, checkboxes |
+| `md`   | Buttons, inputs           |
+| `lg`   | Cards, list groups        |
+| `xl`   | Bottom sheets, dialogs    |
+| `full` | Avatars, pills, switches  |
 
 A nested surface should use a smaller radius than its container, so the corners look parallel.

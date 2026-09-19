@@ -18,22 +18,26 @@ Installs: `react-native-reanimated`, `react-native-gesture-handler`, `react-nati
 The list goes in a `GestureDetector` and takes `scrollProps`. The indicator is a sibling, positioned over the space the pull opens.
 
 ```tsx
-import { GestureDetector } from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
-import { useRefreshControl } from '@/hooks/use-refresh-control';
+import { GestureDetector } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
+import { useRefreshControl } from "@/hooks/use-refresh-control";
 
 function Inbox() {
-  const { data, refetch } = useMessages();
-  const refresh = useRefreshControl({ onRefresh: refetch });
+	const { data, refetch } = useMessages();
+	const refresh = useRefreshControl({ onRefresh: refetch });
 
-  return (
-    <View style={{ flex: 1 }}>
-      <PullIndicator control={refresh} />
-      <GestureDetector gesture={refresh.gesture}>
-        <Animated.FlatList data={data} renderItem={renderMessage} {...refresh.scrollProps} />
-      </GestureDetector>
-    </View>
-  );
+	return (
+		<View style={{ flex: 1 }}>
+			<PullIndicator control={refresh} />
+			<GestureDetector gesture={refresh.gesture}>
+				<Animated.FlatList
+					data={data}
+					renderItem={renderMessage}
+					{...refresh.scrollProps}
+				/>
+			</GestureDetector>
+		</View>
+	);
 }
 ```
 
@@ -51,13 +55,13 @@ The hook doesn't catch the error: handle it in `onRefresh`, for example with a [
 
 ```tsx
 const refresh = useRefreshControl({
-  onRefresh: async () => {
-    try {
-      await refetch();
-    } catch {
-      toast.error('Could not refresh');
-    }
-  },
+	onRefresh: async () => {
+		try {
+			await refetch();
+		} catch {
+			toast.error("Could not refresh");
+		}
+	},
 });
 ```
 
@@ -67,24 +71,32 @@ The indicator doesn't lay out the list. It sits over the gap that the pull opens
 
 ```tsx
 function PullIndicator({ control }: { control: RefreshControl }) {
-  const { progress, status } = control;
+	const { progress, status } = control;
 
-  const style = useAnimatedStyle(() => ({
-    opacity: progress.value,
-    transform: [{ rotate: `${progress.value * 180}deg` }],
-  }));
+	const style = useAnimatedStyle(() => ({
+		opacity: progress.value,
+		transform: [{ rotate: `${progress.value * 180}deg` }],
+	}));
 
-  return (
-    <View style={styles.indicator} pointerEvents="none">
-      <Animated.View style={style}>
-        {status === 'refreshing' ? <Spinner /> : <Icon name="arrow-down" />}
-      </Animated.View>
-    </View>
-  );
+	return (
+		<View style={styles.indicator} pointerEvents="none">
+			<Animated.View style={style}>
+				{status === "refreshing" ? <Spinner /> : <Icon name="arrow-down" />}
+			</Animated.View>
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
-  indicator: { position: 'absolute', top: 0, left: 0, right: 0, height: 64, alignItems: 'center', justifyContent: 'center' },
+	indicator: {
+		position: "absolute",
+		top: 0,
+		left: 0,
+		right: 0,
+		height: 64,
+		alignItems: "center",
+		justifyContent: "center",
+	},
 });
 ```
 
@@ -102,26 +114,26 @@ Giving it a height that follows `distance` would push the list down a second tim
 
 ## Options
 
-| Option | Type | Default | Description |
-| --- | --- | --- | --- |
-| `onRefresh` | `() => Promise<unknown> \| void` | — | Called on release past the threshold, or by `refresh()`. |
-| `threshold` | `number` | `64` | Distance in pt that arms the refresh. Also the height held while refreshing. |
-| `maxDistance` | `number` | `160` | Limit of the rubber band. |
-| `minDuration` | `number` | `500` | Minimum time in ms spent in `refreshing`, so a fast request doesn't flash the indicator. |
-| `enabled` | `boolean` | `true` | Turns the pull off, for example while the first page loads. Set to `false` mid-pull, it drops the pull and lets a running refresh finish. |
-| `onArmed` | `() => void` | — | Called once per pull when the status becomes `armed`. A good place for a light haptic. |
+| Option        | Type                             | Default | Description                                                                                                                               |
+| ------------- | -------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `onRefresh`   | `() => Promise<unknown> \| void` | —       | Called on release past the threshold, or by `refresh()`.                                                                                  |
+| `threshold`   | `number`                         | `64`    | Distance in pt that arms the refresh. Also the height held while refreshing.                                                              |
+| `maxDistance` | `number`                         | `160`   | Limit of the rubber band.                                                                                                                 |
+| `minDuration` | `number`                         | `500`   | Minimum time in ms spent in `refreshing`, so a fast request doesn't flash the indicator.                                                  |
+| `enabled`     | `boolean`                        | `true`  | Turns the pull off, for example while the first page loads. Set to `false` mid-pull, it drops the pull and lets a running refresh finish. |
+| `onArmed`     | `() => void`                     | —       | Called once per pull when the status becomes `armed`. A good place for a light haptic.                                                    |
 
 ## Return value
 
-| Key | Type | Description |
-| --- | --- | --- |
-| `status` | `'idle' \| 'pulling' \| 'armed' \| 'refreshing' \| 'settling'` | Current status. React state. See [statuses](/behaviors/pull-to-refresh#how-it-works). |
-| `refreshing` | `boolean` | `true` while `status` is `refreshing`. |
-| `distance` | `SharedValue<number>` | Current pull distance in pt, after [resistance](/behaviors/pull-to-refresh#resistance). |
-| `progress` | `SharedValue<number>` | `distance / threshold`, from `0` to `1`. |
-| `refresh` | `() => Promise<void>` | Starts a refresh without a pull. |
-| `gesture` | `GestureType` | For the `GestureDetector` around the list. |
-| `scrollProps` | `object` | Props to spread on the `Animated` `ScrollView`, `FlatList`, `SectionList` or FlashList. |
+| Key           | Type                                                           | Description                                                                             |
+| ------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `status`      | `'idle' \| 'pulling' \| 'armed' \| 'refreshing' \| 'settling'` | Current status. React state. See [statuses](/behaviors/pull-to-refresh#how-it-works).   |
+| `refreshing`  | `boolean`                                                      | `true` while `status` is `refreshing`.                                                  |
+| `distance`    | `SharedValue<number>`                                          | Current pull distance in pt, after [resistance](/behaviors/pull-to-refresh#resistance). |
+| `progress`    | `SharedValue<number>`                                          | `distance / threshold`, from `0` to `1`.                                                |
+| `refresh`     | `() => Promise<void>`                                          | Starts a refresh without a pull.                                                        |
+| `gesture`     | `GestureType`                                                  | For the `GestureDetector` around the list.                                              |
+| `scrollProps` | `object`                                                       | Props to spread on the `Animated` `ScrollView`, `FlatList`, `SectionList` or FlashList. |
 
 The whole return value is typed as `RefreshControl`, which is what a custom indicator takes.
 

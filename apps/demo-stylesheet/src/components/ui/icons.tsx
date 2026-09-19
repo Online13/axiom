@@ -1,7 +1,7 @@
-import { SymbolView } from 'expo-symbols';
-import type { ComponentProps } from 'react';
+import { SymbolView } from "expo-symbols";
+import type { ComponentProps } from "react";
 
-import type { IconComponent, IconRegistry } from './icon-types';
+import type { IconComponent, IconRegistry } from "./icon-types";
 
 // The icon registry of your app. Every icon the app shows is declared here, and only here.
 // `axiom add icon` creates this file once and never overwrites it: it's yours.
@@ -16,48 +16,54 @@ import type { IconComponent, IconRegistry } from './icon-types';
 // This default uses SF Symbols on iOS and Material Symbols on Android through `expo-symbols`.
 // Replace it with any set: Lucide, Phosphor, your own SVGs…
 
-type SymbolName = ComponentProps<typeof SymbolView>['name'];
+type SymbolName = ComponentProps<typeof SymbolView>["name"];
 type IosSymbol = Extract<SymbolName, string>;
-type AndroidSymbol = NonNullable<Exclude<SymbolName, string>['android']>;
+type AndroidSymbol = NonNullable<Exclude<SymbolName, string>["android"]>;
 
 /** Adapter for `expo-symbols`. */
 function symbol(ios: IosSymbol, android: AndroidSymbol): IconComponent {
-  return function SymbolIcon({ size, color }) {
-    return <SymbolView name={{ ios, android, web: android }} size={size} tintColor={color} />;
-  };
+	return function SymbolIcon({ size, color }) {
+		return (
+			<SymbolView
+				name={{ ios, android, web: android }}
+				size={size}
+				tintColor={color}
+			/>
+		);
+	};
 }
 
 export const icons = {
-  add: symbol('plus', 'add'),
-  'arrow-left': symbol('arrow.left', 'arrow_back'),
-  backspace: symbol('delete.left', 'backspace'),
-  biometrics: symbol('faceid', 'fingerprint'),
-  calendar: symbol('calendar', 'calendar_today'),
-  check: symbol('checkmark', 'check'),
-  'chevron-down': symbol('chevron.down', 'keyboard_arrow_down'),
-  'chevron-left': symbol('chevron.left', 'chevron_left'),
-  'chevron-right': symbol('chevron.right', 'chevron_right'),
-  close: symbol('xmark', 'close'),
-  delete: symbol('trash', 'delete'),
-  error: symbol('exclamationmark.circle', 'error'),
-  favorite: symbol('heart', 'favorite'),
-  file: symbol('doc', 'description'),
-  image: symbol('photo', 'image'),
-  info: symbol('info.circle', 'info'),
-  minus: symbol('minus', 'remove'),
-  refresh: symbol('arrow.clockwise', 'refresh'),
-  search: symbol('magnifyingglass', 'search'),
-  settings: symbol('gearshape', 'settings'),
-  share: symbol('square.and.arrow.up', 'share'),
-  success: symbol('checkmark.circle', 'check_circle'),
-  warning: symbol('exclamationmark.triangle', 'warning'),
-  // Demo only: the theme button.
-  'theme-dark': symbol('moon', 'dark_mode'),
-  'theme-light': symbol('sun.max', 'light_mode'),
-  edit: symbol('pencil', 'edit'),
-  // Demo only: the password field.
-  visible: symbol('eye', 'visibility'),
-  hidden: symbol('eye.slash', 'visibility_off'),
+	add: symbol("plus", "add"),
+	"arrow-left": symbol("arrow.left", "arrow_back"),
+	backspace: symbol("delete.left", "backspace"),
+	biometrics: symbol("faceid", "fingerprint"),
+	calendar: symbol("calendar", "calendar_today"),
+	check: symbol("checkmark", "check"),
+	"chevron-down": symbol("chevron.down", "keyboard_arrow_down"),
+	"chevron-left": symbol("chevron.left", "chevron_left"),
+	"chevron-right": symbol("chevron.right", "chevron_right"),
+	close: symbol("xmark", "close"),
+	delete: symbol("trash", "delete"),
+	error: symbol("exclamationmark.circle", "error"),
+	favorite: symbol("heart", "favorite"),
+	file: symbol("doc", "description"),
+	image: symbol("photo", "image"),
+	info: symbol("info.circle", "info"),
+	minus: symbol("minus", "remove"),
+	refresh: symbol("arrow.clockwise", "refresh"),
+	search: symbol("magnifyingglass", "search"),
+	settings: symbol("gearshape", "settings"),
+	share: symbol("square.and.arrow.up", "share"),
+	success: symbol("checkmark.circle", "check_circle"),
+	warning: symbol("exclamationmark.triangle", "warning"),
+	// Demo only: the theme button.
+	"theme-dark": symbol("moon", "dark_mode"),
+	"theme-light": symbol("sun.max", "light_mode"),
+	edit: symbol("pencil", "edit"),
+	// Demo only: the password field.
+	visible: symbol("eye", "visibility"),
+	hidden: symbol("eye.slash", "visibility_off"),
 } satisfies IconRegistry;
 
 export type IconName = keyof typeof icons;

@@ -1,8 +1,4 @@
 {
-  "title": "Gestures",
-  "pages": [
-    "long-press",
-    "swipe-actions",
-    "drag-to-reorder"
-  ]
+	"title": "Gestures",
+	"pages": ["long-press", "swipe-actions", "drag-to-reorder"]
 }

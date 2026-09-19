@@ -4,19 +4,67 @@ description: "Context menu modeled on modern mobile behavior, especially iOS."
 ---
 
 <PhonePreview>
-  <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Library</div>
-  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2px' }}><span class="ax-media" data-tone="1" style={{ height: '128px' }} /><span class="ax-media" data-tone="2" style={{ height: '128px' }} /><span class="ax-media" data-tone="3" style={{ height: '128px' }} /><span class="ax-media" data-tone="4" style={{ height: '128px' }} /><span class="ax-media" data-tone="5" style={{ height: '128px' }} /><span class="ax-media" data-tone="6" style={{ height: '128px' }} /></div>
-  <div class="ax-scrim" style={{ background: 'rgb(0 0 0 / 0.25)', backdropFilter: 'blur(6px)' }} />
-  <div class="ax-layer" style={{ flexDirection: 'column', gap: '10px', alignItems: 'flex-start', justifyContent: 'flex-start', padding: '40px 0 0 131px' }}>
-    <span class="ax-media" data-tone="2" style={{ width: '150px', height: '150px', borderRadius: '12px', boxShadow: '0 12px 30px rgb(0 0 0 / 0.3)' }} />
-    <div class="ax-menu" style={{ width: '230px' }}>
-      <span class="ax-menu-item">Copy<Glyph name="copy" size={20} /></span>
-      <span class="ax-menu-item" data-state="pressed">Share<Glyph name="share" size={20} /></span>
-      <span class="ax-menu-item">Favorite<Glyph name="heart" size={20} /></span>
-      <span class="ax-menu-gap" />
-      <span class="ax-menu-item" data-destructive>Delete<Glyph name="trash" size={20} /></span>
-    </div>
-  </div>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Library
+	</div>
+	<div
+		style={{
+			display: "grid",
+			gridTemplateColumns: "repeat(3, 1fr)",
+			gap: "2px",
+		}}
+	>
+		<span class="ax-media" data-tone="1" style={{ height: "128px" }} />
+		<span class="ax-media" data-tone="2" style={{ height: "128px" }} />
+		<span class="ax-media" data-tone="3" style={{ height: "128px" }} />
+		<span class="ax-media" data-tone="4" style={{ height: "128px" }} />
+		<span class="ax-media" data-tone="5" style={{ height: "128px" }} />
+		<span class="ax-media" data-tone="6" style={{ height: "128px" }} />
+	</div>
+	<div
+		class="ax-scrim"
+		style={{ background: "rgb(0 0 0 / 0.25)", backdropFilter: "blur(6px)" }}
+	/>
+	<div
+		class="ax-layer"
+		style={{
+			flexDirection: "column",
+			gap: "10px",
+			alignItems: "flex-start",
+			justifyContent: "flex-start",
+			padding: "40px 0 0 131px",
+		}}
+	>
+		<span
+			class="ax-media"
+			data-tone="2"
+			style={{
+				width: "150px",
+				height: "150px",
+				borderRadius: "12px",
+				boxShadow: "0 12px 30px rgb(0 0 0 / 0.3)",
+			}}
+		/>
+		<div class="ax-menu" style={{ width: "230px" }}>
+			<span class="ax-menu-item">
+				Copy
+				<Glyph name="copy" size={20} />
+			</span>
+			<span class="ax-menu-item" data-state="pressed">
+				Share
+				<Glyph name="share" size={20} />
+			</span>
+			<span class="ax-menu-item">
+				Favorite
+				<Glyph name="heart" size={20} />
+			</span>
+			<span class="ax-menu-gap" />
+			<span class="ax-menu-item" data-destructive>
+				Delete
+				<Glyph name="trash" size={20} />
+			</span>
+		</div>
+	</div>
 </PhonePreview>
 
 ## Installation
@@ -34,73 +82,77 @@ Requires the `arrow-left`, `check` and `chevron-right` icons in your [icon regis
 ## Usage
 
 ```tsx
-import { Menu } from '@/components/ui/menu';
+import { Menu } from "@/components/ui/menu";
 
 <Menu.Root>
-  <Menu.Trigger>
-    <PhotoThumbnail />
-  </Menu.Trigger>
-  <Menu.Content>
-    <Menu.Item icon="share" onPress={share}>Share</Menu.Item>
-    <Menu.Separator />
-    <Menu.Item icon="trash" destructive onPress={remove}>Delete</Menu.Item>
-  </Menu.Content>
-</Menu.Root>
+	<Menu.Trigger>
+		<PhotoThumbnail />
+	</Menu.Trigger>
+	<Menu.Content>
+		<Menu.Item icon="share" onPress={share}>
+			Share
+		</Menu.Item>
+		<Menu.Separator />
+		<Menu.Item icon="trash" destructive onPress={remove}>
+			Delete
+		</Menu.Item>
+	</Menu.Content>
+</Menu.Root>;
 ```
 
 ## Props
 
 ### Menu.Root
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `open` | `boolean` | — | Controlled visibility. |
-| `defaultOpen` | `boolean` | `false` | Initial visibility when the menu manages its own state. |
-| `onOpenChange` | `(open: boolean) => void` | — | Called when the menu opens or closes. |
-| `children` | `ReactNode` | — | `Trigger` and `Content`. |
+| Prop           | Type                      | Default | Description                                             |
+| -------------- | ------------------------- | ------- | ------------------------------------------------------- |
+| `open`         | `boolean`                 | —       | Controlled visibility.                                  |
+| `defaultOpen`  | `boolean`                 | `false` | Initial visibility when the menu manages its own state. |
+| `onOpenChange` | `(open: boolean) => void` | —       | Called when the menu opens or closes.                   |
+| `children`     | `ReactNode`               | —       | `Trigger` and `Content`.                                |
 
 ### Menu.Trigger
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `action` | `'longPress' \| 'press'` | `'longPress'` | `longPress` for context menus on content, `press` for a "more" button. |
-| `preview` | `boolean \| ReactNode` | `true` with `longPress` | Lifts a copy of the pressed element above the backdrop. Pass a node to show it in the element's place instead. |
-| `asChild` | `boolean` | `false` | Uses the child as the trigger. |
-| `accessibilityLabel` | `string` | — | Label of the trigger, when its content has no text. |
-| `children` | `ReactNode` | — | The element that opens the menu. |
-| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the trigger. |
+| Prop                 | Type                     | Default                 | Description                                                                                                    |
+| -------------------- | ------------------------ | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `action`             | `'longPress' \| 'press'` | `'longPress'`           | `longPress` for context menus on content, `press` for a "more" button.                                         |
+| `preview`            | `boolean \| ReactNode`   | `true` with `longPress` | Lifts a copy of the pressed element above the backdrop. Pass a node to show it in the element's place instead. |
+| `asChild`            | `boolean`                | `false`                 | Uses the child as the trigger.                                                                                 |
+| `accessibilityLabel` | `string`                 | —                       | Label of the trigger, when its content has no text.                                                            |
+| `children`           | `ReactNode`              | —                       | The element that opens the menu.                                                                               |
+| `style`              | `StyleProp<ViewStyle>`   | —                       | Extra styles for the trigger.                                                                                  |
 
 ### Menu.Content
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `placement` | `'auto' \| 'top' \| 'bottom'` | `'auto'` | Side of the trigger. `auto` picks the side with more room and keeps the menu inside the safe area. |
-| `align` | `'start' \| 'center' \| 'end'` | `'start'` | Horizontal alignment against the trigger. |
-| `width` | `number` | `250` | Menu width. |
-| `overlay` | `'dim' \| 'none'` | `'dim'` | Backdrop behind the menu. Pressing it closes the menu, even when `none`. A blur needs `expo-blur`: add it in your copy if you want one. |
-| `children` | `ReactNode` | — | Items, groups and separators. |
-| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the menu surface. |
+| Prop        | Type                           | Default   | Description                                                                                                                             |
+| ----------- | ------------------------------ | --------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `placement` | `'auto' \| 'top' \| 'bottom'`  | `'auto'`  | Side of the trigger. `auto` picks the side with more room and keeps the menu inside the safe area.                                      |
+| `align`     | `'start' \| 'center' \| 'end'` | `'start'` | Horizontal alignment against the trigger.                                                                                               |
+| `width`     | `number`                       | `250`     | Menu width.                                                                                                                             |
+| `overlay`   | `'dim' \| 'none'`              | `'dim'`   | Backdrop behind the menu. Pressing it closes the menu, even when `none`. A blur needs `expo-blur`: add it in your copy if you want one. |
+| `children`  | `ReactNode`                    | —         | Items, groups and separators.                                                                                                           |
+| `style`     | `StyleProp<ViewStyle>`         | —         | Extra styles for the menu surface.                                                                                                      |
 
 ### Menu.Item
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `children` | `string` | — | The label. |
-| `icon` | `IconName` | — | Icon on the right, iOS style. |
-| `subtitle` | `string` | — | Second line under the label. |
-| `onPress` | `() => void` | — | Called after the menu closes, so a navigation or a sheet doesn't fight the close animation. |
-| `destructive` | `boolean` | `false` | Label and icon in `feedback.error`. |
-| `disabled` | `boolean` | `false` | Dims the item and ignores presses. |
-| `checked` | `boolean` | — | Shows a checkmark, for a menu that picks a sort order or a view. |
-| `keepOpen` | `boolean` | `false` | Runs `onPress` right away without closing the menu, for a toggle inside the menu. |
+| Prop          | Type         | Default | Description                                                                                 |
+| ------------- | ------------ | ------- | ------------------------------------------------------------------------------------------- |
+| `children`    | `string`     | —       | The label.                                                                                  |
+| `icon`        | `IconName`   | —       | Icon on the right, iOS style.                                                               |
+| `subtitle`    | `string`     | —       | Second line under the label.                                                                |
+| `onPress`     | `() => void` | —       | Called after the menu closes, so a navigation or a sheet doesn't fight the close animation. |
+| `destructive` | `boolean`    | `false` | Label and icon in `feedback.error`.                                                         |
+| `disabled`    | `boolean`    | `false` | Dims the item and ignores presses.                                                          |
+| `checked`     | `boolean`    | —       | Shows a checkmark, for a menu that picks a sort order or a view.                            |
+| `keepOpen`    | `boolean`    | `false` | Runs `onPress` right away without closing the menu, for a toggle inside the menu.           |
 
 ### Menu.Group, Menu.Separator, Menu.Sub
 
-| Part | Props | Description |
-| --- | --- | --- |
-| `Group` | `label` | Groups items under an optional small label. |
-| `Separator` | — | A thick gap between groups, like iOS. |
-| `Sub` | `label`, `icon`, `children` | An item that opens a nested menu in place. |
+| Part        | Props                       | Description                                 |
+| ----------- | --------------------------- | ------------------------------------------- |
+| `Group`     | `label`                     | Groups items under an optional small label. |
+| `Separator` | —                           | A thick gap between groups, like iOS.       |
+| `Sub`       | `label`, `icon`, `children` | An item that opens a nested menu in place.  |
 
 `Menu.Sub` replaces the items in place and adds a back row at the top. `Menu.Item` also takes `keepOpen`, to run `onPress` without closing the menu. The menu has `accessibilityRole="menu"`, its items `menuitem`, and a back action closes it.
 
@@ -113,32 +165,68 @@ Not implemented yet: dragging from the trigger to an item, and haptics (the hapt
 `action="press"` on an [IconButton](/atoms/icon-button). No preview, the menu hangs from the button.
 
 <PhonePreview size="sm">
-  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Q3 planning</span><span class="ax-icon-btn" data-variant="tinted"><Glyph name="more" /></span></div>
-  <div class="ax-body"><div class="ax-placeholder-block" style={{ height: '200px' }} /></div>
-  <div class="ax-layer" style={{ alignItems: 'flex-start', justifyContent: 'flex-end', padding: '46px 12px 0' }}><div class="ax-menu" style={{ width: '230px' }}>
-    <span class="ax-menu-label">Sort by</span>
-    <span class="ax-menu-item" style={{ borderTop: 'none' }}>Date<Glyph name="check" size={20} class="ax-link" /></span>
-    <span class="ax-menu-item">Name</span>
-    <span class="ax-menu-gap" />
-    <span class="ax-menu-item">Rename<Glyph name="edit" size={20} /></span>
-    <span class="ax-menu-item" data-destructive>Delete<Glyph name="trash" size={20} /></span>
-  </div></div>
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Q3 planning</span>
+		<span class="ax-icon-btn" data-variant="tinted">
+			<Glyph name="more" />
+		</span>
+	</div>
+	<div class="ax-body">
+		<div class="ax-placeholder-block" style={{ height: "200px" }} />
+	</div>
+	<div
+		class="ax-layer"
+		style={{
+			alignItems: "flex-start",
+			justifyContent: "flex-end",
+			padding: "46px 12px 0",
+		}}
+	>
+		<div class="ax-menu" style={{ width: "230px" }}>
+			<span class="ax-menu-label">Sort by</span>
+			<span class="ax-menu-item" style={{ borderTop: "none" }}>
+				Date
+				<Glyph name="check" size={20} class="ax-link" />
+			</span>
+			<span class="ax-menu-item">Name</span>
+			<span class="ax-menu-gap" />
+			<span class="ax-menu-item">
+				Rename
+				<Glyph name="edit" size={20} />
+			</span>
+			<span class="ax-menu-item" data-destructive>
+				Delete
+				<Glyph name="trash" size={20} />
+			</span>
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
 <Menu.Root>
-  <Menu.Trigger action="press" asChild>
-    <IconButton icon="more" accessibilityLabel="More options" />
-  </Menu.Trigger>
-  <Menu.Content align="end">
-    <Menu.Group label="Sort by">
-      <Menu.Item checked={sort === 'date'} onPress={() => setSort('date')}>Date</Menu.Item>
-      <Menu.Item checked={sort === 'name'} onPress={() => setSort('name')}>Name</Menu.Item>
-    </Menu.Group>
-    <Menu.Separator />
-    <Menu.Item icon="edit" onPress={rename}>Rename</Menu.Item>
-    <Menu.Item icon="trash" destructive onPress={confirmDelete}>Delete</Menu.Item>
-  </Menu.Content>
+	<Menu.Trigger action="press" asChild>
+		<IconButton icon="more" accessibilityLabel="More options" />
+	</Menu.Trigger>
+	<Menu.Content align="end">
+		<Menu.Group label="Sort by">
+			<Menu.Item checked={sort === "date"} onPress={() => setSort("date")}>
+				Date
+			</Menu.Item>
+			<Menu.Item checked={sort === "name"} onPress={() => setSort("name")}>
+				Name
+			</Menu.Item>
+		</Menu.Group>
+		<Menu.Separator />
+		<Menu.Item icon="edit" onPress={rename}>
+			Rename
+		</Menu.Item>
+		<Menu.Item icon="trash" destructive onPress={confirmDelete}>
+			Delete
+		</Menu.Item>
+	</Menu.Content>
 </Menu.Root>
 ```
 
@@ -147,28 +235,94 @@ Not implemented yet: dragging from the trigger to an item, and haptics (the hapt
 The message is lifted as a preview above the backdrop; quick reactions sit above it.
 
 <PhonePreview size="sm">
-  <div class="ax-body" style={{ gap: '8px', paddingTop: '20px' }}>
-    <div class="ax-row"><span class="ax-subhead" style={{ background: 'var(--ax-background-subtle)', padding: '8px 12px', borderRadius: '18px' }}>Found the bug.</span></div>
-  </div>
-  <div class="ax-scrim" style={{ background: 'rgb(0 0 0 / 0.2)', backdropFilter: 'blur(8px)' }} />
-  <div class="ax-layer" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start', gap: '8px', padding: '30px 16px 0' }}>
-    <div class="ax-row" style={{ background: 'var(--ax-background-elevated)', borderRadius: '999px', padding: '6px 10px', gap: '10px', fontSize: '24px', boxShadow: 'var(--ax-shadow)' }}><span>❤️</span><span>👍</span><span>😂</span><span>😮</span></div>
-    <span class="ax-subhead" style={{ background: 'var(--ax-background-elevated)', padding: '8px 12px', borderRadius: '18px' }}>It was a moth. Taped it in the logbook.</span>
-    <div class="ax-menu" style={{ width: '220px' }}><span class="ax-menu-item">Reply<Glyph name="arrow-up" size={20} /></span><span class="ax-menu-item">Copy<Glyph name="copy" size={20} /></span><span class="ax-menu-item" data-destructive>Delete<Glyph name="trash" size={20} /></span></div>
-  </div>
+	<div class="ax-body" style={{ gap: "8px", paddingTop: "20px" }}>
+		<div class="ax-row">
+			<span
+				class="ax-subhead"
+				style={{
+					background: "var(--ax-background-subtle)",
+					padding: "8px 12px",
+					borderRadius: "18px",
+				}}
+			>
+				Found the bug.
+			</span>
+		</div>
+	</div>
+	<div
+		class="ax-scrim"
+		style={{ background: "rgb(0 0 0 / 0.2)", backdropFilter: "blur(8px)" }}
+	/>
+	<div
+		class="ax-layer"
+		style={{
+			flexDirection: "column",
+			alignItems: "flex-start",
+			justifyContent: "flex-start",
+			gap: "8px",
+			padding: "30px 16px 0",
+		}}
+	>
+		<div
+			class="ax-row"
+			style={{
+				background: "var(--ax-background-elevated)",
+				borderRadius: "999px",
+				padding: "6px 10px",
+				gap: "10px",
+				fontSize: "24px",
+				boxShadow: "var(--ax-shadow)",
+			}}
+		>
+			<span>❤️</span>
+			<span>👍</span>
+			<span>😂</span>
+			<span>😮</span>
+		</div>
+		<span
+			class="ax-subhead"
+			style={{
+				background: "var(--ax-background-elevated)",
+				padding: "8px 12px",
+				borderRadius: "18px",
+			}}
+		>
+			It was a moth. Taped it in the logbook.
+		</span>
+		<div class="ax-menu" style={{ width: "220px" }}>
+			<span class="ax-menu-item">
+				Reply
+				<Glyph name="arrow-up" size={20} />
+			</span>
+			<span class="ax-menu-item">
+				Copy
+				<Glyph name="copy" size={20} />
+			</span>
+			<span class="ax-menu-item" data-destructive>
+				Delete
+				<Glyph name="trash" size={20} />
+			</span>
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
 <Menu.Root>
-  <Menu.Trigger preview>
-    <MessageBubble message={message} />
-  </Menu.Trigger>
-  <Menu.Content>
-    <Reactions onReact={react} />
-    <Menu.Item icon="arrow-up" onPress={reply}>Reply</Menu.Item>
-    <Menu.Item icon="copy" onPress={copy}>Copy</Menu.Item>
-    <Menu.Item icon="trash" destructive onPress={remove}>Delete</Menu.Item>
-  </Menu.Content>
+	<Menu.Trigger preview>
+		<MessageBubble message={message} />
+	</Menu.Trigger>
+	<Menu.Content>
+		<Reactions onReact={react} />
+		<Menu.Item icon="arrow-up" onPress={reply}>
+			Reply
+		</Menu.Item>
+		<Menu.Item icon="copy" onPress={copy}>
+			Copy
+		</Menu.Item>
+		<Menu.Item icon="trash" destructive onPress={remove}>
+			Delete
+		</Menu.Item>
+	</Menu.Content>
 </Menu.Root>
 ```
 
@@ -177,26 +331,74 @@ The message is lifted as a preview above the backdrop; quick reactions sit above
 A long press on a row, as an alternative to [swipe actions](/behaviors/swipe-actions) that is easier to discover.
 
 <PhonePreview size="sm">
-  <div class="ax-list" data-variant="plain" style={{ paddingTop: '8px' }}>
-    <div class="ax-item"><span class="ax-tile" data-color="blue"><Glyph name="file" size={18} /></span><span class="ax-item-title ax-grow">Roadmap.pdf</span></div>
-  </div>
-  <div class="ax-scrim" style={{ background: 'rgb(0 0 0 / 0.2)', backdropFilter: 'blur(8px)' }} />
-  <div class="ax-layer" style={{ flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-start', gap: '8px', padding: '60px 16px 0' }}>
-    <div class="ax-item" style={{ background: 'var(--ax-background-elevated)', borderRadius: '12px' }}><span class="ax-tile" data-color="green"><Glyph name="image" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Moodboard.png</span><span class="ax-item-desc">4.2 MB</span></div></div>
-    <div class="ax-menu"><span class="ax-menu-item">Open with…<Glyph name="chevron-right" size={20} /></span><span class="ax-menu-item">Move<Glyph name="archive" size={20} /></span><span class="ax-menu-item" data-state="disabled">Rename<Glyph name="edit" size={20} /></span></div>
-  </div>
+	<div class="ax-list" data-variant="plain" style={{ paddingTop: "8px" }}>
+		<div class="ax-item">
+			<span class="ax-tile" data-color="blue">
+				<Glyph name="file" size={18} />
+			</span>
+			<span class="ax-item-title ax-grow">Roadmap.pdf</span>
+		</div>
+	</div>
+	<div
+		class="ax-scrim"
+		style={{ background: "rgb(0 0 0 / 0.2)", backdropFilter: "blur(8px)" }}
+	/>
+	<div
+		class="ax-layer"
+		style={{
+			flexDirection: "column",
+			alignItems: "stretch",
+			justifyContent: "flex-start",
+			gap: "8px",
+			padding: "60px 16px 0",
+		}}
+	>
+		<div
+			class="ax-item"
+			style={{
+				background: "var(--ax-background-elevated)",
+				borderRadius: "12px",
+			}}
+		>
+			<span class="ax-tile" data-color="green">
+				<Glyph name="image" size={18} />
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title">Moodboard.png</span>
+				<span class="ax-item-desc">4.2 MB</span>
+			</div>
+		</div>
+		<div class="ax-menu">
+			<span class="ax-menu-item">
+				Open with…
+				<Glyph name="chevron-right" size={20} />
+			</span>
+			<span class="ax-menu-item">
+				Move
+				<Glyph name="archive" size={20} />
+			</span>
+			<span class="ax-menu-item" data-state="disabled">
+				Rename
+				<Glyph name="edit" size={20} />
+			</span>
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
 <Menu.Root>
-  <Menu.Trigger>
-    <Item onPress={() => open(file)}>…</Item>
-  </Menu.Trigger>
-  <Menu.Content>
-    <Menu.Sub label="Open with…">{apps.map(renderApp)}</Menu.Sub>
-    <Menu.Item icon="archive" onPress={move}>Move</Menu.Item>
-    <Menu.Item icon="edit" disabled={file.locked} onPress={rename}>Rename</Menu.Item>
-  </Menu.Content>
+	<Menu.Trigger>
+		<Item onPress={() => open(file)}>…</Item>
+	</Menu.Trigger>
+	<Menu.Content>
+		<Menu.Sub label="Open with…">{apps.map(renderApp)}</Menu.Sub>
+		<Menu.Item icon="archive" onPress={move}>
+			Move
+		</Menu.Item>
+		<Menu.Item icon="edit" disabled={file.locked} onPress={rename}>
+			Rename
+		</Menu.Item>
+	</Menu.Content>
 </Menu.Root>
 ```
 

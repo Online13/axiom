@@ -1,9 +1,4 @@
 {
-  "title": "Behaviors",
-  "pages": [
-    "index",
-    "(scroll)",
-    "(gestures)",
-    "(contextual-ui)"
-  ]
+	"title": "Behaviors",
+	"pages": ["index", "(scroll)", "(gestures)", "(contextual-ui)"]
 }

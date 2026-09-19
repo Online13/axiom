@@ -24,16 +24,16 @@ You rarely render it yourself. `BottomSheet`, `Menu` and `Dialog` already do. Us
 ## Usage
 
 ```tsx
-import { Overlay } from '@/components/core/overlay';
-import { Portal } from '@/components/core/portal';
+import { Overlay } from "@/components/core/overlay";
+import { Portal } from "@/components/core/portal";
 
 function Popover({ open, onClose, children }) {
-  return (
-    <Portal>
-      <Overlay visible={open} onPress={onClose} />
-      {open && <PopoverContent>{children}</PopoverContent>}
-    </Portal>
-  );
+	return (
+		<Portal>
+			<Overlay visible={open} onPress={onClose} />
+			{open && <PopoverContent>{children}</PopoverContent>}
+		</Portal>
+	);
 }
 ```
 
@@ -51,11 +51,11 @@ A press on the content goes to the content. A press anywhere else lands on `Over
 
 `visible` drives the animation.
 
-| Step | What happens |
-| --- | --- |
-| `visible` becomes `true` | `Overlay` mounts and fades from `0` to `opacity` in `duration` ms. It catches presses right away. |
-| `visible` becomes `false` | It stops catching presses, then fades back to `0`. |
-| Fade out ends | `onExited` fires and `Overlay` renders nothing. |
+| Step                      | What happens                                                                                      |
+| ------------------------- | ------------------------------------------------------------------------------------------------- |
+| `visible` becomes `true`  | `Overlay` mounts and fades from `0` to `opacity` in `duration` ms. It catches presses right away. |
+| `visible` becomes `false` | It stops catching presses, then fades back to `0`.                                                |
+| Fade out ends             | `onExited` fires and `Overlay` renders nothing.                                                   |
 
 Touches go back to the screen as soon as closing starts. A user who taps twice quickly reaches the list behind instead of hitting a backdrop that is still fading.
 
@@ -65,8 +65,10 @@ Keep the content mounted until `onExited` if it has its own exit animation, so b
 const [mounted, setMounted] = useState(open);
 if (open && !mounted) setMounted(true);
 
-<Overlay visible={open} onPress={onClose} onExited={() => setMounted(false)} />
-{mounted && <DialogContent visible={open} />}
+<Overlay visible={open} onPress={onClose} onExited={() => setMounted(false)} />;
+{
+	mounted && <DialogContent visible={open} />;
+}
 ```
 
 With Reduce Motion turned on in the system settings, there is no fade. The overlay appears and disappears at once, and `onExited` fires right after `visible` becomes `false`.
@@ -81,10 +83,10 @@ A sheet the user drags shouldn't fade on a timer. Pass `progress`, a Reanimated 
 
 ```tsx
 const progress = useDerivedValue(() =>
-  interpolate(translateY.value, [closedY, openY], [0, 1], Extrapolation.CLAMP),
+	interpolate(translateY.value, [closedY, openY], [0, 1], Extrapolation.CLAMP),
 );
 
-<Overlay visible={open} progress={progress} onPress={close} />
+<Overlay visible={open} progress={progress} onPress={close} />;
 ```
 
 With `progress`, `visible` still decides whether the overlay catches presses, but `duration` is ignored. `BottomSheet` works this way.
@@ -107,17 +109,17 @@ Change `color` and `opacity` only when a design calls for it. Changing them on o
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `visible` | `boolean` | — | Shows or hides the overlay, with the enter or exit animation. |
-| `onPress` | `() => void` | — | Called when the overlay is pressed. Without it, presses are blocked and ignored. |
-| `onExited` | `() => void` | — | Called when the exit animation ends. |
-| `progress` | `SharedValue<number>` | — | Drives opacity from `0` to `1` instead of the timed animation. |
-| `opacity` | `number` | `0.4` | Opacity when fully visible. |
-| `color` | `ColorValue` | `'hsla(0, 0%, 0%, 1)'` | Backdrop color. |
-| `duration` | `number` | `250` | Fade duration in ms. Ignored with `progress`. |
-| `accessibilityLabel` | `string` | `'Close'` | Label read by screen readers when `onPress` is set. |
-| `style` | `StyleProp<ViewStyle>` | — | Merged after `StyleSheet.absoluteFill`. |
+| Prop                 | Type                   | Default                | Description                                                                      |
+| -------------------- | ---------------------- | ---------------------- | -------------------------------------------------------------------------------- |
+| `visible`            | `boolean`              | —                      | Shows or hides the overlay, with the enter or exit animation.                    |
+| `onPress`            | `() => void`           | —                      | Called when the overlay is pressed. Without it, presses are blocked and ignored. |
+| `onExited`           | `() => void`           | —                      | Called when the exit animation ends.                                             |
+| `progress`           | `SharedValue<number>`  | —                      | Drives opacity from `0` to `1` instead of the timed animation.                   |
+| `opacity`            | `number`               | `0.4`                  | Opacity when fully visible.                                                      |
+| `color`              | `ColorValue`           | `'hsla(0, 0%, 0%, 1)'` | Backdrop color.                                                                  |
+| `duration`           | `number`               | `250`                  | Fade duration in ms. Ignored with `progress`.                                    |
+| `accessibilityLabel` | `string`               | `'Close'`              | Label read by screen readers when `onPress` is set.                              |
+| `style`              | `StyleProp<ViewStyle>` | —                      | Merged after `StyleSheet.absoluteFill`.                                          |
 
 ## Accessibility
 

@@ -4,12 +4,53 @@ description: "Multiline input that can grow with its content."
 ---
 
 <PhonePreview>
-  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="close" /></span><span class="ax-appbar-title">Review</span><span class="ax-icon-btn ax-link ax-semibold" style={{ width: 'auto', padding: '0 8px' }}>Post</span></div>
-  <div class="ax-body" style={{ gap: '16px' }}>
-    <div class="ax-row" data-gap="4"><Glyph name="star" class="ax-link" /><Glyph name="star" class="ax-link" /><Glyph name="star" class="ax-link" /><Glyph name="star" class="ax-link" /><Glyph name="star" class="ax-subtle" /></div>
-    <div class="ax-field" data-state="focused"><span class="ax-label">Your review</span><div class="ax-textarea" data-state="focused"><span class="ax-caret">Great little café. The flat white was excellent and the staff remembered my name on the second visit. It gets loud around noon</span></div><div class="ax-row" data-justify="between"><span class="ax-helper">Be specific, it helps others.</span><span class="ax-counter">128 / 500</span></div></div>
-    <div class="ax-field" data-state="disabled"><span class="ax-label">Owner reply</span><div class="ax-textarea" style={{ minHeight: '64px', background: 'var(--ax-background-subtle)', color: 'var(--ax-content-disabled)' }}>No reply yet.</div></div>
-  </div>
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="close" />
+		</span>
+		<span class="ax-appbar-title">Review</span>
+		<span
+			class="ax-icon-btn ax-link ax-semibold"
+			style={{ width: "auto", padding: "0 8px" }}
+		>
+			Post
+		</span>
+	</div>
+	<div class="ax-body" style={{ gap: "16px" }}>
+		<div class="ax-row" data-gap="4">
+			<Glyph name="star" class="ax-link" />
+			<Glyph name="star" class="ax-link" />
+			<Glyph name="star" class="ax-link" />
+			<Glyph name="star" class="ax-link" />
+			<Glyph name="star" class="ax-subtle" />
+		</div>
+		<div class="ax-field" data-state="focused">
+			<span class="ax-label">Your review</span>
+			<div class="ax-textarea" data-state="focused">
+				<span class="ax-caret">
+					Great little café. The flat white was excellent and the staff
+					remembered my name on the second visit. It gets loud around noon
+				</span>
+			</div>
+			<div class="ax-row" data-justify="between">
+				<span class="ax-helper">Be specific, it helps others.</span>
+				<span class="ax-counter">128 / 500</span>
+			</div>
+		</div>
+		<div class="ax-field" data-state="disabled">
+			<span class="ax-label">Owner reply</span>
+			<div
+				class="ax-textarea"
+				style={{
+					minHeight: "64px",
+					background: "var(--ax-background-subtle)",
+					color: "var(--ax-content-disabled)",
+				}}
+			>
+				No reply yet.
+			</div>
+		</div>
+	</div>
 </PhonePreview>
 
 ## Installation
@@ -23,23 +64,23 @@ Also copies [`input`](/atoms/input): TextArea uses its tokens, field layout and 
 ## Usage
 
 ```tsx
-import { TextArea } from '@/components/ui/text-area';
+import { TextArea } from "@/components/ui/text-area";
 
-<TextArea label="Message" autoGrow value={message} onChangeText={setMessage} />
+<TextArea label="Message" autoGrow value={message} onChangeText={setMessage} />;
 ```
 
 ## Props
 
 `TextArea` accepts the same props as [Input](/atoms/input) (`label`, `helper`, `error`, `disabled`, `required`, `containerStyle`, `ref`, and every `TextInput` prop) except `prefix`, `suffix` and `size`, plus:
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `autoGrow` | `boolean` | `false` | The field gets taller as lines are added, between `minRows` and `maxRows`. Past `maxRows` it scrolls. |
-| `minRows` | `number` | `3` | Height when empty, in lines of body text. Lines get taller with larger system text, up to 1.5×. |
-| `maxRows` | `number` | `8` | Height limit with `autoGrow`. Keeps the field from pushing the rest of the screen off. |
-| `maxLength` | `number` | — | Hard character limit, from `TextInput`. |
-| `showCount` | `boolean` | `false` | Shows `length / maxLength` under the field, right-aligned. Turns red at the limit. |
-| `variant` | `'outline' \| 'filled' \| 'plain'` | `'outline'` | `plain` has no border or padding, for full-screen editors. It grows to fill its container. |
+| Prop        | Type                               | Default     | Description                                                                                           |
+| ----------- | ---------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------- |
+| `autoGrow`  | `boolean`                          | `false`     | The field gets taller as lines are added, between `minRows` and `maxRows`. Past `maxRows` it scrolls. |
+| `minRows`   | `number`                           | `3`         | Height when empty, in lines of body text. Lines get taller with larger system text, up to 1.5×.       |
+| `maxRows`   | `number`                           | `8`         | Height limit with `autoGrow`. Keeps the field from pushing the rest of the screen off.                |
+| `maxLength` | `number`                           | —           | Hard character limit, from `TextInput`.                                                               |
+| `showCount` | `boolean`                          | `false`     | Shows `length / maxLength` under the field, right-aligned. Turns red at the limit.                    |
+| `variant`   | `'outline' \| 'filled' \| 'plain'` | `'outline'` | `plain` has no border or padding, for full-screen editors. It grows to fill its container.            |
 
 ## Use cases
 
@@ -48,26 +89,75 @@ import { TextArea } from '@/components/ui/text-area';
 `autoGrow` with a low `maxRows`: one line at rest, a few lines while typing, then scroll.
 
 <PhonePreview half="bottom" size="sm">
-  <div class="ax-body" style={{ gap: '8px' }}>
-    <div class="ax-row" data-justify="end"><span class="ax-subhead" style={{ background: 'var(--ax-content-link)', color: '#fff', padding: '8px 12px', borderRadius: '18px' }}>Are we still on for Friday?</span></div>
-    <div class="ax-row"><span class="ax-subhead" style={{ background: 'var(--ax-background-subtle)', padding: '8px 12px', borderRadius: '18px' }}>Yes! 7pm works.</span></div>
-  </div>
-  <div class="ax-fill" />
-  <div class="ax-row" data-align="start" style={{ padding: '8px 12px 40px', borderTop: '0.5px solid var(--ax-border-default)', alignItems: 'flex-end' }}>
-    <span class="ax-icon-btn" data-size="sm" data-variant="tinted"><Glyph name="plus" size={18} /></span>
-    <div class="ax-textarea ax-grow" data-state="focused" style={{ minHeight: '0px', borderRadius: '18px', padding: '6px 12px' }}><span class="ax-caret">Perfect. I'll book the table near the window, and bring the photos from last time</span></div>
-    <span class="ax-icon-btn" data-size="sm" data-variant="solid" style={{ background: 'var(--ax-content-link)', color: '#fff' }}><Glyph name="arrow-up" size={18} /></span>
-  </div>
+	<div class="ax-body" style={{ gap: "8px" }}>
+		<div class="ax-row" data-justify="end">
+			<span
+				class="ax-subhead"
+				style={{
+					background: "var(--ax-content-link)",
+					color: "#fff",
+					padding: "8px 12px",
+					borderRadius: "18px",
+				}}
+			>
+				Are we still on for Friday?
+			</span>
+		</div>
+		<div class="ax-row">
+			<span
+				class="ax-subhead"
+				style={{
+					background: "var(--ax-background-subtle)",
+					padding: "8px 12px",
+					borderRadius: "18px",
+				}}
+			>
+				Yes! 7pm works.
+			</span>
+		</div>
+	</div>
+	<div class="ax-fill" />
+	<div
+		class="ax-row"
+		data-align="start"
+		style={{
+			padding: "8px 12px 40px",
+			borderTop: "0.5px solid var(--ax-border-default)",
+			alignItems: "flex-end",
+		}}
+	>
+		<span class="ax-icon-btn" data-size="sm" data-variant="tinted">
+			<Glyph name="plus" size={18} />
+		</span>
+		<div
+			class="ax-textarea ax-grow"
+			data-state="focused"
+			style={{ minHeight: "0px", borderRadius: "18px", padding: "6px 12px" }}
+		>
+			<span class="ax-caret">
+				Perfect. I'll book the table near the window, and bring the photos
+				from last time
+			</span>
+		</div>
+		<span
+			class="ax-icon-btn"
+			data-size="sm"
+			data-variant="solid"
+			style={{ background: "var(--ax-content-link)", color: "#fff" }}
+		>
+			<Glyph name="arrow-up" size={18} />
+		</span>
+	</div>
 </PhonePreview>
 
 ```tsx
 <TextArea
-  autoGrow
-  minRows={1}
-  maxRows={5}
-  placeholder="Message"
-  value={draft}
-  onChangeText={setDraft}
+	autoGrow
+	minRows={1}
+	maxRows={5}
+	placeholder="Message"
+	value={draft}
+	onChangeText={setDraft}
 />
 ```
 
@@ -76,15 +166,45 @@ import { TextArea } from '@/components/ui/text-area';
 `showCount` tells the user how much room is left before they hit the limit.
 
 <PhonePreview size="sm">
-  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="close" /></span><span class="ax-appbar-title">Report a problem</span><span class="ax-icon-btn" /></div>
-  <div class="ax-body" style={{ gap: '14px' }}>
-    <div class="ax-segmented"><span data-active>Bug</span><span>Idea</span><span>Other</span></div>
-    <div class="ax-field" data-state="invalid"><span class="ax-label">What happened?</span><div class="ax-textarea" style={{ boxShadow: 'inset 0 0 0 1.5px var(--ax-feedback-error)' }}>The export button does nothing on the Q3 report when I'm offline, and then it crashes after reconnecting. Steps: open the report, turn on airplane…</div><div class="ax-row" data-justify="between"><span class="ax-helper">Keep it under 200 characters.</span><span class="ax-counter ax-danger">200 / 200</span></div></div>
-  </div>
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="close" />
+		</span>
+		<span class="ax-appbar-title">Report a problem</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body" style={{ gap: "14px" }}>
+		<div class="ax-segmented">
+			<span data-active>Bug</span>
+			<span>Idea</span>
+			<span>Other</span>
+		</div>
+		<div class="ax-field" data-state="invalid">
+			<span class="ax-label">What happened?</span>
+			<div
+				class="ax-textarea"
+				style={{ boxShadow: "inset 0 0 0 1.5px var(--ax-feedback-error)" }}
+			>
+				The export button does nothing on the Q3 report when I'm offline,
+				and then it crashes after reconnecting. Steps: open the report, turn
+				on airplane…
+			</div>
+			<div class="ax-row" data-justify="between">
+				<span class="ax-helper">Keep it under 200 characters.</span>
+				<span class="ax-counter ax-danger">200 / 200</span>
+			</div>
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
-<TextArea label="What happened?" maxLength={200} showCount value={text} onChangeText={setText} />
+<TextArea
+	label="What happened?"
+	maxLength={200}
+	showCount
+	value={text}
+	onChangeText={setText}
+/>
 ```
 
 ### Full-screen note
@@ -92,17 +212,39 @@ import { TextArea } from '@/components/ui/text-area';
 `variant="plain"` removes the field chrome: the screen itself is the editor.
 
 <PhonePreview size="sm">
-  <div class="ax-appbar"><span class="ax-appbar-back"><Glyph name="chevron-left" />Notes</span><span class="ax-grow" /><span class="ax-icon-btn"><Glyph name="share" /></span><span class="ax-link ax-semibold" style={{ padding: '0 8px' }}>Done</span></div>
-  <div class="ax-body" style={{ gap: '6px' }}>
-    <span class="ax-footnote ax-subtle" style={{ textAlign: 'center' }}>14 September 2026 at 09:41</span>
-    <span class="ax-title2">Trip ideas</span>
-    <span class="ax-text">Porto in October: the bookshop, a port tasting, the Ribeira at sunset.</span>
-    <span class="ax-text ax-caret">Lisbon after, by train</span>
-  </div>
+	<div class="ax-appbar">
+		<span class="ax-appbar-back">
+			<Glyph name="chevron-left" />
+			Notes
+		</span>
+		<span class="ax-grow" />
+		<span class="ax-icon-btn">
+			<Glyph name="share" />
+		</span>
+		<span class="ax-link ax-semibold" style={{ padding: "0 8px" }}>
+			Done
+		</span>
+	</div>
+	<div class="ax-body" style={{ gap: "6px" }}>
+		<span class="ax-footnote ax-subtle" style={{ textAlign: "center" }}>
+			14 September 2026 at 09:41
+		</span>
+		<span class="ax-title2">Trip ideas</span>
+		<span class="ax-text">
+			Porto in October: the bookshop, a port tasting, the Ribeira at sunset.
+		</span>
+		<span class="ax-text ax-caret">Lisbon after, by train</span>
+	</div>
 </PhonePreview>
 
 ```tsx
-<TextArea variant="plain" autoFocus value={body} onChangeText={setBody} containerStyle={{ flex: 1 }} />
+<TextArea
+	variant="plain"
+	autoFocus
+	value={body}
+	onChangeText={setBody}
+	containerStyle={{ flex: 1 }}
+/>
 ```
 
 ## Related

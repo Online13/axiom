@@ -1164,8 +1164,7 @@
       "type": "templates",
       "tokens": "templates/tab/tab-tokens.ts",
       "files": [
-        "templates/tab/tab-tokens.ts",
-        "templates/tab/use-tab.ts"
+        "templates/tab/tab-tokens.ts"
       ],
       "dependencies": [
         "react-native-reanimated"

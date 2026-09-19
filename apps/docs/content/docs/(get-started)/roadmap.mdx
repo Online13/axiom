@@ -37,16 +37,16 @@ It belongs to phase 1 because it is a registry concern before a CLI one. Every e
 
 ### Components
 
-| Group | Items | State |
-| --- | --- | --- |
+| Group                       | Items                                                                                | State   |
+| --------------------------- | ------------------------------------------------------------------------------------ | ------- |
 | [Foundations](/foundations) | Tokens, ThemeColors, component tokens, Theme, `light` / `dark`, `components(colors)` | Shipped |
-| [Core](/core) | Slot, Portal / PortalHost, Overlay, Tappable | Shipped |
-| [Hooks](/hooks) | useControllableState, useOverlayBackHandler, useRefreshControl | Shipped |
-| Typography | [Title](/atoms/title), [Text](/atoms/text) | Shipped |
-| [Atoms](/atoms) | All 33 atoms | Shipped |
-| [Molecules](/molecules) | SearchBar, Attachment, DatePicker | Shipped |
-| [Organisms](/organisms) | Passcode | Shipped |
-| [Templates](/templates) | AppBar, BottomTabBar, Tab, ToolBar, Scaffold | Shipped |
+| [Core](/core)               | Slot, Portal / PortalHost, Overlay, Tappable                                         | Shipped |
+| [Hooks](/hooks)             | useControllableState, useOverlayBackHandler, useRefreshControl                       | Shipped |
+| Typography                  | [Title](/atoms/title), [Text](/atoms/text)                                           | Shipped |
+| [Atoms](/atoms)             | All 33 atoms                                                                         | Shipped |
+| [Molecules](/molecules)     | SearchBar, Attachment, DatePicker                                                    | Shipped |
+| [Organisms](/organisms)     | Passcode                                                                             | Shipped |
+| [Templates](/templates)     | AppBar, BottomTabBar, Tab, ToolBar, Scaffold                                         | Shipped |
 
 `useOverlayBackHandler` was not in the original plan: BottomSheet, Dialog and Menu need to close on a back gesture instead of leaving the screen, so the hook ships in three versions — `react-native`, `expo-router` and `react-navigation` — and `add` picks one from the project's `package.json`.
 

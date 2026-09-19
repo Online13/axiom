@@ -1,11 +1,11 @@
 {
-  "pages": [
-    "(get-started)",
-    "(api-reference)",
-    "(theming)",
-    "(experiences)",
-    "blocks",
-    "agent",
-    "showcase"
-  ]
+	"pages": [
+		"(get-started)",
+		"(api-reference)",
+		"(theming)",
+		"(experiences)",
+		"blocks",
+		"agent",
+		"showcase"
+	]
 }

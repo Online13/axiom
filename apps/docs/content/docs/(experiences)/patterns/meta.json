@@ -1,13 +1,13 @@
 {
-  "title": "Patterns",
-  "pages": [
-    "index",
-    "otp-verification",
-    "undoable-action",
-    "search-experience",
-    "selection-mode",
-    "floating-action-menu",
-    "async-content-state",
-    "guidelines"
-  ]
+	"title": "Patterns",
+	"pages": [
+		"index",
+		"otp-verification",
+		"undoable-action",
+		"search-experience",
+		"selection-mode",
+		"floating-action-menu",
+		"async-content-state",
+		"guidelines"
+	]
 }

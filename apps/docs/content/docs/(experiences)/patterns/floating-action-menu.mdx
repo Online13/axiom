@@ -3,7 +3,10 @@ title: Floating action menu
 description: "A floating action button that expands into secondary actions."
 ---
 
-<Callout title="Draft">Specified, not implemented yet. It builds on [Overlay](/core/overlay) for the scrim and the layer above the tab bar. The API may change.</Callout>
+<Callout title="Draft">
+	Specified, not implemented yet. It builds on [Overlay](/core/overlay) for the
+	scrim and the layer above the tab bar. The API may change.
+</Callout>
 
 One button floats above the content, in thumb reach. Pressing it doesn't do one thing, it opens a short list of related ones: a text note, a checklist, a photo. The screen keeps one entry point for creating, and the choice comes after.
 
@@ -24,10 +27,10 @@ Don't use it for a single action: a plain floating button is enough. Don't put m
 
 ## How it works
 
-| State | Button | Actions | Scrim |
-| --- | --- | --- | --- |
-| Closed | Plus | Hidden | None |
-| Open | Close, rotated 45° | Visible, labeled | Dims the screen and the tab bar |
+| State  | Button             | Actions          | Scrim                           |
+| ------ | ------------------ | ---------------- | ------------------------------- |
+| Closed | Plus               | Hidden           | None                            |
+| Open   | Close, rotated 45° | Visible, labeled | Dims the screen and the tab bar |
 
 - **Opening.** Actions appear one after the other, closest to the button first, 40ms apart. The whole thing takes about 200ms.
 - **Closest is most used.** The first action above the button is the one people pick most. The thumb travels less.
@@ -37,22 +40,26 @@ Don't use it for a single action: a plain floating button is enough. Don't put m
 
 ## Implementation
 
-| Library | Used for |
-| --- | --- |
-| React state | `open`, toggled by the button. |
+| Library                   | Used for                                                                   |
+| ------------------------- | -------------------------------------------------------------------------- |
+| React state               | `open`, toggled by the button.                                             |
 | `react-native-reanimated` | Rotation of the icon, and staggered `entering` / `exiting` on the actions. |
-| [Overlay](/core/overlay) | The scrim and the layer that sits above the tab bar. |
-| React Navigation | `usePreventRemove` so back closes the menu instead of leaving the screen. |
+| [Overlay](/core/overlay)  | The scrim and the layer that sits above the tab bar.                       |
+| React Navigation          | `usePreventRemove` so back closes the menu instead of leaving the screen.  |
 
 ```tsx title="Conceptual"
 const [open, setOpen] = useState(false);
 usePreventRemove(open, () => setOpen(false));
 
 <FloatingActionMenu open={open} onOpenChange={setOpen} icon="plus">
-  <FloatingActionMenu.Action icon="edit" label="Text note" onPress={newNote} />
-  <FloatingActionMenu.Action icon="check" label="Checklist" onPress={newChecklist} />
-  <FloatingActionMenu.Action icon="camera" label="Photo" onPress={newPhoto} />
-</FloatingActionMenu>
+	<FloatingActionMenu.Action icon="edit" label="Text note" onPress={newNote} />
+	<FloatingActionMenu.Action
+		icon="check"
+		label="Checklist"
+		onPress={newChecklist}
+	/>
+	<FloatingActionMenu.Action icon="camera" label="Photo" onPress={newPhoto} />
+</FloatingActionMenu>;
 ```
 
 ## Accessibility

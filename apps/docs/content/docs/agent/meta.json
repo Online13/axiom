@@ -1,22 +1,22 @@
 {
-  "title": "Agent",
-  "root": true,
-  "pages": [
-    "index",
-    "workflow",
-    "---Setup---",
-    "agents-md",
-    "skill",
-    "mcp",
-    "llms-txt",
-    "---CLI for agents---",
-    "search",
-    "info",
-    "plan",
-    "doctor",
-    "json-output",
-    "---Quality---",
-    "verify",
-    "evaluations"
-  ]
+	"title": "Agent",
+	"root": true,
+	"pages": [
+		"index",
+		"workflow",
+		"---Setup---",
+		"agents-md",
+		"skill",
+		"mcp",
+		"llms-txt",
+		"---CLI for agents---",
+		"search",
+		"info",
+		"plan",
+		"doctor",
+		"json-output",
+		"---Quality---",
+		"verify",
+		"evaluations"
+	]
 }

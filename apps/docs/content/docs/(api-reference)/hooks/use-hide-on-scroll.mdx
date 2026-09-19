@@ -3,7 +3,9 @@ title: useHideOnScroll
 description: "Slide bars out while a list scrolls down and bring them back on scroll up."
 ---
 
-<Callout title="Draft">The API shown here is conceptual and may change.</Callout>
+<Callout title="Draft">
+	The API shown here is conceptual and may change.
+</Callout>
 
 The hook behind [Hide-on-scroll](/behaviors/hide-on-scroll). That page explains how the bars follow the scroll delta, the snap, and accessibility. This one covers the API.
 
@@ -20,27 +22,35 @@ Installs: `react-native-reanimated`.
 The hook returns a value and scroll props. It doesn't touch the bars: you move them with the value.
 
 ```tsx title="Conceptual"
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-import { useHideOnScroll } from '@/hooks/use-hide-on-scroll';
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import { useHideOnScroll } from "@/hooks/use-hide-on-scroll";
 
 function Feed() {
-  const bars = useHideOnScroll({ height: 56 });
+	const bars = useHideOnScroll({ height: 56 });
 
-  const top = useAnimatedStyle(() => ({ transform: [{ translateY: -bars.hidden.value }] }));
-  const bottom = useAnimatedStyle(() => ({ transform: [{ translateY: bars.hidden.value }] }));
+	const top = useAnimatedStyle(() => ({
+		transform: [{ translateY: -bars.hidden.value }],
+	}));
+	const bottom = useAnimatedStyle(() => ({
+		transform: [{ translateY: bars.hidden.value }],
+	}));
 
-  return (
-    <View style={{ flex: 1 }}>
-      <Animated.FlatList
-        data={posts}
-        renderItem={renderPost}
-        contentContainerStyle={{ paddingTop: 56, paddingBottom: 56 }}
-        {...bars.scrollProps}
-      />
-      <Animated.View style={[styles.top, top]}><AppBar>…</AppBar></Animated.View>
-      <Animated.View style={[styles.bottom, bottom]}><BottomTabBar>…</BottomTabBar></Animated.View>
-    </View>
-  );
+	return (
+		<View style={{ flex: 1 }}>
+			<Animated.FlatList
+				data={posts}
+				renderItem={renderPost}
+				contentContainerStyle={{ paddingTop: 56, paddingBottom: 56 }}
+				{...bars.scrollProps}
+			/>
+			<Animated.View style={[styles.top, top]}>
+				<AppBar>…</AppBar>
+			</Animated.View>
+			<Animated.View style={[styles.bottom, bottom]}>
+				<BottomTabBar>…</BottomTabBar>
+			</Animated.View>
+		</View>
+	);
 }
 ```
 
@@ -52,8 +62,8 @@ The bars are positioned over the list (`position: 'absolute'`), and the list get
 
 ```tsx title="Conceptual"
 const fab = useAnimatedStyle(() => ({
-  opacity: 1 - bars.progress.value,
-  transform: [{ scale: 1 - bars.progress.value * 0.2 }],
+	opacity: 1 - bars.progress.value,
+	transform: [{ scale: 1 - bars.progress.value * 0.2 }],
 }));
 ```
 
@@ -67,21 +77,21 @@ useFocusEffect(useCallback(() => bars.show(), [bars.show]));
 
 ## Options
 
-| Option | Type | Default | Description |
-| --- | --- | --- | --- |
-| `height` | `number` | — | Distance in pt the bars travel. Use the tallest bar, safe area included. |
-| `snap` | `boolean` | `true` | At the end of a drag or momentum, animates to fully shown or fully hidden. |
-| `snapDuration` | `number` | `200` | Duration of the snap in ms. `0` with Reduce Motion on. |
-| `enabled` | `boolean` | `true` | When `false`, shows the bars and stops following the scroll. |
+| Option         | Type      | Default | Description                                                                |
+| -------------- | --------- | ------- | -------------------------------------------------------------------------- |
+| `height`       | `number`  | —       | Distance in pt the bars travel. Use the tallest bar, safe area included.   |
+| `snap`         | `boolean` | `true`  | At the end of a drag or momentum, animates to fully shown or fully hidden. |
+| `snapDuration` | `number`  | `200`   | Duration of the snap in ms. `0` with Reduce Motion on.                     |
+| `enabled`      | `boolean` | `true`  | When `false`, shows the bars and stops following the scroll.               |
 
 ## Return value
 
-| Key | Type | Description |
-| --- | --- | --- |
-| `hidden` | `SharedValue<number>` | From `0` (shown) to `height` (hidden). |
-| `progress` | `SharedValue<number>` | `hidden / height`, from `0` to `1`. |
-| `show` | `() => void` | Animates the bars back to shown. |
-| `scrollProps` | `object` | `onScroll` and `scrollEventThrottle`, for an `Animated` `ScrollView`, `FlatList`, `SectionList` or `FlashList`. |
+| Key           | Type                  | Description                                                                                                     |
+| ------------- | --------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `hidden`      | `SharedValue<number>` | From `0` (shown) to `height` (hidden).                                                                          |
+| `progress`    | `SharedValue<number>` | `hidden / height`, from `0` to `1`.                                                                             |
+| `show`        | `() => void`          | Animates the bars back to shown.                                                                                |
+| `scrollProps` | `object`              | `onScroll` and `scrollEventThrottle`, for an `Animated` `ScrollView`, `FlatList`, `SectionList` or `FlashList`. |
 
 ## Related
 

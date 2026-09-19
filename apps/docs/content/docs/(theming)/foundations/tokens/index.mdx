@@ -3,7 +3,9 @@ title: Introduction
 description: "Raw primitive values: palette, spacing, radius, typography, sizes and metrics."
 ---
 
-<Callout title="Draft">The values and key names shown in this section are conceptual and may change.</Callout>
+<Callout title="Draft">
+	The values and key names shown in this section are conceptual and may change.
+</Callout>
 
 Tokens are the raw values of the design system. They carry no meaning on their own: a token says "16", not "screen margin" or "danger".
 
@@ -11,36 +13,36 @@ The `Tokens` contract groups them into six sets:
 
 ```ts title="Conceptual"
 export type Tokens = {
-  palette: Palette;
-  spacing: Spacing;
-  radius: Radius;
-  typography: Typography;
-  sizes: Sizes;
-  metrics: Metrics;
+	palette: Palette;
+	spacing: Spacing;
+	radius: Radius;
+	typography: Typography;
+	sizes: Sizes;
+	metrics: Metrics;
 };
 ```
 
 The defaults follow mobile metrics, especially iOS. They are a starting point: the file is copied into your project, so change them to match your product.
 
 <Cards>
-  <Card title="Palette" href="/foundations/tokens/palette">
-    Every raw color, in scales from 50 to 950.
-  </Card>
-  <Card title="Spacing" href="/foundations/tokens/spacing">
-    Padding, margins and gaps on a 4 grid.
-  </Card>
-  <Card title="Radius" href="/foundations/tokens/radius">
-    Corner rounding of surfaces and controls.
-  </Card>
-  <Card title="Typography" href="/foundations/tokens/typography">
-    The type scale, from 34 down to 12.
-  </Card>
-  <Card title="Sizes" href="/foundations/tokens/sizes">
-    Standard sizes for icons, avatars and controls.
-  </Card>
-  <Card title="Metrics" href="/foundations/tokens/metrics">
-    Touch target, screen margin and hairline.
-  </Card>
+	<Card title="Palette" href="/foundations/tokens/palette">
+		Every raw color, in scales from 50 to 950.
+	</Card>
+	<Card title="Spacing" href="/foundations/tokens/spacing">
+		Padding, margins and gaps on a 4 grid.
+	</Card>
+	<Card title="Radius" href="/foundations/tokens/radius">
+		Corner rounding of surfaces and controls.
+	</Card>
+	<Card title="Typography" href="/foundations/tokens/typography">
+		The type scale, from 34 down to 12.
+	</Card>
+	<Card title="Sizes" href="/foundations/tokens/sizes">
+		Standard sizes for icons, avatars and controls.
+	</Card>
+	<Card title="Metrics" href="/foundations/tokens/metrics">
+		Touch target, screen margin and hairline.
+	</Card>
 </Cards>
 
 ## Tokens are the same in light and dark
@@ -48,8 +50,16 @@ The defaults follow mobile metrics, especially iOS. They are a starting point: t
 Tokens don't change between color schemes. Both themes use the same `tokens` object; only the semantic colors change how they map onto the palette.
 
 ```ts title="Conceptual"
-export const light = { tokens, colors: lightColors, components: components(lightColors) } satisfies Theme;
-export const dark = { tokens, colors: darkColors, components: components(darkColors) } satisfies Theme;
+export const light = {
+	tokens,
+	colors: lightColors,
+	components: components(lightColors),
+} satisfies Theme;
+export const dark = {
+	tokens,
+	colors: darkColors,
+	components: components(darkColors),
+} satisfies Theme;
 ```
 
 See [Colors](/foundations/colors).

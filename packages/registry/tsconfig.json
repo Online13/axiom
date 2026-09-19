@@ -345,9 +345,6 @@
       "@/components/ui/tab-tokens": [
         "./templates/tab/tab-tokens.ts"
       ],
-      "@/components/ui/use-tab": [
-        "./templates/tab/use-tab.ts"
-      ],
       "@/components/ui/tab": [
         "./templates/tab/stylesheet/tab.tsx"
       ],

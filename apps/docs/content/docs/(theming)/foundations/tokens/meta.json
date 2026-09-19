@@ -1,11 +1,4 @@
 {
-  "title": "Tokens",
-  "pages": [
-    "palette",
-    "spacing",
-    "radius",
-    "typography",
-    "sizes",
-    "metrics"
-  ]
+	"title": "Tokens",
+	"pages": ["palette", "spacing", "radius", "typography", "sizes", "metrics"]
 }

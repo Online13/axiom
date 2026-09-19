@@ -6,66 +6,69 @@ description: "Complete mobile flows and design rules."
 A pattern is a complete flow that answers one user need, such as verifying a code or searching.
 
 <Callout title="Draft">
-  Each pattern has an interactive preview, but none ships as code yet. Depending on its size, each one may become an organism, a template, a block or its own registry entry.
+	Each pattern has an interactive preview, but none ships as code yet.
+	Depending on its size, each one may become an organism, a template, a block
+	or its own registry entry.
 </Callout>
 
 ## Patterns
 
 <PatternGrid>
-  <PatternCard
-    title="OTP verification"
-    href="/patterns/otp-verification"
-    preview="otp-verification"
-    states={["Empty", "Filling", "Verifying", "Error", "Resend"]}
-  >
-    Code entry with resend, countdown and validation.
-  </PatternCard>
-  <PatternCard
-    title="Undoable action"
-    href="/patterns/undoable-action"
-    preview="undoable-action"
-    states={["Optimistic", "Countdown", "Undone", "Committed"]}
-  >
-    An action that can be cancelled for a few seconds.
-  </PatternCard>
-  <PatternCard
-    title="Search experience"
-    href="/patterns/search-experience"
-    preview="search-experience"
-    states={["Idle", "History", "Typing", "Results", "No result"]}
-  >
-    Full search flow, from field to results.
-  </PatternCard>
-  <PatternCard
-    title="Contextual selection mode"
-    href="/patterns/selection-mode"
-    preview="selection-mode"
-    states={["Browse", "Selecting", "Acting", "Exit"]}
-  >
-    Select items and act on them with a contextual toolbar.
-  </PatternCard>
-  <PatternCard
-    title="Floating action menu"
-    href="/patterns/floating-action-menu"
-    preview="floating-action-menu"
-    states={["Collapsed", "Expanded", "Action", "Dismiss"]}
-  >
-    A floating button that expands into secondary actions.
-  </PatternCard>
-  <PatternCard
-    title="Async content state"
-    href="/patterns/async-content-state"
-    preview="async-content-state"
-    states={["Loading", "Content", "Empty", "Error", "Offline", "Retry"]}
-  >
-    One way to handle loading, content, empty, error, offline and retry.
-  </PatternCard>
+	<PatternCard
+		title="OTP verification"
+		href="/patterns/otp-verification"
+		preview="otp-verification"
+		states={["Empty", "Filling", "Verifying", "Error", "Resend"]}
+	>
+		Code entry with resend, countdown and validation.
+	</PatternCard>
+	<PatternCard
+		title="Undoable action"
+		href="/patterns/undoable-action"
+		preview="undoable-action"
+		states={["Optimistic", "Countdown", "Undone", "Committed"]}
+	>
+		An action that can be cancelled for a few seconds.
+	</PatternCard>
+	<PatternCard
+		title="Search experience"
+		href="/patterns/search-experience"
+		preview="search-experience"
+		states={["Idle", "History", "Typing", "Results", "No result"]}
+	>
+		Full search flow, from field to results.
+	</PatternCard>
+	<PatternCard
+		title="Contextual selection mode"
+		href="/patterns/selection-mode"
+		preview="selection-mode"
+		states={["Browse", "Selecting", "Acting", "Exit"]}
+	>
+		Select items and act on them with a contextual toolbar.
+	</PatternCard>
+	<PatternCard
+		title="Floating action menu"
+		href="/patterns/floating-action-menu"
+		preview="floating-action-menu"
+		states={["Collapsed", "Expanded", "Action", "Dismiss"]}
+	>
+		A floating button that expands into secondary actions.
+	</PatternCard>
+	<PatternCard
+		title="Async content state"
+		href="/patterns/async-content-state"
+		preview="async-content-state"
+		states={["Loading", "Content", "Empty", "Error", "Offline", "Retry"]}
+	>
+		One way to handle loading, content, empty, error, offline and retry.
+	</PatternCard>
 </PatternGrid>
 
 ## Guidelines
 
 <Cards>
-  <Card title="Mobile design guidelines" href="/patterns/guidelines">
-    Rules that aren't components: one main action, touch targets, context preservation.
-  </Card>
+	<Card title="Mobile design guidelines" href="/patterns/guidelines">
+		Rules that aren't components: one main action, touch targets, context
+		preservation.
+	</Card>
 </Cards>

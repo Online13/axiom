@@ -13,22 +13,28 @@ npx axiom add use-overlay-back-handler
 
 The hook has one version per navigation library. The first time you add it, the CLI reads your `package.json` and saves the library as [`navigation`](/configuration#navigation) in `axiom.json`:
 
-| `navigation` | Detected when | Back actions handled |
-| --- | --- | --- |
-| `expo-router` | `expo-router` is installed | Android back button, back gesture, header back button |
+| `navigation`       | Detected when                                                | Back actions handled                                  |
+| ------------------ | ------------------------------------------------------------ | ----------------------------------------------------- |
+| `expo-router`      | `expo-router` is installed                                   | Android back button, back gesture, header back button |
 | `react-navigation` | `@react-navigation/native` is installed, without Expo Router | Android back button, back gesture, header back button |
-| `react-native` | neither is installed | Android back button |
+| `react-native`     | neither is installed                                         | Android back button                                   |
 
 ## Usage
 
 ```tsx
-import { useOverlayBackHandler } from '@/hooks/use-overlay-back-handler';
+import { useOverlayBackHandler } from "@/hooks/use-overlay-back-handler";
 
-function FiltersPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
-  useOverlayBackHandler(open, onClose);
+function FiltersPanel({
+	open,
+	onClose,
+}: {
+	open: boolean;
+	onClose: () => void;
+}) {
+	useOverlayBackHandler(open, onClose);
 
-  if (!open) return null;
-  return <Panel onClose={onClose} />;
+	if (!open) return null;
+	return <Panel onClose={onClose} />;
 }
 ```
 
@@ -44,10 +50,10 @@ useOverlayBackHandler(open, dismissible ? close : undefined);
 useOverlayBackHandler(open: boolean, onClose: (() => void) | undefined): void
 ```
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `open` | `boolean` | Whether the overlay is open. Back actions are only intercepted while it's `true`. |
-| `onClose` | `(() => void) \| undefined` | Called on a back action. Read on each call, so an inline function is fine. |
+| Parameter | Type                        | Description                                                                       |
+| --------- | --------------------------- | --------------------------------------------------------------------------------- |
+| `open`    | `boolean`                   | Whether the overlay is open. Back actions are only intercepted while it's `true`. |
+| `onClose` | `(() => void) \| undefined` | Called on a back action. Read on each call, so an inline function is fine.        |
 
 ## How it works
 
@@ -62,7 +68,7 @@ A press that closes the overlay and navigates back, in either order, still leave
 
 ```tsx
 <Dialog.Action destructive onPress={() => router.back()}>
-  Discard
+	Discard
 </Dialog.Action>
 ```
 

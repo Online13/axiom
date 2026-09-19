@@ -16,18 +16,22 @@ Components that need it copy it for you.
 ## Usage
 
 ```tsx
-import { useControllableState } from '@/hooks/use-controllable-state';
+import { useControllableState } from "@/hooks/use-controllable-state";
 
 type RatingProps = {
-  value?: number;
-  defaultValue?: number;
-  onValueChange?: (value: number) => void;
+	value?: number;
+	defaultValue?: number;
+	onValueChange?: (value: number) => void;
 };
 
 function Rating({ value, defaultValue = 0, onValueChange }: RatingProps) {
-  const [rating, setRating] = useControllableState({ value, defaultValue, onChange: onValueChange });
+	const [rating, setRating] = useControllableState({
+		value,
+		defaultValue,
+		onChange: onValueChange,
+	});
 
-  return <Stars value={rating} onPress={setRating} />;
+	return <Stars value={rating} onPress={setRating} />;
 }
 ```
 
@@ -41,18 +45,22 @@ Both ways work for the person using the component:
 ## API
 
 ```tsx
-const [value, setValue] = useControllableState<T>({ value, defaultValue, onChange });
+const [value, setValue] = useControllableState<T>({
+	value,
+	defaultValue,
+	onChange,
+});
 ```
 
-| Option | Type | Description |
-| --- | --- | --- |
-| `value` | `T` | Controlled value. When it's set, the owner decides: `setValue` only calls `onChange`. |
-| `defaultValue` | `T` | Required. Initial value when `value` is `undefined`. |
-| `onChange` | `(value: T) => void` | Called when `setValue` receives a different value (`Object.is`). |
+| Option         | Type                 | Description                                                                           |
+| -------------- | -------------------- | ------------------------------------------------------------------------------------- |
+| `value`        | `T`                  | Controlled value. When it's set, the owner decides: `setValue` only calls `onChange`. |
+| `defaultValue` | `T`                  | Required. Initial value when `value` is `undefined`.                                  |
+| `onChange`     | `(value: T) => void` | Called when `setValue` receives a different value (`Object.is`).                      |
 
-| Returns | Type | Description |
-| --- | --- | --- |
-| `value` | `T` | `value` when controlled, the internal state otherwise. |
+| Returns    | Type                | Description                                                                                |
+| ---------- | ------------------- | ------------------------------------------------------------------------------------------ |
+| `value`    | `T`                 | `value` when controlled, the internal state otherwise.                                     |
 | `setValue` | `(next: T) => void` | Updates the internal state when uncontrolled, and calls `onChange` when the value changes. |
 
 `undefined` means uncontrolled. To control a value that can be empty, use `null` or `''` for the empty state, not `undefined`.

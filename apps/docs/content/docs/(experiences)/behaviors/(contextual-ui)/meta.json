@@ -1,6 +1,4 @@
 {
-  "title": "Contextual UI",
-  "pages": [
-    "dynamic-toolbar"
-  ]
+	"title": "Contextual UI",
+	"pages": ["dynamic-toolbar"]
 }

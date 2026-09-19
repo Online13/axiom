@@ -1,10 +1,10 @@
 {
-  "title": "Foundations",
-  "pages": [
-    "---Tokens---",
-    "...tokens",
-    "---Theme---",
-    "colors",
-    "component-tokens"
-  ]
+	"title": "Foundations",
+	"pages": [
+		"---Tokens---",
+		"...tokens",
+		"---Theme---",
+		"colors",
+		"component-tokens"
+	]
 }

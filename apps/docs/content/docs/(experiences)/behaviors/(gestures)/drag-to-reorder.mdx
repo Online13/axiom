@@ -3,7 +3,10 @@ title: "Drag-to-reorder"
 description: "Lift an item and drag it to a new place in the list."
 ---
 
-<Callout title="Draft">Specified, not implemented yet. The API is described in [useDragToReorder](/hooks/use-drag-to-reorder) and may change.</Callout>
+<Callout title="Draft">
+	Specified, not implemented yet. The API is described in
+	[useDragToReorder](/hooks/use-drag-to-reorder) and may change.
+</Callout>
 
 The user grabs an item, by its handle or with a long press. It lifts above the list and follows the finger, and the other items slide out of its way. Released, it settles in the free slot and the new order is saved.
 
@@ -26,9 +29,9 @@ Don't use it when the order comes from data (dates, prices, relevance): offer a 
 
 ### Starting the drag
 
-| Start | Delay | When |
-| --- | --- | --- |
-| **Handle** | none | The list is in an edit mode, or rows show a handle. The handle has no other job, so there's nothing to wait for. |
+| Start                     | Delay | When                                                                                                                                                    |
+| ------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Handle**                | none  | The list is in an edit mode, or rows show a handle. The handle has no other job, so there's nothing to wait for.                                        |
 | **Long press** on the row | 300ms | Rows without handles. Shorter than the usual 500ms: dragging is what the user expects here. Movement over 8pt first cancels, so the list still scrolls. |
 
 When the drag starts: a light haptic, the row scales to `1.03` and gets a shadow. It is now above the list, not in it.
@@ -38,7 +41,7 @@ When the drag starts: a light haptic, the row scales to `1.03` and gets a shadow
 `y` is how far the row is from its original slot, clamped to the list. The **target** slot is the one under the row's center:
 
 ```ts
-to = clamp(Math.round(from + y / rowHeight), 0, count - 1)
+to = clamp(Math.round(from + y / rowHeight), 0, count - 1);
 ```
 
 The rows between `from` and `to` each slide one slot toward `from`, with a short timing (180ms). Every time `to` changes, a selection haptic.
@@ -66,11 +69,11 @@ The row animates to its slot, then the list re-renders with the new order and al
 
 Axiom implements it with one hook, [`useDragToReorder`](/hooks/use-drag-to-reorder), for lists rendered in a `ScrollView` or an `Animated.FlatList`.
 
-| Library | Used for |
-| --- | --- |
-| `react-native-gesture-handler` | `Gesture.Pan()` on the handle (`activateAfterLongPress(300)` on the row), and `Gesture.Native()` on the list so the scroll keeps working until the drag starts. |
-| `react-native-reanimated` | `y`, `to` and each row's shift as shared values, computed in the gesture on the UI thread. `scrollTo` for auto-scroll, `withTiming` for the shifts and the drop. |
-| React state | The order, updated once on drop. |
+| Library                        | Used for                                                                                                                                                         |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `react-native-gesture-handler` | `Gesture.Pan()` on the handle (`activateAfterLongPress(300)` on the row), and `Gesture.Native()` on the list so the scroll keeps working until the drag starts.  |
+| `react-native-reanimated`      | `y`, `to` and each row's shift as shared values, computed in the gesture on the UI thread. `scrollTo` for auto-scroll, `withTiming` for the shifts and the drop. |
+| React state                    | The order, updated once on drop.                                                                                                                                 |
 
 FlashList and SectionList recycle and virtualize rows, which breaks the measured offsets. Reorder inside a plain list, or use a dedicated library such as `react-native-reorderable-list` there.
 
@@ -78,18 +81,20 @@ FlashList and SectionList recycle and virtualize rows, which breaks the measured
 
 ```tsx title="Conceptual"
 const reorder = useDragToReorder({
-  data: tracks,
-  keyExtractor: (track) => track.id,
-  onReorder: (from, to) => setTracks((list) => move(list, from, to)),
+	data: tracks,
+	keyExtractor: (track) => track.id,
+	onReorder: (from, to) => setTracks((list) => move(list, from, to)),
 });
 
 <Animated.ScrollView {...reorder.scrollProps}>
-  {tracks.map((track, index) => (
-    <ReorderableRow key={track.id} control={reorder} index={index}>
-      <Item trailing={<DragHandle control={reorder} index={index} />}>…</Item>
-    </ReorderableRow>
-  ))}
-</Animated.ScrollView>
+	{tracks.map((track, index) => (
+		<ReorderableRow key={track.id} control={reorder} index={index}>
+			<Item trailing={<DragHandle control={reorder} index={index} />}>
+				…
+			</Item>
+		</ReorderableRow>
+	))}
+</Animated.ScrollView>;
 ```
 
 Options and return value are documented in [useDragToReorder](/hooks/use-drag-to-reorder).

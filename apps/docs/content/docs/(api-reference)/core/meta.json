@@ -1,10 +1,4 @@
 {
-  "title": "Core",
-  "pages": [
-    "index",
-    "slot",
-    "portal",
-    "overlay",
-    "tappable"
-  ]
+	"title": "Core",
+	"pages": ["index", "slot", "portal", "overlay", "tappable"]
 }

@@ -1,15 +1,15 @@
 {
-  "title": "Hooks",
-  "pages": [
-    "index",
-    "use-controllable-state",
-    "use-overlay-back-handler",
-    "use-refresh-control",
-    "use-hide-on-scroll",
-    "use-collapsible-header",
-    "use-scroll-to-top",
-    "use-scroll-aware-app-bar",
-    "use-swipe-actions",
-    "use-drag-to-reorder"
-  ]
+	"title": "Hooks",
+	"pages": [
+		"index",
+		"use-controllable-state",
+		"use-overlay-back-handler",
+		"use-refresh-control",
+		"use-hide-on-scroll",
+		"use-collapsible-header",
+		"use-scroll-to-top",
+		"use-scroll-aware-app-bar",
+		"use-swipe-actions",
+		"use-drag-to-reorder"
+	]
 }

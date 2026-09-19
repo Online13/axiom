@@ -3,7 +3,11 @@ title: Contextual selection mode
 description: "Select items and act on them through a contextual toolbar."
 ---
 
-<Callout title="Draft">Specified, not implemented yet. It combines [long press](/behaviors/long-press) and the [dynamic toolbar](/behaviors/dynamic-toolbar). The API may change.</Callout>
+<Callout title="Draft">
+	Specified, not implemented yet. It combines [long
+	press](/behaviors/long-press) and the [dynamic
+	toolbar](/behaviors/dynamic-toolbar). The API may change.
+</Callout>
 
 The user picks several items, photos, files or messages, and acts on all of them at once. For as long as the mode lasts, a tap selects instead of opening.
 
@@ -34,12 +38,12 @@ Don't add it when users almost always act on one item. A [swipe action](/behavio
 
 The tab bar gives way to a [dynamic toolbar](/behaviors/dynamic-toolbar). Its actions depend on the selection:
 
-| Action | Enabled when |
-| --- | --- |
-| Share | At least one item. |
-| Favorite | At least one item. |
-| Edit | Exactly one item. |
-| Delete | At least one item, and all of them are the user's own. |
+| Action   | Enabled when                                           |
+| -------- | ------------------------------------------------------ |
+| Share    | At least one item.                                     |
+| Favorite | At least one item.                                     |
+| Edit     | Exactly one item.                                      |
+| Delete   | At least one item, and all of them are the user's own. |
 
 The app bar title shows the count ("3 selected"), and **Select all** takes the place of the leading button.
 
@@ -54,11 +58,20 @@ The app bar title shows the count ("3 selected"), and **Select all** takes the p
 ```tsx title="Conceptual"
 const [selected, setSelected] = useState<Set<string> | null>(null); // null = browsing
 const selecting = selected !== null;
-const toggle = (id: string) => setSelected((s) => new Set(s?.has(id) ? [...s].filter((x) => x !== id) : [...(s ?? []), id]));
+const toggle = (id: string) =>
+	setSelected(
+		(s) =>
+			new Set(
+				s?.has(id) ? [...s].filter((x) => x !== id) : [...(s ?? []), id],
+			),
+	);
 
 usePreventRemove(selecting, () => setSelected(null)); // back leaves the mode
 
-<Photo onLongPress={() => !selecting && setSelected(new Set([photo.id]))} onPress={() => (selecting ? toggle(photo.id) : open(photo))} />
+<Photo
+	onLongPress={() => !selecting && setSelected(new Set([photo.id]))}
+	onPress={() => (selecting ? toggle(photo.id) : open(photo))}
+/>;
 ```
 
 ## Accessibility

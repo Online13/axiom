@@ -4,13 +4,55 @@ description: "Loading indicator."
 ---
 
 <PhonePreview>
-  <div class="ax-appbar"><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Uploading</span><span class="ax-icon-btn" /></div>
-  <div class="ax-body" style={{ gap: '22px' }}>
-    <div class="ax-stack" data-gap="8"><span class="ax-footnote ax-muted">Sizes</span><div class="ax-row" data-gap="16"><span class="ax-spinner" data-size="sm" /><span class="ax-spinner" /><span class="ax-spinner" data-size="lg" /></div></div>
-    <div class="ax-stack" data-gap="8"><span class="ax-footnote ax-muted">Colors</span><div class="ax-row" data-gap="16"><span class="ax-spinner" /><span class="ax-spinner ax-muted" /><span class="ax-spinner ax-link" /><span class="ax-btn" data-size="sm"><span class="ax-spinner" data-size="sm" />Inverse</span></div></div>
-    <div class="ax-stack" data-gap="8"><span class="ax-footnote ax-muted">With a label</span><div class="ax-row" data-gap="12"><span class="ax-spinner ax-muted" /><span class="ax-subhead ax-muted">Syncing 12 photos…</span></div></div>
-    <div class="ax-card" data-variant="outlined" style={{ height: '110px', alignItems: 'center', justifyContent: 'center', gap: '10px' }}><span class="ax-spinner ax-muted" data-size="lg" /><span class="ax-footnote ax-muted">Centered in a container</span></div>
-  </div>
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Uploading</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body" style={{ gap: "22px" }}>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">Sizes</span>
+			<div class="ax-row" data-gap="16">
+				<span class="ax-spinner" data-size="sm" />
+				<span class="ax-spinner" />
+				<span class="ax-spinner" data-size="lg" />
+			</div>
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">Colors</span>
+			<div class="ax-row" data-gap="16">
+				<span class="ax-spinner" />
+				<span class="ax-spinner ax-muted" />
+				<span class="ax-spinner ax-link" />
+				<span class="ax-btn" data-size="sm">
+					<span class="ax-spinner" data-size="sm" />
+					Inverse
+				</span>
+			</div>
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">With a label</span>
+			<div class="ax-row" data-gap="12">
+				<span class="ax-spinner ax-muted" />
+				<span class="ax-subhead ax-muted">Syncing 12 photos…</span>
+			</div>
+		</div>
+		<div
+			class="ax-card"
+			data-variant="outlined"
+			style={{
+				height: "110px",
+				alignItems: "center",
+				justifyContent: "center",
+				gap: "10px",
+			}}
+		>
+			<span class="ax-spinner ax-muted" data-size="lg" />
+			<span class="ax-footnote ax-muted">Centered in a container</span>
+		</div>
+	</div>
 </PhonePreview>
 
 ## Installation
@@ -32,14 +74,14 @@ import { Spinner } from '@/components/ui/spinner';
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `size` | `'sm' \| 'md' \| 'lg' \| number` | `'md'` | From the `icon` size tokens: 16, 20, 24pt, or a number. |
-| `color` | `ContentColor` | `'default'` | Content color from the theme. Use `inverse` on solid backgrounds, `muted` when the spinner is secondary. |
-| `label` | `string` | `'Loading'` | Accessibility label, announced when the spinner appears. It isn't rendered: put visible text next to it yourself. |
-| `animating` | `boolean` | `true` | `false` hides the spinner without unmounting it, keeping its space in the layout. |
-| `delay` | `number` | `0` | Waits this many ms before showing. A 150–300ms delay avoids a flash on fast responses. |
-| `style` | `StyleProp<ViewStyle>` | — | Extra styles for the container. |
+| Prop        | Type                             | Default     | Description                                                                                                       |
+| ----------- | -------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| `size`      | `'sm' \| 'md' \| 'lg' \| number` | `'md'`      | From the `icon` size tokens: 16, 20, 24pt, or a number.                                                           |
+| `color`     | `ContentColor`                   | `'default'` | Content color from the theme. Use `inverse` on solid backgrounds, `muted` when the spinner is secondary.          |
+| `label`     | `string`                         | `'Loading'` | Accessibility label, announced when the spinner appears. It isn't rendered: put visible text next to it yourself. |
+| `animating` | `boolean`                        | `true`      | `false` hides the spinner without unmounting it, keeping its space in the layout.                                 |
+| `delay`     | `number`                         | `0`         | Waits this many ms before showing. A 150–300ms delay avoids a flash on fast responses.                            |
+| `style`     | `StyleProp<ViewStyle>`           | —           | Extra styles for the container.                                                                                   |
 
 The rotation runs on the UI thread, so it keeps turning while JavaScript is busy. With reduce motion on, it pulses instead of spinning.
 
@@ -50,17 +92,25 @@ The rotation runs on the UI thread, so it keeps turning while JavaScript is busy
 A centered spinner with a `delay`, when there is nothing to show yet and the layout of the result isn't known.
 
 <PhonePreview size="sm">
-  <div class="ax-appbar" data-border><span class="ax-icon-btn"><Glyph name="chevron-left" /></span><span class="ax-appbar-title">Invoice #2041</span><span class="ax-icon-btn" /></div>
-  <div class="ax-center"><span class="ax-spinner ax-muted" data-size="lg" /></div>
+	<div class="ax-appbar" data-border>
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Invoice #2041</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-center">
+		<span class="ax-spinner ax-muted" data-size="lg" />
+	</div>
 </PhonePreview>
 
 ```tsx
 if (isLoading) {
-  return (
-    <View style={styles.center}>
-      <Spinner size="lg" color="muted" delay={200} label="Loading invoice" />
-    </View>
-  );
+	return (
+		<View style={styles.center}>
+			<Spinner size="lg" color="muted" delay={200} label="Loading invoice" />
+		</View>
+	);
 }
 ```
 
@@ -69,21 +119,47 @@ if (isLoading) {
 A small spinner as the list footer while the next page loads.
 
 <PhonePreview half="bottom" size="sm">
-  <div class="ax-list" data-variant="plain">
-    <div class="ax-item"><span class="ax-avatar" data-size="sm" data-photo="1">A</span><span class="ax-item-title ax-grow">Ada Lovelace</span></div>
-    <div class="ax-item"><span class="ax-avatar" data-size="sm" data-photo="2">B</span><span class="ax-item-title ax-grow">Barbara Liskov</span></div>
-    <div class="ax-item"><span class="ax-avatar" data-size="sm" data-photo="3">C</span><span class="ax-item-title ax-grow">Claude Shannon</span></div>
-    <div class="ax-item"><span class="ax-avatar" data-size="sm" data-photo="4">D</span><span class="ax-item-title ax-grow">Dennis Ritchie</span></div>
-  </div>
-  <div class="ax-row" data-justify="center" style={{ padding: '20px' }}><span class="ax-spinner ax-muted" /></div>
-  <div class="ax-fill" />
+	<div class="ax-list" data-variant="plain">
+		<div class="ax-item">
+			<span class="ax-avatar" data-size="sm" data-photo="1">
+				A
+			</span>
+			<span class="ax-item-title ax-grow">Ada Lovelace</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-avatar" data-size="sm" data-photo="2">
+				B
+			</span>
+			<span class="ax-item-title ax-grow">Barbara Liskov</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-avatar" data-size="sm" data-photo="3">
+				C
+			</span>
+			<span class="ax-item-title ax-grow">Claude Shannon</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-avatar" data-size="sm" data-photo="4">
+				D
+			</span>
+			<span class="ax-item-title ax-grow">Dennis Ritchie</span>
+		</div>
+	</div>
+	<div class="ax-row" data-justify="center" style={{ padding: "20px" }}>
+		<span class="ax-spinner ax-muted" />
+	</div>
+	<div class="ax-fill" />
 </PhonePreview>
 
 ```tsx
 <FlatList
-  data={people}
-  onEndReached={fetchNextPage}
-  ListFooterComponent={isFetchingNextPage ? <Spinner color="muted" style={{ padding: 20 }} /> : null}
+	data={people}
+	onEndReached={fetchNextPage}
+	ListFooterComponent={
+		isFetchingNextPage ? (
+			<Spinner color="muted" style={{ padding: 20 }} />
+		) : null
+	}
 />
 ```
 
@@ -92,20 +168,39 @@ A small spinner as the list footer while the next page loads.
 A small spinner next to text that says what is happening, for background work the user can ignore.
 
 <PhonePreview size="sm" grouped>
-  <div class="ax-large-heading" style={{ paddingTop: '8px' }}>Backup</div>
-  <div class="ax-list">
-    <div class="ax-item"><span class="ax-tile" data-color="blue"><Glyph name="refresh" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">iCloud Photos</span><span class="ax-item-desc">Uploading 12 of 48…</span></div><span class="ax-spinner ax-muted" data-size="sm" /></div>
-    <div class="ax-item"><span class="ax-tile" data-color="green"><Glyph name="circle-check" size={18} /></span><div class="ax-item-content"><span class="ax-item-title">Messages</span><span class="ax-item-desc">Up to date</span></div></div>
-  </div>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Backup
+	</div>
+	<div class="ax-list">
+		<div class="ax-item">
+			<span class="ax-tile" data-color="blue">
+				<Glyph name="refresh" size={18} />
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title">iCloud Photos</span>
+				<span class="ax-item-desc">Uploading 12 of 48…</span>
+			</div>
+			<span class="ax-spinner ax-muted" data-size="sm" />
+		</div>
+		<div class="ax-item">
+			<span class="ax-tile" data-color="green">
+				<Glyph name="circle-check" size={18} />
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title">Messages</span>
+				<span class="ax-item-desc">Up to date</span>
+			</div>
+		</div>
+	</div>
 </PhonePreview>
 
 ```tsx
 <OptionItem
-  icon="refresh"
-  iconColor="blue"
-  label="iCloud Photos"
-  description={`Uploading ${done} of ${total}…`}
-  trailing={<Spinner size="sm" color="muted" />}
+	icon="refresh"
+	iconColor="blue"
+	label="iCloud Photos"
+	description={`Uploading ${done} of ${total}…`}
+	trailing={<Spinner size="sm" color="muted" />}
 />
 ```
 

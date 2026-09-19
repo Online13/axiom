@@ -3,7 +3,11 @@ title: "Long press"
 description: "Hold an element to get secondary actions on it, without a visible button."
 ---
 
-<Callout title="Draft">The long press is handled by [Tappable](/core/tappable) (`onLongPress`), and the menu it opens by [Menu](/atoms/menu). Both APIs are conceptual and may change.</Callout>
+<Callout title="Draft">
+	The long press is handled by [Tappable](/core/tappable) (`onLongPress`), and
+	the menu it opens by [Menu](/atoms/menu). Both APIs are conceptual and may
+	change.
+</Callout>
 
 The user keeps their finger on an element. The element sinks slightly while they hold, and after half a second a haptic confirms the long press: the element lifts above a blurred screen, with the actions that apply to it.
 
@@ -25,11 +29,11 @@ A press ends in one of three ways. What ends it first decides the event:
 
 <LongPressTimeline />
 
-| Ends with | Event | Why |
-| --- | --- | --- |
-| Release before `delayLongPress` | `onPress` | A normal tap. |
+| Ends with                                   | Event         | Why                                                                                        |
+| ------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------ |
+| Release before `delayLongPress`             | `onPress`     | A normal tap.                                                                              |
 | `delayLongPress` reached, finger still down | `onLongPress` | Fires **while** the finger is down, not on release. The release that follows does nothing. |
-| Movement over 10pt | none | The user is scrolling. The list takes the gesture. |
+| Movement over 10pt                          | none          | The user is scrolling. The list takes the gesture.                                         |
 
 Two details make it feel right:
 
@@ -44,12 +48,12 @@ Two details make it feel right:
 
 Axiom has no dedicated hook: the gesture is part of [`Tappable`](/core/tappable), and every pressable component built on it (`Item`, `IconButton`) forwards `onLongPress`.
 
-| Library | Used for |
-| --- | --- |
-| React Native `Pressable` | Timing, slop and cancellation when the parent scroll view takes over. Nothing to reimplement. |
-| `react-native-reanimated` | The scale during the delay, driven by the pressed state, on the UI thread. |
-| `expo-haptics` (or the platform haptic API) | The light impact when `onLongPress` fires. [Menu](/atoms/menu) does it for you with `haptic`. |
-| `react-native-gesture-handler` | Only when the long press starts another gesture, like dragging the lifted item: `Gesture.LongPress()` composed with `Gesture.Pan()`. |
+| Library                                     | Used for                                                                                                                             |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| React Native `Pressable`                    | Timing, slop and cancellation when the parent scroll view takes over. Nothing to reimplement.                                        |
+| `react-native-reanimated`                   | The scale during the delay, driven by the pressed state, on the UI thread.                                                           |
+| `expo-haptics` (or the platform haptic API) | The light impact when `onLongPress` fires. [Menu](/atoms/menu) does it for you with `haptic`.                                        |
+| `react-native-gesture-handler`              | Only when the long press starts another gesture, like dragging the lifted item: `Gesture.LongPress()` composed with `Gesture.Pan()`. |
 
 ### In a screen
 

@@ -3,7 +3,10 @@ title: "Collapsible header"
 description: "A tall header with a large title that shrinks into a compact bar as the list scrolls."
 ---
 
-<Callout title="Draft">Specified, not implemented yet. The API is described in [useCollapsibleHeader](/hooks/use-collapsible-header) and may change.</Callout>
+<Callout title="Draft">
+	Specified, not implemented yet. The API is described in
+	[useCollapsibleHeader](/hooks/use-collapsible-header) and may change.
+</Callout>
 
 At the top of the list, the header is tall and shows a large title. As the user scrolls, it shrinks into a compact bar and the title moves to its center. Scrolling back to the top expands it again.
 
@@ -29,9 +32,9 @@ Use a compact [AppBar](/templates/app-bar) instead on screens opened from anothe
 Unlike hide-on-scroll, the header follows the scroll **position**, not the delta. The same offset always gives the same header, so it expands only when the list is back at the top.
 
 ```ts
-range    = expandedHeight - collapsedHeight
-progress = clamp(offset / range, 0, 1)
-height   = expandedHeight - progress * range
+range = expandedHeight - collapsedHeight;
+progress = clamp(offset / range, 0, 1);
+height = expandedHeight - progress * range;
 ```
 
 Everything else is derived from `progress`:
@@ -46,21 +49,21 @@ border                                       shown at 1
 
 The two titles never overlap at full opacity: the large one is gone before the compact one appears.
 
-| Rule | Why |
-| --- | --- |
-| **Position, not delta** | The large title is an anchor for the top of the list. Showing it mid-list would be misleading. |
-| **Clamp** `progress` between `0` and `1` | Past the range, the list scrolls under a compact bar that doesn't move. |
-| **Stretch on overscroll**: a negative offset adds to `height` and slightly enlarges the title | Matches the iOS bounce, so the header doesn't detach from the list. |
-| **Snap on release** (optional): between `0` and `1`, scroll to the nearest end | Avoids a header left half-collapsed. It scrolls the list, so offset and header stay in sync. |
+| Rule                                                                                          | Why                                                                                            |
+| --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **Position, not delta**                                                                       | The large title is an anchor for the top of the list. Showing it mid-list would be misleading. |
+| **Clamp** `progress` between `0` and `1`                                                      | Past the range, the list scrolls under a compact bar that doesn't move.                        |
+| **Stretch on overscroll**: a negative offset adds to `height` and slightly enlarges the title | Matches the iOS bounce, so the header doesn't detach from the list.                            |
+| **Snap on release** (optional): between `0` and `1`, scroll to the nearest end                | Avoids a header left half-collapsed. It scrolls the list, so offset and header stay in sync.   |
 
 ## Implementation
 
 Axiom implements it with one hook, [`useCollapsibleHeader`](/hooks/use-collapsible-header). It turns the scroll into `progress` and leaves the drawing to the header.
 
-| Library | Used for |
-| --- | --- |
+| Library                   | Used for                                                                                                                                                                                              |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `react-native-reanimated` | `offset`, `progress` and `height` as shared values, computed in `useAnimatedScrollHandler`. `interpolate` for the title size and opacities, `scrollTo` for the snap. No React render while scrolling. |
-| React Native layout | The header is positioned over the list, and the list gets `paddingTop` equal to `expandedHeight`, so the first row starts under the expanded header. |
+| React Native layout       | The header is positioned over the list, and the list gets `paddingTop` equal to `expandedHeight`, so the first row starts under the expanded header.                                                  |
 
 ### In a screen
 

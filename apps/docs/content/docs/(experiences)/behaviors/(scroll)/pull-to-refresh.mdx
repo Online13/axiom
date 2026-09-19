@@ -20,13 +20,13 @@ A pull goes through five statuses. Each frame below is drawn at real size, with 
 
 <RefreshControlStates />
 
-| Status | What the user sees | What the code does |
-| --- | --- | --- |
-| `idle` | The list at rest. | Waits for a drag down while the scroll offset is `0`. |
-| `pulling` | The indicator fills with the finger. | Updates `distance` and `progress` on the UI thread. |
-| `armed` | The indicator is full, the arrow flips. | Fires `onArmed` once (light haptic). |
-| `refreshing` | A spinner, the list held open. | Awaits `onRefresh`, for at least `minDuration`. |
-| `settling` | The list returns to its place. | Animates `distance` to `0`, ignores new pulls. |
+| Status       | What the user sees                      | What the code does                                    |
+| ------------ | --------------------------------------- | ----------------------------------------------------- |
+| `idle`       | The list at rest.                       | Waits for a drag down while the scroll offset is `0`. |
+| `pulling`    | The indicator fills with the finger.    | Updates `distance` and `progress` on the UI thread.   |
+| `armed`      | The indicator is full, the arrow flips. | Fires `onArmed` once (light haptic).                  |
+| `refreshing` | A spinner, the list held open.          | Awaits `onRefresh`, for at least `minDuration`.       |
+| `settling`   | The list returns to its place.          | Animates `distance` to `0`, ignores new pulls.        |
 
 Going back under the threshold before releasing returns to `pulling`, so the user can change their mind.
 
@@ -37,8 +37,8 @@ The list doesn't follow the finger one to one. The further it goes, the harder i
 <RefreshControlResistance />
 
 ```ts
-distance = (drag * maxDistance) / (drag + maxDistance)
-progress = Math.min(distance / threshold, 1)
+distance = (drag * maxDistance) / (drag + maxDistance);
+progress = Math.min(distance / threshold, 1);
 ```
 
 With the defaults (`threshold` 64, `maxDistance` 160), the user drags 107pt to arm the refresh.
@@ -47,11 +47,11 @@ With the defaults (`threshold` 64, `maxDistance` 160), the user drags 107pt to a
 
 Axiom implements it with one hook, `useRefreshControl`, built on:
 
-| Library | Used for |
-| --- | --- |
-| `react-native-reanimated` | `distance` and `progress` as shared values, so the indicator moves on the UI thread without a React render per frame. `useAnimatedScrollHandler` reads the scroll, `withTiming` animates the return. |
-| `react-native-gesture-handler` | The pull on Android, where lists don't bounce: a `Pan` gesture recognized together with the list's native scroll. |
-| React state | `status`, which changes a few times per pull. |
+| Library                        | Used for                                                                                                                                                                                             |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `react-native-reanimated`      | `distance` and `progress` as shared values, so the indicator moves on the UI thread without a React render per frame. `useAnimatedScrollHandler` reads the scroll, `withTiming` animates the return. |
+| `react-native-gesture-handler` | The pull on Android, where lists don't bounce: a `Pan` gesture recognized together with the list's native scroll.                                                                                    |
+| React state                    | `status`, which changes a few times per pull.                                                                                                                                                        |
 
 ### One pull, two platforms
 
@@ -83,14 +83,21 @@ Both open the same gap above the list, so an indicator written once works on bot
 ### In a screen
 
 ```tsx
-const refresh = useRefreshControl({ onRefresh: refetch, onArmed: haptics.light });
+const refresh = useRefreshControl({
+	onRefresh: refetch,
+	onArmed: haptics.light,
+});
 
 <View style={{ flex: 1 }}>
-  <PullIndicator control={refresh} />
-  <GestureDetector gesture={refresh.gesture}>
-    <Animated.FlatList data={data} renderItem={renderItem} {...refresh.scrollProps} />
-  </GestureDetector>
-</View>
+	<PullIndicator control={refresh} />
+	<GestureDetector gesture={refresh.gesture}>
+		<Animated.FlatList
+			data={data}
+			renderItem={renderItem}
+			{...refresh.scrollProps}
+		/>
+	</GestureDetector>
+</View>;
 ```
 
 `scrollProps` carries the scroll handler, the inset and the animated style; `gesture` goes on the `GestureDetector` around the list, because a gesture can't travel as a prop. The list must be an `Animated` one. It works with `ScrollView`, `FlatList`, `SectionList` and FlashList. Options, return value and a custom indicator are documented in [useRefreshControl](/hooks/use-refresh-control).

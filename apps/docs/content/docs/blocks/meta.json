@@ -1,12 +1,12 @@
 {
-  "title": "Blocks",
-  "root": true,
-  "pages": [
-    "index",
-    "authentication",
-    "onboarding",
-    "monetization",
-    "profile",
-    "commerce"
-  ]
+	"title": "Blocks",
+	"root": true,
+	"pages": [
+		"index",
+		"authentication",
+		"onboarding",
+		"monetization",
+		"profile",
+		"commerce"
+	]
 }

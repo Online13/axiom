@@ -11,15 +11,15 @@ Axiom has a lot of components, and they don't all work at the same scale. A butt
 
 ## Atomic Design
 
-Atomic Design is a methodology described by Brad Frost in [*Atomic Design*](https://atomicdesign.bradfrost.com/chapter-2/). It borrows its vocabulary from chemistry: atoms combine into molecules, and molecules combine into larger organisms. Applied to interfaces, it describes five stages.
+Atomic Design is a methodology described by Brad Frost in [_Atomic Design_](https://atomicdesign.bradfrost.com/chapter-2/). It borrows its vocabulary from chemistry: atoms combine into molecules, and molecules combine into larger organisms. Applied to interfaces, it describes five stages.
 
-| Stage | In Brad Frost's words | His example |
-| --- | --- | --- |
-| Atoms | Basic building blocks that can't be broken down further without ceasing to be functional | A label, an input, a button |
-| Molecules | Relatively simple groups of UI elements functioning together as a unit | A search form: label, input and button |
-| Organisms | Relatively complex components composed of groups of molecules and/or atoms | A header with a logo, navigation and a search form |
-| Templates | Page-level objects that place components into a layout and show the content structure | A page skeleton with placeholder content |
-| Pages | Specific instances of templates with real, representative content | The home page with real text and images |
+| Stage     | In Brad Frost's words                                                                    | His example                                        |
+| --------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| Atoms     | Basic building blocks that can't be broken down further without ceasing to be functional | A label, an input, a button                        |
+| Molecules | Relatively simple groups of UI elements functioning together as a unit                   | A search form: label, input and button             |
+| Organisms | Relatively complex components composed of groups of molecules and/or atoms               | A header with a logo, navigation and a search form |
+| Templates | Page-level objects that place components into a layout and show the content structure    | A page skeleton with placeholder content           |
+| Pages     | Specific instances of templates with real, representative content                        | The home page with real text and images            |
 
 Two points from the book matter for how Axiom uses it:
 
@@ -30,13 +30,13 @@ Two points from the book matter for how Axiom uses it:
 
 Axiom keeps the idea and adjusts the levels to a component registry for mobile apps.
 
-| Level | In Axiom | Examples |
-| --- | --- | --- |
-| [Atoms](/atoms) | The smallest units you use directly in a screen, each installed on its own | Button, Input, Avatar, BottomSheet |
-| [Molecules](/molecules) | A few atoms forming one coherent function | SearchBar, DatePicker, Attachment |
-| [Organisms](/organisms) | Components that own a full interaction, with their own layout, states and input handling | Passcode |
-| [Templates](/templates) | Structures that frame a screen or a large area of it | Scaffold, AppBar, BottomTabBar |
-| Blocks | Complete screens or large sections, copied and adapted | Onboarding, profile, authentication |
+| Level                   | In Axiom                                                                                 | Examples                            |
+| ----------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------- |
+| [Atoms](/atoms)         | The smallest units you use directly in a screen, each installed on its own               | Button, Input, Avatar, BottomSheet  |
+| [Molecules](/molecules) | A few atoms forming one coherent function                                                | SearchBar, DatePicker, Attachment   |
+| [Organisms](/organisms) | Components that own a full interaction, with their own layout, states and input handling | Passcode                            |
+| [Templates](/templates) | Structures that frame a screen or a large area of it                                     | Scaffold, AppBar, BottomTabBar      |
+| Blocks                  | Complete screens or large sections, copied and adapted                                   | Onboarding, profile, authentication |
 
 The differences with the book are deliberate:
 
