@@ -8,8 +8,6 @@
 	],
 	"scripts": {
 		"web": "bun run --cwd apps/web",
-		"theme-builder": "bun run --filter './apps/theme-builder'",
-		"router": "bun run --filter './apps/router'",
 		"demo:stylesheet": "bun run --cwd apps/demo-stylesheet",
 		"demo:unistyles": "bun run --cwd apps/demo-unistyles",
 		"demo:nativewind": "bun run --cwd apps/demo-nativewind",

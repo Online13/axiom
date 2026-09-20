@@ -61,7 +61,6 @@ The registry currently lists 53 items. The StyleSheet demo exercises them in an 
 ```bash
 bun install
 bun web dev       # landing and documentation → http://localhost:4321
-bun theme-builder dev # theme builder → http://localhost:4323
 
 bun demo:stylesheet android   # build and install the demo app, see apps/README.md
 bun demo:stylesheet start     # start Metro
