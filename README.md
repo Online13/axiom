@@ -47,13 +47,13 @@ _A preview of a real mobile flow built with Axiom will be added here._
 
 ## Current state
 
-| Part | Location | Status |
-| --- | --- | --- |
-| Documentation site | [`apps/docs`](./apps/docs) | Astro app with component guides and API pages |
-| Landing page | [`apps/landing`](./apps/landing) | Astro app |
-| Demo apps | [`apps`](./apps) | Four Expo apps, one per styling tool |
-| Registry | [`packages/registry`](./packages/registry) | Source for foundations, components, and hooks |
-| CLI | [`packages/cli`](./packages/cli) | Copies selected registry items into an app |
+| Part               | Location                                   | Status                                        |
+| ------------------ | ------------------------------------------ | --------------------------------------------- |
+| Documentation site | [`apps/docs`](./apps/docs)                 | Astro app with component guides and API pages |
+| Landing page       | [`apps/landing`](./apps/landing)           | Astro app                                     |
+| Demo apps          | [`apps`](./apps)                           | Four Expo apps, one per styling tool          |
+| Registry           | [`packages/registry`](./packages/registry) | Source for foundations, components, and hooks |
+| CLI                | [`packages/cli`](./packages/cli)           | Copies selected registry items into an app    |
 
 The registry currently lists 53 items. The StyleSheet demo exercises them in an Expo app; the other demos cover Unistyles, NativeWind, and Uniwind. See [apps/README.md](./apps/README.md) for the workspace layout.
 
@@ -63,6 +63,7 @@ The registry currently lists 53 items. The StyleSheet demo exercises them in an 
 bun install
 bun docs dev      # documentation → http://localhost:4322
 bun landing dev   # landing page  → http://localhost:4321
+bun theme-builder dev # theme builder → http://localhost:4323
 
 bun demo:stylesheet android   # build and install the demo app, see apps/README.md
 bun demo:stylesheet start     # start Metro

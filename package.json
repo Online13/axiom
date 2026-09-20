@@ -1,23 +1,24 @@
 {
-  "name": "axiom-project",
-  "type": "module",
-  "private": true,
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
-  "scripts": {
-    "docs": "bun run --filter './apps/docs'",
-    "landing": "bun run --filter './apps/landing'",
-    "demo:stylesheet": "bun run --cwd apps/demo-stylesheet",
-    "demo:unistyles": "bun run --cwd apps/demo-unistyles",
-    "demo:nativewind": "bun run --cwd apps/demo-nativewind",
-    "demo:uniwind": "bun run --cwd apps/demo-uniwind",
-    "sim:ios": "node scripts/native-sim.mjs",
-    "format": "prettier --write ."
-  },
-  "devDependencies": {
-    "prettier": "^3.9.8",
-    "wrangler": "^4.131.2"
-  }
+	"name": "axiom-project",
+	"type": "module",
+	"private": true,
+	"workspaces": [
+		"packages/*",
+		"apps/*"
+	],
+	"scripts": {
+		"docs": "bun run --filter './apps/docs'",
+		"landing": "bun run --filter './apps/landing'",
+		"theme-builder": "bun run --filter './apps/theme-builder'",
+		"demo:stylesheet": "bun run --cwd apps/demo-stylesheet",
+		"demo:unistyles": "bun run --cwd apps/demo-unistyles",
+		"demo:nativewind": "bun run --cwd apps/demo-nativewind",
+		"demo:uniwind": "bun run --cwd apps/demo-uniwind",
+		"sim:ios": "node scripts/native-sim.mjs",
+		"format": "prettier --write ."
+	},
+	"devDependencies": {
+		"prettier": "^3.9.8",
+		"wrangler": "^4.131.2"
+	}
 }
