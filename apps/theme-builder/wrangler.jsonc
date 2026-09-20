@@ -4,13 +4,9 @@
 	"workers_dev": false,
 	"compatibility_date": "2026-09-20",
 	"assets": {
-		"directory": "./dist",
+		"not_found_handling": "single-page-application"
 	},
 	"observability": {
-		"logs": {
-			"enabled": true,
-			"invocation_logs": true,
-			"persist": true,
-		},
-	},
+		"enabled": true
+	}
 }
