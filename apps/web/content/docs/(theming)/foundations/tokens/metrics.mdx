@@ -1,0 +1,36 @@
+---
+title: Metrics
+description: "Touch target, screen margin and hairline."
+---
+
+<Callout title="Draft">
+	The values shown here are conceptual and may change.
+</Callout>
+
+Metrics are layout constants that apply across the whole app rather than to one element.
+
+<MetricsPreview />
+
+```ts title="Conceptual"
+export const metrics = {
+	touchTarget: 44,
+	screenMargin: 16,
+	hairline: StyleSheet.hairlineWidth,
+} satisfies Metrics;
+```
+
+| Key            | Default          | Use                                                     |
+| -------------- | ---------------- | ------------------------------------------------------- |
+| `touchTarget`  | 44pt             | Minimum touch area of anything pressable                |
+| `screenMargin` | 16pt             | Horizontal padding between content and the screen edges |
+| `hairline`     | 1 physical pixel | Separators and thin borders                             |
+
+## Usage
+
+[Tappable](/docs/core/tappable) reads `touchTarget` and adds `hitSlop` when an element is smaller, so a 24pt icon button still gets a 44pt touch area.
+
+```tsx title="Conceptual"
+<ScrollView
+	contentContainerStyle={{ paddingHorizontal: tokens.metrics.screenMargin }}
+/>
+```

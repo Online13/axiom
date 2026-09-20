@@ -1,0 +1,114 @@
+---
+title: "Drag-to-reorder"
+description: "Lift an item and drag it to a new place in the list."
+---
+
+<Callout title="Draft">
+	Specified, not implemented yet. The API is described in
+	[useDragToReorder](/docs/hooks/use-drag-to-reorder) and may change.
+</Callout>
+
+The user grabs an item, by its handle or with a long press. It lifts above the list and follows the finger, and the other items slide out of its way. Released, it settles in the free slot and the new order is saved.
+
+<DragToReorderPreview />
+
+Drag a handle: the row lifts at once. Press anywhere else on a row and hold 300ms to lift it without the handle. Moving before that is a scroll; releasing is a tap.
+
+The same drag, frame by frame:
+
+<DragToReorderStates />
+
+## When to use it
+
+- Lists whose order belongs to the user: a playlist, favourites, the steps of a routine, the tabs of a home screen.
+- Short to medium lists, where the target is at most a few screens away.
+
+Don't use it when the order comes from data (dates, prices, relevance): offer a sort instead. For long lists, add "Move to top" and "Move to bottom" actions; dragging an item across 200 rows isn't a real option.
+
+## How it works
+
+### Starting the drag
+
+| Start                     | Delay | When                                                                                                                                                    |
+| ------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Handle**                | none  | The list is in an edit mode, or rows show a handle. The handle has no other job, so there's nothing to wait for.                                        |
+| **Long press** on the row | 300ms | Rows without handles. Shorter than the usual 500ms: dragging is what the user expects here. Movement over 8pt first cancels, so the list still scrolls. |
+
+When the drag starts: a light haptic, the row scales to `1.03` and gets a shadow. It is now above the list, not in it.
+
+### While dragging
+
+`y` is how far the row is from its original slot, clamped to the list. The **target** slot is the one under the row's center:
+
+```ts
+to = clamp(Math.round(from + y / rowHeight), 0, count - 1);
+```
+
+The rows between `from` and `to` each slide one slot toward `from`, with a short timing (180ms). Every time `to` changes, a selection haptic.
+
+```text
+from 1 → to 3
+
+slot 0   A              A
+slot 1   B  ── lifted   C  ↑
+slot 2   C              D  ↑
+slot 3   D              B  (drop here)
+```
+
+With rows of different heights, the target is computed from the measured offsets of each row instead of `rowHeight`.
+
+### Auto-scroll
+
+Near the top or bottom edge of the list (the last 60pt), the list scrolls by itself, faster the closer the finger is to the edge. The lifted row stays under the finger, so the target keeps changing while the finger doesn't move.
+
+### Dropping
+
+The row animates to its slot, then the list re-renders with the new order and all transforms reset in the same frame. `onReorder(from, to)` is called once, only if `to !== from`. Nothing is written while dragging.
+
+## Implementation
+
+Axiom implements it with one hook, [`useDragToReorder`](/docs/hooks/use-drag-to-reorder), for lists rendered in a `ScrollView` or an `Animated.FlatList`.
+
+| Library                        | Used for                                                                                                                                                         |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `react-native-gesture-handler` | `Gesture.Pan()` on the handle (`activateAfterLongPress(300)` on the row), and `Gesture.Native()` on the list so the scroll keeps working until the drag starts.  |
+| `react-native-reanimated`      | `y`, `to` and each row's shift as shared values, computed in the gesture on the UI thread. `scrollTo` for auto-scroll, `withTiming` for the shifts and the drop. |
+| React state                    | The order, updated once on drop.                                                                                                                                 |
+
+FlashList and SectionList recycle and virtualize rows, which breaks the measured offsets. Reorder inside a plain list, or use a dedicated library such as `react-native-reorderable-list` there.
+
+### In a screen
+
+```tsx title="Conceptual"
+const reorder = useDragToReorder({
+	data: tracks,
+	keyExtractor: (track) => track.id,
+	onReorder: (from, to) => setTracks((list) => move(list, from, to)),
+});
+
+<Animated.ScrollView {...reorder.scrollProps}>
+	{tracks.map((track, index) => (
+		<ReorderableRow key={track.id} control={reorder} index={index}>
+			<Item trailing={<DragHandle control={reorder} index={index} />}>
+				…
+			</Item>
+		</ReorderableRow>
+	))}
+</Animated.ScrollView>;
+```
+
+Options and return value are documented in [useDragToReorder](/docs/hooks/use-drag-to-reorder).
+
+## Accessibility
+
+- Screen reader users can't drag. Add "Move up" and "Move down" to the row's `accessibilityActions`, and "Move to top" on long lists. Each calls `onReorder` directly.
+- After a move, announce the new position: "Clair de Lune, position 3 of 6".
+- The handle has an `accessibilityLabel` ("Reorder Clair de Lune") and the `adjustable` role is not used: it would conflict with the actions above.
+- With Reduce Motion on, rows jump to their slots instead of sliding, and the lifted row doesn't scale.
+
+## Related
+
+- [useDragToReorder](/docs/hooks/use-drag-to-reorder)
+- [Long press](/docs/behaviors/long-press)
+- [Selection mode](/docs/patterns/selection-mode)
+- [Item](/docs/atoms/item)

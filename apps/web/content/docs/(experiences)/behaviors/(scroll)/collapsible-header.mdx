@@ -1,0 +1,92 @@
+---
+title: "Collapsible header"
+description: "A tall header with a large title that shrinks into a compact bar as the list scrolls."
+---
+
+<Callout title="Draft">
+	Specified, not implemented yet. The API is described in
+	[useCollapsibleHeader](/docs/hooks/use-collapsible-header) and may change.
+</Callout>
+
+At the top of the list, the header is tall and shows a large title. As the user scrolls, it shrinks into a compact bar and the title moves to its center. Scrolling back to the top expands it again.
+
+<CollapsibleHeaderPreview />
+
+Scroll the list, with the wheel, a trackpad or by dragging it. Stop half-way and the list scrolls to the nearest end. Drag down at the top to stretch the header.
+
+The same behavior, frame by frame:
+
+<CollapsibleHeaderStates />
+
+The dashed line is the compact bar height. The header never gets smaller than it.
+
+## When to use it
+
+- The first screen of a section, with a large title: Inbox, Settings, Library.
+- A detail screen with a cover image or a profile that should give way to the content.
+
+Use a compact [AppBar](/docs/templates/app-bar) instead on screens opened from another one (a back button and a short title are enough), and [Hide-on-scroll](/docs/behaviors/hide-on-scroll) when the bar should leave the screen entirely.
+
+## How it works
+
+Unlike hide-on-scroll, the header follows the scroll **position**, not the delta. The same offset always gives the same header, so it expands only when the list is back at the top.
+
+```ts
+range = expandedHeight - collapsedHeight;
+progress = clamp(offset / range, 0, 1);
+height = expandedHeight - progress * range;
+```
+
+Everything else is derived from `progress`:
+
+```text
+progress   0 ───────────── 0.6 ──────────── 1
+height     96 ─────────────────────────────► 40
+large title  opaque ──► faded out
+compact title              hidden ──────► opaque
+border                                       shown at 1
+```
+
+The two titles never overlap at full opacity: the large one is gone before the compact one appears.
+
+| Rule                                                                                          | Why                                                                                            |
+| --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **Position, not delta**                                                                       | The large title is an anchor for the top of the list. Showing it mid-list would be misleading. |
+| **Clamp** `progress` between `0` and `1`                                                      | Past the range, the list scrolls under a compact bar that doesn't move.                        |
+| **Stretch on overscroll**: a negative offset adds to `height` and slightly enlarges the title | Matches the iOS bounce, so the header doesn't detach from the list.                            |
+| **Snap on release** (optional): between `0` and `1`, scroll to the nearest end                | Avoids a header left half-collapsed. It scrolls the list, so offset and header stay in sync.   |
+
+## Implementation
+
+Axiom implements it with one hook, [`useCollapsibleHeader`](/docs/hooks/use-collapsible-header). It turns the scroll into `progress` and leaves the drawing to the header.
+
+| Library                   | Used for                                                                                                                                                                                              |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `react-native-reanimated` | `offset`, `progress` and `height` as shared values, computed in `useAnimatedScrollHandler`. `interpolate` for the title size and opacities, `scrollTo` for the snap. No React render while scrolling. |
+| React Native layout       | The header is positioned over the list, and the list gets `paddingTop` equal to `expandedHeight`, so the first row starts under the expanded header.                                                  |
+
+### In a screen
+
+[AppBar](/docs/templates/app-bar) already draws the two titles from `collapseProgress`, so the hook only has to feed it:
+
+```tsx title="Conceptual"
+const header = useCollapsibleHeader({ expandedHeight: 96, collapsedHeight: 44 });
+
+<AppBar variant="large" collapseProgress={header.progress}>…</AppBar>
+<Animated.FlatList data={messages} renderItem={renderMessage} {...header.scrollProps} />
+```
+
+Installation, options, return value and a custom header are documented in [useCollapsibleHeader](/docs/hooks/use-collapsible-header).
+
+## Accessibility
+
+- The title is a heading in both states. Keep a single `accessibilityRole="header"` element and hide the other one from screen readers, so it isn't read twice.
+- Don't hide actions while collapsing: the compact bar keeps the leading and trailing controls.
+- With Reduce Motion on, skip the snap and the overscroll stretch. The header still follows the scroll, since it moves with the content.
+
+## Related
+
+- [Hide-on-scroll](/docs/behaviors/hide-on-scroll)
+- [Scroll-aware AppBar](/docs/behaviors/scroll-aware-app-bar)
+- [AppBar](/docs/templates/app-bar)
+- [useCollapsibleHeader](/docs/hooks/use-collapsible-header)

@@ -1,0 +1,47 @@
+---
+title: Tempo
+description: "A habit tracker — long lists you check off, reorder and clean up in bulk."
+---
+
+<Callout title="Planned">
+	Not built yet. It is the first app queued after the demo, because it stresses
+	the gesture layer harder than anything else.
+</Callout>
+
+A list of habits for today, a calendar of what you kept, and a grid of streaks. Small surface, brutal on interactions: the same row must respond to a tap, a long press, a swipe and a drag without any of them firing by accident.
+
+<ShowcaseScreens app="tempo" />
+
+## Why this app
+
+One row, four gestures. Tempo is where we find out whether the gesture recognizers compose or fight:
+
+- Tap toggles the habit.
+- [Long press](/docs/behaviors/long-press) enters [selection mode](/docs/patterns/selection-mode).
+- [Swipe](/docs/behaviors/swipe-actions) reveals skip and delete.
+- Press and hold the handle to [reorder](/docs/behaviors/drag-to-reorder), while the list still scrolls.
+
+Get one threshold wrong and the app feels broken in a way no catalog screen would ever reveal.
+
+## Screens
+
+| Screen  | What it holds                                                   |
+| ------- | --------------------------------------------------------------- |
+| Today   | The habit list, a progress count, a floating button to add one. |
+| Reorder | Drag handles, a lifted row, the drop indicator.                 |
+| Streaks | A contribution grid and a weekly bar chart.                     |
+| Habit   | Detail, schedule, reminder, archive.                            |
+
+## Built with
+
+- [Item](/docs/atoms/item), [Checkbox](/docs/atoms/checkbox), [Chip](/docs/atoms/chip), [Badge](/docs/atoms/badge) for the rows.
+- [useSwipeActions](/docs/hooks/use-swipe-actions) and [useDragToReorder](/docs/hooks/use-drag-to-reorder).
+- [Selection mode](/docs/patterns/selection-mode) over a [dynamic toolbar](/docs/behaviors/dynamic-toolbar).
+- [Undoable action](/docs/patterns/undoable-action) for delete and skip.
+- [Pull to refresh](/docs/behaviors/pull-to-refresh) and [scroll to top](/docs/behaviors/scroll-to-top) on the list.
+
+## What it checks
+
+- Gesture arbitration: scrolling always wins until a threshold is passed on purpose.
+- Selection mode survives a reorder, a refresh and a rotation.
+- Every destructive action is reversible for long enough to notice the mistake.

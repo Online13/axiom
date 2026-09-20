@@ -1,0 +1,17 @@
+---
+// Entering and leaving selection mode. Deselecting the last item keeps the mode.
+import StateMachine, { type StateEdge, type StateNode } from '@docs/components/state-machine/state-machine.astro';
+
+const nodes: StateNode[] = [
+  { id: 'browse', label: 'browse', x: 180, y: 120, caption: 'The normal list. A tap opens an item.' },
+  { id: 'selecting', label: 'selecting', x: 500, y: 120, caption: 'A tap toggles an item. With nothing selected, the title reads "Select items" and actions grey out. Share and Edit keep the mode.' },
+];
+
+const edges: StateEdge[] = [
+  { from: 'browse', to: 'selecting', label: 'long press · Select', via: [340, 30] },
+  { from: 'selecting', to: 'browse', label: 'Done · back · Move/Delete done', via: [340, 210] },
+  { from: 'selecting', to: 'selecting', label: 'tap item', loop: 'right' },
+];
+---
+
+<StateMachine nodes={nodes} edges={edges} initial="browse" width={720} height={240} />

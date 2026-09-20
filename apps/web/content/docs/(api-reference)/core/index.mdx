@@ -1,0 +1,23 @@
+---
+title: Introduction
+description: "Headless primitives that carry shared behavior across all styling variants."
+---
+
+Core primitives have no visual style. They hold the behavior that components share, and they are the same file in every styling variant.
+
+`npx axiom init` copies them, and `npx axiom add` brings in the ones a component needs if they are missing.
+
+<Cards>
+	<Card title="Slot" href="/docs/core/slot">
+		Merges props and ref onto a single child. Powers `asChild`.
+	</Card>
+	<Card title="Portal / PortalHost" href="/docs/core/portal">
+		Renders content outside the current tree.
+	</Card>
+	<Card title="Overlay" href="/docs/core/overlay">
+		Shared backdrop for everything that covers the screen.
+	</Card>
+	<Card title="Tappable" href="/docs/core/tappable">
+		Uniform press behavior and touch target size.
+	</Card>
+</Cards>

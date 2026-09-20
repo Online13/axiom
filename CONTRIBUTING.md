@@ -17,7 +17,7 @@ For anything beyond a small fix, such as a new component, a new pattern, an API 
 
 - [Git](https://git-scm.com/)
 - [Bun](https://bun.sh/), the package manager for the monorepo (`bun.lock` is committed)
-- [Node.js](https://nodejs.org/) `>=22.12.0`, required by the Astro apps (see `apps/landing/package.json`)
+- [Node.js](https://nodejs.org/) `>=22.12.0`, required by the Astro app (see `apps/web/package.json`)
 
 The demo apps run as [development builds](https://docs.expo.dev/develop/development-builds/introduction/), compiled on your machine. For Android you need Android Studio (Android SDK and JDK), and for iOS you need Xcode on macOS.
 
@@ -32,19 +32,17 @@ bun install
 Run the apps from the repository root:
 
 ```bash
-bun docs dev        # documentation, http://localhost:4322
-bun landing dev     # landing page, http://localhost:4321
+bun web dev         # landing and documentation, http://localhost:4321
 bun demo:stylesheet start   # demo app, also demo:unistyles, demo:nativewind, demo:uniwind
 ```
 
 Build them to check your changes compile:
 
 ```bash
-bun docs build
-bun landing build
+bun web build
 ```
 
-Both dev servers can run at the same time. See [apps/README.md](./apps/README.md) for details.
+See [apps/README.md](./apps/README.md) for details.
 
 Start a demo app from its own folder, so Expo can show the QR code:
 
@@ -120,7 +118,7 @@ The repository has no test infrastructure yet. When it exists, significant chang
 
 ## Documentation
 
-Any change to a public API must update the matching page in `apps/docs/content/docs`. New components, behaviors and patterns need a page.
+Any change to a public API must update the matching page in `apps/web/content/docs`. New components, behaviors and patterns need a page.
 
 ## Pull requests
 

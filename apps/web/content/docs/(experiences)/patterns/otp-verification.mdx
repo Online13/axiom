@@ -1,0 +1,95 @@
+---
+title: OTP verification
+description: "Complete verification flow built around InputOTP."
+---
+
+<Callout title="Draft">
+	Specified, not implemented yet. The screen is built on
+	[InputOTP](/docs/atoms/input-otp). The API may change.
+</Callout>
+
+The user gets a code by text or email and types it. That's the easy part. The screen also has to check the code, say when it's wrong, stop guessing after a few tries, and let the user ask for a new code without spamming the server.
+
+<OtpVerificationPreview />
+
+Type a code on the keypad. The last digit submits by itself, no button needed. Try a wrong code first: the cells shake and you lose an attempt. After three, the cells lock until you request a new code. The right code is `482019`. Resend waits 15 seconds here, 30 to 60 in a real app.
+
+The screen, frame by frame:
+
+<OtpVerificationStates />
+
+## When to use it
+
+- Sign-in or sign-up with a phone number or an email, without a password.
+- Confirming a sensitive action: a new device, a payment, a change of email.
+
+Don't use it for something the user types often. A code costs a trip to another app every time.
+
+## How it works
+
+| State     | Cells                         | Line under the cells                        | Keys                         |
+| --------- | ----------------------------- | ------------------------------------------- | ---------------------------- |
+| Typing    | Cursor in the next empty cell | Empty                                       | On                           |
+| Verifying | Dimmed                        | Spinner, "Verifying…"                       | Off                          |
+| Invalid   | Red, shake                    | "That code doesn't match. 2 attempts left." | On, the next key starts over |
+| Locked    | Red, dimmed                   | "Too many attempts. Request a new code."    | Off until resend             |
+| Success   | Green                         | "Verified"                                  | Off, then the next screen    |
+
+### Submit on the last digit
+
+Filling the sixth cell sends the code. A **Verify** button would add a tap for nothing. Pasting a full code, or the one-time code suggestion above the keyboard, submits the same way.
+
+### Wrong code
+
+- Say the code doesn't match and how many attempts are left. Don't clear the cells right away: the user can see which digit they got wrong.
+- The next key replaces the whole code instead of appending to it.
+- After the last attempt, lock the cells and point to **Resend**. The server enforces the limit too, the screen only mirrors it.
+
+### Resend
+
+- Disabled while its countdown runs, with the time left in the label ("Resend in 0:24").
+- A new code clears the cells, resets the attempts and restarts the countdown.
+- Confirm with a [Toast](/docs/atoms/toast) ("New code sent"), since nothing else on screen changes.
+- If the user waits too long, the code expires. Treat it as a wrong code with its own message: "This code has expired."
+
+## Implementation
+
+| Library                                                    | Used for                                              |
+| ---------------------------------------------------------- | ----------------------------------------------------- |
+| [InputOTP](/docs/atoms/input-otp)                               | The cells, paste handling and `onComplete`.           |
+| React state                                                | The code, the state, attempts left and the countdown. |
+| `textContentType="oneTimeCode"` / `autoComplete="sms-otp"` | The code suggestion from the SMS on iOS and Android.  |
+
+### In a screen
+
+```tsx title="Conceptual"
+const [code, setCode] = useState('');
+const verify = useMutation({ mutationFn: api.verifyCode });
+const resend = useCountdown(30);
+
+<InputOTP
+  length={6}
+  value={code}
+  onChange={setCode}
+  onComplete={(value) => verify.mutate(value)}
+  invalid={verify.isError}
+  disabled={verify.isPending || verify.error?.code === 'locked'}
+/>
+
+<Button variant="link" disabled={resend.running} onPress={() => { api.sendCode(); setCode(''); resend.restart(); }}>
+  {resend.running ? `Resend in 0:${resend.seconds}` : 'Resend code'}
+</Button>
+```
+
+## Accessibility
+
+- Announce the result: "Verifying", "Code doesn't match, 2 attempts left", "Verified".
+- The countdown label updates silently. Announce only when **Resend** becomes available.
+- The cells read as one field ("Verification code, 3 of 6 digits"), not as six fields.
+- With Reduce Motion on, the error has no shake. The red color and the message remain.
+
+## Related
+
+- [InputOTP](/docs/atoms/input-otp)
+- [Authentication blocks](/docs/blocks/authentication)
+- [Toast](/docs/atoms/toast)

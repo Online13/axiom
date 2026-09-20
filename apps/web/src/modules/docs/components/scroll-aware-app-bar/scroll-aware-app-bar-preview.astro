@@ -1,0 +1,241 @@
+---
+// A full-height article screen driven by the same logic as useScrollAwareAppBar.
+// The bar never moves. Two values change its look:
+// - elevation = clamp(offset / distance, 0, 1): the background and the hairline fade in as the cover leaves.
+// - title = clamp((offset - (titleTop - barHeight)) / titleHeight, 0, 1): the compact title fades in as the
+//   in-content title passes under the bar.
+// The footer mirrors what the hook returns.
+import PhonePreview from '@docs/components/preview/phone-preview.astro';
+import Glyph from '@docs/components/preview/glyph.astro';
+
+const cover = 240;
+const bar = 44;
+
+const paragraphs = [
+  'For forty years, the light on the point was kept by one person. Every evening at dusk, the lamp was lit by hand, the lens wound, and the log filled in.',
+  'Automation came in 1998. The keeper stayed on anyway, repainting the rails and answering letters from sailors who remembered the beam.',
+  'The log books tell the story in short lines: wind, visibility, ships passed. On stormy nights, a single word: kept.',
+  'Today the lighthouse is a small museum. The lamp still turns, driven by a motor the size of a shoebox.',
+  'Visitors climb the 132 steps and read the last entry, left open on the desk: light on, all well.',
+  'The keeper lives in the village now, a short walk away, and still looks up at dusk.',
+  'Every spring, the old logbooks go on display for a week. People come looking for the night a relative’s boat came home.',
+  'Most entries are dull on purpose. A quiet log meant a quiet sea, and a quiet sea meant everyone came back.',
+  'The lens was made in Paris in 1884. It weighs two tonnes and floats on a bath of mercury, so a hand can turn it.',
+  'When the power fails, a small battery takes over. When the battery fails, someone from the village still has a key.',
+  'The keeper was asked once what the job was really about. The answer fit in the log: being there.',
+];
+---
+
+<PhonePreview full>
+  <div class="saab" data-scroll-aware-app-bar data-distance={cover - bar} data-bar={bar} style={`--saab-cover:${cover}px`}>
+    <div class="saab-scroller" data-scroller>
+      <div class="saab-cover" aria-hidden="true"></div>
+      <div class="ax-body saab-content">
+        <h2 class="saab-title" data-title>The last lighthouse keeper</h2>
+        <div class="saab-meta">6 min read · Coast</div>
+        {paragraphs.map((text) => <p class="saab-paragraph">{text}</p>)}
+      </div>
+    </div>
+
+    <div class="saab-bar">
+      <div class="ax-appbar">
+        <span class="ax-appbar-slot"><span class="ax-icon-btn saab-button"><Glyph name="chevron-left" /></span></span>
+        <span class="ax-appbar-title saab-compact">The last lighthouse keeper</span>
+        <span class="ax-appbar-slot" data-side="end">
+          <span class="ax-icon-btn saab-button"><Glyph name="share" /></span>
+          <span class="ax-icon-btn saab-button"><Glyph name="more" /></span>
+        </span>
+      </div>
+    </div>
+
+    <div class="saab-guide" aria-hidden="true"><span>bar bottom</span></div>
+  </div>
+
+  <div slot="footer" class="flex flex-wrap items-center justify-between gap-2 border-t px-4 py-3 font-mono text-xs" data-saab-readout>
+    <span>
+      <span class="text-fd-muted-foreground">offset </span><span data-out="offset">0</span>
+      <span class="text-fd-muted-foreground"> · elevation </span><span data-out="elevation">0.00</span>
+      <span class="text-fd-muted-foreground"> · title </span><span data-out="title">0.00</span>
+    </span>
+    <span class="inline-flex border p-0.5 font-sans" role="group" aria-label="Guides">
+      <button type="button" class="ax-toggle px-2.5 py-0.5" data-guides aria-pressed="false">Guides</button>
+    </span>
+  </div>
+</PhonePreview>
+
+<style is:global>
+  .saab {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    --saab-elevation: 0;
+    --saab-title: 0;
+  }
+
+  .saab-scroller {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    cursor: grab;
+    padding-bottom: 40px;
+  }
+
+  .saab-scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .saab-scroller[data-dragging] {
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  .saab-cover {
+    height: var(--saab-cover);
+    background:
+      radial-gradient(circle at 70% 30%, #fff7d6 0 6%, transparent 7%),
+      linear-gradient(180deg, #7aa7d9 0%, #b9d3ee 55%, #3f6e9b 56%, #2d5376 100%);
+  }
+
+  .saab-content {
+    gap: 14px;
+    padding-top: 20px;
+  }
+
+  .saab-title {
+    margin: 0;
+    font-size: 28px;
+    line-height: 34px;
+    font-weight: 700;
+    color: var(--ax-content-default);
+  }
+
+  .saab-meta {
+    color: var(--ax-content-muted);
+    font-size: 15px;
+  }
+
+  .saab-paragraph {
+    margin: 0;
+    font-size: 17px;
+    line-height: 25px;
+    color: var(--ax-content-default);
+  }
+
+  .saab-bar {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 2;
+    background: color-mix(in srgb, var(--ax-background-default) calc(var(--saab-elevation) * 100%), transparent);
+    box-shadow: 0 0.5px 0 color-mix(in srgb, var(--ax-border-default) calc(var(--saab-elevation) * 100%), transparent);
+  }
+
+  /* Over the cover, each button sits on its own disc so it stays readable. The discs fade out as the bar fills. */
+  .saab-button {
+    position: relative;
+  }
+
+  .saab-button::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    z-index: -1;
+    border-radius: 999px;
+    background: var(--ax-background-default);
+    opacity: calc((1 - var(--saab-elevation)) * 0.9);
+  }
+
+  .saab-compact {
+    opacity: var(--saab-title);
+    transform: translateY(calc((1 - var(--saab-title)) * 6px));
+  }
+
+  .saab-guide {
+    position: absolute;
+    inset-inline: 0;
+    top: 44px;
+    z-index: 3;
+    display: none;
+    border-top: 1.5px dashed #3b82f6;
+    pointer-events: none;
+  }
+
+  .saab-guide span {
+    position: absolute;
+    right: 8px;
+    top: 2px;
+    font: 11px ui-monospace, monospace;
+    color: #3b82f6;
+  }
+
+  .saab[data-guides] .saab-guide {
+    display: block;
+  }
+
+  .saab[data-guides] .saab-title {
+    outline: 1.5px dashed #a855f7;
+    outline-offset: 2px;
+  }
+</style>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-scroll-aware-app-bar]:not([data-ready])').forEach((root) => {
+      root.dataset.ready = '';
+      const distance = Number(root.dataset.distance);
+      const bar = Number(root.dataset.bar);
+      const scroller = root.querySelector<HTMLElement>('[data-scroller]')!;
+      const title = root.querySelector<HTMLElement>('[data-title]')!;
+      const readout = root.closest('[data-ax-preview]')!.querySelector<HTMLElement>('[data-saab-readout]')!;
+      const out = (key: string) => readout.querySelector<HTMLElement>(`[data-out="${key}"]`)!;
+      const guides = readout.querySelector<HTMLButtonElement>('[data-guides]')!;
+
+      // The in-content title's layout, in content coordinates, like onLayout gives it in React Native.
+      const titleTop = title.offsetTop;
+      const titleHeight = title.offsetHeight;
+
+      const render = () => {
+        const offset = Math.max(scroller.scrollTop, 0);
+        const elevation = Math.min(offset / distance, 1);
+        const titleProgress = Math.min(Math.max((offset - (titleTop - bar)) / titleHeight, 0), 1);
+        root.style.setProperty('--saab-elevation', String(elevation));
+        root.style.setProperty('--saab-title', String(titleProgress));
+        out('offset').textContent = String(Math.round(offset));
+        out('elevation').textContent = elevation.toFixed(2);
+        out('title').textContent = titleProgress.toFixed(2);
+      };
+
+      scroller.addEventListener('scroll', render, { passive: true });
+
+      guides.addEventListener('click', () => {
+        const on = root.toggleAttribute('data-guides');
+        guides.setAttribute('aria-pressed', String(on));
+      });
+
+      // Mouse drag scrolls like a finger. Touch and wheel already scroll natively.
+      let startY = 0;
+      let startScroll = 0;
+      scroller.addEventListener('pointerdown', (event) => {
+        if (event.pointerType !== 'mouse') return;
+        startY = event.clientY;
+        startScroll = scroller.scrollTop;
+        scroller.dataset.dragging = '';
+        scroller.setPointerCapture(event.pointerId);
+      });
+      scroller.addEventListener('pointermove', (event) => {
+        if (scroller.dataset.dragging === undefined) return;
+        const zoom = scroller.getBoundingClientRect().height / scroller.clientHeight || 1;
+        scroller.scrollTop = startScroll - (event.clientY - startY) / zoom;
+      });
+      const release = () => delete scroller.dataset.dragging;
+      scroller.addEventListener('pointerup', release);
+      scroller.addEventListener('pointercancel', release);
+
+      render();
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

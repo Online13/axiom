@@ -1,0 +1,24 @@
+---
+import TokenFrame from './token-frame.astro';
+import { palette, paletteSteps } from '@docs/lib/tokens';
+---
+
+<TokenFrame>
+  <div class="grid min-w-[44rem] gap-x-1 gap-y-3 p-4" style="grid-template-columns: 3.75rem repeat(11, minmax(0, 1fr));">
+    <div></div>
+    {paletteSteps.map((step) => <div class="font-mono text-[0.7rem] text-fd-muted-foreground text-center">{step}</div>)}
+    {
+      Object.entries(palette).map(([hue, scale]) => (
+        <>
+          <div class="font-mono text-xs self-center">{hue}</div>
+          {paletteSteps.map((step) => (
+            <div class="flex flex-col gap-1">
+              <div class="h-10 w-full" style={`background:${scale[step]}`} title={`${hue}.${step} ${scale[step]}`} />
+              <div class="font-mono text-[0.55rem] text-fd-muted-foreground text-center">{scale[step].slice(5, -4).replaceAll('%', '').replaceAll(',', '')}</div>
+            </div>
+          ))}
+        </>
+      ))
+    }
+  </div>
+</TokenFrame>

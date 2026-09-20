@@ -1,0 +1,39 @@
+---
+import TokenFrame from './token-frame.astro';
+import { metrics } from '@docs/lib/tokens';
+---
+
+<TokenFrame>
+  <div class="grid gap-px bg-fd-border sm:grid-cols-3">
+    <div class="flex flex-col items-center gap-3 bg-fd-card p-6">
+      <div class="flex h-[5.5rem] items-center">
+        <div
+          class="flex items-center justify-center border border-dashed border-fd-muted-foreground"
+          style={`width:${metrics.touchTarget}px;height:${metrics.touchTarget}px`}
+        >
+          <div class="size-6 bg-fd-foreground"></div>
+        </div>
+      </div>
+      <div class="font-mono text-xs">touchTarget <span class="text-fd-muted-foreground">{metrics.touchTarget}</span></div>
+    </div>
+    <div class="flex flex-col items-center gap-3 bg-fd-card p-6">
+      <div class="flex h-[5.5rem] w-24 border border-fd-muted-foreground">
+        <div class="bg-fd-muted" style={`width:${metrics.screenMargin}px`}></div>
+        <div class="flex flex-1 flex-col justify-center gap-1.5">
+          <div class="h-2 bg-fd-foreground"></div>
+          <div class="h-2 w-2/3 bg-fd-foreground"></div>
+        </div>
+        <div class="bg-fd-muted" style={`width:${metrics.screenMargin}px`}></div>
+      </div>
+      <div class="font-mono text-xs">screenMargin <span class="text-fd-muted-foreground">{metrics.screenMargin}</span></div>
+    </div>
+    <div class="flex flex-col items-center gap-3 bg-fd-card p-6">
+      <div class="flex h-[5.5rem] w-24 flex-col justify-center gap-3">
+        <div class="h-2 w-3/4 bg-fd-foreground"></div>
+        <div class="bg-fd-muted-foreground" style="height:1px"></div>
+        <div class="h-2 w-1/2 bg-fd-foreground"></div>
+      </div>
+      <div class="font-mono text-xs">hairline <span class="text-fd-muted-foreground">1px</span></div>
+    </div>
+  </div>
+</TokenFrame>

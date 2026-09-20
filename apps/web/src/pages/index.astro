@@ -1,0 +1,30 @@
+---
+import Base from '@landing/layouts/Base.astro';
+import Nav from '@landing/components/sections/Nav.astro';
+import Hero from '@landing/components/sections/Hero.astro';
+import Experience from '@landing/components/sections/Experience.astro';
+import Principle from '@landing/components/sections/Principle.astro';
+import System from '@landing/components/sections/System.astro';
+import Mobile from '@landing/components/sections/Mobile.astro';
+import Platform from '@landing/components/sections/Platform.astro';
+import OpenSource from '@landing/components/sections/OpenSource.astro';
+import Inspirations from '@landing/components/sections/Inspirations.astro';
+import Footer from '@landing/components/sections/Footer.astro';
+import Bento from '@landing/components/sections/bento/Bento.astro';
+---
+
+<Base>
+	<Nav />
+	<main>
+		<Hero />
+		<Bento />
+		<Experience />
+		<Principle />
+		<System />
+		<Platform />
+		<Mobile />
+		<OpenSource />
+		<Inspirations />
+	</main>
+	<Footer />
+</Base>

@@ -1,0 +1,140 @@
+---
+// Card for the behaviors page: a small phone-screen schematic, the behavior name and its status.
+// Each card links to its page under /behaviors. The status says whether it is available, specified or planned.
+// Illustrations use the docs palette only, so they follow the light / dark theme.
+
+import Glyph from '@docs/components/preview/glyph.astro';
+
+type Status = 'available' | 'spec' | 'planned';
+
+interface Props {
+  title: string;
+  preview: string;
+  status: Status;
+  href?: string;
+}
+
+const { title, preview, status, href } = Astro.props;
+
+const statusLabel: Record<Status, string> = { available: 'Available', spec: 'Spec', planned: 'Planned' };
+const statusClass: Record<Status, string> = {
+  available: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
+  spec: 'bg-sky-500/15 text-sky-700 dark:text-sky-400',
+  planned: 'bg-fd-muted-foreground/15 text-fd-muted-foreground',
+};
+
+const Tag = href ? 'a' : 'div';
+const line = 'block h-1 rounded-full bg-fd-muted-foreground/30';
+const strong = 'block h-1 rounded-full bg-fd-foreground/70';
+const row = 'flex items-center gap-1 px-1.5 py-1';
+const dot = 'size-2.5 shrink-0 rounded-full bg-fd-muted-foreground/30';
+const box = 'border border-fd-border bg-fd-background';
+const accent = 'text-fd-foreground';
+---
+
+<Tag
+  href={href}
+  class:list={[
+    'group flex flex-col border bg-fd-card text-fd-card-foreground',
+    href && 'transition-colors hover:border-fd-ring hover:bg-fd-accent/40',
+  ]}
+>
+  <div class="flex h-32 items-center justify-center overflow-hidden border-b bg-fd-muted/60" aria-hidden="true">
+    <div class={`relative flex h-[88px] w-[60px] scale-[1.2] flex-col leading-none overflow-hidden rounded-[8px] ${box} text-fd-muted-foreground`}>
+      {/* Scroll */}
+      {preview === 'pull-to-refresh' && (
+        <>
+          <span class="flex h-6 items-center justify-center"><Glyph name="refresh" size={11} class={accent} strokeWidth={2.4} /></span>
+          <span class="flex flex-col gap-1 border-t border-fd-border p-1.5"><span class={`${strong} w-3/4`} /><span class={line} /><span class={`${line} w-2/3`} /></span>
+          <Glyph name="arrow-down" size={10} class="absolute right-1 top-1 opacity-60" />
+        </>
+      )}
+      {preview === 'hide-on-scroll' && (
+        <>
+          <span class="h-3 -translate-y-1.5 border-b border-dashed border-fd-border bg-fd-muted opacity-60" />
+          <span class="flex flex-1 flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /><span class={line} /></span>
+          <span class="flex h-3.5 translate-y-1.5 items-center justify-around border-t border-dashed border-fd-border bg-fd-muted opacity-60"><span class="size-1 rounded-full bg-current" /><span class="size-1 rounded-full bg-current" /></span>
+          <Glyph name="arrow-up" size={10} class={`absolute right-1 top-1/2 -translate-y-1/2 ${accent}`} />
+        </>
+      )}
+      {preview === 'collapsible-header' && (
+        <>
+          <span class="flex h-9 flex-col justify-end gap-1 bg-fd-muted-foreground/20 p-1.5"><span class={`${strong} w-3/4 h-1.5`} /></span>
+          <span class="flex h-3 items-center justify-center text-fd-foreground"><Glyph name="chevron-up" size={9} strokeWidth={2.6} /></span>
+          <span class="flex flex-col gap-1 px-1.5"><span class={line} /><span class={`${line} w-2/3`} /></span>
+        </>
+      )}
+      {preview === 'scroll-to-top' && (
+        <>
+          <span class="flex flex-1 flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /><span class={line} /><span class={`${line} w-1/2`} /></span>
+          <span class="absolute bottom-1.5 right-1.5 flex size-4 items-center justify-center rounded-full bg-fd-foreground text-fd-background"><Glyph name="arrow-up" size={9} strokeWidth={2.8} /></span>
+        </>
+      )}
+      {preview === 'scroll-aware-app-bar' && (
+        <>
+          <span class="flex h-4 items-center justify-center border-b border-fd-border shadow-sm"><span class={`${strong} w-6`} /></span>
+          <span class="flex flex-1 flex-col gap-1 p-1.5 opacity-70"><span class={line} /><span class={`${line} w-2/3`} /><span class={line} /></span>
+        </>
+      )}
+
+      {/* Gestures */}
+      {preview === 'long-press' && (
+        <>
+          <span class="flex flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /></span>
+          <span class="relative mx-1 flex items-center gap-1 rounded-[4px] bg-fd-muted-foreground/20 p-1"><span class={dot} /><span class={`${strong} flex-1`} /></span>
+          <span class="absolute left-1/2 top-[52%] size-5 -translate-x-1/2 rounded-full border-2 border-fd-foreground/60" />
+          <span class="absolute left-1/2 top-[52%] size-3 -translate-x-1/2 translate-y-1 rounded-full bg-fd-foreground/40" />
+        </>
+      )}
+      {preview === 'swipe-actions' && (
+        <>
+        <span class={`${row} mt-1`}><span class={dot} /><span class={`${line} flex-1`} /></span>
+        <span class="flex h-5 overflow-hidden border-y border-fd-border">
+          <span class="flex w-9 -translate-x-3 items-center gap-1 bg-fd-background px-1"><span class={dot} /><span class={`${line} flex-1`} /></span>
+          <span class="flex flex-1 items-center justify-center bg-amber-500 text-white"><Glyph name="archive" size={9} strokeWidth={2.4} /></span>
+          <span class="flex flex-1 items-center justify-center bg-sky-500 text-white"><Glyph name="pin" size={9} strokeWidth={2.4} /></span>
+        </span>
+        <span class={row}><span class={dot} /><span class={`${line} flex-1`} /></span>
+        <span class={row}><span class={dot} /><span class={`${line} w-2/3`} /></span>
+        </>
+      )}
+      {preview === 'drag-to-reorder' && (
+        <span class="flex flex-col gap-1 p-1.5">
+          {[0, 1, 2].map((i) => (
+            <span class:list={['flex items-center gap-1 rounded-[3px] px-1 py-0.5', i === 1 ? 'translate-x-1 bg-fd-background shadow-md ring-1 ring-fd-foreground/40' : '']}>
+              <span class={`${i === 1 ? strong : line} flex-1`} />
+              <Glyph name="menu" size={7} strokeWidth={2.6} class={i === 1 ? accent : ''} />
+            </span>
+          ))}
+        </span>
+      )}
+
+      {/* Contextual UI */}
+      {preview === 'dynamic-toolbar' && (
+        <>
+          <span class="flex flex-1 flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /></span>
+          <span class={`mx-1 mb-1.5 flex h-4 items-center justify-around rounded-full ${box} shadow-sm`}>
+            <Glyph name="copy" size={7} strokeWidth={2.4} /><Glyph name="share" size={7} strokeWidth={2.4} /><Glyph name="more" size={7} strokeWidth={3} />
+          </span>
+        </>
+      )}
+
+      {preview === 'pagination' && (
+        <>
+          <span class="flex flex-col gap-1 p-1.5"><span class={line} /><span class={`${line} w-2/3`} /><span class={line} /><span class={`${line} w-1/2`} /></span>
+          <span class="mt-auto flex items-center justify-center pb-1.5">
+            <svg width="9" height="9" viewBox="0 0 24 24" class={`animate-spin motion-reduce:animate-none ${accent}`}>
+              <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-opacity="0.15" stroke-width="3.5" />
+              <path d="M21 12a9 9 0 00-9-9" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" />
+            </svg>
+          </span>
+        </>
+      )}
+    </div>
+  </div>
+
+  <div class="flex items-start justify-between gap-2 p-3">
+    <span class="text-sm font-medium">{title}</span>
+    <span class={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium ${statusClass[status]}`}>{statusLabel[status]}</span>
+  </div>
+</Tag>

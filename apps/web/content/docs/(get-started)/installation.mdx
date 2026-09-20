@@ -1,0 +1,109 @@
+---
+title: Installation
+description: "Set up Axiom in an Expo or React Native project."
+---
+
+<Callout title="Not published yet">
+	`npx axiom` doesn't work yet: the CLI isn't on npm. This page is the
+	specification it is being built against, so commands and options may still
+	change.
+</Callout>
+
+## Before you start
+
+You need an existing Expo or React Native app. Axiom doesn't create the project for you.
+
+Copied components are imported through a path alias (`@/components/ui` by default), so make sure your project resolves `@/` or pick another alias during `init`.
+
+## 1. Initialize your project
+
+Run `init` at the root of your app:
+
+```npm
+npx axiom init
+```
+
+It asks which styling tool your project uses:
+
+```txt title="Terminal" noCopy
+◆  Which styling tool does your project use?
+│  ● stylesheet
+│  ○ unistyles
+│  ○ nativewind
+│  ○ uniwind
+└
+```
+
+`nativewind` and `uniwind` both get the `tailwind` variant.
+
+Then it:
+
+- copies the foundations: theme contracts, default tokens, `light` and `dark` themes;
+- copies the core primitives;
+- installs the styling dependency when there is one (`react-native-unistyles`, `nativewind` or `uniwind`). This happens once, not for every component.
+
+Your choices are saved in a config file at the root of the project:
+
+```json title="axiom.json"
+{
+	"$schema": "https://axiom.dev/schema.json",
+	"styling": "stylesheet",
+	"aliases": {
+		"theme": "@/theme",
+		"core": "@/components/core",
+		"hooks": "@/hooks",
+		"components": "@/components/ui",
+		"blocks": "@/components/blocks"
+	}
+}
+```
+
+Each alias tells the CLI where a layer is copied. See [Where files go](/docs/configuration#where-files-go).
+
+The file also gets an `items` list. `init` and `add` fill it with everything they copy, and `npx axiom fetch` copies the whole list into a project. See [Configuration](/docs/configuration) for every key.
+
+## 2. Add a component
+
+```npm
+npx axiom add button
+```
+
+The CLI copies the variant that matches your `styling` setting, along with any internal dependency the component needs and doesn't find in your project. See [CLI](/docs/cli) for details.
+
+## 3. Use it
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+export function SaveButton() {
+	return <Button>Save</Button>;
+}
+```
+
+The file is now part of your app. Change it as you like.
+
+## Manual installation
+
+You can skip the CLI entirely. Every component page shows the source for each styling variant, and lists:
+
+- the internal dependencies to copy first (for example `portal`, `overlay`, `tappable`);
+- the npm packages to install (for example `react-native-reanimated`, `react-native-gesture-handler`).
+
+Copy the files for your variant into your project, install the listed packages, and import the component.
+
+## Next steps
+
+<Cards>
+	<Card title="CLI" href="/docs/cli">
+		What `init` and `add` do, step by step.
+	</Card>
+	<Card title="Styling" href="/docs/styling">
+		How the variants work and how they differ.
+	</Card>
+	<Card title="Foundations" href="/docs/foundations">
+		Customize the theme and tokens.
+	</Card>
+	<Card title="Atoms" href="/docs/atoms">
+		Browse the components.
+	</Card>
+</Cards>

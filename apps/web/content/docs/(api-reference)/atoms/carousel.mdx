@@ -1,0 +1,319 @@
+---
+title: Carousel
+description: "Virtualized carousel driven by data."
+---
+
+<PhonePreview>
+	<div class="ax-appbar">
+		<span
+			class="ax-appbar-title"
+			style={{
+				textAlign: "left",
+				paddingLeft: "8px",
+				fontSize: "28px",
+				fontWeight: 700,
+			}}
+		>
+			Explore
+		</span>
+		<span class="ax-icon-btn">
+			<Glyph name="search" />
+		</span>
+	</div>
+	<div class="ax-carousel" style={{ paddingTop: "8px" }}>
+		<div
+			class="ax-media"
+			data-tone="6"
+			style={{
+				width: "330px",
+				height: "190px",
+				borderRadius: "14px",
+				flexDirection: "column",
+				alignItems: "flex-start",
+				justifyContent: "flex-end",
+				padding: "16px",
+				gap: "2px",
+			}}
+		>
+			<span class="ax-footnote" style={{ opacity: 0.8 }}>
+				FEATURED
+			</span>
+			<span class="ax-title2" style={{ color: "#fff" }}>
+				Night trains of Europe
+			</span>
+		</div>
+		<div
+			class="ax-media"
+			data-tone="5"
+			style={{ width: "330px", height: "190px", borderRadius: "14px" }}
+		/>
+	</div>
+	<div class="ax-dots" style={{ padding: "12px 0 18px" }}>
+		<span data-active />
+		<span />
+		<span />
+		<span />
+	</div>
+	<div
+		class="ax-row"
+		data-justify="between"
+		style={{ padding: "0 16px 10px" }}
+	>
+		<span class="ax-title3">Nearby</span>
+		<span class="ax-link ax-subhead">See all</span>
+	</div>
+	<div class="ax-carousel">
+		<div class="ax-stack" data-gap="8" style={{ width: "130px" }}>
+			<div
+				class="ax-media"
+				data-tone="1"
+				style={{ height: "96px", borderRadius: "10px" }}
+			/>
+			<span class="ax-subhead ax-semibold">Café Lomi</span>
+		</div>
+		<div class="ax-stack" data-gap="8" style={{ width: "130px" }}>
+			<div
+				class="ax-media"
+				data-tone="4"
+				style={{ height: "96px", borderRadius: "10px" }}
+			/>
+			<span class="ax-subhead ax-semibold">Jardin</span>
+		</div>
+		<div class="ax-stack" data-gap="8" style={{ width: "130px" }}>
+			<div
+				class="ax-media"
+				data-tone="3"
+				style={{ height: "96px", borderRadius: "10px" }}
+			/>
+			<span class="ax-subhead ax-semibold">Musée</span>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add carousel
+```
+
+Installs: `react-native-reanimated`.
+
+Scrolling, snapping, autoplay and the imperative API live in `use-carousel.ts`, on top of a virtualized `FlatList`.
+
+## Usage
+
+The API follows the list model: pass data and a render function.
+
+```tsx
+import { Carousel } from "@/components/ui/carousel";
+
+<Carousel
+	data={stories}
+	renderItem={({ item }) => <StoryCard story={item} />}
+	keyExtractor={(item) => item.id}
+/>;
+```
+
+## Props
+
+| Prop                 | Type                                          | Default                | Description                                                                                                                      |
+| -------------------- | --------------------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `data`               | `T[]`                                         | —                      | Items to render.                                                                                                                 |
+| `renderItem`         | `({ item, index, progress }) => ReactElement` | —                      | Renders one item. `progress` is a shared value from −1 to 1 as the item moves through the center, for scale or parallax effects. |
+| `keyExtractor`       | `(item: T, index: number) => string`          | index                  | Stable key per item.                                                                                                             |
+| `itemWidth`          | `number`                                      | screen width − margins | Width of each item. Smaller than the viewport, the next item peeks in.                                                           |
+| `gap`                | `SpacingToken`                                | `3`                    | Space between items.                                                                                                             |
+| `contentInset`       | `SpacingToken`                                | `screenMargin`         | Padding at the start and end, so the first item aligns with the rest of the screen.                                              |
+| `snap`               | `'item' \| 'page' \| 'none'`                  | `'item'`               | `item` stops on each item, `page` on every visible page, `none` scrolls freely.                                                  |
+| `pagination`         | `boolean \| 'dots' \| 'counter'`              | `false`                | Indicator under the carousel: dots, or `2 / 8`.                                                                                  |
+| `index`              | `number`                                      | —                      | Controlled active index.                                                                                                         |
+| `onIndexChange`      | `(index: number) => void`                     | —                      | Called when the carousel settles on a new item.                                                                                  |
+| `loop`               | `boolean`                                     | `false`                | Wraps from the last item back to the first.                                                                                      |
+| `autoPlay`           | `number`                                      | —                      | Interval in ms to advance automatically. Paused while the user touches it and when reduce motion is on.                          |
+| `windowSize`         | `number`                                      | `5`                    | Items rendered around the active one. Others are unmounted to keep long carousels light.                                         |
+| `ref`                | `Ref<CarouselRef>`                            | —                      | `scrollToIndex(index, animated?)`, `next()`, `prev()`.                                                                           |
+| `accessibilityLabel` | `string`                                      | —                      | Names the carousel for screen readers, such as `"Product photos"`.                                                               |
+| `style`              | `StyleProp<ViewStyle>`                        | —                      | Extra styles for the container.                                                                                                  |
+
+## Use cases
+
+### Onboarding
+
+Full-width pages with `snap="page"`, dots, and a button that follows the index.
+
+<PhonePreview half="bottom" size="sm">
+	<div class="ax-center" style={{ gap: "10px", padding: "0 40px" }}>
+		<span
+			class="ax-empty-media"
+			style={{
+				width: "120px",
+				height: "120px",
+				background: "var(--ax-feedback-info-subtle)",
+				color: "var(--ax-feedback-info)",
+			}}
+		>
+			<Glyph name="bell" size={52} />
+		</span>
+		<span class="ax-title2" style={{ marginTop: "10px" }}>
+			Never miss a train
+		</span>
+		<span class="ax-subhead ax-muted">
+			We'll ping you when your platform is announced.
+		</span>
+	</div>
+	<div class="ax-dots" style={{ paddingBottom: "20px" }}>
+		<span />
+		<span data-active />
+		<span />
+	</div>
+	<div class="ax-body" style={{ paddingBottom: "40px" }}>
+		<span class="ax-btn" data-size="lg" data-block>
+			Next
+		</span>
+	</div>
+</PhonePreview>
+
+```tsx
+const ref = useRef<CarouselRef>(null);
+const [index, setIndex] = useState(0);
+
+<Carousel ref={ref} data={slides} snap="page" pagination="dots" onIndexChange={setIndex} renderItem={renderSlide} />
+<Button size="lg" fullWidth onPress={() => (index < slides.length - 1 ? ref.current?.next() : finish())}>
+  {index < slides.length - 1 ? 'Next' : 'Get started'}
+</Button>
+```
+
+### Product gallery
+
+Photos with a counter instead of dots when there are many.
+
+<PhonePreview size="sm">
+	<div
+		class="ax-media"
+		data-tone="3"
+		style={{
+			height: "300px",
+			position: "relative",
+			alignItems: "flex-end",
+			justifyContent: "flex-end",
+			padding: "12px",
+		}}
+	>
+		<Glyph
+			name="bag"
+			size={80}
+			style={{ position: "absolute", top: "110px", left: "150px" }}
+		/>
+		<span
+			class="ax-badge"
+			style={{ background: "rgb(0 0 0 / 0.5)", color: "#fff" }}
+		>
+			3 / 8
+		</span>
+	</div>
+	<div class="ax-body">
+		<span class="ax-title3">Canvas tote</span>
+	</div>
+</PhonePreview>
+
+```tsx
+<Carousel
+	data={product.photos}
+	snap="page"
+	pagination="counter"
+	renderItem={({ item }) => <Image source={item} style={styles.photo} />}
+/>
+```
+
+### Stories row
+
+Small round items, free scroll with `snap="none"`, and only nearby items mounted.
+
+<PhonePreview size="sm">
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Home
+	</div>
+	<div class="ax-carousel" style={{ gap: "14px", paddingBottom: "12px" }}>
+		<div class="ax-stack" data-gap="4" style={{ alignItems: "center" }}>
+			<span
+				class="ax-avatar"
+				data-size="lg"
+				style={{ boxShadow: "inset 0 0 0 1.5px var(--ax-border-default)" }}
+			>
+				<Glyph name="plus" />
+			</span>
+			<span class="ax-caption">You</span>
+		</div>
+		<div class="ax-stack" data-gap="4" style={{ alignItems: "center" }}>
+			<span
+				class="ax-avatar"
+				data-size="lg"
+				data-photo="1"
+				style={{
+					boxShadow:
+						"0 0 0 2px var(--ax-background-default), 0 0 0 4px #FF2D55",
+				}}
+			>
+				A
+			</span>
+			<span class="ax-caption">ada</span>
+		</div>
+		<div class="ax-stack" data-gap="4" style={{ alignItems: "center" }}>
+			<span
+				class="ax-avatar"
+				data-size="lg"
+				data-photo="2"
+				style={{
+					boxShadow:
+						"0 0 0 2px var(--ax-background-default), 0 0 0 4px #FF2D55",
+				}}
+			>
+				B
+			</span>
+			<span class="ax-caption">alan</span>
+		</div>
+		<div class="ax-stack" data-gap="4" style={{ alignItems: "center" }}>
+			<span
+				class="ax-avatar"
+				data-size="lg"
+				data-photo="4"
+				style={{
+					boxShadow:
+						"0 0 0 2px var(--ax-background-default), 0 0 0 4px var(--ax-border-default)",
+				}}
+			>
+				C
+			</span>
+			<span class="ax-caption">linus</span>
+		</div>
+		<div class="ax-stack" data-gap="4" style={{ alignItems: "center" }}>
+			<span class="ax-avatar" data-size="lg" data-photo="5">
+				D
+			</span>
+			<span class="ax-caption">grace</span>
+		</div>
+	</div>
+	<div class="ax-separator" />
+	<div class="ax-body">
+		<div class="ax-placeholder-block" style={{ height: "140px" }} />
+	</div>
+</PhonePreview>
+
+```tsx
+<Carousel
+	data={stories}
+	itemWidth={64}
+	gap={3}
+	snap="none"
+	windowSize={10}
+	renderItem={renderStory}
+/>
+```
+
+## Guidelines
+
+Keep one main scroll direction per area. A horizontal carousel inside a vertical feed is fine; stacking several scroll directions in the same space is not. See [Mobile design guidelines](/docs/patterns/guidelines#one-primary-scroll-direction).
+
+## Related
+
+- [Card](/docs/atoms/card)

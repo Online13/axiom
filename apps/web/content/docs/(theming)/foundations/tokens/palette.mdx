@@ -1,0 +1,54 @@
+---
+title: Palette
+description: "Every raw color of the theme, in scales from 50 to 950."
+---
+
+<Callout title="Draft">
+	The values shown here are conceptual and may change.
+</Callout>
+
+The palette holds every raw color. Each hue has eleven steps, from light (`50`) to dark (`950`). Step `500` is the iOS system color.
+
+Colors are written as `hsla(hue, saturation%, lightness%, alpha)`, rounded to whole numbers. A lighter or darker variant only changes the lightness, and a transparent one only the alpha, so you can adjust a color without a converter:
+
+```ts
+palette.blue[500]; // 'hsla(211, 100%, 50%, 1)'
+("hsla(211, 100%, 50%, 0.12)"); // the same blue, as a tinted background
+```
+
+<PaletteGrid />
+
+## Shape
+
+```ts title="Conceptual"
+export const palette = {
+	gray: {
+		50: "hsla(0, 0%, 96%, 1)",
+		100: "hsla(240, 2%, 91%, 1)",
+		200: "hsla(240, 2%, 82%, 1)",
+		300: "hsla(240, 3%, 73%, 1)",
+		400: "hsla(240, 2%, 65%, 1)",
+		500: "hsla(240, 2%, 57%, 1)",
+		600: "hsla(240, 2%, 48%, 1)",
+		700: "hsla(240, 2%, 39%, 1)",
+		800: "hsla(240, 2%, 30%, 1)",
+		900: "hsla(240, 3%, 20%, 1)",
+		950: "hsla(240, 4%, 14%, 1)",
+	},
+	red: {/* … */},
+	// orange, yellow, green, mint, teal, cyan, blue, indigo, purple, pink, brown
+} satisfies Palette;
+```
+
+## Usage
+
+Components never read the palette. [Colors](/docs/foundations/colors) pick steps from it and give them a role:
+
+```ts title="Conceptual"
+export const lightColors = {
+	border: { default: palette.gray[200] },
+	feedback: { error: palette.red[500] },
+} satisfies ThemeColors;
+```
+
+To change the brand color, point the semantic colors to another hue, or edit the hue itself.

@@ -1,0 +1,286 @@
+---
+title: Skeleton
+description: "Animated placeholder for loading states."
+---
+
+<PhonePreview>
+	<div class="ax-appbar">
+		<span
+			class="ax-appbar-title"
+			style={{
+				textAlign: "left",
+				paddingLeft: "8px",
+				fontSize: "28px",
+				fontWeight: 700,
+			}}
+		>
+			Feed
+		</span>
+		<span class="ax-icon-btn">
+			<Glyph name="bell" />
+		</span>
+	</div>
+	<div class="ax-body" style={{ gap: "18px" }}>
+		<div class="ax-stack" data-gap="12">
+			<div class="ax-row" data-gap="12">
+				<span
+					class="ax-skeleton"
+					data-shape="circle"
+					style={{ width: "40px", height: "40px" }}
+				/>
+				<div class="ax-stack ax-grow" data-gap="8">
+					<span class="ax-skeleton" style={{ width: "45%" }} />
+					<span
+						class="ax-skeleton"
+						style={{ width: "25%", height: "12px" }}
+					/>
+				</div>
+			</div>
+			<span
+				class="ax-skeleton"
+				data-shape="block"
+				style={{ height: "150px" }}
+			/>
+			<span class="ax-skeleton" style={{ width: "90%" }} />
+			<span class="ax-skeleton" style={{ width: "70%" }} />
+		</div>
+		<div class="ax-row" data-gap="12">
+			<span
+				class="ax-skeleton"
+				data-shape="circle"
+				style={{ width: "40px", height: "40px" }}
+			/>
+			<div class="ax-stack ax-grow" data-gap="8">
+				<span class="ax-skeleton" style={{ width: "55%" }} />
+				<span
+					class="ax-skeleton"
+					style={{ width: "30%", height: "12px" }}
+				/>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add skeleton
+```
+
+Installs: `react-native-reanimated`.
+
+The shared animation clock lives in `use-skeleton.ts`. Colors come from `skeleton.default.default.{background,highlight}` in the [component tokens](/docs/foundations/component-tokens).
+
+## Usage
+
+```tsx
+import { Skeleton } from '@/components/ui/skeleton';
+
+<Skeleton width={48} height={48} radius="full" />
+<Skeleton width="60%" height={16} />
+```
+
+## Props
+
+### Skeleton
+
+| Prop       | Type                             | Default     | Description                                                                         |
+| ---------- | -------------------------------- | ----------- | ----------------------------------------------------------------------------------- |
+| `width`    | `DimensionValue`                 | `'100%'`    | Width in points or percent. Match the content it replaces.                          |
+| `height`   | `DimensionValue`                 | `16`        | Height. For text, use the line height of the text variant it stands for.            |
+| `radius`   | `RadiusToken`                    | `'sm'`      | Corner radius from the tokens. `full` for avatars.                                  |
+| `variant`  | `'shimmer' \| 'pulse' \| 'none'` | `'shimmer'` | Animation. `pulse` fades in and out, `none` is static. Reduce motion forces `none`. |
+| `loading`  | `boolean`                        | `true`      | When `false`, renders `children` instead of the placeholder.                        |
+| `children` | `ReactNode`                      | —           | The real content, shown once `loading` is `false`.                                  |
+| `style`    | `StyleProp<ViewStyle>`           | —           | Extra styles for the placeholder.                                                   |
+
+### Skeleton.Text
+
+| Prop        | Type                             | Default     | Description                                                                                                   |
+| ----------- | -------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------- |
+| `lines`     | `number`                         | `3`         | Number of lines. The last one is shorter, like a real paragraph.                                              |
+| `variant`   | `TextVariant`                    | `'body'`    | Uses the line height of this [Text](/docs/atoms/text) variant, so the placeholder has the same height as the text. |
+| `animation` | `'shimmer' \| 'pulse' \| 'none'` | `'shimmer'` | Animation of the lines.                                                                                       |
+| `loading`   | `boolean`                        | `true`      | When `false`, renders `children` instead of the lines.                                                        |
+
+Every skeleton on screen shares one animation clock, so shimmers stay in sync. Skeletons are hidden from screen readers; announce the loading state once on the container.
+
+## Use cases
+
+### List placeholder
+
+Repeat a skeleton row with the shape of the real row. The layout doesn't jump when data arrives.
+
+<PhonePreview size="sm">
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Contacts
+	</div>
+	<div class="ax-list" data-variant="plain">
+		<div class="ax-item">
+			<span
+				class="ax-skeleton"
+				data-shape="circle"
+				style={{ width: "40px", height: "40px" }}
+			/>
+			<div class="ax-stack ax-grow" data-gap="8">
+				<span class="ax-skeleton" style={{ width: "50%" }} />
+				<span
+					class="ax-skeleton"
+					style={{ width: "32%", height: "12px" }}
+				/>
+			</div>
+		</div>
+		<div class="ax-item">
+			<span
+				class="ax-skeleton"
+				data-shape="circle"
+				style={{ width: "40px", height: "40px" }}
+			/>
+			<div class="ax-stack ax-grow" data-gap="8">
+				<span class="ax-skeleton" style={{ width: "62%" }} />
+				<span
+					class="ax-skeleton"
+					style={{ width: "28%", height: "12px" }}
+				/>
+			</div>
+		</div>
+		<div class="ax-item">
+			<span
+				class="ax-skeleton"
+				data-shape="circle"
+				style={{ width: "40px", height: "40px" }}
+			/>
+			<div class="ax-stack ax-grow" data-gap="8">
+				<span class="ax-skeleton" style={{ width: "44%" }} />
+				<span
+					class="ax-skeleton"
+					style={{ width: "36%", height: "12px" }}
+				/>
+			</div>
+		</div>
+		<div class="ax-item">
+			<span
+				class="ax-skeleton"
+				data-shape="circle"
+				style={{ width: "40px", height: "40px" }}
+			/>
+			<div class="ax-stack ax-grow" data-gap="8">
+				<span class="ax-skeleton" style={{ width: "56%" }} />
+				<span
+					class="ax-skeleton"
+					style={{ width: "24%", height: "12px" }}
+				/>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+function ContactRowSkeleton() {
+	return (
+		<Item>
+			<Item.Leading>
+				<Skeleton width={40} height={40} radius="full" />
+			</Item.Leading>
+			<Item.Content>
+				<Skeleton width="50%" height={17} />
+				<Skeleton width="30%" height={13} />
+			</Item.Content>
+		</Item>
+	);
+}
+
+{
+	isLoading
+		? Array.from({ length: 6 }, (_, i) => <ContactRowSkeleton key={i} />)
+		: contacts.map(renderContact);
+}
+```
+
+### Content already partly known
+
+The title comes from the previous screen, only the body is loading. `Skeleton.Text` stands in for the paragraph.
+
+<PhonePreview size="sm">
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title" />
+		<span class="ax-icon-btn">
+			<Glyph name="share" />
+		</span>
+	</div>
+	<div class="ax-body" style={{ gap: "12px" }}>
+		<span class="ax-title1">Night trains of Europe</span>
+		<span class="ax-subhead ax-muted">12 min read</span>
+		<span
+			class="ax-skeleton"
+			data-shape="block"
+			style={{ height: "130px" }}
+		/>
+		<span class="ax-skeleton" />
+		<span class="ax-skeleton" />
+		<span class="ax-skeleton" style={{ width: "65%" }} />
+	</div>
+</PhonePreview>
+
+```tsx
+<Title>{params.title}</Title>
+<Skeleton loading={!article} height={180} radius="lg">
+  <Image source={article?.cover} />
+</Skeleton>
+{article ? <Text>{article.body}</Text> : <Skeleton.Text lines={3} />}
+```
+
+### Grid of cards
+
+Same number of tiles as the first page of results, with the aspect ratio of the images.
+
+<PhonePreview size="sm">
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Shop
+	</div>
+	<div
+		style={{
+			display: "grid",
+			gridTemplateColumns: "1fr 1fr",
+			gap: "12px",
+			padding: "0 16px",
+		}}
+	>
+		<div class="ax-stack" data-gap="8">
+			<span
+				class="ax-skeleton"
+				data-shape="block"
+				style={{ height: "150px" }}
+			/>
+			<span class="ax-skeleton" style={{ width: "80%" }} />
+			<span class="ax-skeleton" style={{ width: "35%" }} />
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<span
+				class="ax-skeleton"
+				data-shape="block"
+				style={{ height: "150px" }}
+			/>
+			<span class="ax-skeleton" style={{ width: "70%" }} />
+			<span class="ax-skeleton" style={{ width: "40%" }} />
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<FlatList
+	numColumns={2}
+	data={isLoading ? placeholders : products}
+	renderItem={({ item }) =>
+		isLoading ? <ProductCardSkeleton /> : <ProductCard product={item} />
+	}
+/>
+```
+
+## Related
+
+- [Spinner](/docs/atoms/spinner)
+- [Async content state](/docs/patterns/async-content-state)

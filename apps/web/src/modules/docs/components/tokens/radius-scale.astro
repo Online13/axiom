@@ -1,0 +1,18 @@
+---
+import TokenFrame from './token-frame.astro';
+import { radius } from '@docs/lib/tokens';
+---
+
+<TokenFrame>
+  <div class="flex flex-wrap gap-6 p-4">
+    {
+      Object.entries(radius).map(([key, value]) => (
+        <div class="flex flex-col items-center gap-2">
+          <div class="size-16 border-2 border-fd-foreground bg-fd-muted" style={`border-radius:${value}px`} />
+          <div class="font-mono text-xs">{key}</div>
+          <div class="font-mono text-xs text-fd-muted-foreground -mt-2">{value}</div>
+        </div>
+      ))
+    }
+  </div>
+</TokenFrame>

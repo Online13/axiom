@@ -1,0 +1,60 @@
+---
+// Four frozen frames of the search screen, from focusing the field to a query that matches nothing.
+import TokenFrame from '@docs/components/tokens/token-frame.astro';
+import Glyph from '@docs/components/preview/glyph.astro';
+
+const states = [
+  { label: 'focus', query: '', spinner: false, body: 'recent', caption: 'Empty field: recent searches, most recent first.' },
+  { label: 'typing', query: 'lis', spinner: true, body: 'recent', caption: 'A 250ms pause sends the request. The spinner takes the icon’s place.' },
+  { label: 'results', query: 'lis', spinner: false, body: 'results', caption: 'Matches, with the typed part in bold.' },
+  { label: 'no results', query: 'lsbon', spinner: false, body: 'empty', caption: 'Repeat the query, offer a way out.' },
+];
+---
+
+<TokenFrame>
+  <div class="grid min-w-[36rem] grid-cols-4 gap-px bg-fd-border">
+    {
+      states.map(({ label, query, spinner, body, caption }) => (
+        <div class="flex flex-col gap-3 bg-fd-card p-3">
+          <div class="mx-auto flex h-[9.5rem] w-[104px] flex-col overflow-hidden rounded-md border bg-fd-card">
+            <div class="flex h-6 flex-none items-center gap-1 px-1.5">
+              <div class="flex h-3.5 flex-1 items-center gap-0.5 rounded-[3px] bg-fd-muted px-1 text-[7px]">
+                {spinner ? (
+                  <span class="size-1.5 flex-none animate-spin rounded-full border border-fd-muted-foreground border-t-transparent" />
+                ) : (
+                  <Glyph name="search" size={6} strokeWidth={3} class="flex-none text-fd-muted-foreground" />
+                )}
+                <span class:list={[!query && 'text-fd-muted-foreground']}>{query || 'Search'}</span>
+              </div>
+              <span class="text-[6.5px] text-blue-500">Cancel</span>
+            </div>
+            {body === 'recent' &&
+              [0, 1, 2].map(() => (
+                <div class="flex h-5 flex-none items-center gap-1 border-b px-1.5">
+                  <Glyph name="clock" size={7} class="text-fd-muted-foreground" />
+                  <span class="h-1 w-1/2 rounded-full bg-fd-muted" />
+                  <Glyph name="close" size={5} class="ml-auto text-fd-muted-foreground" />
+                </div>
+              ))}
+            {body === 'results' &&
+              ['Lisbon', 'Lisboa Oriente', 'Lismore'].map((name) => (
+                <div class="flex h-5 flex-none items-center border-b px-1.5 text-[7px]">
+                  <b>Lis</b>
+                  {name.slice(3)}
+                </div>
+              ))}
+            {body === 'empty' && (
+              <div class="flex flex-1 flex-col items-center justify-center gap-1 px-1 text-center">
+                <span class="flex size-4 items-center justify-center rounded-full bg-fd-muted"><Glyph name="search" size={8} class="text-fd-muted-foreground" /></span>
+                <span class="text-[6.5px] font-semibold">No results for "{query}"</span>
+                <span class="rounded-[3px] border px-1 text-[6px]">Clear search</span>
+              </div>
+            )}
+          </div>
+          <div class="font-mono text-xs">{label}</div>
+          <p class="text-xs text-fd-muted-foreground">{caption}</p>
+        </div>
+      ))
+    }
+  </div>
+</TokenFrame>

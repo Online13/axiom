@@ -1,0 +1,194 @@
+---
+// Top half of an iPhone built only from component tokens, with a light / dark toggle and a "customize" toggle.
+// Customizing remaps `button.solid` to `content.link`: only the solid button changes, the link, switch and checkbox don't.
+// Every token is exposed as a CSS variable (`--button-solid-pressed-background`), with missing states filled from `default`.
+import TokenFrame from './token-frame.astro';
+import { componentTokens, refColor, type ColorRef, type ColorScheme } from '@docs/lib/tokens';
+
+type Tokens = Record<string, Record<string, Record<string, Record<string, ColorRef>>>>;
+
+const customized = structuredClone(componentTokens) as Tokens;
+customized.button.solid.default.background = 'content.link';
+customized.button.solid.pressed.background = 'content.link';
+
+const tokenVars = (tokens: Tokens, scheme: ColorScheme) => {
+  const vars: Record<string, string> = {};
+  for (const [component, variants] of Object.entries(tokens))
+    for (const [variant, states] of Object.entries(variants))
+      for (const [state, props] of Object.entries(states))
+        for (const [prop, ref] of Object.entries({ ...states.default, ...props }))
+          vars[`--${component}-${variant}-${state}-${prop}`] = refColor(scheme, ref);
+  return { ...vars, '--screen': refColor(scheme, 'background.default'), '--text': refColor(scheme, 'content.default'), '--muted': refColor(scheme, 'content.muted'), '--link': refColor(scheme, 'content.link'), '--error': refColor(scheme, 'feedback.error') };
+};
+
+const base = componentTokens as Tokens;
+const colors = {
+  light: tokenVars(base, 'light'),
+  dark: tokenVars(base, 'dark'),
+  'light-custom': tokenVars(customized, 'light'),
+  'dark-custom': tokenVars(customized, 'dark'),
+};
+const initialStyle = Object.entries(colors.light)
+  .map(([name, value]) => `${name}:${value}`)
+  .join(';');
+---
+
+<TokenFrame>
+  <div class="component-token-preview" data-colors={JSON.stringify(colors)} style={initialStyle}>
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b px-4 py-3">
+      <div class="inline-flex border p-0.5 text-xs" role="group" aria-label="Color scheme">
+        <button type="button" class="toggle-button px-3 py-1" data-scheme="light" aria-pressed="true">Light</button>
+        <button type="button" class="toggle-button px-3 py-1" data-scheme="dark" aria-pressed="false">Dark</button>
+      </div>
+      <div class="inline-flex border p-0.5 text-xs" role="group" aria-label="Component tokens">
+        <button type="button" class="toggle-button px-3 py-1" data-custom="false" aria-pressed="true">Default</button>
+        <button type="button" class="toggle-button px-3 py-1" data-custom="true" aria-pressed="false">Custom button</button>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="phone" aria-hidden="true">
+        <div class="screen flex flex-col gap-3 px-5 pt-3" style="background:var(--screen)">
+          <div class="island self-center" />
+          <div class="pt-2" style="color:var(--text);font-size:26px;font-weight:700;line-height:1.1">Sign in</div>
+
+          <div class="flex h-11 items-center rounded-[10px] px-3" style="background:var(--input-outline-default-background);border:1.5px solid var(--input-outline-focused-border)">
+            <span style="color:var(--input-outline-default-text);font-size:15px">jane@axiom.dev</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <div class="flex h-11 items-center rounded-[10px] px-3" style="background:var(--input-outline-default-background);border:1px solid var(--input-outline-invalid-border)">
+              <span style="color:var(--input-outline-default-placeholder);font-size:15px">Password</span>
+            </div>
+            <span style="color:var(--error);font-size:12px">Password is required</span>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="flex size-[20px] items-center justify-center rounded-[6px]" style="background:var(--checkbox-default-checked-background);border:1.5px solid var(--checkbox-default-checked-border)">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2 5 8.5l4.5-5" stroke="var(--checkbox-default-checked-indicator)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </span>
+              <span style="color:var(--text);font-size:14px">Remember me</span>
+            </div>
+            <span style="color:var(--link);font-size:14px">Forgot?</span>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <span style="color:var(--text);font-size:14px">Use Face ID</span>
+            <span class="switch" style="background:var(--switch-default-checked-track)">
+              <span class="thumb" style="background:var(--switch-default-checked-thumb)" />
+            </span>
+          </div>
+
+          <div class="mt-1 flex h-11 items-center justify-center rounded-[12px]" style="background:var(--button-solid-default-background);color:var(--button-solid-default-foreground);font-size:15px;font-weight:600">
+            Sign in
+          </div>
+          <div class="flex h-11 items-center justify-center rounded-[12px]" style="background:var(--button-outline-default-background);color:var(--button-outline-default-foreground);border:1px solid var(--button-outline-default-border);font-size:15px;font-weight:600">
+            Create account
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t px-4 py-3 font-mono text-xs">
+      <span class="text-fd-muted-foreground">button.solid.default.background:</span>
+      <span data-code-default>colors.background.inverse</span>
+      <span data-code-custom hidden>colors.content.link</span>
+    </div>
+  </div>
+</TokenFrame>
+
+<style>
+  .toggle-button[aria-pressed='true'] {
+    background: var(--color-fd-foreground);
+    color: var(--color-fd-background);
+  }
+
+  .toggle-button[aria-pressed='false'] {
+    color: var(--color-fd-muted-foreground);
+  }
+
+  /* Only the top of the phone is visible: the stage crops it. */
+  .stage {
+    display: flex;
+    justify-content: center;
+    height: 540px;
+    padding-top: 32px;
+    overflow: hidden;
+  }
+
+  .phone {
+    width: 300px;
+    height: 620px;
+    flex-shrink: 0;
+    padding: 10px;
+    border-radius: 52px;
+    background: #1c1c1e;
+    box-shadow: 0 0 0 1.5px #3a3a3c;
+  }
+
+  .screen {
+    height: 100%;
+    overflow: hidden;
+    border-radius: 42px;
+    font-family: system-ui, sans-serif;
+    text-align: left;
+  }
+
+  .screen,
+  .screen * {
+    transition:
+      background-color 250ms ease,
+      border-color 250ms ease,
+      color 250ms ease;
+  }
+
+  .island {
+    width: 96px;
+    height: 28px;
+    border-radius: 999px;
+    background: #000;
+  }
+
+  .switch {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 46px;
+    height: 28px;
+    padding: 2px;
+    border-radius: 999px;
+  }
+
+  .thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+  }
+</style>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('.component-token-preview').forEach((preview) => {
+      const colors = JSON.parse(preview.dataset.colors ?? '{}') as Record<string, Record<string, string>>;
+      const schemeButtons = preview.querySelectorAll<HTMLButtonElement>('[data-scheme]');
+      const customButtons = preview.querySelectorAll<HTMLButtonElement>('[data-custom]');
+      let scheme = 'light';
+      let custom = false;
+
+      const apply = () => {
+        const vars = colors[custom ? `${scheme}-custom` : scheme];
+        for (const [name, value] of Object.entries(vars)) preview.style.setProperty(name, value);
+        schemeButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.scheme === scheme)));
+        customButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.custom === String(custom))));
+        preview.querySelector<HTMLElement>('[data-code-default]')!.hidden = custom;
+        preview.querySelector<HTMLElement>('[data-code-custom]')!.hidden = !custom;
+      };
+
+      schemeButtons.forEach((b) => b.addEventListener('click', () => ((scheme = b.dataset.scheme ?? 'light'), apply())));
+      customButtons.forEach((b) => b.addEventListener('click', () => ((custom = b.dataset.custom === 'true'), apply())));
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

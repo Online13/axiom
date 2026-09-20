@@ -1,0 +1,364 @@
+---
+// An orders screen that goes through every async state: loading, content, empty, error and offline.
+// The footer picks what the next request returns and whether the device is online.
+// Retry always goes back to loading and is disabled while the request runs. Coming back online retries by itself.
+// Refreshing content that is already on screen keeps it: a failure then shows a snackbar instead of an error screen.
+import PhonePreview from '@docs/components/preview/phone-preview.astro';
+import Glyph from '@docs/components/preview/glyph.astro';
+
+const orders = [
+  { id: '#1042', text: 'Desk lamp, 2 bulbs', status: 'Delivered', date: 'Sep 12' },
+  { id: '#1039', text: 'Running shoes', status: 'Shipped', date: 'Sep 9' },
+  { id: '#1031', text: 'Notebook set', status: 'Delivered', date: 'Aug 28' },
+  { id: '#1027', text: 'Coffee beans, 1 kg', status: 'Delivered', date: 'Aug 20' },
+  { id: '#1019', text: 'Phone case', status: 'Returned', date: 'Aug 2' },
+  { id: '#1008', text: 'Headphones', status: 'Delivered', date: 'Jul 18' },
+];
+---
+
+<PhonePreview>
+  <div class="acs" data-async-content-state data-state="loading">
+    <div class="ax-appbar" data-border>
+      <span class="ax-appbar-slot" />
+      <span class="ax-appbar-title">Orders</span>
+      <span class="ax-appbar-slot" data-side="end">
+        <button type="button" class="ax-icon-btn acs-refresh" data-refresh aria-label="Refresh"><Glyph name="refresh" size={20} /></button>
+      </span>
+    </div>
+
+    <div class="acs-offline-bar" data-offline-bar><Glyph name="wifi-off" size={14} />Offline · showing saved orders</div>
+
+    <div class="acs-body">
+      <div class="acs-panel" data-panel="loading" aria-label="Loading orders">
+        {
+          [0, 1, 2, 3, 4].map((i) => (
+            <div class="ax-item">
+              <span class="ax-skeleton" data-shape="block" style={{ width: '40px', height: '40px', borderRadius: '10px' }} />
+              <div class="ax-stack ax-grow" data-gap="8">
+                <span class="ax-skeleton" style={{ width: `${[55, 40, 62, 48, 36][i]}%` }} />
+                <span class="ax-skeleton" style={{ width: '30%', height: '12px' }} />
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="acs-panel" data-panel="content">
+        <div class="ax-list" data-variant="plain">
+          {
+            orders.map(({ id, text, status, date }) => (
+              <div class="ax-item">
+                <span class="acs-thumb"><Glyph name="bag" size={18} /></span>
+                <div class="ax-item-content">
+                  <span class="ax-row" data-justify="between">
+                    <span class="ax-item-title">{text}</span>
+                    <span class="ax-item-desc">{date}</span>
+                  </span>
+                  <span class="ax-item-desc">{id} · {status}</span>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="acs-panel ax-center" data-panel="empty">
+        <span class="ax-empty-media"><Glyph name="bag" size={28} /></span>
+        <span class="ax-headline">No orders yet</span>
+        <span class="ax-subhead ax-muted">What you buy shows up here, with its tracking.</span>
+        <span class="ax-btn" data-size="sm">Browse the shop</span>
+      </div>
+
+      <div class="acs-panel ax-center" data-panel="error">
+        <span class="ax-empty-media" data-tone="error"><Glyph name="alert" size={28} /></span>
+        <span class="ax-headline">Couldn't load your orders</span>
+        <span class="ax-subhead ax-muted">Something went wrong on our side.</span>
+        <button type="button" class="ax-btn acs-btn" data-variant="outline" data-size="sm" data-retry>Try again</button>
+      </div>
+
+      <div class="acs-panel ax-center" data-panel="offline">
+        <span class="ax-empty-media"><Glyph name="wifi-off" size={28} /></span>
+        <span class="ax-headline">You're offline</span>
+        <span class="ax-subhead ax-muted">Your orders load as soon as you're back online.</span>
+        <button type="button" class="ax-btn acs-btn" data-variant="outline" data-size="sm" data-retry>Try again</button>
+      </div>
+    </div>
+
+    <div class="acs-snackbar ax-snackbar" data-snackbar>
+      <span class="ax-grow" data-snackbar-text>Couldn't refresh</span>
+      <button type="button" class="ax-snackbar-action acs-snack-action" data-snackbar-retry>Retry</button>
+    </div>
+  </div>
+
+  <div slot="footer" class="flex flex-col gap-2 border-t px-4 py-3 text-xs" data-acs-readout>
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+      <span class="flex items-center gap-2">
+        <span class="text-fd-muted-foreground">Server returns</span>
+        <span class="inline-flex border p-0.5" role="group" aria-label="Server returns">
+          <button type="button" class="ax-toggle px-2 py-0.5" data-outcome="content" aria-pressed="true">Orders</button>
+          <button type="button" class="ax-toggle px-2 py-0.5" data-outcome="empty" aria-pressed="false">Nothing</button>
+          <button type="button" class="ax-toggle px-2 py-0.5" data-outcome="error" aria-pressed="false">Error</button>
+        </span>
+      </span>
+      <span class="flex items-center gap-2">
+        <span class="text-fd-muted-foreground">Network</span>
+        <span class="inline-flex border p-0.5" role="group" aria-label="Network">
+          <button type="button" class="ax-toggle px-2 py-0.5" data-network="online" aria-pressed="true">Online</button>
+          <button type="button" class="ax-toggle px-2 py-0.5" data-network="offline" aria-pressed="false">Offline</button>
+        </span>
+      </span>
+      <button type="button" class="border px-2 py-0.5" data-reload>Reopen screen</button>
+    </div>
+    <div class="font-mono">
+      <span class="text-fd-muted-foreground">state </span><span data-out="state">loading</span>
+      <span class="text-fd-muted-foreground"> · </span><span data-out="event" class="text-fd-muted-foreground">first load</span>
+    </div>
+  </div>
+</PhonePreview>
+
+<style is:global>
+  .acs {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .acs-body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .acs .acs-panel {
+    display: none;
+  }
+
+  .acs[data-state='loading'] [data-panel='loading'],
+  .acs[data-state='content'] [data-panel='content'] {
+    display: block;
+  }
+
+  .acs[data-state='empty'] [data-panel='empty'],
+  .acs[data-state='error'] [data-panel='error'],
+  .acs[data-state='offline'] [data-panel='offline'] {
+    display: flex;
+    height: 100%;
+    padding-inline: 40px;
+    animation: acs-in 200ms ease;
+  }
+
+  .acs[data-state='content'] [data-panel='content'] {
+    animation: acs-in 200ms ease;
+  }
+
+  @keyframes acs-in {
+    from { opacity: 0; }
+  }
+
+  .acs-thumb {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--ax-background-subtle);
+    color: var(--ax-content-muted);
+  }
+
+  .acs-refresh {
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .acs-refresh[disabled] {
+    color: var(--ax-content-disabled);
+    cursor: default;
+  }
+
+  .acs-refresh[data-spinning] .ax-glyph {
+    animation: ax-spin 700ms linear infinite;
+  }
+
+  .acs-btn {
+    margin-top: 4px;
+    border: 0;
+    font: inherit;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .acs-btn[disabled] {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .acs-offline-bar {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px;
+    background: var(--ax-background-subtle);
+    color: var(--ax-content-muted);
+    font-size: 13px;
+  }
+
+  .acs[data-stale] .acs-offline-bar {
+    display: flex;
+  }
+
+  .acs-snackbar {
+    position: absolute;
+    inset-inline: 12px;
+    bottom: 12px;
+    z-index: 5;
+    opacity: 0;
+    transform: translateY(24px);
+    pointer-events: none;
+    transition:
+      opacity 180ms ease,
+      transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .acs-snackbar[data-open] {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .acs-snack-action {
+    border: 0;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .acs-panel,
+    .acs-snackbar {
+      animation: none !important;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const LATENCY = 1100;
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-async-content-state]:not([data-ready])').forEach((root) => {
+      root.dataset.ready = '';
+      const preview = root.closest('[data-ax-preview]')!;
+      const readout = preview.querySelector<HTMLElement>('[data-acs-readout]')!;
+      const out = (key: string) => readout.querySelector<HTMLElement>(`[data-out="${key}"]`)!;
+      const refresh = root.querySelector<HTMLButtonElement>('[data-refresh]')!;
+      const retries = [...root.querySelectorAll<HTMLButtonElement>('[data-retry]')];
+      const snackbar = root.querySelector<HTMLElement>('[data-snackbar]')!;
+      const snackbarText = root.querySelector<HTMLElement>('[data-snackbar-text]')!;
+
+      type State = 'loading' | 'content' | 'empty' | 'error' | 'offline';
+      let outcome: 'content' | 'empty' | 'error' = 'content';
+      let online = true;
+      let inFlight = false;
+      let request = 0;
+      let snackTimer = 0;
+
+      const setState = (state: State, event: string) => {
+        root.dataset.state = state;
+        out('state').textContent = root.hasAttribute('data-stale') ? `${state} (saved)` : state;
+        out('event').textContent = event;
+      };
+
+      const syncControls = () => {
+        refresh.disabled = inFlight || root.dataset.state === 'loading';
+        refresh.toggleAttribute('data-spinning', inFlight && root.dataset.state === 'content');
+        retries.forEach((button) => {
+          button.disabled = inFlight;
+          button.textContent = inFlight ? 'Trying…' : 'Try again';
+        });
+      };
+
+      const showSnackbar = (text: string) => {
+        snackbarText.textContent = text;
+        snackbar.dataset.open = '';
+        clearTimeout(snackTimer);
+        snackTimer = window.setTimeout(() => delete snackbar.dataset.open, 4000);
+      };
+
+      // One request at a time. With content on screen it's a refresh: the content stays whatever happens.
+      const load = (reason: string) => {
+        if (inFlight) return;
+        const refreshing = root.dataset.state === 'content';
+        const id = ++request;
+        inFlight = true;
+        delete snackbar.dataset.open;
+        if (!refreshing) setState('loading', reason);
+        else out('event').textContent = `${reason}, content stays on screen`;
+        syncControls();
+
+        setTimeout(() => {
+          if (id !== request) return;
+          inFlight = false;
+          if (!online) {
+            if (refreshing) {
+              root.dataset.stale = '';
+              setState('content', 'offline: saved content kept');
+            } else setState('offline', 'no connection');
+          } else if (outcome === 'error') {
+            if (refreshing) {
+              setState('content', 'refresh failed: content kept, snackbar shown');
+              showSnackbar("Couldn't refresh your orders");
+            } else setState('error', 'request failed');
+          } else {
+            delete root.dataset.stale;
+            setState(outcome, outcome === 'empty' ? 'request succeeded, 0 orders' : 'request succeeded');
+          }
+          syncControls();
+        }, LATENCY);
+      };
+
+      retries.forEach((button) => button.addEventListener('click', () => load('retry')));
+      root.querySelector('[data-snackbar-retry]')!.addEventListener('click', () => load('retry from snackbar'));
+      refresh.addEventListener('click', () => load('refresh'));
+
+      preview.querySelectorAll<HTMLButtonElement>('[data-outcome]').forEach((button) =>
+        button.addEventListener('click', () => {
+          outcome = button.dataset.outcome as typeof outcome;
+          preview.querySelectorAll('[data-outcome]').forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+        }),
+      );
+
+      preview.querySelectorAll<HTMLButtonElement>('[data-network]').forEach((button) =>
+        button.addEventListener('click', () => {
+          const next = button.dataset.network === 'online';
+          preview.querySelectorAll('[data-network]').forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+          if (next === online) return;
+          online = next;
+          // Back online: retry by itself, from the offline screen or over saved content.
+          if (online && (root.dataset.state === 'offline' || root.hasAttribute('data-stale'))) load('back online, automatic retry');
+        }),
+      );
+
+      preview.querySelector('[data-reload]')!.addEventListener('click', () => {
+        request++;
+        inFlight = false;
+        delete root.dataset.stale;
+        delete snackbar.dataset.open;
+        root.dataset.state = 'loading';
+        load('first load');
+      });
+
+      load('first load');
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

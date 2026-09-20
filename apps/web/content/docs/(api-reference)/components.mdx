@@ -1,0 +1,69 @@
+---
+title: Introduction
+description: "What an Axiom component is, how components are organized with Atomic Design, and why."
+---
+
+A component is a piece of UI you can see: a button, a search bar, a keypad, an app bar. It renders something and exposes an API to control it. Like everything in Axiom, it is copied into your project, so the file is yours once it's there.
+
+Axiom has a lot of components, and they don't all work at the same scale. A button is used on its own. A search bar is built from an input and a button. A scaffold arranges a whole screen. To keep them easy to find and easy to compose, Axiom sorts them into levels borrowed from Atomic Design.
+
+<AtomicLevels />
+
+## Atomic Design
+
+Atomic Design is a methodology described by Brad Frost in [_Atomic Design_](https://atomicdesign.bradfrost.com/chapter-2/). It borrows its vocabulary from chemistry: atoms combine into molecules, and molecules combine into larger organisms. Applied to interfaces, it describes five stages.
+
+| Stage     | In Brad Frost's words                                                                    | His example                                        |
+| --------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| Atoms     | Basic building blocks that can't be broken down further without ceasing to be functional | A label, an input, a button                        |
+| Molecules | Relatively simple groups of UI elements functioning together as a unit                   | A search form: label, input and button             |
+| Organisms | Relatively complex components composed of groups of molecules and/or atoms               | A header with a logo, navigation and a search form |
+| Templates | Page-level objects that place components into a layout and show the content structure    | A page skeleton with placeholder content           |
+| Pages     | Specific instances of templates with real, representative content                        | The home page with real text and images            |
+
+Two points from the book matter for how Axiom uses it:
+
+- **It isn't a linear process.** You don't design every atom before building a screen. It's a mental model that lets you move between the abstract pieces and the concrete interface they produce.
+- **It isn't rigid dogma.** The names are a tool. Teams are encouraged to adapt the levels and the vocabulary to what they build.
+
+## How Axiom applies it
+
+Axiom keeps the idea and adjusts the levels to a component registry for mobile apps.
+
+| Level                   | In Axiom                                                                                 | Examples                            |
+| ----------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------- |
+| [Atoms](/docs/atoms)         | The smallest units you use directly in a screen, each installed on its own               | Button, Input, Avatar, BottomSheet  |
+| [Molecules](/docs/molecules) | A few atoms forming one coherent function                                                | SearchBar, DatePicker, Attachment   |
+| [Organisms](/docs/organisms) | Components that own a full interaction, with their own layout, states and input handling | Passcode                            |
+| [Templates](/docs/templates) | Structures that frame a screen or a large area of it                                     | Scaffold, AppBar, BottomTabBar      |
+| Blocks                  | Complete screens or large sections, copied and adapted                                   | Onboarding, profile, authentication |
+
+The differences with the book are deliberate:
+
+- **Blocks replace pages.** A page, in Atomic Design, is a template filled with real content. A registry can't ship your content, so the top level is a block: a complete screen with realistic content that you copy and rewrite for your app.
+- **An atom is the smallest piece you can use on its own.** A BottomSheet or a Dialog is more than a single HTML-like element, but in a mobile app you place it directly and nothing smaller is useful by itself. The pieces below that level have no look of their own and live in [core](/docs/core): Slot, Portal, Overlay, Tappable.
+- **Atomic Design only covers what you see.** Interaction logic that several components share, such as pull-to-refresh or long press, lives in [behaviors](/docs/behaviors). Recurring UX problems that combine components and behaviors, such as a search flow or loading states, live in [patterns](/docs/patterns).
+
+When a component doesn't fit a level cleanly, it goes where its responsibility is best described. The levels are a guide, not a rule to argue about.
+
+## Why Atomic Design
+
+**A shared vocabulary.** "Molecule" or "template" tells you the scale of a component before you open it. Contributors and users look in the same place for the same thing.
+
+**Composition over configuration.** Each level is built from the ones below. When a new need appears, the first answer is to combine existing pieces rather than add props to a large component.
+
+**One-way dependencies.** A higher level may import a lower one, never the reverse. An atom doesn't know about the molecules that use it, so you can change or remove a molecule without breaking an atom.
+
+**Progressive adoption.** Because dependencies only go down, `npx axiom add search-bar` copies the search bar and the atoms it needs, and nothing else. You can start with one atom and climb as your app grows.
+
+```text
+Foundations → Core → Atoms → Molecules → Organisms → Templates → Blocks
+```
+
+## Related
+
+- [Atoms](/docs/atoms)
+- [Foundations](/docs/foundations)
+- [Core](/docs/core)
+- [Behaviors](/docs/behaviors)
+- [Patterns](/docs/patterns)

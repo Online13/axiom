@@ -7,8 +7,7 @@
 		"apps/*"
 	],
 	"scripts": {
-		"docs": "bun run --filter './apps/docs'",
-		"landing": "bun run --filter './apps/landing'",
+		"web": "bun run --cwd apps/web",
 		"theme-builder": "bun run --filter './apps/theme-builder'",
 		"router": "bun run --filter './apps/router'",
 		"demo:stylesheet": "bun run --cwd apps/demo-stylesheet",

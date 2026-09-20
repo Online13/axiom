@@ -1,0 +1,324 @@
+---
+// A complete one-time code screen: six cells, a keypad, verification, error, success and resend.
+// Filling the last cell submits on its own. The right code is 482019; anything else shakes the cells and costs an attempt.
+// After three wrong codes the cells lock until a new code is sent. Resend is disabled until its countdown ends
+// (shortened to 15s here), and a new code clears the cells and restarts the countdown.
+import PhonePreview from '@docs/components/preview/phone-preview.astro';
+import Glyph from '@docs/components/preview/glyph.astro';
+
+const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'delete'];
+---
+
+<PhonePreview full>
+  <div class="otv" data-otp-verification data-state="typing">
+    <div class="ax-appbar">
+      <span class="ax-icon-btn"><Glyph name="chevron-left" /></span>
+      <span class="ax-appbar-title" />
+      <span class="ax-icon-btn" />
+    </div>
+
+    <div class="ax-body otv-body">
+      <div class="ax-stack" data-gap="8">
+        <span class="ax-title1">Check your texts</span>
+        <span class="ax-subhead ax-muted">Enter the 6-digit code sent to +44 7700 900123.</span>
+      </div>
+
+      <div class="ax-otp otv-cells" data-cells>
+        {[0, 1, 2, 3, 4, 5].map((i) => (i === 3 ? [<span class="ax-otp-sep" />, <span class="ax-otp-cell" data-cell />] : <span class="ax-otp-cell" data-cell />))}
+      </div>
+
+      <div class="otv-status ax-subhead" data-status aria-live="polite" />
+
+      <span class="ax-subhead ax-muted otv-resend">
+        Didn't get it?{' '}<button type="button" class="otv-link" data-resend disabled>Resend in 0:15</button>
+      </span>
+    </div>
+
+    <div class="otv-toast" data-toast>
+      <div class="ax-toast"><Glyph name="circle-check" size={20} class="ax-success" />New code sent</div>
+    </div>
+
+    <div class="ax-keypad otv-keypad" data-variant="flat">
+      {
+        keys.map((key) =>
+          key === '' ? (
+            <span />
+          ) : (
+            <button type="button" class="ax-key otv-key" data-key={key} data-action={key === 'delete' ? '' : undefined} aria-label={key === 'delete' ? 'Delete' : key}>
+              {key === 'delete' ? <Glyph name="delete-key" /> : key}
+            </button>
+          ),
+        )
+      }
+    </div>
+  </div>
+
+  <div slot="footer" class="flex flex-wrap items-center justify-between gap-2 border-t px-4 py-3 font-mono text-xs" data-otv-readout>
+    <span>
+      <span class="text-fd-muted-foreground">state </span><span data-out="state">typing</span>
+      <span class="text-fd-muted-foreground"> · attempts left </span><span data-out="attempts">3</span>
+      <span class="text-fd-muted-foreground"> · code </span><span>482019</span>
+    </span>
+    <button type="button" class="border px-2 py-0.5" data-reset>Reset</button>
+  </div>
+</PhonePreview>
+
+<style is:global>
+  .otv {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .otv-body {
+    flex: 1;
+    gap: 24px;
+    padding-top: 8px;
+  }
+
+  .otv-cells .ax-otp-cell {
+    transition:
+      box-shadow 150ms ease,
+      color 150ms ease,
+      opacity 150ms ease;
+  }
+
+  .otv[data-state='verifying'] .otv-cells,
+  .otv[data-state='locked'] .otv-cells {
+    opacity: 0.5;
+  }
+
+  .otv-cells[data-shake] {
+    animation: otv-shake 360ms ease;
+  }
+
+  @keyframes otv-shake {
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+  }
+
+  .otv-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 20px;
+    margin-top: -8px;
+    text-align: center;
+  }
+
+  .otv[data-state='invalid'] .otv-status,
+  .otv[data-state='locked'] .otv-status {
+    color: var(--ax-feedback-error);
+  }
+
+  .otv[data-state='verifying'] .otv-status {
+    color: var(--ax-content-muted);
+  }
+
+  .otv[data-state='success'] .otv-status {
+    color: var(--ax-feedback-success);
+    font-weight: 600;
+  }
+
+  .otv-resend {
+    text-align: center;
+  }
+
+  .otv-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ax-content-link);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .otv-link:disabled {
+    color: var(--ax-content-subtle);
+    cursor: default;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .otv-keypad {
+    flex: none;
+  }
+
+  .otv-key {
+    border: 0;
+    color: var(--ax-content-default);
+    font: inherit;
+    font-size: 25px;
+    cursor: pointer;
+  }
+
+  .otv-key:active {
+    background: var(--ax-border-default);
+  }
+
+  .otv[data-state='verifying'] .otv-key,
+  .otv[data-state='success'] .otv-key,
+  .otv[data-state='locked'] .otv-key {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .otv-toast {
+    position: absolute;
+    top: 0;
+    inset-inline: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(-12px);
+    pointer-events: none;
+    transition:
+      opacity 180ms ease,
+      transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .otv-toast[data-open] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .otv-cells[data-shake] {
+      animation: none;
+    }
+
+    .otv-toast {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const CODE = '482019';
+  const ATTEMPTS = 3;
+  const COUNTDOWN = 15;
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-otp-verification]:not([data-ready])').forEach((root) => {
+      root.dataset.ready = '';
+      const cells = [...root.querySelectorAll<HTMLElement>('[data-cell]')];
+      const cellsRow = root.querySelector<HTMLElement>('[data-cells]')!;
+      const status = root.querySelector<HTMLElement>('[data-status]')!;
+      const resend = root.querySelector<HTMLButtonElement>('[data-resend]')!;
+      const toast = root.querySelector<HTMLElement>('[data-toast]')!;
+      const preview = root.closest('[data-ax-preview]')!;
+      const readout = preview.querySelector<HTMLElement>('[data-otv-readout]')!;
+      const out = (key: string) => readout.querySelector<HTMLElement>(`[data-out="${key}"]`)!;
+
+      type State = 'typing' | 'verifying' | 'invalid' | 'success' | 'locked';
+      let state: State = 'typing';
+      let code = '';
+      let attempts = ATTEMPTS;
+      let seconds = COUNTDOWN;
+      let ticker = 0;
+
+      const render = () => {
+        root.dataset.state = state;
+        cells.forEach((cell, i) => {
+          cell.textContent = code[i] ?? '';
+          const cellState = state === 'success' ? 'success' : state === 'invalid' || state === 'locked' ? 'invalid' : i === code.length ? 'active' : undefined;
+          if (cellState) cell.dataset.state = cellState;
+          else delete cell.dataset.state;
+        });
+
+        status.innerHTML =
+          state === 'verifying'
+            ? '<span class="ax-spinner" data-size="sm"></span>Verifying…'
+            : state === 'invalid'
+              ? `That code doesn't match. ${attempts} ${attempts === 1 ? 'attempt' : 'attempts'} left.`
+              : state === 'locked'
+                ? 'Too many attempts. Request a new code.'
+                : state === 'success'
+                  ? 'Verified'
+                  : '';
+
+        const waiting = seconds > 0 && state !== 'locked';
+        resend.disabled = waiting || state === 'verifying' || state === 'success';
+        resend.textContent = waiting ? `Resend in 0:${String(seconds).padStart(2, '0')}` : 'Resend code';
+
+        out('state').textContent = state;
+        out('attempts').textContent = String(attempts);
+      };
+
+      const startCountdown = () => {
+        clearInterval(ticker);
+        seconds = COUNTDOWN;
+        ticker = window.setInterval(() => {
+          seconds = Math.max(0, seconds - 1);
+          if (seconds === 0) clearInterval(ticker);
+          render();
+        }, 1000);
+      };
+
+      const verify = () => {
+        state = 'verifying';
+        render();
+        setTimeout(() => {
+          if (code === CODE) {
+            state = 'success';
+            clearInterval(ticker);
+            navigator.vibrate?.(10);
+          } else {
+            attempts -= 1;
+            state = attempts === 0 ? 'locked' : 'invalid';
+            navigator.vibrate?.([20, 40, 20]);
+            cellsRow.removeAttribute('data-shake');
+            void cellsRow.offsetWidth;
+            cellsRow.setAttribute('data-shake', '');
+          }
+          render();
+        }, 900);
+      };
+
+      const press = (key: string) => {
+        if (state === 'verifying' || state === 'success' || state === 'locked') return;
+        // After an error, the next key starts a fresh code instead of editing the wrong one.
+        if (state === 'invalid') {
+          code = '';
+          state = 'typing';
+        }
+        if (key === 'delete') code = code.slice(0, -1);
+        else if (code.length < 6) code += key;
+        render();
+        if (code.length === 6) verify();
+      };
+
+      root.querySelectorAll<HTMLButtonElement>('[data-key]').forEach((button) => {
+        button.addEventListener('click', () => press(button.dataset.key!));
+      });
+
+      resend.addEventListener('click', () => {
+        code = '';
+        attempts = ATTEMPTS;
+        state = 'typing';
+        startCountdown();
+        render();
+        toast.dataset.open = '';
+        setTimeout(() => delete toast.dataset.open, 1800);
+      });
+
+      preview.querySelector('[data-reset]')!.addEventListener('click', () => {
+        code = '';
+        attempts = ATTEMPTS;
+        state = 'typing';
+        startCountdown();
+        render();
+      });
+
+      startCountdown();
+      render();
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

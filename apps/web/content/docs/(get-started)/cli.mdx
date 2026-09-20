@@ -1,0 +1,98 @@
+---
+title: CLI
+description: "Initialize a project and add components with the axiom CLI."
+---
+
+<Callout title="Not published yet">
+	`npx axiom` doesn't work yet: the CLI isn't on npm. This page is the
+	specification it is being built against, so commands and options may still
+	change.
+</Callout>
+
+The CLI copies source files into your project. It is the only thing Axiom publishes, and it never becomes a runtime dependency of your app: once the files are copied, your app doesn't need it.
+
+## init
+
+```npm
+npx axiom init
+```
+
+Sets up a project for Axiom:
+
+1. Asks for the styling tool: `stylesheet`, `unistyles`, `nativewind` or `uniwind`.
+2. Copies the foundations (theme, tokens, `light` / `dark`) and the core primitives.
+3. Installs the styling dependency, if any.
+4. Writes `axiom.json`, with the copied foundations and core primitives listed in `items`.
+
+## add
+
+```npm
+npx axiom add bottom-sheet
+```
+
+Adds a component to your project. The CLI:
+
+- copies the variant that matches your configured styling;
+- copies missing internal dependencies (`portal`, `overlay`, `tappable`…);
+- installs third-party packages such as Reanimated or Gesture Handler;
+- never overwrites an existing file without asking (see [Existing files](#existing-files));
+- registers the component's tokens in the theme, if it has any (see [Component tokens](/docs/foundations/component-tokens#componentscolors));
+- adds the component and every internal dependency it copied to `items` in `axiom.json`.
+
+Internal dependencies are resolved as a graph. Adding `bottom-sheet` also brings in what it relies on, and skips anything already in your project:
+
+```text
+     bottom-sheet
+          │
+     ┌────┴────┐
+     ↓         ↓
+  portal    overlay
+```
+
+Names are plain component names, the same as the file you get:
+
+```npm
+npx axiom add button     # → components/ui/button.tsx
+```
+
+### Existing files
+
+Copied files belong to your project, so `add` protects your changes. A file identical to the registry is skipped silently. When a file differs:
+
+| File                                                                                      | What happens                                                                                            |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| A file of the component you named                                                         | The CLI asks: `[y]es`, `[n]o`, `[a]ll` for every remaining file, `[N]one` to keep all of them.          |
+| A file of an internal dependency already in your project                                  | Kept. `add button` never touches your `tappable.tsx`. Name the dependency to update it: `add tappable`. |
+| A file your project owns once created, like the [icon registry](/docs/atoms/icon#the-registry) | Kept, always.                                                                                           |
+
+```npm
+npx axiom add button --overwrite
+```
+
+`--overwrite` replaces the files of the components you named without asking. Dependencies and owned files are still kept.
+
+### Icons
+
+The first item that needs icons asks where they come from (`expo-symbols` or `custom`) and saves the answer as [`icons`](/docs/configuration#icons). Pass `--icons <source>` to answer without a prompt. When a component draws icons your registry doesn't have, `add` lists them. See [Icon](/docs/atoms/icon#icons-that-components-need).
+
+### Navigation
+
+The first item that depends on the navigation library, like `use-overlay-back-handler`, detects it from `package.json` (`expo-router`, `react-navigation` or `react-native` without one) and saves it as [`navigation`](/docs/configuration#navigation). Pass `--navigation <library>` to override the detection.
+
+Without a terminal (CI, a script), nobody can answer: differing files are kept and the CLI lists them.
+
+## fetch
+
+```npm
+npx axiom fetch
+```
+
+Copies every item listed in `items` in `axiom.json`. Use it to set up a project with the same items as another one, or to restore files that were deleted.
+
+For each item, `fetch` runs the same steps as `add`: it copies the variant for your `styling`, resolves internal dependencies, and installs missing npm packages. Files already in your project are skipped, so your changes are kept.
+
+`fetch` isn't an update command. To get a newer version of a component, run `add` again and confirm the overwrite.
+
+## Configuration
+
+The CLI reads and writes `axiom.json` at the root of your project: styling variant, aliases, and the list of copied items. See [Configuration](/docs/configuration).

@@ -127,8 +127,7 @@ The repository is a Bun workspace monorepo. The workspaces are `apps/*` and `pac
 ```text
 axiom/
 ├── apps/
-│   ├── docs/              # documentation site
-│   ├── landing/           # presentation page
+│   ├── web/               # landing and documentation site
 │   ├── demo-stylesheet/   # demo app, one per styling variant
 │   ├── demo-unistyles/
 │   ├── demo-nativewind/
@@ -140,8 +139,7 @@ axiom/
 └── package.json           # workspaces and app shortcuts
 ```
 
-- **`apps/docs`.** The documentation site, built with Astro and Fumadocs. Pages live in `apps/docs/content/docs`, one folder per layer. See [its README](./apps/docs/README.md).
-- **`apps/landing`.** The Astro page that presents Axiom and links to the documentation.
+- **`apps/web`.** The Astro website. It serves the landing page at `/` and the Fumadocs pages at `/docs`. Documentation content lives in `apps/web/content/docs`. See [its README](./apps/web/README.md).
 - **`apps/demo-*`.** Expo apps, one per styling tool. Each one is set up like a user project: it has an `axiom.json` and gets its components through the CLI.
 - **`packages/registry`.** The code copied into projects. Nothing imports it directly. See [its README](./packages/registry/README.md).
 - **`packages/cli`.** The command that reads the registry and copies items into a project.

@@ -1,0 +1,18 @@
+---
+import TokenFrame from './token-frame.astro';
+import { spacing } from '@docs/lib/tokens';
+---
+
+<TokenFrame>
+  <div class="grid gap-y-2 p-4 text-sm" style="grid-template-columns: 3rem 3rem 1fr; align-items: center;">
+    {
+      Object.entries(spacing).map(([key, value]) => (
+        <>
+          <div class="font-mono">{key}</div>
+          <div class="font-mono text-fd-muted-foreground">{value}</div>
+          <div class="h-4 bg-fd-foreground" style={`width:${value}px`} />
+        </>
+      ))
+    }
+  </div>
+</TokenFrame>

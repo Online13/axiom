@@ -1,0 +1,157 @@
+---
+// Wide card for the patterns index: a phone schematic on the left, the pattern name,
+// its one-line summary and its main states on the right.
+// Illustrations use the docs palette only, so they follow the light / dark theme.
+
+import Glyph from '@docs/components/preview/glyph.astro';
+
+interface Props {
+  title: string;
+  href: string;
+  preview: string;
+  // The states or steps the flow goes through, shown as small chips.
+  states?: string[];
+}
+
+const { title, href, preview, states = [] } = Astro.props;
+
+const line = 'block h-1 rounded-full bg-fd-muted-foreground/30';
+const strong = 'block h-1 rounded-full bg-fd-foreground/70';
+const dot = 'size-2.5 shrink-0 rounded-full bg-fd-muted-foreground/30';
+const box = 'border border-fd-border bg-fd-background';
+const accent = 'text-fd-foreground';
+---
+
+<a
+  href={href}
+  class="group flex flex-col border bg-fd-card text-fd-card-foreground transition-colors hover:border-fd-ring hover:bg-fd-accent/40 sm:flex-row"
+>
+  <div
+    class="flex h-40 shrink-0 items-center justify-center overflow-hidden border-b bg-fd-muted/60 sm:h-auto sm:w-52 sm:border-b-0 sm:border-r"
+    aria-hidden="true"
+  >
+    <div class={`relative my-5 flex h-[132px] w-[76px] flex-col overflow-hidden rounded-[10px] leading-none ${box} text-fd-muted-foreground`}>
+      {preview === 'otp-verification' && (
+        <>
+          <span class="flex flex-col gap-1 p-2 pt-3"><span class={`${strong} w-2/3`} /><span class={`${line} w-full`} /></span>
+          <span class="mt-1 flex justify-center gap-1 px-2">
+            <span class={`flex h-5 w-3 items-center justify-center rounded-[3px] ${box} text-[7px] font-semibold ${accent}`}>4</span>
+            <span class={`flex h-5 w-3 items-center justify-center rounded-[3px] ${box} text-[7px] font-semibold ${accent}`}>2</span>
+            <span class={`h-5 w-3 rounded-[3px] border-2 border-fd-foreground/70 bg-fd-background`} />
+            <span class={`h-5 w-3 rounded-[3px] ${box}`} />
+          </span>
+          <span class="mt-2 flex items-center justify-center gap-1 text-[7px]">
+            <Glyph name="clock" size={7} strokeWidth={2.4} />
+            <span>0:28</span>
+          </span>
+          <span class="mt-auto mx-2 mb-2 flex h-4 items-center justify-center rounded-[4px] bg-fd-foreground text-[7px] font-semibold text-fd-background">Verify</span>
+        </>
+      )}
+
+      {preview === 'undoable-action' && (
+        <>
+          <span class="flex flex-col gap-1.5 p-2 pt-3">
+            <span class="flex items-center gap-1.5"><span class={dot} /><span class={`${line} flex-1`} /></span>
+            <span class="flex items-center gap-1.5 opacity-40 line-through decoration-fd-muted-foreground"><span class={dot} /><span class={`${line} flex-1`} /></span>
+            <span class="flex items-center gap-1.5"><span class={dot} /><span class={`${line} w-2/3`} /></span>
+          </span>
+          <span class="absolute inset-x-1.5 bottom-2 rounded-[4px] bg-fd-foreground px-1.5 py-1 text-fd-background">
+            <span class="flex items-center justify-between text-[7px] font-semibold"><span>Deleted</span><span>Undo</span></span>
+            <span class="mt-1 block h-0.5 w-2/3 rounded-full bg-fd-background/60" />
+          </span>
+        </>
+      )}
+
+      {preview === 'search-experience' && (
+        <>
+          <span class={`mx-1.5 mt-2.5 flex h-4 items-center gap-1 rounded-full ${box} px-1.5`}>
+            <Glyph name="search" size={7} strokeWidth={2.6} class={accent} />
+            <span class={`${strong} w-1/2`} />
+          </span>
+          <span class="flex flex-col gap-1.5 p-2">
+            <span class="flex items-center gap-1.5"><Glyph name="clock" size={7} /><span class={`${line} flex-1`} /></span>
+            <span class="flex items-center gap-1.5"><Glyph name="clock" size={7} /><span class={`${line} w-2/3`} /></span>
+          </span>
+          <span class="mx-2 border-t border-dashed border-fd-border" />
+          <span class="flex flex-col gap-1.5 p-2">
+            <span class="flex items-center gap-1.5"><span class={dot} /><span class={`${strong} flex-1`} /></span>
+            <span class="flex items-center gap-1.5"><span class={dot} /><span class={`${line} w-3/4`} /></span>
+          </span>
+        </>
+      )}
+
+      {preview === 'selection-mode' && (
+        <>
+          <span class={`flex h-5 items-center justify-between px-1.5 text-[7px] font-semibold ${accent}`}>
+            <Glyph name="close" size={7} strokeWidth={2.6} />
+            <span>2 selected</span>
+          </span>
+          <span class="flex flex-col gap-1 px-1.5">
+            {[true, false, true].map((selected) => (
+              <span class:list={['flex items-center gap-1 rounded-[3px] px-1 py-1', selected && 'bg-fd-foreground/10']}>
+                {selected ? (
+                  <span class="flex size-2.5 shrink-0 items-center justify-center rounded-full bg-fd-foreground text-fd-background"><Glyph name="check" size={6} strokeWidth={3} /></span>
+                ) : (
+                  <span class="size-2.5 shrink-0 rounded-full border border-fd-muted-foreground/50" />
+                )}
+                <span class={`${selected ? strong : line} flex-1`} />
+              </span>
+            ))}
+          </span>
+          <span class={`absolute inset-x-0 bottom-0 flex h-5 items-center justify-around border-t border-fd-border bg-fd-background ${accent}`}>
+            <Glyph name="share" size={8} strokeWidth={2.4} />
+            <Glyph name="archive" size={8} strokeWidth={2.4} />
+            <Glyph name="trash" size={8} strokeWidth={2.4} />
+          </span>
+        </>
+      )}
+
+      {preview === 'floating-action-menu' && (
+        <>
+          <span class="flex flex-col gap-1 p-2 pt-3 opacity-50"><span class={line} /><span class={`${line} w-2/3`} /><span class={line} /></span>
+          <span class="absolute inset-0 bg-fd-background/70" />
+          <span class="absolute bottom-2 right-2 flex flex-col items-end gap-1.5">
+            <span class="flex items-center gap-1">
+              <span class={`rounded-[3px] ${box} px-1 py-0.5 text-[6px] font-medium ${accent}`}>Photo</span>
+              <span class={`flex size-4 items-center justify-center rounded-full ${box} ${accent}`}><Glyph name="camera" size={7} strokeWidth={2.4} /></span>
+            </span>
+            <span class="flex items-center gap-1">
+              <span class={`rounded-[3px] ${box} px-1 py-0.5 text-[6px] font-medium ${accent}`}>Note</span>
+              <span class={`flex size-4 items-center justify-center rounded-full ${box} ${accent}`}><Glyph name="edit" size={7} strokeWidth={2.4} /></span>
+            </span>
+            <span class="flex size-6 items-center justify-center rounded-full bg-fd-foreground text-fd-background"><Glyph name="close" size={9} strokeWidth={2.8} /></span>
+          </span>
+        </>
+      )}
+
+      {preview === 'async-content-state' && (
+        <>
+          <span class="flex flex-col gap-1.5 border-b border-dashed border-fd-border p-2 pt-3">
+            <span class="flex items-center gap-1.5"><span class={`${dot} animate-pulse motion-reduce:animate-none`} /><span class={`${line} flex-1 animate-pulse motion-reduce:animate-none`} /></span>
+            <span class="flex items-center gap-1.5"><span class={`${dot} animate-pulse motion-reduce:animate-none`} /><span class={`${line} w-2/3 animate-pulse motion-reduce:animate-none`} /></span>
+          </span>
+          <span class="flex flex-1 flex-col items-center justify-center gap-1.5 p-2">
+            <Glyph name="wifi-off" size={12} strokeWidth={2.2} class={accent} />
+            <span class={`${line} w-2/3`} />
+            <span class={`rounded-full ${box} px-1.5 py-0.5 text-[6px] font-semibold ${accent}`}>Retry</span>
+          </span>
+        </>
+      )}
+    </div>
+  </div>
+
+  <div class="flex flex-1 flex-col justify-center gap-2 p-4 sm:p-5">
+    <div class="flex items-center gap-1.5">
+      <span class="text-base font-medium">{title}</span>
+      <span class="text-fd-muted-foreground transition-transform group-hover:translate-x-0.5"><Glyph name="chevron-right" size={14} strokeWidth={2.4} /></span>
+    </div>
+    <p class="text-sm text-fd-muted-foreground"><slot /></p>
+    {states.length > 0 && (
+      <div class="mt-1 flex flex-wrap gap-1">
+        {states.map((state) => (
+          <span class="rounded-full bg-fd-muted px-2 py-0.5 text-[11px] text-fd-muted-foreground">{state}</span>
+        ))}
+      </div>
+    )}
+  </div>
+</a>

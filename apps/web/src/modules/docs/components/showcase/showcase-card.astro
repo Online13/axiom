@@ -1,0 +1,195 @@
+---
+// Wide card for the showcase index: a phone schematic of the app on the left,
+// its name, its one-line pitch and the parts of Axiom it exercises on the right.
+// Illustrations use the docs palette only, so they follow the light / dark theme.
+
+import Glyph from '@docs/components/preview/glyph.astro';
+
+interface Props {
+  title: string;
+  href: string;
+  preview: string;
+  // Short label shown over the illustration: what stage the app is at.
+  status?: string;
+  // The parts of the system the app leans on, shown as small chips.
+  uses?: string[];
+}
+
+const { title, href, preview, status, uses = [] } = Astro.props;
+
+const line = 'block h-1 rounded-full bg-fd-muted-foreground/30';
+const strong = 'block h-1 rounded-full bg-fd-foreground/70';
+const dot = 'size-2.5 shrink-0 rounded-full bg-fd-muted-foreground/30';
+const box = 'border border-fd-border bg-fd-background';
+const accent = 'text-fd-foreground';
+---
+
+<a
+  href={href}
+  class="group flex flex-col border bg-fd-card text-fd-card-foreground transition-colors hover:border-fd-ring hover:bg-fd-accent/40 sm:flex-row"
+>
+  <div
+    class="relative flex h-40 shrink-0 items-center justify-center overflow-hidden border-b bg-fd-muted/60 sm:h-auto sm:w-52 sm:border-b-0 sm:border-r"
+    aria-hidden="true"
+  >
+    {status && (
+      <span class="absolute left-2 top-2 rounded-full border border-fd-border bg-fd-background px-1.5 py-0.5 text-[10px] font-medium text-fd-muted-foreground">
+        {status}
+      </span>
+    )}
+    <div class={`relative my-5 flex h-[132px] w-[76px] flex-col overflow-hidden rounded-[10px] leading-none ${box} text-fd-muted-foreground`}>
+      {preview === 'demo' && (
+        <>
+          <span class={`flex h-5 items-center px-1.5 text-[7px] font-semibold ${accent}`}>Atoms</span>
+          <span class="grid grid-cols-2 gap-1 px-1.5">
+            <span class="flex h-4 items-center justify-center rounded-[4px] bg-fd-foreground text-[6px] font-semibold text-fd-background">Button</span>
+            <span class={`flex h-4 items-center justify-center rounded-[4px] ${box} text-[6px] font-semibold ${accent}`}>Chip</span>
+            <span class={`flex h-4 items-center gap-1 rounded-[4px] ${box} px-1`}><span class="size-1.5 rounded-full bg-fd-foreground/70" /><span class={`${line} flex-1`} /></span>
+            <span class={`flex h-4 items-center justify-end rounded-full ${box} px-0.5`}><span class="size-3 rounded-full bg-fd-foreground/70" /></span>
+          </span>
+          <span class="mt-1.5 flex items-center justify-center gap-1 px-1.5">
+            <span class={`flex h-4 flex-1 items-center justify-center rounded-[4px] bg-fd-foreground/10 text-[6px] font-semibold ${accent}`}>Light</span>
+            <span class="flex h-4 flex-1 items-center justify-center rounded-[4px] bg-fd-foreground text-[6px] font-semibold text-fd-background">Dark</span>
+          </span>
+          <span class={`absolute inset-x-0 bottom-0 flex h-5 items-center justify-around border-t border-fd-border bg-fd-background ${accent}`}>
+            <Glyph name="grid" size={8} strokeWidth={2.4} />
+            <Glyph name="sliders" size={8} strokeWidth={2.4} />
+            <Glyph name="sun" size={8} strokeWidth={2.4} />
+          </span>
+        </>
+      )}
+
+      {preview === 'tempo' && (
+        <>
+          <span class="flex items-center justify-between px-2 pt-3">
+            <span class={`${strong} w-1/2`} />
+            <span class={`text-[7px] font-semibold ${accent}`}>6</span>
+          </span>
+          <span class="mt-2 flex flex-col gap-1.5 px-2">
+            {[true, true, false].map((done) => (
+              <span class="flex items-center gap-1.5">
+                {done ? (
+                  <span class="flex size-3 shrink-0 items-center justify-center rounded-full bg-fd-foreground text-fd-background"><Glyph name="check" size={7} strokeWidth={3} /></span>
+                ) : (
+                  <span class="size-3 shrink-0 rounded-full border border-fd-muted-foreground/50" />
+                )}
+                <span class={`${done ? strong : line} flex-1`} />
+              </span>
+            ))}
+          </span>
+          <span class="mt-2 flex items-end justify-between px-2">
+            {[6, 10, 4, 12, 8, 14, 9].map((height) => (
+              <span class="w-1 rounded-full bg-fd-foreground/40" style={{ height: `${height}px` }} />
+            ))}
+          </span>
+          <span class="absolute bottom-2 right-2 flex size-5 items-center justify-center rounded-full bg-fd-foreground text-fd-background"><Glyph name="plus" size={9} strokeWidth={2.8} /></span>
+        </>
+      )}
+
+      {preview === 'tally' && (
+        <>
+          <span class={`mx-1.5 mt-2.5 flex flex-col gap-1 rounded-[5px] ${box} p-1.5`}>
+            <span class="text-[6px]">You are owed</span>
+            <span class={`text-[10px] font-semibold ${accent}`}>42.50</span>
+          </span>
+          <span class="mt-1.5 flex flex-col gap-1.5 px-2">
+            {['+12', '-8', '+5'].map((amount) => (
+              <span class="flex items-center gap-1.5">
+                <span class={dot} />
+                <span class={`${line} flex-1`} />
+                <span class={`text-[6px] font-semibold ${accent}`}>{amount}</span>
+              </span>
+            ))}
+          </span>
+          <span class={`absolute inset-x-0 bottom-0 flex h-5 items-center justify-around border-t border-fd-border bg-fd-background ${accent}`}>
+            <Glyph name="wallet" size={8} strokeWidth={2.4} />
+            <Glyph name="users" size={8} strokeWidth={2.4} />
+            <Glyph name="user" size={8} strokeWidth={2.4} />
+          </span>
+        </>
+      )}
+
+      {preview === 'atlas' && (
+        <>
+          <span class="absolute inset-0 bg-fd-muted/70" />
+          <span class="absolute inset-0">
+            <span class="absolute left-0 top-8 h-px w-full bg-fd-border" />
+            <span class="absolute left-0 top-16 h-px w-full bg-fd-border" />
+            <span class="absolute left-6 top-0 h-full w-px bg-fd-border" />
+            <span class="absolute left-14 top-0 h-full w-px bg-fd-border" />
+          </span>
+          <span class={`absolute left-3 top-8 ${accent}`}><Glyph name="pin" size={10} strokeWidth={2.4} /></span>
+          <span class={`absolute left-11 top-12 ${accent}`}><Glyph name="pin" size={10} strokeWidth={2.4} /></span>
+          <span class={`absolute inset-x-1.5 top-2.5 flex h-4 items-center gap-1 rounded-full ${box} px-1.5`}>
+            <Glyph name="search" size={7} strokeWidth={2.6} class={accent} />
+            <span class={`${strong} w-1/2`} />
+          </span>
+          <span class={`absolute inset-x-0 bottom-0 rounded-t-[8px] border-t border-fd-border bg-fd-background p-1.5`}>
+            <span class="mx-auto mb-1.5 block h-0.5 w-5 rounded-full bg-fd-muted-foreground/40" />
+            <span class="flex flex-col gap-1">
+              <span class={`${strong} w-2/3`} />
+              <span class={`${line} w-full`} />
+            </span>
+          </span>
+        </>
+      )}
+
+      {preview === 'chapter' && (
+        <>
+          <span class="flex flex-col gap-1.5 p-2 pt-4">
+            <span class={line} />
+            <span class={line} />
+            <span class="flex gap-1"><span class="block h-1 w-1/2 rounded-full bg-fd-foreground/70" /><span class={`${line} flex-1`} /></span>
+            <span class={line} />
+            <span class={`${line} w-2/3`} />
+          </span>
+          <span class={`absolute inset-x-3 top-9 flex items-center justify-around rounded-[4px] bg-fd-foreground px-1 py-1 text-fd-background`}>
+            <Glyph name="edit" size={7} strokeWidth={2.6} />
+            <Glyph name="copy" size={7} strokeWidth={2.6} />
+            <Glyph name="share" size={7} strokeWidth={2.6} />
+          </span>
+          <span class="absolute inset-x-2 bottom-2 flex items-center gap-1">
+            <span class="h-0.5 flex-1 rounded-full bg-fd-foreground/60" />
+            <span class="text-[6px]">62%</span>
+          </span>
+        </>
+      )}
+
+      {preview === 'corner' && (
+        <>
+          <span class="flex items-center justify-between px-2 pt-3">
+            <span class={`${strong} w-1/2`} />
+            <span class={`relative ${accent}`}>
+              <Glyph name="bag" size={9} strokeWidth={2.4} />
+              <span class="absolute -right-1 -top-1 flex size-2.5 items-center justify-center rounded-full bg-fd-foreground text-[5px] font-semibold text-fd-background">2</span>
+            </span>
+          </span>
+          <span class="mt-2 grid grid-cols-2 gap-1 px-2">
+            {[0, 1, 2, 3].map(() => (
+              <span class={`flex h-8 flex-col justify-end rounded-[4px] ${box} p-1`}>
+                <span class={`${line} w-full`} />
+                <span class={`mt-1 text-[6px] font-semibold ${accent}`}>$18</span>
+              </span>
+            ))}
+          </span>
+          <span class="absolute inset-x-2 bottom-2 flex h-4 items-center justify-center rounded-[4px] bg-fd-foreground text-[6px] font-semibold text-fd-background">Checkout</span>
+        </>
+      )}
+    </div>
+  </div>
+
+  <div class="flex flex-1 flex-col justify-center gap-2 p-4 sm:p-5">
+    <div class="flex items-center gap-1.5">
+      <span class="text-base font-medium">{title}</span>
+      <span class="text-fd-muted-foreground transition-transform group-hover:translate-x-0.5"><Glyph name="chevron-right" size={14} strokeWidth={2.4} /></span>
+    </div>
+    <p class="text-sm text-fd-muted-foreground"><slot /></p>
+    {uses.length > 0 && (
+      <div class="mt-1 flex flex-wrap gap-1">
+        {uses.map((item) => (
+          <span class="rounded-full bg-fd-muted px-2 py-0.5 text-[11px] text-fd-muted-foreground">{item}</span>
+        ))}
+      </div>
+    )}
+  </div>
+</a>

@@ -1,0 +1,406 @@
+---
+// A messages list driven by useSwipeActions with a full-swipe delete, followed by an undo snackbar.
+// Drag a row left: past 40pt it opens on a Delete button; past 55% of the row it arms (haptic, the button fills the row)
+// and releasing deletes. The row slides out and collapses at once; the delete is only committed when the snackbar
+// times out. Undo puts the row back where it was.
+import PhonePreview from '@docs/components/preview/phone-preview.astro';
+import Glyph from '@docs/components/preview/glyph.astro';
+
+const threads = [
+  { from: 'Grace Hopper', text: 'Taped it in the logbook.', time: '9:41', photo: '1' },
+  { from: 'Alan Turing', text: 'Lunch first, then the test.', time: '9:12', photo: '2' },
+  { from: 'Katherine Johnson', text: 'Numbers check out.', time: '8:50', photo: '3' },
+  { from: 'Linus Torvalds', text: 'Just a hobby.', time: '8:02', photo: '4' },
+  { from: 'Hedy Lamarr', text: 'Patent filed this morning.', time: 'Yesterday', photo: '5' },
+  { from: 'Tim Berners-Lee', text: 'Put it on a web page.', time: 'Yesterday', photo: '1' },
+  { from: 'Radia Perlman', text: 'The tree converged.', time: 'Mon', photo: '2' },
+];
+
+const initials = (name: string) =>
+  name
+    .split(' ')
+    .map((part) => part[0])
+    .join('');
+---
+
+<PhonePreview>
+  <div class="fsw" data-full-swipe>
+    <div class="ax-appbar" data-border>
+      <span class="ax-appbar-slot" />
+      <span class="ax-appbar-title">Messages</span>
+      <span class="ax-appbar-slot" data-side="end"><span class="ax-icon-btn"><Glyph name="edit" /></span></span>
+    </div>
+
+    <div class="fsw-list" data-list>
+      {
+        threads.map(({ from, text, time, photo }) => (
+          <div class="fsw-row" data-row data-name={from}>
+            <button type="button" class="fsw-delete" data-delete tabindex="-1">
+              <span class="fsw-delete-label"><Glyph name="trash" size={20} /><span>Delete</span></span>
+            </button>
+            <div class="ax-item fsw-content" data-content>
+              <span class="ax-avatar" data-photo={photo}>{initials(from)}</span>
+              <div class="ax-item-content">
+                <span class="ax-row" data-justify="between">
+                  <span class="ax-item-title">{from}</span>
+                  <span class="ax-item-desc">{time}</span>
+                </span>
+                <span class="ax-item-desc">{text}</span>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="fsw-snackbar ax-snackbar" data-snackbar>
+      <span class="ax-grow" data-snackbar-text>Conversation deleted</span>
+      <span class="ax-snackbar-action" data-undo>Undo</span>
+      <span class="fsw-timer" data-timer />
+    </div>
+  </div>
+
+  <div slot="footer" class="border-t px-4 py-3 font-mono text-xs" data-fsw-readout>
+    <span class="text-fd-muted-foreground">progress </span><span data-out="progress">0.00</span>
+    <span class="text-fd-muted-foreground"> · status </span><span data-out="status">idle</span>
+    <span class="text-fd-muted-foreground"> · </span><span data-out="event" class="text-fd-muted-foreground">swipe a row far left</span>
+  </div>
+</PhonePreview>
+
+<style is:global>
+  .fsw {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .fsw-row {
+    position: relative;
+    overflow: hidden;
+    transition: height 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .fsw-row + .fsw-row .fsw-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 68px;
+    height: 1px;
+    background: var(--ax-border-subtle);
+  }
+
+  [data-scheme='dark'] .fsw-row + .fsw-row .fsw-content::before {
+    background: var(--ax-border-default);
+  }
+
+  .fsw-content {
+    position: relative;
+    z-index: 1;
+    background: var(--ax-background-default);
+    cursor: grab;
+    user-select: none;
+    touch-action: pan-y;
+    transform: translateX(var(--fsw-x, 0px));
+    will-change: transform;
+  }
+
+  .fsw-row[data-dragging] .fsw-content {
+    cursor: grabbing;
+  }
+
+  .fsw-delete {
+    position: absolute;
+    inset-block: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: max(80px, calc(var(--fsw-x, 0px) * -1));
+    padding: 0;
+    border: 0;
+    background: #ff3b30;
+    color: #fff;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  /* Centered in the 80pt button; once armed, it follows the row's edge. */
+  .fsw-delete-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: 80px;
+    transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .fsw-row:not([data-revealed]) .fsw-delete {
+    visibility: hidden;
+  }
+
+  .fsw-row[data-armed] .fsw-delete {
+    justify-content: flex-start;
+  }
+
+  .fsw-row[data-armed] .fsw-delete-label {
+    transform: scale(1.1);
+  }
+
+  .fsw-row[data-settling] .fsw-content,
+  .fsw-row[data-settling] .fsw-delete {
+    transition:
+      transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      width 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .fsw-snackbar {
+    position: absolute;
+    inset-inline: 12px;
+    bottom: 12px;
+    z-index: 5;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(24px);
+    pointer-events: none;
+    transition:
+      opacity 180ms ease,
+      transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .fsw-snackbar[data-open] {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .fsw-snackbar [data-undo] {
+    cursor: pointer;
+  }
+
+  .fsw-timer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    background: currentColor;
+    opacity: 0.35;
+    transform-origin: left;
+  }
+
+  .fsw-snackbar[data-open] .fsw-timer {
+    animation: fsw-timer var(--fsw-duration, 4000ms) linear forwards;
+  }
+
+  @keyframes fsw-timer {
+    to {
+      transform: scaleX(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fsw-row,
+    .fsw-row[data-settling] .fsw-content,
+    .fsw-row[data-settling] .fsw-delete,
+    .fsw-snackbar {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const BUTTON = 80;
+  const FULL_SWIPE = 0.55;
+  const VELOCITY = 500;
+  const LOCK = 8;
+  const DURATION = 4000;
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-full-swipe]:not([data-ready])').forEach((root) => {
+      root.dataset.ready = '';
+      root.style.setProperty('--fsw-duration', `${DURATION}ms`);
+      const snackbar = root.querySelector<HTMLElement>('[data-snackbar]')!;
+      const readout = root.closest('[data-ax-preview]')!.querySelector<HTMLElement>('[data-fsw-readout]')!;
+      const out = (key: string) => readout.querySelector<HTMLElement>(`[data-out="${key}"]`)!;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      let openRow: HTMLElement | null = null;
+      let pending: { row: HTMLElement; timer: number } | null = null;
+
+      const report = (status: string, event?: string) => {
+        out('status').textContent = status;
+        if (event) out('event').textContent = event;
+      };
+
+      const setX = (row: HTMLElement, x: number) => {
+        row.dataset.x = String(x);
+        if (x !== 0) row.dataset.revealed = '';
+        row.style.setProperty('--fsw-x', `${x}px`);
+        out('progress').textContent = (Math.abs(x) / row.offsetWidth).toFixed(2);
+      };
+
+      const settle = (row: HTMLElement, x: number) => {
+        row.dataset.settling = '';
+        setX(row, x);
+        openRow = x === 0 ? (openRow === row ? null : openRow) : row;
+        setTimeout(() => {
+          delete row.dataset.settling;
+          if (row.dataset.x === '0') delete row.dataset.revealed;
+        }, 260);
+      };
+
+      const hideSnackbar = () => {
+        delete snackbar.dataset.open;
+        // Restart the timer animation the next time it opens.
+        void snackbar.offsetWidth;
+      };
+
+      const commit = () => {
+        if (!pending) return;
+        clearTimeout(pending.timer);
+        const name = pending.row.dataset.name;
+        pending.row.remove();
+        pending = null;
+        hideSnackbar();
+        report('idle', `committed: deleteThread("${name}")`);
+      };
+
+      const remove = (row: HTMLElement) => {
+        // Only one pending delete: a new one commits the previous.
+        commit();
+        openRow = null;
+        delete row.dataset.armed;
+        navigator.vibrate?.(10);
+        row.dataset.settling = '';
+        setX(row, -row.offsetWidth);
+        row.style.height = `${row.offsetHeight}px`;
+        const wait = reduceMotion.matches ? 0 : 200;
+        setTimeout(() => {
+          row.style.height = '0px';
+        }, wait);
+
+        requestAnimationFrame(() => {
+          snackbar.dataset.open = '';
+        });
+        pending = {
+          row,
+          timer: window.setTimeout(commit, DURATION + wait),
+        };
+        report('pending', 'removed from the list, undo available for 4s');
+      };
+
+      root.querySelector('[data-undo]')!.addEventListener('click', () => {
+        if (!pending) return;
+        clearTimeout(pending.timer);
+        const { row } = pending;
+        pending = null;
+        hideSnackbar();
+        row.style.height = `${row.scrollHeight}px`;
+        setTimeout(() => {
+          row.style.height = '';
+          settle(row, 0);
+        }, reduceMotion.matches ? 0 : 240);
+        report('idle', `undo: ${row.dataset.name} restored, nothing sent`);
+      });
+
+      root.querySelectorAll<HTMLElement>('[data-row]').forEach((row) => {
+        const content = row.querySelector<HTMLElement>('[data-content]')!;
+        setX(row, 0);
+
+        let pointer: number | null = null;
+        let startX = 0;
+        let startY = 0;
+        let origin = 0;
+        let locked: 'x' | 'y' | null = null;
+        let samples: { t: number; x: number }[] = [];
+
+        content.addEventListener('pointerdown', (event) => {
+          if (event.button !== 0) return;
+          if (openRow && openRow !== row) {
+            settle(openRow, 0);
+            report('idle', 'tap outside closed the row');
+          }
+          pointer = event.pointerId;
+          startX = event.clientX;
+          startY = event.clientY;
+          origin = Number(row.dataset.x ?? 0);
+          locked = null;
+          samples = [];
+          delete row.dataset.settling;
+        });
+
+        content.addEventListener('pointermove', (event) => {
+          if (event.pointerId !== pointer) return;
+          const zoom = content.getBoundingClientRect().width / content.offsetWidth || 1;
+          const dx = (event.clientX - startX) / zoom;
+          const dy = (event.clientY - startY) / zoom;
+
+          if (!locked) {
+            if (Math.hypot(dx, dy) < LOCK) return;
+            locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+            if (locked === 'y') return;
+            content.setPointerCapture(event.pointerId);
+            row.dataset.dragging = '';
+          }
+          if (locked !== 'x') return;
+
+          // Right of the rest position, a strong resistance: there is nothing to reveal.
+          let x = origin + dx;
+          if (x > 0) x = (x * 12) / (x + 12);
+          x = Math.max(x, -row.offsetWidth);
+          setX(row, x);
+
+          const armed = -x > row.offsetWidth * FULL_SWIPE;
+          if (armed !== row.hasAttribute('data-armed')) {
+            row.toggleAttribute('data-armed', armed);
+            // A haptic each time the threshold is crossed, in both directions.
+            navigator.vibrate?.(8);
+          }
+          report(armed ? 'armed' : 'dragging', armed ? 'release: deletes' : -x > BUTTON / 2 ? 'release: opens Delete' : 'release: closes');
+          samples.push({ t: performance.now(), x });
+          if (samples.length > 5) samples.shift();
+        });
+
+        const release = (event: PointerEvent) => {
+          if (event.pointerId !== pointer) return;
+          pointer = null;
+          delete row.dataset.dragging;
+          if (locked !== 'x') {
+            if (!locked && event.type === 'pointerup') {
+              if (openRow === row) {
+                settle(row, 0);
+                report('idle', 'tap closed the row');
+              } else report('idle', `onPress: open ${row.dataset.name}`);
+            }
+            return;
+          }
+
+          const x = Number(row.dataset.x);
+          const first = samples[0];
+          const last = samples[samples.length - 1];
+          const velocity = first && last && last.t > first.t ? ((last.x - first.x) / (last.t - first.t)) * 1000 : 0;
+
+          if (row.hasAttribute('data-armed')) return remove(row);
+
+          let open = -x > BUTTON / 2;
+          if (velocity < -VELOCITY) open = true;
+          if (velocity > VELOCITY) open = false;
+          settle(row, open ? -BUTTON : 0);
+          report(open ? 'open' : 'idle', open ? 'opened on the Delete button' : 'closed');
+        };
+        content.addEventListener('pointerup', release);
+        content.addEventListener('pointercancel', release);
+
+        row.querySelector('[data-delete]')!.addEventListener('click', () => remove(row));
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

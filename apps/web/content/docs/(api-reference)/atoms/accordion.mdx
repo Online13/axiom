@@ -1,0 +1,300 @@
+---
+title: Accordion
+description: "Collapsible sections."
+---
+
+<PhonePreview>
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Help</span>
+		<span class="ax-icon-btn">
+			<Glyph name="search" />
+		</span>
+	</div>
+	<div class="ax-body" style={{ gap: "0px" }}>
+		<span class="ax-title2" style={{ paddingBottom: "8px" }}>
+			Frequently asked
+		</span>
+		<div class="ax-accordion-item">
+			<div class="ax-accordion-trigger">
+				How long does shipping take?
+				<Glyph name="chevron-up" size={20} />
+			</div>
+			<div class="ax-accordion-content">
+				Orders ship within 2 business days. Delivery takes 3–5 days in
+				Europe and 5–8 days elsewhere. You'll get a tracking link by email.
+			</div>
+		</div>
+		<div class="ax-accordion-item">
+			<div class="ax-accordion-trigger">
+				Can I return an item?
+				<Glyph name="chevron-down" size={20} />
+			</div>
+		</div>
+		<div class="ax-accordion-item">
+			<div class="ax-accordion-trigger">
+				Do you ship internationally?
+				<Glyph name="chevron-down" size={20} />
+			</div>
+		</div>
+		<div class="ax-accordion-item">
+			<div class="ax-accordion-trigger ax-disabled">
+				Gift cards
+				<span class="ax-badge" data-variant="outline">
+					Soon
+				</span>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add accordion
+```
+
+Installs: `react-native-reanimated`, `react-native-worklets`.
+
+Requires the `chevron-down` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need). Open sections, measuring and the height animation live in `use-accordion.ts`, shared by every styling variant.
+
+## Usage
+
+```tsx
+import { Accordion } from "@/components/ui/accordion";
+
+<Accordion type="single" collapsible>
+	<Accordion.Item value="shipping">
+		<Accordion.Trigger>Shipping</Accordion.Trigger>
+		<Accordion.Content>Orders ship within 2 days.</Accordion.Content>
+	</Accordion.Item>
+</Accordion>;
+```
+
+## Props
+
+### Accordion
+
+| Prop            | Type                     | Default    | Description                                                                                |
+| --------------- | ------------------------ | ---------- | ------------------------------------------------------------------------------------------ |
+| `type`          | `'single' \| 'multiple'` | `'single'` | `single`: opening a section closes the others. `multiple`: several sections can stay open. |
+| `value`         | `string \| string[]`     | —          | Open section(s): a string for `single`, an array for `multiple`.                           |
+| `defaultValue`  | `string \| string[]`     | —          | Initially open section(s) when the accordion manages its own state.                        |
+| `onValueChange` | `(value) => void`        | —          | Called when a section opens or closes.                                                     |
+| `collapsible`   | `boolean`                | `true`     | With `type="single"`, lets the user close the open section. `false` always keeps one open. |
+| `disabled`      | `boolean`                | `false`    | Disables every section.                                                                    |
+| `divider`       | `boolean`                | `true`     | Hairline between sections.                                                                 |
+| `children`      | `ReactNode`              | —          | `Accordion.Item` elements.                                                                 |
+| `style`         | `StyleProp<ViewStyle>`   | —          | Extra styles.                                                                              |
+
+### Accordion.Item
+
+| Prop       | Type                   | Default | Description                                     |
+| ---------- | ---------------------- | ------- | ----------------------------------------------- |
+| `value`    | `string`               | —       | Required. Identifies the section.               |
+| `disabled` | `boolean`              | `false` | Keeps this section closed and dims its trigger. |
+| `style`    | `StyleProp<ViewStyle>` | —       | Extra styles.                                   |
+
+### Accordion.Trigger
+
+| Prop       | Type                   | Default | Description                                                 |
+| ---------- | ---------------------- | ------- | ----------------------------------------------------------- |
+| `children` | `ReactNode`            | —       | The section title.                                          |
+| `icon`     | `ReactNode \| null`    | chevron | Indicator on the right, rotated when open. `null` hides it. |
+| `leading`  | `ReactNode`            | —       | Content before the title, such as an icon.                  |
+| `style`    | `StyleProp<ViewStyle>` | —       | Extra styles.                                               |
+
+The trigger sets `accessibilityRole="button"` and `accessibilityState.expanded`.
+
+### Accordion.Content
+
+| Prop         | Type                   | Default | Description                                                                               |
+| ------------ | ---------------------- | ------- | ----------------------------------------------------------------------------------------- |
+| `children`   | `ReactNode`            | —       | The section body. It is measured once, then its height animates on the UI thread.         |
+| `forceMount` | `boolean`              | `false` | Keeps the content mounted while closed, to preserve its state (a form, a video position). |
+| `style`      | `StyleProp<ViewStyle>` | —       | Extra styles.                                                                             |
+
+## Use cases
+
+### FAQ
+
+`type="single"` so the screen doesn't turn into a wall of open answers.
+
+<PhonePreview size="sm">
+	<div class="ax-body" style={{ gap: "0px", paddingTop: "12px" }}>
+		<div class="ax-accordion-item">
+			<div class="ax-accordion-trigger">
+				What is Axiom?
+				<Glyph name="chevron-down" size={20} />
+			</div>
+		</div>
+		<div class="ax-accordion-item">
+			<div class="ax-accordion-trigger">
+				Is it free?
+				<Glyph name="chevron-up" size={20} />
+			</div>
+			<div class="ax-accordion-content">
+				Yes. The code is copied into your project and you own it. There is
+				no runtime package to pay for.
+			</div>
+		</div>
+		<div class="ax-accordion-item">
+			<div class="ax-accordion-trigger">
+				Does it work with Expo?
+				<Glyph name="chevron-down" size={20} />
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<Accordion type="single" collapsible>
+	{faq.map((q) => (
+		<Accordion.Item key={q.id} value={q.id}>
+			<Accordion.Trigger>{q.question}</Accordion.Trigger>
+			<Accordion.Content>
+				<Text color="muted">{q.answer}</Text>
+			</Accordion.Content>
+		</Accordion.Item>
+	))}
+</Accordion>
+```
+
+### Order details
+
+`type="multiple"` for sections the user compares, with a summary in the trigger.
+
+<PhonePreview size="sm">
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Order #10482</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body" style={{ gap: "0px" }}>
+		<div class="ax-accordion-item">
+			<div class="ax-accordion-trigger">
+				<span class="ax-row">
+					<Glyph name="bag" size={20} />3 items
+				</span>
+				<span
+					class="ax-row ax-subhead ax-muted"
+					style={{ fontWeight: 400 }}
+				>
+					$88.90
+					<Glyph name="chevron-up" size={20} />
+				</span>
+			</div>
+			<div class="ax-accordion-content ax-stack" data-gap="4">
+				<div class="ax-row" data-justify="between">
+					<span>Canvas tote × 1</span>
+					<span>$32.00</span>
+				</div>
+				<div class="ax-row" data-justify="between">
+					<span>Cold brew × 2</span>
+					<span>$9.00</span>
+				</div>
+				<div class="ax-row" data-justify="between">
+					<span>Notebook × 1</span>
+					<span>$43.00</span>
+				</div>
+			</div>
+		</div>
+		<div class="ax-accordion-item">
+			<div class="ax-accordion-trigger">
+				<span class="ax-row">
+					<Glyph name="pin" size={20} />
+					Delivery
+				</span>
+				<span
+					class="ax-row ax-subhead ax-muted"
+					style={{ fontWeight: 400 }}
+				>
+					Tomorrow
+					<Glyph name="chevron-up" size={20} />
+				</span>
+			</div>
+			<div class="ax-accordion-content">
+				221B Baker Street, London NW1 6XE
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<Accordion type="multiple" defaultValue={["items"]}>
+	<Accordion.Item value="items">
+		<Accordion.Trigger leading={<Icon name="bag" />}>
+			3 items
+		</Accordion.Trigger>
+		<Accordion.Content>{/* lines */}</Accordion.Content>
+	</Accordion.Item>
+	<Accordion.Item value="delivery">…</Accordion.Item>
+</Accordion>
+```
+
+### Advanced options in a form
+
+Keep rare settings out of the way. `forceMount` keeps what the user typed if they close the section.
+
+<PhonePreview half="bottom" size="sm">
+	<div class="ax-body" style={{ gap: "12px" }}>
+		<div class="ax-field">
+			<span class="ax-label">Project name</span>
+			<div class="ax-control">
+				<span class="ax-value">axiom-demo</span>
+			</div>
+		</div>
+		<div
+			class="ax-accordion-item"
+			style={{ borderTop: "1px solid var(--ax-border-default)" }}
+		>
+			<div class="ax-accordion-trigger ax-subhead">
+				Advanced
+				<Glyph name="chevron-up" size={20} />
+			</div>
+			<div class="ax-accordion-content ax-stack" data-gap="12">
+				<div class="ax-row" data-justify="between">
+					<span
+						class="ax-text"
+						style={{ color: "var(--ax-content-default)" }}
+					>
+						New Architecture
+					</span>
+					<span class="ax-switch" data-checked />
+				</div>
+				<div class="ax-field">
+					<span class="ax-label">Bundle identifier</span>
+					<div class="ax-control">
+						<span class="ax-value">dev.axiom.demo</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ax-fill" />
+	<div class="ax-body" style={{ paddingBottom: "40px" }}>
+		<span class="ax-btn" data-size="lg" data-block>
+			Create project
+		</span>
+	</div>
+</PhonePreview>
+
+```tsx
+<Accordion type="single" collapsible>
+  <Accordion.Item value="advanced">
+    <Accordion.Trigger>Advanced</Accordion.Trigger>
+    <Accordion.Content forceMount>
+      <Switch … />
+      <Input label="Bundle identifier" … />
+    </Accordion.Content>
+  </Accordion.Item>
+</Accordion>
+```
+
+## Related
+
+- [Item](/docs/atoms/item)

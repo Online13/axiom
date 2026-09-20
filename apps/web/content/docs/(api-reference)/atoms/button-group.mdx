@@ -1,0 +1,271 @@
+---
+title: ButtonGroup
+description: "Groups several attached buttons."
+---
+
+<PhonePreview>
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Calendar</span>
+		<span class="ax-icon-btn">
+			<Glyph name="plus" />
+		</span>
+	</div>
+	<div class="ax-body" style={{ gap: "20px" }}>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">Attached outline buttons</span>
+			<div class="ax-btn-group" data-block>
+				<span class="ax-btn" data-variant="outline">
+					Day
+				</span>
+				<span
+					class="ax-btn"
+					data-variant="outline"
+					style={{ background: "var(--ax-background-subtle)" }}
+				>
+					Week
+				</span>
+				<span class="ax-btn" data-variant="outline">
+					Month
+				</span>
+			</div>
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">Split button</span>
+			<div class="ax-btn-group">
+				<span class="ax-btn">Export</span>
+				<span class="ax-btn" style={{ padding: "0 12px" }}>
+					<Glyph name="chevron-down" size={18} />
+				</span>
+			</div>
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">Small, with icons</span>
+			<div class="ax-btn-group" data-size="sm">
+				<span class="ax-btn" data-size="sm" data-variant="outline">
+					<Glyph name="chevron-left" size={16} />
+				</span>
+				<span class="ax-btn" data-size="sm" data-variant="outline">
+					Today
+				</span>
+				<span class="ax-btn" data-size="sm" data-variant="outline">
+					<Glyph name="chevron-right" size={16} />
+				</span>
+			</div>
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">Spaced</span>
+			<div class="ax-row">
+				<span class="ax-btn ax-grow" data-variant="outline">
+					Cancel
+				</span>
+				<span class="ax-btn ax-grow">Confirm</span>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add button-group
+```
+
+Also copies: [`button`](/docs/atoms/button). No tokens: the buttons keep their own.
+
+## Usage
+
+```tsx
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
+
+<ButtonGroup>
+	<Button variant="outline">Day</Button>
+	<Button variant="outline">Week</Button>
+	<Button variant="outline">Month</Button>
+</ButtonGroup>;
+```
+
+## Props
+
+| Prop          | Type                              | Default        | Description                                                                                                        |
+| ------------- | --------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `children`    | `ReactNode`                       | —              | The [Button](/docs/atoms/button) or [IconButton](/docs/atoms/icon-button) elements to group.                                 |
+| `attached`    | `boolean`                         | `true`         | Merges adjacent borders and keeps only the outer corners rounded. `false` lays the buttons out with a gap instead. |
+| `orientation` | `'horizontal' \| 'vertical'`      | `'horizontal'` | Direction of the group. Vertical groups merge top and bottom edges.                                                |
+| `gap`         | `SpacingToken`                    | `2`            | Space between buttons when `attached` is `false`, from the spacing scale (8pt by default).                         |
+| `size`        | `'sm' \| 'md' \| 'lg'`            | —              | Applied to every child that doesn't set its own `size`, so the heights match.                                      |
+| `variant`     | `'solid' \| 'outline' \| 'ghost'` | —              | Applied to every child that doesn't set its own `variant`.                                                         |
+| `fullWidth`   | `boolean`                         | `false`        | Stretches the group and splits its width evenly between the buttons.                                               |
+| `disabled`    | `boolean`                         | `false`        | Disables every button in the group.                                                                                |
+| `style`       | `StyleProp<ViewStyle>`            | —              | Extra styles for the container.                                                                                    |
+
+`ButtonGroup` only handles layout. It doesn't track a selection: for one choice among several, use [SegmentedControl](/docs/atoms/segmented-control).
+
+Use `ButtonGroup.Item` for an action wrapped by another component. Its `render` callback provides `containerStyle` for the wrapper and `buttonStyle` for the visible button. Set `grow={false}` to keep that action compact in a full-width group.
+
+## Use cases
+
+### Split button
+
+The main action and a chevron that opens a [Menu](/docs/atoms/menu) of alternatives.
+
+<PhonePreview size="sm">
+	<div class="ax-appbar" data-border>
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Q3 report</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body">
+		<div class="ax-attachment">
+			<span class="ax-attachment-thumb" data-kind="pdf">
+				<Glyph name="file" size={20} />
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-headline">q3-report.pdf</span>
+				<span class="ax-footnote ax-muted">12 pages · 2.4 MB</span>
+			</div>
+		</div>
+		<div class="ax-btn-group" data-block>
+			<span class="ax-btn">Download PDF</span>
+			<span class="ax-btn" style={{ flex: "none", padding: "0 14px" }}>
+				<Glyph name="chevron-down" size={18} />
+			</span>
+		</div>
+	</div>
+	<div
+		class="ax-layer"
+		style={{
+			alignItems: "flex-start",
+			justifyContent: "flex-end",
+			padding: "176px 16px 0",
+		}}
+	>
+		<div class="ax-menu" style={{ width: "200px" }}>
+			<span class="ax-menu-item">Download CSV</span>
+			<span class="ax-menu-item">Download XLSX</span>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<Menu.Root>
+	<ButtonGroup fullWidth>
+		<Button onPress={downloadPdf}>Download PDF</Button>
+		<ButtonGroup.Item
+			grow={false}
+			render={({ containerStyle, buttonStyle, size, disabled }) => (
+				<Menu.Trigger action="press" asChild style={containerStyle}>
+					<IconButton
+						icon="chevron-down"
+						accessibilityLabel="Other formats"
+						variant="solid"
+						shape="square"
+						size={size}
+						disabled={disabled}
+						style={buttonStyle}
+					/>
+				</Menu.Trigger>
+			)}
+		/>
+	</ButtonGroup>
+	<Menu.Content>…</Menu.Content>
+</Menu.Root>
+```
+
+### Stepper
+
+Minus and plus around a value, read as one control.
+
+<PhonePreview half="bottom" size="sm">
+	<div class="ax-body">
+		<div class="ax-row">
+			<span class="ax-tile" data-size="lg" data-color="orange">
+				<Glyph name="bag" />
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-headline">Cold brew</span>
+				<span class="ax-subhead ax-muted">$4.50 each</span>
+			</div>
+		</div>
+		<div class="ax-row" data-justify="between">
+			<span class="ax-text">Quantity</span>
+			<div class="ax-btn-group" data-size="sm">
+				<span class="ax-btn" data-size="sm" data-variant="outline">
+					<Glyph name="minus" size={16} />
+				</span>
+				<span
+					class="ax-btn"
+					data-size="sm"
+					data-variant="outline"
+					style={{ minWidth: "44px" }}
+				>
+					2
+				</span>
+				<span class="ax-btn" data-size="sm" data-variant="outline">
+					<Glyph name="plus" size={16} />
+				</span>
+			</div>
+		</div>
+	</div>
+	<div class="ax-fill" />
+	<div class="ax-body" style={{ paddingBottom: "40px" }}>
+		<span class="ax-btn" data-size="lg" data-block>
+			Add · $9.00
+		</span>
+	</div>
+</PhonePreview>
+
+```tsx
+<ButtonGroup variant="outline" size="sm">
+	<IconButton
+		icon="minus"
+		accessibilityLabel="Remove one"
+		onPress={decrement}
+	/>
+	<Button disabled>{quantity}</Button>
+	<IconButton icon="plus" accessibilityLabel="Add one" onPress={increment} />
+</ButtonGroup>
+```
+
+### Dialog actions
+
+`attached={false}` with `fullWidth`: two equal buttons with a gap, for a confirmation.
+
+<PhonePreview size="sm" align="center">
+	<div class="ax-scrim" />
+	<div class="ax-layer">
+		<div class="ax-dialog">
+			<div class="ax-dialog-body">
+				<span class="ax-headline">Leave the call?</span>
+				<span class="ax-subhead ax-muted">
+					The others can keep talking.
+				</span>
+			</div>
+			<div class="ax-dialog-actions">
+				<span class="ax-btn" data-variant="outline">
+					Stay
+				</span>
+				<span class="ax-btn">Leave</span>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<Dialog.Actions>
+	<ButtonGroup attached={false} fullWidth style={{ flex: 1 }}>
+		<Dialog.Cancel>Stay</Dialog.Cancel>
+		<Dialog.Action onPress={leave}>Leave</Dialog.Action>
+	</ButtonGroup>
+</Dialog.Actions>
+```
+
+## Related
+
+- [Button](/docs/atoms/button)
+- [SegmentedControl](/docs/atoms/segmented-control), for a single selection among options

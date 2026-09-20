@@ -49,8 +49,7 @@ _A preview of a real mobile flow built with Axiom will be added here._
 
 | Part               | Location                                   | Status                                        |
 | ------------------ | ------------------------------------------ | --------------------------------------------- |
-| Documentation site | [`apps/docs`](./apps/docs)                 | Astro app with component guides and API pages |
-| Landing page       | [`apps/landing`](./apps/landing)           | Astro app                                     |
+| Website            | [`apps/web`](./apps/web)                   | Astro landing and Fumadocs documentation      |
 | Demo apps          | [`apps`](./apps)                           | Four Expo apps, one per styling tool          |
 | Registry           | [`packages/registry`](./packages/registry) | Source for foundations, components, and hooks |
 | CLI                | [`packages/cli`](./packages/cli)           | Copies selected registry items into an app    |
@@ -61,8 +60,7 @@ The registry currently lists 53 items. The StyleSheet demo exercises them in an 
 
 ```bash
 bun install
-bun docs dev      # documentation → http://localhost:4322
-bun landing dev   # landing page  → http://localhost:4321
+bun web dev       # landing and documentation → http://localhost:4321
 bun theme-builder dev # theme builder → http://localhost:4323
 
 bun demo:stylesheet android   # build and install the demo app, see apps/README.md

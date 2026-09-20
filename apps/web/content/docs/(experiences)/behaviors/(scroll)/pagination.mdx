@@ -1,0 +1,110 @@
+---
+title: "Pagination"
+description: "Load the next page of a list as the user nears the bottom, until there is nothing left."
+---
+
+<Callout title="Draft">
+	Specified, not implemented yet. It relies on the list's `onEndReached` and a
+	data library such as TanStack Query. The API may change.
+</Callout>
+
+A long list doesn't arrive all at once. The first page fills the screen, and as the user scrolls down, the next one is already on its way. By the time their thumb reaches the last row, new rows are there. When there is nothing left, the list says so and stops asking.
+
+<PaginationPreview />
+
+Scroll down the orders. The next page starts loading when the dashed line, one screen before the end, enters the screen. Turn on **Fail next** before a load to see the error footer: scrolling doesn't retry, only the button does. After page 3, the list ends.
+
+The footer, frame by frame:
+
+<PaginationStates />
+
+## When to use it
+
+- Feeds, order histories, search results, notifications: lists that are long, ordered, and read from the top.
+- Content the server already returns in pages or with a cursor.
+
+Don't paginate a list that fits in a few screens: load it whole, the user can then search and scroll it without waiting. And don't use infinite loading when the user needs to reach something specific at the end, like a footer with legal links or the oldest item: give them a filter, a sort order or a search instead.
+
+## How it works
+
+The footer of the list has four states. Only one request runs at a time.
+
+| State     | Footer                                                         | Leaves when                                                                                              |
+| --------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `idle`    | Nothing.                                                       | The user scrolls within one screen of the end: `loading`.                                                |
+| `loading` | A small [Spinner](/docs/atoms/spinner).                             | The page arrives: rows are appended, back to `idle`, or `end` if it was the last one. It fails: `error`. |
+| `error`   | "Couldn't load more" and a Retry button. The loaded rows stay. | The user taps Retry: `loading`.                                                                          |
+| `end`     | A discreet divider, "You're all caught up".                    | Pull-to-refresh or a new filter resets the list.                                                         |
+
+<PaginationMachine />
+
+Three details make it invisible:
+
+- **Start early.** Trigger one screen before the end (`onEndReachedThreshold={1}`), not at the last row. On a normal connection the rows are ready before the user sees the spinner.
+- **Never twice.** `onEndReached` can fire several times in a row while the list lays out. Ignore it while a page is loading, after an error, and once the end is reached.
+- **Don't retry on scroll.** A failing request retried at every scroll drains the battery and hides the problem. Wait for the tap.
+
+### First page and empty list
+
+The first load and an empty result are not pagination: the whole screen shows a loading, empty or error state, described in [async content state](/docs/patterns/async-content-state). The footer only exists once there is at least one row.
+
+### End of list
+
+- A list that fits in one page doesn't need the footer.
+- On a long list, the footer can offer a way on: back to the top, older items, another filter.
+
+## Implementation
+
+Axiom has no dedicated hook: the list handles the trigger, the data library handles the pages.
+
+| Library                                            | Used for                                                                                      |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `FlatList` / `FlashList`                           | `onEndReached` and `onEndReachedThreshold`, `ListFooterComponent` for the footer.             |
+| TanStack Query `useInfiniteQuery`                  | Pages, cursors, `isFetchingNextPage`, `hasNextPage`, and the guard against parallel requests. |
+| [Spinner](/docs/atoms/spinner), [Button](/docs/atoms/button) | The loading and error footers.                                                                |
+
+### In a screen
+
+```tsx title="Conceptual"
+const orders = useInfiniteQuery({
+	queryKey: ["orders"],
+	queryFn: ({ pageParam }) => api.orders({ cursor: pageParam }),
+	initialPageParam: undefined,
+	getNextPageParam: (last) => last.nextCursor, // undefined: no more pages
+});
+
+const rows = orders.data?.pages.flatMap((page) => page.items) ?? [];
+const canLoad =
+	orders.hasNextPage &&
+	!orders.isFetchingNextPage &&
+	!orders.isFetchNextPageError;
+
+<FlatList
+	data={rows}
+	onEndReached={() => canLoad && orders.fetchNextPage()}
+	onEndReachedThreshold={1}
+	ListFooterComponent={
+		orders.isFetchingNextPage ? (
+			<Spinner size="sm" />
+		) : orders.isFetchNextPageError ? (
+			<ListRetry onPress={() => orders.fetchNextPage()} />
+		) : !orders.hasNextPage && rows.length > PAGE_SIZE ? (
+			<ListEnd label="You're all caught up" />
+		) : null
+	}
+/>;
+```
+
+## Accessibility
+
+- Screen reader users move row by row: loading on scroll works for them too, as long as focus stays on the current row when new rows are appended.
+- Announce the error ("Couldn't load more orders") and keep Retry focusable. Announce the end once, not at every visit.
+- The spinner has an `accessibilityLabel` ("Loading more orders").
+- With Reduce Motion on, new rows appear without fading in.
+
+## Related
+
+- [Async content state](/docs/patterns/async-content-state), for the first load and the empty list
+- [Pull-to-refresh](/docs/behaviors/pull-to-refresh)
+- [Scroll-to-top](/docs/behaviors/scroll-to-top)
+- [Spinner](/docs/atoms/spinner)

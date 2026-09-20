@@ -1,0 +1,24 @@
+---
+// The five statuses of a pull. Only an armed release refreshes.
+import StateMachine, { type StateEdge, type StateNode } from '@docs/components/state-machine/state-machine.astro';
+
+const nodes: StateNode[] = [
+  { id: 'idle', label: 'idle', x: 90, y: 70, caption: 'The list at rest, nothing above it.' },
+  { id: 'pulling', label: 'pulling', x: 320, y: 70, caption: 'The indicator fills with the finger. A release here refreshes nothing.' },
+  { id: 'armed', label: 'armed', x: 600, y: 70, caption: 'Past the threshold: the indicator is full and onArmed fires once, a light haptic.' },
+  { id: 'refreshing', label: 'refreshing', x: 600, y: 230, caption: 'Waits for onRefresh() and minDuration (500ms), so the spinner never flashes.' },
+  { id: 'settling', label: 'settling', x: 320, y: 230, caption: 'The list returns to its place and ignores new pulls. A rejected onRefresh ends here too.' },
+];
+
+const edges: StateEdge[] = [
+  { from: 'idle', to: 'pulling', label: 'pull' },
+  { from: 'pulling', to: 'armed', label: 'past threshold', via: [460, 25] },
+  { from: 'armed', to: 'pulling', label: 'back under', via: [460, 115] },
+  { from: 'pulling', to: 'settling', label: 'release', labelOffset: [-30, 0] },
+  { from: 'armed', to: 'refreshing', label: 'release', labelOffset: [-30, 0] },
+  { from: 'refreshing', to: 'settling', label: 'done · 500ms min' },
+  { from: 'settling', to: 'idle', label: 'at rest', via: [90, 230] },
+];
+---
+
+<StateMachine nodes={nodes} edges={edges} initial="idle" width={720} height={280} />

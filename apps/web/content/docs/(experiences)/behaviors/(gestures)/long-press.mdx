@@ -1,0 +1,87 @@
+---
+title: "Long press"
+description: "Hold an element to get secondary actions on it, without a visible button."
+---
+
+<Callout title="Draft">
+	The long press is handled by [Tappable](/docs/core/tappable) (`onLongPress`), and
+	the menu it opens by [Menu](/docs/atoms/menu). Both APIs are conceptual and may
+	change.
+</Callout>
+
+The user keeps their finger on an element. The element sinks slightly while they hold, and after half a second a haptic confirms the long press: the element lifts above a blurred screen, with the actions that apply to it.
+
+<LongPressPreview />
+
+Press and hold a row. Release early and it's a tap, which opens the file. Move the pointer before the delay and the press is cancelled, like a finger that starts scrolling.
+
+## When to use it
+
+- Secondary actions on an item that already has a primary tap: open a file on tap, share or rename it on long press.
+- Shortcuts that save a trip to a detail screen: react to a message, copy a link, preview a photo.
+- Entering [selection mode](/docs/patterns/selection-mode) on a list.
+
+A long press can't be seen, so never make it the only way to reach an action. Every action it offers must also exist somewhere visible: a "more" button, the detail screen, an [AppBar](/docs/templates/app-bar) action. Don't use it for the main action of an element or on elements with no tap action at all, where users won't think of holding.
+
+## How it works
+
+A press ends in one of three ways. What ends it first decides the event:
+
+<LongPressTimeline />
+
+| Ends with                                   | Event         | Why                                                                                        |
+| ------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------ |
+| Release before `delayLongPress`             | `onPress`     | A normal tap.                                                                              |
+| `delayLongPress` reached, finger still down | `onLongPress` | Fires **while** the finger is down, not on release. The release that follows does nothing. |
+| Movement over 10pt                          | none          | The user is scrolling. The list takes the gesture.                                         |
+
+Two details make it feel right:
+
+- **Visible progress.** The pressed state appears at once (`onPressIn`), and the element scales down to `0.97` over the delay. The user feels the long press coming instead of wondering whether anything happens.
+- **Confirmation at the moment it fires.** A light haptic and the lift, both at `500ms`. Waiting for the release would make the user guess when to let go.
+
+### Delay
+
+`500ms` is React Native's default `delayLongPress`, close to the platforms' own timeouts. Lower it to `300ms` when the long press is the expected interaction, like [drag-to-reorder](/docs/behaviors/drag-to-reorder) on a row; don't go lower, or taps start to register as long presses.
+
+## Implementation
+
+Axiom has no dedicated hook: the gesture is part of [`Tappable`](/docs/core/tappable), and every pressable component built on it (`Item`, `IconButton`) forwards `onLongPress`.
+
+| Library                                     | Used for                                                                                                                             |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| React Native `Pressable`                    | Timing, slop and cancellation when the parent scroll view takes over. Nothing to reimplement.                                        |
+| `react-native-reanimated`                   | The scale during the delay, driven by the pressed state, on the UI thread.                                                           |
+| `expo-haptics` (or the platform haptic API) | The light impact when `onLongPress` fires. [Menu](/docs/atoms/menu) does it for you with `haptic`.                                        |
+| `react-native-gesture-handler`              | Only when the long press starts another gesture, like dragging the lifted item: `Gesture.LongPress()` composed with `Gesture.Pan()`. |
+
+### In a screen
+
+```tsx title="Conceptual"
+// Row actions: Menu opens on long press and lifts the row.
+<Menu.Root>
+  <Menu.Trigger>
+    <Item onPress={() => open(file)}>…</Item>
+  </Menu.Trigger>
+  <Menu.Content>
+    <Menu.Item icon="share" onPress={share}>Share</Menu.Item>
+    <Menu.Item icon="trash" destructive onPress={remove}>Delete</Menu.Item>
+  </Menu.Content>
+</Menu.Root>
+
+// Anything else: Tappable directly.
+<Tappable onPress={open} onLongPress={startSelection} delayLongPress={400}>…</Tappable>
+```
+
+## Accessibility
+
+- Screen readers don't expose a hold. VoiceOver and TalkBack users trigger `onLongPress` with a double tap and hold, which few know. Add the same actions as `accessibilityActions` on the element (VoiceOver rotor, TalkBack actions menu).
+- An `accessibilityHint` ("Double tap and hold for more options") tells screen reader users the actions exist. Keep it short: it is read on every focus.
+- With Reduce Motion on, skip the scale and the lift animation; keep the haptic.
+
+## Related
+
+- [Tappable](/docs/core/tappable)
+- [Menu](/docs/atoms/menu)
+- [Selection mode](/docs/patterns/selection-mode)
+- [Drag-to-reorder](/docs/behaviors/drag-to-reorder)

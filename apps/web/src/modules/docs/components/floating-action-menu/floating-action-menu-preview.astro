@@ -1,0 +1,257 @@
+---
+// A notes screen with a floating action button that expands into three secondary actions.
+// Tap the button: a scrim dims the screen, the plus turns into a close, and the actions rise one after the other,
+// each with a visible label. Picking an action, tapping the scrim, the close button or Escape collapses the menu.
+import PhonePreview from '@docs/components/preview/phone-preview.astro';
+import Glyph from '@docs/components/preview/glyph.astro';
+
+const notes = [
+  { title: 'Groceries', text: 'Oat milk, lemons, basil, rice', time: '9:41' },
+  { title: 'Trip to Porto', text: 'Book the train before Friday', time: 'Yesterday' },
+  { title: 'Book club', text: 'Chapter 7 questions', time: 'Mon' },
+  { title: 'Standup notes', text: 'Ship the search pattern', time: 'Mon' },
+  { title: 'Gift ideas', text: 'Headphones, a plant, a map print', time: 'Sun' },
+  { title: 'Workout', text: '5k easy, stretch 10 min', time: 'Sat' },
+];
+
+// Listed bottom-up: the closest action to the button is the most used.
+const actions = [
+  { id: 'note', icon: 'edit', label: 'Text note' },
+  { id: 'checklist', icon: 'check', label: 'Checklist' },
+  { id: 'photo', icon: 'camera', label: 'Photo' },
+] as const;
+---
+
+<PhonePreview half="bottom">
+  <div class="fam" data-floating-action-menu>
+    <div class="fam-content">
+      <div class="ax-list" data-variant="plain">
+        {
+          notes.map(({ title, text, time }) => (
+            <div class="ax-item">
+              <div class="ax-item-content">
+                <span class="ax-row" data-justify="between">
+                  <span class="ax-item-title">{title}</span>
+                  <span class="ax-item-desc">{time}</span>
+                </span>
+                <span class="ax-item-desc">{text}</span>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="ax-tabbar fam-tabbar">
+      <span class="ax-tabbar-item" data-active><Glyph name="file" /><span>Notes</span></span>
+      <span class="ax-tabbar-item"><Glyph name="star" /><span>Starred</span></span>
+      <span class="ax-tabbar-item"><Glyph name="settings" /><span>Settings</span></span>
+    </div>
+
+    <div class="ax-scrim fam-scrim" data-scrim />
+
+    <div class="fam-anchor">
+      <ul class="fam-actions" data-actions id="fam-actions" role="menu" aria-label="Create">
+        {
+          [...actions].reverse().map(({ id, icon, label }, i) => (
+            <li role="none" style={`--fam-i:${actions.length - 1 - i}`}>
+              <button type="button" class="fam-action" data-action={id} role="menuitem" tabindex="-1">
+                <span class="fam-label">{label}</span>
+                <span class="ax-icon-btn fam-mini"><Glyph name={icon} size={20} /></span>
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+      <button type="button" class="fam-fab" data-fab aria-expanded="false" aria-controls="fam-actions" aria-label="Create">
+        <Glyph name="plus" size={26} strokeWidth={2.2} />
+      </button>
+    </div>
+  </div>
+
+  <div slot="footer" class="border-t px-4 py-3 font-mono text-xs" data-fam-readout>
+    <span class="text-fd-muted-foreground">menu </span><span data-out="state">closed</span>
+    <span class="text-fd-muted-foreground"> · </span><span data-out="event" class="text-fd-muted-foreground">tap the + button</span>
+  </div>
+</PhonePreview>
+
+<style is:global>
+  .fam {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .fam-content {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .fam-scrim {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease;
+  }
+
+  .fam[data-open] .fam-scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Sits above the tab bar, 16pt from the edge. */
+  .fam-anchor {
+    position: absolute;
+    right: 16px;
+    bottom: 99px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 16px;
+  }
+
+  .fam-fab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border: 0;
+    border-radius: 18px;
+    background: var(--ax-background-inverse);
+    box-shadow: 0 8px 20px -6px rgb(0 0 0 / 0.45);
+    color: var(--ax-content-inverse);
+    cursor: pointer;
+    transition:
+      transform 120ms ease,
+      border-radius 200ms ease;
+  }
+
+  .fam-fab:active {
+    transform: scale(0.94);
+  }
+
+  .fam-fab .ax-glyph {
+    transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .fam[data-open] .fam-fab {
+    border-radius: 999px;
+  }
+
+  .fam[data-open] .fam-fab .ax-glyph {
+    transform: rotate(45deg);
+  }
+
+  .fam-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 14px;
+    margin: 0;
+    padding: 0 4px 0 0;
+    list-style: none;
+  }
+
+  .fam-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(16px) scale(0.9);
+    pointer-events: none;
+    transition:
+      opacity 160ms ease calc((2 - var(--fam-i)) * 30ms),
+      transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1) calc((2 - var(--fam-i)) * 30ms);
+  }
+
+  /* Opening staggers from the button outwards. */
+  .fam[data-open] .fam-action {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    transition-delay: calc(var(--fam-i) * 40ms);
+  }
+
+  .fam-label {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--ax-background-elevated);
+    box-shadow: var(--ax-shadow);
+    color: var(--ax-content-default);
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .fam-mini {
+    background: var(--ax-background-elevated);
+    box-shadow: var(--ax-shadow);
+  }
+
+  .fam-action:active .fam-mini {
+    background: var(--ax-background-subtle);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fam-scrim,
+    .fam-action,
+    .fam-fab .ax-glyph {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-floating-action-menu]:not([data-ready])').forEach((root) => {
+      root.dataset.ready = '';
+      const fab = root.querySelector<HTMLButtonElement>('[data-fab]')!;
+      const items = [...root.querySelectorAll<HTMLButtonElement>('[data-action]')];
+      const readout = root.closest('[data-ax-preview]')!.querySelector<HTMLElement>('[data-fam-readout]')!;
+      const out = (key: string) => readout.querySelector<HTMLElement>(`[data-out="${key}"]`)!;
+
+      const setOpen = (open: boolean, event: string) => {
+        root.toggleAttribute('data-open', open);
+        fab.setAttribute('aria-expanded', String(open));
+        fab.setAttribute('aria-label', open ? 'Close' : 'Create');
+        items.forEach((item) => (item.tabIndex = open ? 0 : -1));
+        out('state').textContent = open ? 'open' : 'closed';
+        out('event').textContent = event;
+      };
+
+      fab.addEventListener('click', () => {
+        const open = !root.hasAttribute('data-open');
+        setOpen(open, open ? 'pick an action, or tap outside' : 'closed with the button');
+        if (open) navigator.vibrate?.(8);
+      });
+
+      root.querySelector('[data-scrim]')!.addEventListener('click', () => setOpen(false, 'closed by tapping outside'));
+
+      items.forEach((item) =>
+        item.addEventListener('click', () => {
+          setOpen(false, `onPress: ${item.dataset.action}`);
+          fab.focus();
+        }),
+      );
+
+      root.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && root.hasAttribute('data-open')) {
+          setOpen(false, 'closed with Escape (back)');
+          fab.focus();
+        }
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

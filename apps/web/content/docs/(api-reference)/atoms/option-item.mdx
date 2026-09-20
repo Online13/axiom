@@ -1,0 +1,248 @@
+---
+title: OptionItem
+description: "Selectable row built on Item."
+---
+
+<PhonePreview grouped>
+	<div class="ax-appbar">
+		<span class="ax-appbar-back">
+			<Glyph name="chevron-left" />
+			Settings
+		</span>
+		<span class="ax-appbar-title" style={{ marginLeft: "-80px" }}>
+			Language
+		</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-section">App language</div>
+	<div class="ax-list">
+		<div class="ax-item">
+			<div class="ax-item-content">
+				<span class="ax-item-title">English</span>
+				<span class="ax-item-desc">English</span>
+			</div>
+			<Glyph name="check" class="ax-check" />
+		</div>
+		<div class="ax-item">
+			<div class="ax-item-content">
+				<span class="ax-item-title">Français</span>
+				<span class="ax-item-desc">French</span>
+			</div>
+		</div>
+		<div class="ax-item" data-state="pressed">
+			<div class="ax-item-content">
+				<span class="ax-item-title">日本語</span>
+				<span class="ax-item-desc">Japanese</span>
+			</div>
+		</div>
+		<div class="ax-item" data-state="disabled">
+			<div class="ax-item-content">
+				<span class="ax-item-title">Kiswahili</span>
+				<span class="ax-item-desc">Coming soon</span>
+			</div>
+		</div>
+	</div>
+	<div class="ax-section">Region</div>
+	<div class="ax-list">
+		<div class="ax-item">
+			<span class="ax-item-title ax-grow">Format</span>
+			<span class="ax-item-trailing">
+				United Kingdom
+				<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add option-item
+```
+
+Also copies: [`item`](/docs/atoms/item), [`radio`](/docs/atoms/radio), [`checkbox`](/docs/atoms/checkbox).
+
+Requires the `check` and `chevron-right` icons in your [icon registry](/docs/atoms/icon#icons-that-components-need). The radio and checkbox indicators are `RadioIndicator` and `CheckboxIndicator`, so they match the standalone controls.
+
+## Usage
+
+```tsx
+import { OptionItem } from "@/components/ui/option-item";
+
+<OptionItem
+	label="English"
+	selected={lang === "en"}
+	onPress={() => setLang("en")}
+/>;
+```
+
+## Props
+
+`OptionItem` is an [Item](/docs/atoms/item) with a preset layout, so it also accepts `size`, `divider`, `disabled` and `style`.
+
+| Prop          | Type                                         | Default   | Description                                                                                                       |
+| ------------- | -------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
+| `label`       | `string`                                     | —         | Main text of the row.                                                                                             |
+| `description` | `string`                                     | —         | Secondary text under the label.                                                                                   |
+| `icon`        | `IconName`                                   | —         | Leading icon on a colored tile, like iOS settings. For an avatar or custom media, compose an [Item](/docs/atoms/item). |
+| `iconColor`   | `PaletteHue`                                 | `'gray'`  | Tile color from the palette: `blue`, `green`, `orange`…                                                           |
+| `selected`    | `boolean`                                    | `false`   | Shows the selection indicator and sets `accessibilityState.selected`.                                             |
+| `indicator`   | `'check' \| 'radio' \| 'checkbox' \| 'none'` | `'check'` | How `selected` is drawn: a trailing check (iOS), a leading radio, a leading checkbox.                             |
+| `value`       | `ReactNode`                                  | —         | Current value shown on the right in `content.muted`, for rows that open a picker.                                 |
+| `trailing`    | `ReactNode`                                  | —         | Replaces the indicator: a [Switch](/docs/atoms/switch), a [Badge](/docs/atoms/badge)…                                       |
+| `chevron`     | `boolean`                                    | `false`   | Adds a chevron, for rows that navigate.                                                                           |
+| `destructive` | `boolean`                                    | `false`   | Label in `feedback.error`, for "Sign out" or "Delete account".                                                    |
+| `onPress`     | `() => void`                                 | —         | Called when the row is pressed.                                                                                   |
+
+## Use cases
+
+### Single choice list
+
+The iOS pattern: the checkmark moves to the row the user pressed.
+
+<PhonePreview size="sm" grouped>
+	<div class="ax-section" style={{ paddingTop: "12px" }}>
+		Sort by
+	</div>
+	<div class="ax-list">
+		<div class="ax-item">
+			<span class="ax-item-title ax-grow">Most relevant</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-item-title ax-grow">Newest</span>
+			<Glyph name="check" class="ax-check" />
+		</div>
+		<div class="ax-item">
+			<span class="ax-item-title ax-grow">Price: low to high</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-item-title ax-grow">Price: high to low</span>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+{
+	sorts.map((s) => (
+		<OptionItem
+			key={s.value}
+			label={s.label}
+			selected={sort === s.value}
+			onPress={() => setSort(s.value)}
+		/>
+	));
+}
+```
+
+### Settings screen
+
+Icon tiles, values, switches and a destructive row on the same screen, all with one component.
+
+<PhonePreview size="sm" grouped>
+	<div class="ax-list" data-inset style={{ marginTop: "12px" }}>
+		<div class="ax-item">
+			<span class="ax-tile" data-color="orange">
+				<Glyph name="bolt" size={18} />
+			</span>
+			<span class="ax-item-title ax-grow">Low power mode</span>
+			<span class="ax-switch" />
+		</div>
+		<div class="ax-item">
+			<span class="ax-tile" data-color="blue">
+				<Glyph name="globe" size={18} />
+			</span>
+			<span class="ax-item-title ax-grow">Language</span>
+			<span class="ax-item-trailing">
+				English
+				<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-tile" data-color="red">
+				<Glyph name="bell" size={18} />
+			</span>
+			<span class="ax-item-title ax-grow">Notifications</span>
+			<span class="ax-item-trailing">
+				<span class="ax-badge" data-kind="count">
+					3
+				</span>
+				<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+	</div>
+	<div class="ax-list" style={{ marginTop: "24px" }}>
+		<div class="ax-item">
+			<span
+				class="ax-item-title ax-grow ax-danger"
+				style={{ textAlign: "center" }}
+			>
+				Sign out
+			</span>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<OptionItem icon="bolt" iconColor="orange" label="Low power mode" trailing={<Switch value={low} onValueChange={setLow} />} />
+<OptionItem icon="globe" iconColor="blue" label="Language" value="English" chevron onPress={openLanguage} />
+<OptionItem label="Sign out" destructive onPress={confirmSignOut} />
+```
+
+### Multiple selection
+
+`indicator="checkbox"` for lists where several rows can be on.
+
+<PhonePreview size="sm">
+	<div class="ax-appbar" data-border>
+		<span class="ax-link" style={{ padding: "0 8px" }}>
+			Cancel
+		</span>
+		<span class="ax-appbar-title">Share with</span>
+		<span class="ax-link ax-semibold" style={{ padding: "0 8px" }}>
+			Send
+		</span>
+	</div>
+	<div class="ax-list" data-variant="plain">
+		<div class="ax-item">
+			<span class="ax-checkbox" data-checked>
+				<Glyph name="check" size={16} strokeWidth={3} />
+			</span>
+			<span class="ax-avatar" data-size="sm" data-photo="1">
+				AL
+			</span>
+			<span class="ax-item-title ax-grow">Ada Lovelace</span>
+		</div>
+		<div class="ax-item" data-state="selected">
+			<span class="ax-checkbox" data-checked>
+				<Glyph name="check" size={16} strokeWidth={3} />
+			</span>
+			<span class="ax-avatar" data-size="sm" data-photo="4">
+				CB
+			</span>
+			<span class="ax-item-title ax-grow">Charles Babbage</span>
+		</div>
+		<div class="ax-item">
+			<span class="ax-checkbox" />
+			<span class="ax-avatar" data-size="sm">
+				JV
+			</span>
+			<span class="ax-item-title ax-grow">John von Neumann</span>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<OptionItem
+	indicator="checkbox"
+	icon={<Avatar size="sm" source={c.photo} fallback={c.initials} />}
+	label={c.name}
+	selected={recipients.has(c.id)}
+	onPress={() => toggleRecipient(c.id)}
+/>
+```
+
+## Related
+
+- [Item](/docs/atoms/item)
+- [Radio](/docs/atoms/radio)
+- [Contextual selection mode](/docs/patterns/selection-mode)

@@ -1,0 +1,296 @@
+---
+title: Button
+description: "The main button, with solid, outline and ghost styles, sizes, loading and icon slots."
+---
+
+<PhonePreview>
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">New event</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body" data-gap="16">
+		<div class="ax-stack" data-gap="24">
+			<div class="ax-stack" data-gap="8">
+				<span class="ax-footnote ax-muted">Variants</span>
+				<div class="ax-row">
+					<span class="ax-btn">Solid</span>
+					<span class="ax-btn" data-variant="outline">
+						Outline
+					</span>
+					<span class="ax-btn" data-variant="ghost">
+						Ghost
+					</span>
+				</div>
+			</div>
+			<div class="ax-stack" data-gap="8">
+				<span class="ax-footnote ax-muted">Sizes</span>
+				<div class="ax-row">
+					<span class="ax-btn" data-size="sm">
+						Small
+					</span>
+					<span class="ax-btn">Medium</span>
+					<span class="ax-btn" data-size="lg">
+						Large
+					</span>
+				</div>
+			</div>
+			<div class="ax-stack" data-gap="8">
+				<span class="ax-footnote ax-muted">States and icons</span>
+				<div class="ax-row">
+					<span class="ax-btn" data-state="loading">
+						<span class="ax-spinner" data-size="sm" />
+						Saving
+					</span>
+					<span class="ax-btn" data-state="disabled">
+						Disabled
+					</span>
+				</div>
+				<div class="ax-row">
+					<span class="ax-btn" data-variant="outline">
+						<Glyph name="plus" size={20} />
+						Add guest
+					</span>
+					<span class="ax-btn" data-variant="ghost">
+						Next
+						<Glyph name="chevron-right" size={20} />
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add button
+```
+
+Also copies: [`tappable`](/docs/core/tappable), [`slot`](/docs/core/slot), [`text`](/docs/atoms/text), [`icon`](/docs/atoms/icon).
+
+## Usage
+
+```tsx
+import { Button } from '@/components/ui/button';
+
+<Button onPress={save}>Save</Button>
+<Button variant="outline">Cancel</Button>
+<Button variant="ghost" size="sm">Skip</Button>
+<Button loading>Saving</Button>
+```
+
+## Props
+
+| Prop                 | Type                                               | Default    | Description                                                                                                                                                                                                         |
+| -------------------- | -------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `children`           | `ReactNode`                                        | —          | The label. Keep it to a short verb: "Save", "Continue".                                                                                                                                                             |
+| `variant`            | `'solid' \| 'outline' \| 'ghost' \| 'destructive'` | `'solid'`  | Visual weight. `solid` for the main action of the screen, `outline` for a secondary action next to it, `ghost` for a low-emphasis action like "Skip", `destructive` (red) for an irreversible action like "Delete". |
+| `size`               | `'sm' \| 'md' \| 'lg'`                             | `'md'`     | Minimum height from the `control` size tokens: 32, 44 or 52pt. Grows with larger system text. `sm` still gets a 44pt touch area through `Tappable`.                                                                 |
+| `onPress`            | `() => void`                                       | —          | Called when the press ends on the button. Not called while `loading` or `disabled`.                                                                                                                                 |
+| `onLongPress`        | `() => void`                                       | —          | Called after the finger is held on the button.                                                                                                                                                                      |
+| `loading`            | `boolean`                                          | `false`    | Replaces the leading icon with a spinner and blocks presses. The button keeps its width so the layout doesn't jump.                                                                                                 |
+| `disabled`           | `boolean`                                          | `false`    | Blocks presses, applies the `disabled` component tokens and sets `accessibilityState.disabled`.                                                                                                                     |
+| `leadingIcon`        | `IconName`                                         | —          | Icon before the label, from your [icon registry](/docs/atoms/icon#the-registry). Rendered with [Icon](/docs/atoms/icon), sized and colored for the button.                                                                    |
+| `trailingIcon`       | `IconName`                                         | —          | Icon after the label, typically a chevron or an external-link mark.                                                                                                                                                 |
+| `fullWidth`          | `boolean`                                          | `false`    | Stretches the button to the width of its parent. Common for the main action at the bottom of a screen.                                                                                                              |
+| `asChild`            | `boolean`                                          | `false`    | Renders the child element instead of a pressable, and merges the button props and styles into it. See [Slot](/docs/core/slot).                                                                                           |
+| `accessibilityLabel` | `string`                                           | label text | What screen readers announce. Required when the label alone is ambiguous.                                                                                                                                           |
+| `style`              | `StyleProp<ViewStyle>`                             | —          | Extra styles for the container, applied after the variant styles.                                                                                                                                                   |
+
+## Use cases
+
+### Main action at the bottom of a form
+
+One solid, full-width button pinned above the home indicator. It is the thing the screen exists for.
+
+<PhonePreview half="bottom" size="sm">
+	<div class="ax-body">
+		<div class="ax-field">
+			<span class="ax-label">Email</span>
+			<div class="ax-control">
+				<span class="ax-value">ada@analytical.engine</span>
+			</div>
+		</div>
+		<div class="ax-field">
+			<span class="ax-label">Password</span>
+			<div class="ax-control">
+				<span class="ax-value">••••••••••</span>
+				<Glyph name="eye" size={20} />
+			</div>
+		</div>
+		<span class="ax-footnote ax-link">Forgot password?</span>
+	</div>
+	<div class="ax-fill" />
+	<div class="ax-body" style={{ paddingBottom: "40px" }}>
+		<span class="ax-btn" data-size="lg" data-block>
+			Sign in
+		</span>
+		<span class="ax-btn" data-variant="ghost" data-block>
+			Create an account
+		</span>
+	</div>
+</PhonePreview>
+
+```tsx
+<Scaffold.Footer>
+	<Button size="lg" fullWidth onPress={signIn}>
+		Sign in
+	</Button>
+	<Button variant="ghost" fullWidth onPress={goToSignUp}>
+		Create an account
+	</Button>
+</Scaffold.Footer>
+```
+
+### Waiting for a request
+
+`loading` blocks double submits and shows progress without changing the size of the button.
+
+<PhonePreview half="bottom" size="sm">
+	<div class="ax-body">
+		<span class="ax-title2">Order summary</span>
+		<div class="ax-row" data-justify="between">
+			<span class="ax-muted">Subtotal</span>
+			<span>$84.00</span>
+		</div>
+		<div class="ax-row" data-justify="between">
+			<span class="ax-muted">Shipping</span>
+			<span>$4.90</span>
+		</div>
+		<div class="ax-separator" />
+		<div class="ax-row" data-justify="between">
+			<span class="ax-headline">Total</span>
+			<span class="ax-headline">$88.90</span>
+		</div>
+	</div>
+	<div class="ax-fill" />
+	<div class="ax-body" style={{ paddingBottom: "40px" }}>
+		<span class="ax-btn" data-size="lg" data-block data-state="loading">
+			<span class="ax-spinner" />
+			Paying
+		</span>
+	</div>
+</PhonePreview>
+
+```tsx
+<Button size="lg" fullWidth loading={isPaying} onPress={pay}>
+	{isPaying ? "Paying" : "Pay $88.90"}
+</Button>
+```
+
+### Disabled until the form is valid
+
+The button stays visible so the user knows what comes next, and turns active once the required fields are filled.
+
+<PhonePreview size="sm">
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="close" />
+		</span>
+		<span class="ax-appbar-title">Rename</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body">
+		<div class="ax-field" data-state="focused">
+			<span class="ax-label">Album name</span>
+			<div class="ax-control">
+				<span class="ax-value ax-caret"></span>
+			</div>
+			<span class="ax-helper">At least 3 characters.</span>
+		</div>
+		<span class="ax-btn" data-block data-state="disabled">
+			Save
+		</span>
+	</div>
+</PhonePreview>
+
+```tsx
+<Button fullWidth disabled={name.trim().length < 3} onPress={rename}>
+	Save
+</Button>
+```
+
+### Primary and secondary side by side
+
+Pair a solid button with an outline one when both choices are legitimate. Put the main action on the right.
+
+<PhonePreview size="sm">
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Invitation</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body">
+		<div class="ax-card" data-variant="outlined">
+			<div class="ax-media" data-tone="2">
+				<Glyph name="calendar" size={40} />
+			</div>
+			<div class="ax-card-content ax-stack" data-gap="4">
+				<span class="ax-headline">Team offsite</span>
+				<span class="ax-subhead ax-muted">Friday, 10:00 · Lisbon</span>
+			</div>
+			<div class="ax-card-footer">
+				<span class="ax-btn ax-grow" data-variant="outline">
+					Decline
+				</span>
+				<span class="ax-btn ax-grow">Accept</span>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<Card.Footer>
+	<Button variant="outline" style={{ flex: 1 }} onPress={decline}>
+		Decline
+	</Button>
+	<Button style={{ flex: 1 }} onPress={accept}>
+		Accept
+	</Button>
+</Card.Footer>
+```
+
+### Label with an icon
+
+An icon helps recognition when the action is frequent, like adding to a cart. Keep the label: the icon alone is an [IconButton](/docs/atoms/icon-button).
+
+<PhonePreview half="bottom" size="sm">
+	<div class="ax-media" data-tone="3" style={{ height: "180px" }}>
+		<Glyph name="bag" size={56} />
+	</div>
+	<div class="ax-body">
+		<div class="ax-row" data-justify="between">
+			<span class="ax-title3">Canvas tote</span>
+			<span class="ax-title3">$32</span>
+		</div>
+		<span class="ax-subhead ax-muted">Heavy cotton, inside pocket.</span>
+	</div>
+	<div class="ax-fill" />
+	<div class="ax-body ax-row" style={{ paddingBottom: "40px" }}>
+		<span class="ax-icon-btn" data-variant="outline">
+			<Glyph name="heart" />
+		</span>
+		<span class="ax-btn ax-grow" data-size="lg">
+			<Glyph name="cart" size={20} />
+			Add to cart
+		</span>
+	</div>
+</PhonePreview>
+
+```tsx
+<Button size="lg" leadingIcon="cart" onPress={addToCart} style={{ flex: 1 }}>
+	Add to cart
+</Button>
+```
+
+## Related
+
+- [IconButton](/docs/atoms/icon-button)
+- [ButtonGroup](/docs/atoms/button-group)
+- [Slot](/docs/core/slot), for `asChild`
+- [Tappable](/docs/core/tappable), for the press behavior

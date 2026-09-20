@@ -1,0 +1,22 @@
+---
+// The list footer. Only one request runs at a time, and nothing loads after an error or at the end.
+import StateMachine, { type StateEdge, type StateNode } from '@docs/components/state-machine/state-machine.astro';
+
+const nodes: StateNode[] = [
+  { id: 'idle', label: 'idle', x: 120, y: 120, caption: 'Nothing in the footer. onEndReached is listened to.' },
+  { id: 'loading', label: 'loading', x: 380, y: 120, caption: 'A small spinner. onEndReached is ignored until the page answers.' },
+  { id: 'end', label: 'end', x: 620, y: 120, caption: "A discreet divider, \"You're all caught up\". Nothing loads anymore." },
+  { id: 'error', label: 'error', x: 380, y: 260, caption: '"Couldn\'t load more" and Retry. The loaded rows stay. No automatic retry on scroll.' },
+];
+
+const edges: StateEdge[] = [
+  { from: 'idle', to: 'loading', label: '1 screen from the end', via: [250, 60] },
+  { from: 'loading', to: 'idle', label: 'page appended', via: [250, 180] },
+  { from: 'loading', to: 'end', label: 'last page' },
+  { from: 'loading', to: 'error', label: 'failed', via: [330, 190], labelOffset: [-26, 0] },
+  { from: 'error', to: 'loading', label: 'Retry', via: [430, 190], labelOffset: [24, 0] },
+  { from: 'end', to: 'idle', label: 'pull-to-refresh · new filter', via: [380, -20] },
+];
+---
+
+<StateMachine nodes={nodes} edges={edges} initial="idle" width={720} height={300} />

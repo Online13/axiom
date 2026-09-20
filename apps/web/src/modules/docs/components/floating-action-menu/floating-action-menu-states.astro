@@ -1,0 +1,58 @@
+---
+// Three frozen frames of the floating action menu, plus the layout it shouldn't take.
+import TokenFrame from '@docs/components/tokens/token-frame.astro';
+import Glyph from '@docs/components/preview/glyph.astro';
+
+const states = [
+  { label: 'closed', open: 0, caption: 'One button, above the tab bar, in thumb reach.' },
+  { label: 'open', open: 3, caption: 'Scrim, labeled actions, the plus becomes a close.' },
+  { label: 'picked', open: 0, picked: true, caption: 'The action runs and the menu collapses at once.' },
+  { label: 'too many', open: 6, wrong: true, caption: 'Six actions: that’s a sheet or a menu, not a FAB.' },
+];
+---
+
+<TokenFrame>
+  <div class="grid min-w-[36rem] grid-cols-4 gap-px bg-fd-border">
+    {
+      states.map(({ label, open, picked, wrong, caption }) => (
+        <div class="flex flex-col gap-3 bg-fd-card p-3">
+          <div class="relative mx-auto flex h-[9.5rem] w-[104px] flex-col overflow-hidden rounded-md border bg-fd-card">
+            <div class="flex flex-1 flex-col">
+              {[0, 1, 2, 3, 4].map(() => (
+                <div class="flex h-5 flex-none items-center border-b px-1.5">
+                  <span class="h-1.5 w-2/3 rounded-full bg-fd-muted" />
+                </div>
+              ))}
+            </div>
+            <div class="flex h-5 flex-none items-center justify-around border-t">
+              {(['file', 'star', 'settings'] as const).map((name, i) => (
+                <Glyph name={name} size={8} strokeWidth={2.4} class={i === 0 ? 'text-blue-500' : 'text-fd-muted-foreground'} />
+              ))}
+            </div>
+            {open > 0 && <div class="absolute inset-0 bg-black/30" />}
+            <div class="absolute bottom-7 right-1.5 flex flex-col items-end gap-1">
+              {Array.from({ length: open }, (_, i) => (
+                <div class="flex items-center gap-1">
+                  <span class="h-2 w-6 rounded-full bg-fd-card" />
+                  <span class="size-3 rounded-full bg-fd-card" />
+                </div>
+              ))}
+              <span
+                class:list={[
+                  'flex size-[18px] items-center justify-center bg-fd-foreground text-fd-background',
+                  open ? 'rounded-full' : 'rounded-[5px]',
+                  picked && 'ring-2 ring-blue-500/40',
+                ]}
+              >
+                <Glyph name={open ? 'close' : 'plus'} size={10} strokeWidth={2.6} />
+              </span>
+            </div>
+            {wrong && <span class="absolute left-1 top-1 rounded-sm bg-red-500 px-1 text-[7px] font-semibold text-white">Avoid</span>}
+          </div>
+          <div class="font-mono text-xs">{label}</div>
+          <p class="text-xs text-fd-muted-foreground">{caption}</p>
+        </div>
+      ))
+    }
+  </div>
+</TokenFrame>

@@ -1,0 +1,143 @@
+---
+title: Portal / PortalHost
+description: "Renders an element outside the current React Native hierarchy."
+---
+
+## Installation
+
+```npm
+npx axiom add portal
+```
+
+Installs: `react-native-teleport`.
+
+<Callout title="Requirements">
+	`react-native-teleport` supports the New Architecture (Fabric) only. It ships
+	native code, so on Expo it needs a development build and won't run in Expo
+	Go.
+</Callout>
+
+## What it does
+
+Content rendered in a `Portal` appears in a `PortalHost` instead of where it is declared in the tree. Overlays use it so they draw above the rest of the screen, whatever the parent's layout, clipping or z-order.
+
+The copied `portal` file is a thin wrapper around [`react-native-teleport`](https://kirillzyusko.github.io/react-native-teleport/). The library moves the native views into the host, while the React tree stays where the `Portal` is declared. As a result:
+
+- context from the declaring component (theme, navigation, forms) still reaches the content;
+- state and refs survive a move between hosts;
+- nothing is re-rendered when the content moves.
+
+Components never import `react-native-teleport` directly. They import `@/components/core/portal`, so replacing the library later only touches that one file.
+
+## Setup
+
+Wrap your app once in `PortalProvider` and put a `PortalHost` after your navigation, so it draws above every screen:
+
+```tsx title="app/_layout.tsx"
+import { PortalHost, PortalProvider } from "@/components/core/portal";
+
+export default function RootLayout() {
+	return (
+		<PortalProvider>
+			<Stack />
+			<PortalHost />
+		</PortalProvider>
+	);
+}
+```
+
+`PortalHost` fills the screen by default (`StyleSheet.absoluteFill`) and doesn't intercept touches when it's empty.
+
+## Usage
+
+```tsx
+<Portal>
+	<Toast />
+</Portal>
+```
+
+Without `hostName`, content goes to the default `root` host. To target another host, give it a name:
+
+```tsx
+<PortalHost name="toast" />
+
+<Portal hostName="toast">
+  <Toast />
+</Portal>
+```
+
+## Props
+
+### PortalProvider
+
+| Prop       | Type        | Default | Description                                                 |
+| ---------- | ----------- | ------- | ----------------------------------------------------------- |
+| `children` | `ReactNode` | —       | The app. Every `Portal` and `PortalHost` must be inside it. |
+
+### PortalHost
+
+| Prop    | Type                   | Default                   | Description                                                                            |
+| ------- | ---------------------- | ------------------------- | -------------------------------------------------------------------------------------- |
+| `name`  | `string`               | `'root'`                  | Identifies the host. A `Portal` targets it through `hostName`.                         |
+| `style` | `StyleProp<ViewStyle>` | `StyleSheet.absoluteFill` | Host container style. The host needs real dimensions, or its content won't be visible. |
+
+### Portal
+
+| Prop       | Type        | Default  | Description                                                                                             |
+| ---------- | ----------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `hostName` | `string`    | `'root'` | Name of the target `PortalHost`. Changing it moves the content to the new host without re-rendering it. |
+| `name`     | `string`    | —        | Identifies this portal, so `removePortal` can remove it.                                                |
+| `children` | `ReactNode` | —        | The content to teleport.                                                                                |
+
+Axiom changes one default from the library: there, `Portal` without `hostName` renders in place. Here it goes to `root`, because overlays are the main use case. Rendering in place isn't exposed. If a component needs it, it renders its children without `Portal`.
+
+### usePortal
+
+```tsx
+const { isHostAvailable, removePortal } = usePortal("toast");
+```
+
+| Argument / return | Type                     | Description                                                                              |
+| ----------------- | ------------------------ | ---------------------------------------------------------------------------------------- |
+| `hostName`        | `string`                 | Host to watch. Defaults to `'root'`.                                                     |
+| `isHostAvailable` | `boolean`                | Whether a `PortalHost` with that name is mounted.                                        |
+| `removePortal`    | `(name: string) => void` | Removes a portal from the host. Mounting a new portal with the same name shows it again. |
+
+## Lifecycle
+
+These rules come from `react-native-teleport`:
+
+- **Host not mounted yet**: the content renders where the `Portal` is declared, then moves into the host once it mounts.
+- **Host unmounts**: the content moves back to the `Portal`'s position. It isn't destroyed and keeps its state.
+- **`Portal` unmounts**: its content unmounts with it, wherever it's rendered.
+
+An overlay that must never render inline (a toast in the middle of a list, for instance) checks `isHostAvailable` and renders nothing while the host is missing:
+
+```tsx
+function Toast() {
+	const { isHostAvailable } = usePortal();
+	if (!isHostAvailable) return null;
+
+	return (
+		<Portal>
+			<ToastContent />
+		</Portal>
+	);
+}
+```
+
+## Not supported
+
+The wrapper only exposes the API above. Other `react-native-teleport` features, like moving an on-screen element into another container for shared transitions, stay available if you import the library yourself. Axiom components don't use them.
+
+## Used by
+
+- [BottomSheet](/docs/atoms/bottom-sheet)
+- [Menu](/docs/atoms/menu)
+- [Dialog](/docs/atoms/dialog)
+- [Toast](/docs/atoms/toast)
+- [Snackbar](/docs/atoms/snackbar)
+
+## Related
+
+- [Overlay](/docs/core/overlay)

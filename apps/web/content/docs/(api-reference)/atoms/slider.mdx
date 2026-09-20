@@ -1,0 +1,246 @@
+---
+title: Slider
+description: "Pick a single value or a range by dragging."
+---
+
+<PhonePreview>
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="close" />
+		</span>
+		<span class="ax-appbar-title">Filters</span>
+		<span class="ax-link" style={{ padding: "0 8px" }}>
+			Reset
+		</span>
+	</div>
+	<div class="ax-body" style={{ gap: "22px" }}>
+		<div class="ax-stack" data-gap="8">
+			<div class="ax-row" data-justify="between">
+				<span class="ax-headline">Price</span>
+				<span class="ax-subhead ax-muted">$40 – $180</span>
+			</div>
+			<div class="ax-slider" style={{ "--from": "20%", "--to": "72%" }}>
+				<span class="ax-thumb" style={{ left: "20%" }} />
+				<span class="ax-thumb" style={{ left: "72%" }} />
+			</div>
+			<div class="ax-ticks">
+				<span>$0</span>
+				<span>$250</span>
+			</div>
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<div class="ax-row" data-justify="between">
+				<span class="ax-headline">Distance</span>
+				<span class="ax-subhead ax-muted">Within 5 km</span>
+			</div>
+			<div class="ax-slider" style={{ "--to": "40%" }}>
+				<span class="ax-thumb" style={{ left: "40%" }} />
+			</div>
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<div class="ax-row" data-justify="between">
+				<span class="ax-headline">Rating</span>
+				<span class="ax-subhead ax-muted">4+</span>
+			</div>
+			<div class="ax-slider" style={{ "--to": "75%" }}>
+				<span class="ax-thumb" style={{ left: "75%" }} />
+			</div>
+			<div class="ax-ticks">
+				<span>1</span>
+				<span>2</span>
+				<span>3</span>
+				<span>4</span>
+				<span>5</span>
+			</div>
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<div class="ax-row" data-justify="between">
+				<span class="ax-headline ax-disabled">Delivery time</span>
+				<span class="ax-subhead ax-disabled">Unavailable</span>
+			</div>
+			<div class="ax-slider" data-disabled style={{ "--to": "30%" }}>
+				<span class="ax-thumb" style={{ left: "30%" }} />
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add slider
+```
+
+Installs: `react-native-reanimated`, `react-native-worklets`, `react-native-gesture-handler`.
+
+The value logic and gestures live in `use-slider.ts`, shared by every styling variant. Colors come from `slider.default.{default,disabled}.{track,fill,thumb}` in the [component tokens](/docs/foundations/component-tokens).
+
+## Usage
+
+```tsx
+import { Slider } from '@/components/ui/slider';
+
+<Slider value={volume} onValueChange={setVolume} />
+<Slider value={[min, max]} onValueChange={setPriceRange} />
+```
+
+## Props
+
+| Prop                    | Type                         | Default | Description                                                                                    |
+| ----------------------- | ---------------------------- | ------- | ---------------------------------------------------------------------------------------------- |
+| `value`                 | `number \| [number, number]` | —       | A number for one thumb, a tuple for a range with two thumbs.                                   |
+| `defaultValue`          | `number \| [number, number]` | `min`   | Initial value when the slider manages its own state.                                           |
+| `onValueChange`         | `(value) => void`            | —       | Called continuously while dragging. Runs on the JS thread, so keep it cheap.                   |
+| `onSlidingComplete`     | `(value) => void`            | —       | Called once when the finger lifts. Use it for expensive work: a request, a refetch.            |
+| `min`                   | `number`                     | `0`     | Lowest value.                                                                                  |
+| `max`                   | `number`                     | `100`   | Highest value.                                                                                 |
+| `step`                  | `number`                     | `1`     | Increment the value snaps to. `0` means continuous.                                            |
+| `minRange`              | `number`                     | `0`     | Smallest gap between the two thumbs of a range.                                                |
+| `showSteps`             | `boolean`                    | `false` | Draws a tick for each step. Only use it when there are few steps.                              |
+| `disabled`              | `boolean`                    | `false` | Blocks dragging and dims the slider.                                                           |
+| `accessibilityLabel`    | `string`                     | —       | What the slider controls. Screen reader users change it with swipe up and down, by one `step`. |
+| `getAccessibilityValue` | `(value) => string`          | —       | Text announced for the value, such as `"5 kilometers"`.                                        |
+| `style`                 | `StyleProp<ViewStyle>`       | —       | Extra styles for the container.                                                                |
+
+The thumb is 20pt but its touch area is 44pt, and the whole track accepts a tap to jump to a value.
+
+## Use cases
+
+### Media volume
+
+A continuous slider between two icons that show the direction.
+
+<PhonePreview half="bottom" size="sm">
+	<div
+		class="ax-media"
+		data-tone="6"
+		style={{ margin: "0 32px", height: "200px", borderRadius: "14px" }}
+	>
+		<Glyph name="music" size={56} />
+	</div>
+	<div class="ax-body" style={{ gap: "14px", padding: "20px 32px 40px" }}>
+		<div class="ax-stack" data-gap="4">
+			<span class="ax-title3">Clair de lune</span>
+			<span class="ax-subhead ax-muted">Debussy</span>
+		</div>
+		<div class="ax-row" data-justify="center" data-gap="16">
+			<span class="ax-icon-btn">
+				<Glyph name="chevron-left" size={28} />
+			</span>
+			<span class="ax-icon-btn" data-size="lg" data-variant="solid">
+				<Glyph name="play" size={26} />
+			</span>
+			<span class="ax-icon-btn">
+				<Glyph name="chevron-right" size={28} />
+			</span>
+		</div>
+		<div class="ax-row" data-gap="12">
+			<Glyph name="minus" size={16} class="ax-muted" />
+			<div class="ax-slider ax-grow" style={{ "--to": "65%" }}>
+				<span class="ax-thumb" style={{ left: "65%" }} />
+			</div>
+			<Glyph name="plus" size={16} class="ax-muted" />
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<Slider
+	value={volume}
+	onValueChange={setVolume}
+	min={0}
+	max={1}
+	step={0}
+	accessibilityLabel="Volume"
+	getAccessibilityValue={(v) => `${Math.round(v * 100)} percent`}
+/>
+```
+
+### Price range filter
+
+Two thumbs with a `minRange`, and the request only sent when the user lets go.
+
+<PhonePreview size="sm">
+	<div class="ax-body" style={{ gap: "16px", paddingTop: "16px" }}>
+		<span class="ax-title2">Price per night</span>
+		<div class="ax-row" data-gap="12">
+			<div class="ax-field ax-grow">
+				<span class="ax-helper">Minimum</span>
+				<div class="ax-control">
+					<span class="ax-affix">$</span>
+					<span class="ax-value">80</span>
+				</div>
+			</div>
+			<div class="ax-field ax-grow">
+				<span class="ax-helper">Maximum</span>
+				<div class="ax-control">
+					<span class="ax-affix">$</span>
+					<span class="ax-value">240</span>
+				</div>
+			</div>
+		</div>
+		<div class="ax-slider" style={{ "--from": "16%", "--to": "48%" }}>
+			<span class="ax-thumb" style={{ left: "16%" }} />
+			<span class="ax-thumb" style={{ left: "48%" }} />
+		</div>
+		<span class="ax-footnote ax-muted">128 stays in this range</span>
+	</div>
+</PhonePreview>
+
+```tsx
+<Slider
+	value={range}
+	onValueChange={setRange}
+	onSlidingComplete={(r) => refetch({ minPrice: r[0], maxPrice: r[1] })}
+	min={0}
+	max={500}
+	step={10}
+	minRange={20}
+/>
+```
+
+### Discrete steps
+
+A small `step` count with `showSteps`, for a value with a few meaningful levels.
+
+<PhonePreview size="sm" grouped>
+	<div class="ax-section" style={{ paddingTop: "12px" }}>
+		Text size
+	</div>
+	<div class="ax-list">
+		<div class="ax-stack" style={{ padding: "16px" }}>
+			<div class="ax-row" data-gap="12">
+				<span class="ax-footnote">A</span>
+				<div class="ax-slider ax-grow" style={{ "--to": "66%" }}>
+					<span class="ax-thumb" style={{ left: "66%" }} />
+				</div>
+				<span class="ax-title3">A</span>
+			</div>
+			<div class="ax-ticks" style={{ padding: "0 24px" }}>
+				<span>·</span>
+				<span>·</span>
+				<span>·</span>
+				<span>·</span>
+			</div>
+		</div>
+	</div>
+	<div class="ax-footnote-block">
+		Apps that support Dynamic Type will adjust to your preferred reading size.
+	</div>
+</PhonePreview>
+
+```tsx
+<Slider
+	min={0}
+	max={3}
+	step={1}
+	showSteps
+	value={level}
+	onValueChange={setLevel}
+	accessibilityLabel="Text size"
+/>
+```
+
+## Related
+
+- [SegmentedControl](/docs/atoms/segmented-control)

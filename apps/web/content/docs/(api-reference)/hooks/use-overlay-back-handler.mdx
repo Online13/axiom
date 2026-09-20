@@ -1,0 +1,84 @@
+---
+title: useOverlayBackHandler
+description: "Close an open overlay on a back action instead of leaving the screen."
+---
+
+A back action while a sheet, dialog or menu is open should close the overlay, not leave the screen behind it. [BottomSheet](/docs/atoms/bottom-sheet), [Dialog](/docs/atoms/dialog) and [Menu](/docs/atoms/menu) use this hook. Use it in your own overlays too.
+
+## Installation
+
+```npm
+npx axiom add use-overlay-back-handler
+```
+
+The hook has one version per navigation library. The first time you add it, the CLI reads your `package.json` and saves the library as [`navigation`](/docs/configuration#navigation) in `axiom.json`:
+
+| `navigation`       | Detected when                                                | Back actions handled                                  |
+| ------------------ | ------------------------------------------------------------ | ----------------------------------------------------- |
+| `expo-router`      | `expo-router` is installed                                   | Android back button, back gesture, header back button |
+| `react-navigation` | `@react-navigation/native` is installed, without Expo Router | Android back button, back gesture, header back button |
+| `react-native`     | neither is installed                                         | Android back button                                   |
+
+## Usage
+
+```tsx
+import { useOverlayBackHandler } from "@/hooks/use-overlay-back-handler";
+
+function FiltersPanel({
+	open,
+	onClose,
+}: {
+	open: boolean;
+	onClose: () => void;
+}) {
+	useOverlayBackHandler(open, onClose);
+
+	if (!open) return null;
+	return <Panel onClose={onClose} />;
+}
+```
+
+Pass `undefined` as `onClose` for an overlay the user can't dismiss: back actions are still consumed, so they don't leave the screen, but nothing closes.
+
+```tsx
+useOverlayBackHandler(open, dismissible ? close : undefined);
+```
+
+## API
+
+```tsx
+useOverlayBackHandler(open: boolean, onClose: (() => void) | undefined): void
+```
+
+| Parameter | Type                        | Description                                                                       |
+| --------- | --------------------------- | --------------------------------------------------------------------------------- |
+| `open`    | `boolean`                   | Whether the overlay is open. Back actions are only intercepted while it's `true`. |
+| `onClose` | `(() => void) \| undefined` | Called on a back action. Read on each call, so an inline function is fine.        |
+
+## How it works
+
+- **Android back button**: a `BackHandler` listener, registered while `open` is `true`. It runs before the navigator's own listener, so it also works on the first screen of a stack.
+- **Back gesture and header back button** (navigator versions): the hook blocks the screen's removal the way `usePreventRemove` does. On a native stack, the iOS swipe back is disabled while the overlay is open.
+
+The navigator versions read the navigation contexts directly instead of calling `usePreventRemove`, which throws outside a screen. In a root layout, only the Android back button is handled.
+
+### Navigating from the overlay
+
+A press that closes the overlay and navigates back, in either order, still leaves the screen:
+
+```tsx
+<Dialog.Action destructive onPress={() => router.back()}>
+	Discard
+</Dialog.Action>
+```
+
+The blocked navigation is checked on the next frame. If the overlay closed during that press, the hook replays it. If the overlay is still open, the back action came from the user, and the hook calls `onClose` instead.
+
+A `router.back()` that doesn't close the overlay only closes it, like any other back action.
+
+## Related
+
+- [BottomSheet](/docs/atoms/bottom-sheet)
+- [Dialog](/docs/atoms/dialog)
+- [Menu](/docs/atoms/menu)
+- [Configuration](/docs/configuration#navigation)

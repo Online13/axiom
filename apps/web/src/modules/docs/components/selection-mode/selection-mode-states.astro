@@ -1,0 +1,70 @@
+---
+// The selection mode as a loop: in by a long press or Select, out by Done, back or a completed action.
+import TokenFrame from '@docs/components/tokens/token-frame.astro';
+import Glyph from '@docs/components/preview/glyph.astro';
+
+const states = [
+  { label: 'browse', selecting: false, selected: [], title: 'Library', caption: 'A tap opens a photo. The tab bar is there.' },
+  { label: 'long press', selecting: true, selected: [4], title: '1 selected', caption: 'The held photo is selected, the mode starts.' },
+  { label: 'select · 3', selecting: true, selected: [1, 4, 6], title: '3 selected', caption: 'Taps toggle. The title keeps count.' },
+  { label: 'select · 0', selecting: true, selected: [], title: 'Select items', caption: 'Last one deselected: still in the mode.' },
+  { label: 'delete', selecting: false, selected: [], title: 'Library', removed: [1, 4, 6], caption: 'The action completes, the mode ends.' },
+];
+---
+
+<TokenFrame>
+  <div class="grid min-w-[44rem] grid-cols-5 gap-px bg-fd-border">
+    {
+      states.map(({ label, selecting, selected, title, removed = [], caption }) => (
+        <div class="flex flex-col gap-3 bg-fd-card p-3">
+          <div class="mx-auto flex h-[9.5rem] w-[104px] flex-col overflow-hidden rounded-md border bg-fd-card">
+            <div class="flex h-5 flex-none items-center justify-between border-b px-1 text-[7px]">
+              <span class:list={['w-5 text-blue-500', !selecting && 'invisible']}>All</span>
+              <span class="font-semibold">{title}</span>
+              <span class="w-5 text-right text-blue-500">{selecting ? 'Done' : 'Select'}</span>
+            </div>
+            <div class="grid flex-1 grid-cols-3 content-start gap-px">
+              {Array.from({ length: 12 }, (_, i) => i)
+                .filter((i) => !(removed as number[]).includes(i))
+                .map((i) => {
+                  const on = (selected as number[]).includes(i);
+                  return (
+                    <div class="relative aspect-square bg-fd-muted">
+                      <div class:list={['absolute inset-0 bg-gradient-to-br from-sky-300/60 to-indigo-300/60', on && 'inset-[3px] rounded-[2px]']} />
+                      {selecting && (
+                        <span class:list={['absolute bottom-0.5 right-0.5 flex size-2 items-center justify-center rounded-full', on ? 'bg-blue-500 text-white' : 'border border-white']}>
+                          {on && <Glyph name="check" size={5} strokeWidth={4} />}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+            <div class="flex h-5 flex-none items-center justify-around border-t">
+              {selecting
+                ? (['share', 'heart', 'edit', 'trash'] as const).map((name) => (
+                    <Glyph
+                      name={name}
+                      size={8}
+                      strokeWidth={2.4}
+                      class={
+                        selected.length === 0 || (name === 'edit' && selected.length !== 1)
+                          ? 'text-fd-muted-foreground/40'
+                          : name === 'trash'
+                            ? 'text-red-500'
+                            : 'text-blue-500'
+                      }
+                    />
+                  ))
+                : (['image', 'heart', 'grid', 'search'] as const).map((name, i) => (
+                    <Glyph name={name} size={8} strokeWidth={2.4} class={i === 0 ? 'text-blue-500' : 'text-fd-muted-foreground'} />
+                  ))}
+            </div>
+          </div>
+          <div class="font-mono text-xs">{label}</div>
+          <p class="text-xs text-fd-muted-foreground">{caption}</p>
+        </div>
+      ))
+    }
+  </div>
+</TokenFrame>

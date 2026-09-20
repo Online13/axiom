@@ -1,0 +1,333 @@
+---
+title: Component tokens
+description: "Per-component colors derived from the semantic colors."
+---
+
+<Callout title="Draft">
+	The values and key names shown here are conceptual and may change.
+</Callout>
+
+`Components` is the last layer of the theme. It gives each component its own named colors: the background of a solid button, the border of a focused input, the track of a checked switch.
+
+Components read this layer, never [colors](/docs/foundations/colors) or the [palette](/docs/foundations/tokens/palette) directly.
+
+<ComponentTokenPath />
+
+Each row below traces a real component token back to its semantic color and palette step, in both schemes.
+
+<TokenChain />
+
+## Why a separate layer
+
+Say a button reads a semantic color directly:
+
+```tsx
+backgroundColor: colors.background.inverse;
+```
+
+Now you want blue buttons, and nothing else should change. You have two bad options:
+
+- change `background.inverse`: toasts, snackbars and tooltips turn blue too;
+- hardcode a color in the button file: dark mode stops following.
+
+With component tokens, the button reads `button.solid.default.background`. You point that one token to another semantic color, and only the button changes. Dark mode still works because the value still comes from `ThemeColors`.
+
+Switch between the default and the custom button below. The link, the checkbox and the focused input are blue in both cases; only the solid button follows the change.
+
+<ComponentTokenPreview />
+
+The layer also:
+
+- puts every component color in one file, instead of spread across dozens of components;
+- keeps the `stylesheet`, `unistyles` and `tailwind` variants identical, since all three read the same value.
+
+## What goes in
+
+Component tokens hold **colors only**: anything that changes between light and dark, or with your brand.
+
+| In `Components`                                                 | Elsewhere                                                                     |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Background, foreground, border, icon, placeholder, track, thumb | Heights, padding, radius, font sizes: read from [tokens](/docs/foundations/tokens) |
+| One value per variant and state                                 | Minimum tap target (44pt): [metrics](/docs/foundations/tokens/metrics)             |
+|                                                                 | State logic, gestures, animation: [core](/docs/core) and [hooks](/docs/hooks)           |
+
+## Structure
+
+Every token follows the same path:
+
+```text
+<component>.<variant>.<state>.<property>
+```
+
+| Segment     | Rule                                                                   | Examples                                                                                   |
+| ----------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `component` | camelCase, same name as in the registry                                | `button`, `iconButton`, `segmentedControl`                                                 |
+| `variant`   | The values of the `variant` prop. Components without one use `default` | `solid`, `outline`, `ghost`                                                                |
+| `state`     | A closed list, always starting with `default`                          | `default`, `pressed`, `focused`, `checked`, `invalid`, `disabled`                          |
+| `property`  | A shared vocabulary                                                    | `background`, `foreground`, `border`, `placeholder`, `icon`, `indicator`, `track`, `thumb` |
+
+States other than `default` only list what changes. A missing property falls back to `default`: a pressed outline button keeps its border and text color and only changes its background.
+
+```ts title="components/ui/button-tokens.ts"
+type ButtonColors = {
+	background?: string;
+	foreground: string;
+	border?: string;
+};
+type ButtonStates = States<ButtonColors, "pressed" | "disabled">;
+
+export type ButtonTokens = {
+	solid: ButtonStates;
+	outline: ButtonStates;
+	ghost: ButtonStates;
+};
+```
+
+`States` comes from the theme: `default` is complete, every other state is a `Partial` of it.
+
+## One file per component
+
+Each component brings its tokens in its own file, copied next to it: `button-tokens.ts` next to `button.tsx`. The file exports a pure function of the semantic colors:
+
+```ts title="components/ui/button-tokens.ts"
+export const buttonTokens = (colors: ThemeColors): ButtonTokens => ({
+	solid: {
+		default: {
+			background: colors.background.inverse,
+			foreground: colors.content.inverse,
+		},
+		pressed: { background: colors.content.muted },
+		disabled: {
+			background: colors.border.default,
+			foreground: colors.content.disabled,
+		},
+	},
+	outline: {
+		default: {
+			background: colors.background.default,
+			foreground: colors.content.default,
+			border: colors.border.default,
+		},
+		pressed: { background: colors.background.subtle },
+		disabled: {
+			foreground: colors.content.disabled,
+			border: colors.border.subtle,
+		},
+	},
+	ghost: {
+		default: { foreground: colors.content.default },
+		pressed: { background: colors.background.subtle },
+		disabled: { foreground: colors.content.disabled },
+	},
+});
+```
+
+Rules:
+
+- The function is pure and only reads `colors`. Never write raw color values or palette steps in it.
+- Never branch on the scheme (`if (dark)`). If a component needs a different value in dark mode, that difference belongs in `ThemeColors`.
+
+## `components(colors)`
+
+The theme's `components.ts` gathers every tokens file of the project. You don't write it by hand: `npx axiom add <component>` copies the tokens file and registers it between two pairs of markers.
+
+```ts title="theme/components.ts"
+// axiom:imports:start
+import { bottomSheetTokens } from "@/components/ui/bottom-sheet-tokens";
+import { buttonTokens } from "@/components/ui/button-tokens";
+// axiom:imports:end
+
+export const components = (colors: ThemeColors) => ({
+	// axiom:components:start
+	bottomSheet: bottomSheetTokens(colors),
+	button: buttonTokens(colors),
+	// axiom:components:end
+});
+
+export type Components = ReturnType<typeof components>;
+```
+
+- The key is the component name in camelCase, the function is `<key>Tokens`.
+- The CLI only adds missing lines, and only when the tokens file is in the project. It never removes or rewrites a line.
+- Keep the markers. Without them, `add` stops and asks you to copy the theme again.
+- Removing a component: delete its two lines, then its files.
+
+`components` is called once per color scheme:
+
+```ts title="theme/theme.ts"
+export const light = {
+	tokens,
+	colors: lightColors,
+	components: components(lightColors),
+} satisfies Theme;
+export const dark = {
+	tokens,
+	colors: darkColors,
+	components: components(darkColors),
+} satisfies Theme;
+```
+
+## Default values
+
+Each table lists a component's tokens, the semantic color they read and the result in both schemes. Grayed rows are states that override `default`.
+
+### Button
+
+<ComponentTokenTable component="button" />
+
+### FloatingButton
+
+<ComponentTokenTable component="floatingButton" />
+
+### IconButton
+
+<ComponentTokenTable component="iconButton" />
+
+### Input
+
+Also used by TextArea, and by InputGroup for its border, text and placeholder.
+
+<ComponentTokenTable component="input" />
+
+### Switch
+
+<ComponentTokenTable component="switch" />
+
+### Checkbox
+
+<ComponentTokenTable component="checkbox" />
+
+### Radio
+
+<ComponentTokenTable component="radio" />
+
+### SegmentedControl
+
+<ComponentTokenTable component="segmentedControl" />
+
+### Slider
+
+<ComponentTokenTable component="slider" />
+
+### InputGroup
+
+<ComponentTokenTable component="inputGroup" />
+
+### InputOTP
+
+<ComponentTokenTable component="inputOtp" />
+
+### Chip
+
+<ComponentTokenTable component="chip" />
+
+### Badge
+
+<ComponentTokenTable component="badge" />
+
+### Avatar
+
+<ComponentTokenTable component="avatar" />
+
+### Card
+
+<ComponentTokenTable component="card" />
+
+### Item
+
+<ComponentTokenTable component="item" />
+
+### Skeleton
+
+<ComponentTokenTable component="skeleton" />
+
+### Alert
+
+<ComponentTokenTable component="alert" />
+
+### Empty
+
+<ComponentTokenTable component="empty" />
+
+### Toast
+
+<ComponentTokenTable component="toast" />
+
+### Snackbar
+
+<ComponentTokenTable component="snackbar" />
+
+### Calendar
+
+<ComponentTokenTable component="calendar" />
+
+### BottomSheet
+
+<ComponentTokenTable component="bottomSheet" />
+
+### Dialog
+
+<ComponentTokenTable component="dialog" />
+
+### Menu
+
+<ComponentTokenTable component="menu" />
+
+Each table is the default tokens file of the component. A project only has the tokens of the components it added.
+
+## In each styling variant
+
+The values are the same; only the way components read them changes.
+
+```tsx title="stylesheet"
+const theme = useTheme();
+
+<Pressable
+	style={{ backgroundColor: theme.components.button.solid.default.background }}
+/>;
+```
+
+```tsx title="unistyles"
+const styles = StyleSheet.create((theme) => ({
+	solid: { backgroundColor: theme.components.button.solid.default.background },
+}));
+```
+
+```css title="tailwind"
+/* Each token becomes a CSS variable, one set per scheme */
+--button-solid-default-background: var(--background-inverse);
+```
+
+```tsx title="tailwind"
+<Pressable className="bg-button-solid-default-background active:bg-button-solid-pressed-background" />
+```
+
+## Customizing
+
+Edit the tokens file of the component. It belongs to your project, like the component itself:
+
+```ts title="components/ui/button-tokens.ts — blue solid buttons" {3-4}
+solid: {
+  default: {
+    background: colors.content.link,
+    foreground: colors.content.inverse,
+  },
+  pressed: { background: colors.content.link },
+},
+```
+
+Pick the layer that matches the scope of the change:
+
+| You want to change                               | Edit                                       |
+| ------------------------------------------------ | ------------------------------------------ |
+| One component                                    | Its tokens file (`button-tokens.ts`)       |
+| A role across the app (every border, every link) | [`ThemeColors`](/docs/foundations/colors)       |
+| The brand hue or a step everywhere               | The [palette](/docs/foundations/tokens/palette) |
+
+`npx axiom add button` asks before overwriting a tokens file you changed.
+
+## Related
+
+- [Colors](/docs/foundations/colors)
+- [Tokens](/docs/foundations/tokens)
+- [Styling](/docs/styling)

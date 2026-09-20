@@ -1,0 +1,24 @@
+---
+// How a loading screen moves between its states. Retry always goes back through loading, never straight to content.
+import StateMachine from '@docs/components/state-machine/state-machine.astro';
+
+const nodes = [
+  { id: 'loading', label: 'loading', x: 360, y: 44, caption: 'First load, nothing on screen yet. Skeleton when the layout is known, spinner otherwise.' },
+  { id: 'error', label: 'error', x: 80, y: 206, caption: 'The request failed. Plain words, no error code, and a retry.' },
+  { id: 'content', label: 'content', x: 270, y: 206, caption: 'The data. A refresh keeps it on screen, and a failed refresh shows a snackbar.' },
+  { id: 'empty', label: 'empty', x: 450, y: 206, caption: 'Success with nothing in it: first use, or no results for a query.' },
+  { id: 'offline', label: 'offline', x: 640, y: 206, caption: 'No connection. The fix is on the user side, and the screen retries once the network is back.' },
+];
+
+const edges = [
+  { from: 'loading', to: 'error', label: 'failed', labelAt: 0.6 },
+  { from: 'loading', to: 'content', label: 'data', labelAt: 0.6 },
+  { from: 'loading', to: 'empty', label: 'no data', labelAt: 0.6 },
+  { from: 'loading', to: 'offline', label: 'no connection', labelAt: 0.6 },
+  { from: 'error', to: 'loading', label: 'retry', via: [80, 44] as [number, number] },
+  { from: 'offline', to: 'loading', label: 'retry · back online', via: [640, 44] as [number, number] },
+  { from: 'content', to: 'content', label: 'refresh' },
+];
+---
+
+<StateMachine nodes={nodes} edges={edges} initial="loading" width={720} height={290} />

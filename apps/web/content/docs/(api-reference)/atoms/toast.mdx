@@ -1,0 +1,269 @@
+---
+title: Toast
+description: "Imperative, short-lived notifications stacked at the top of the screen."
+---
+
+<PhonePreview>
+	<div class="ax-float" style={{ top: "10px" }}>
+		<div class="ax-toast-stack" style={{ padding: "0 8px" }}>
+			<div class="ax-toast" data-depth="2">
+				<span>Saved</span>
+			</div>
+			<div class="ax-toast" data-depth="1">
+				<span>Copied</span>
+			</div>
+			<div class="ax-toast" data-depth="0" data-shape="card">
+				<Glyph
+					name="circle-check"
+					size={22}
+					data-tone="success"
+					class="ax-success"
+				/>
+				<div class="ax-item-content">
+					<span class="ax-semibold">Profile updated</span>
+					<span class="ax-footnote ax-muted" style={{ fontWeight: 400 }}>
+						Your new photo is visible to everyone.
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ax-large-heading" style={{ paddingTop: "100px" }}>
+		Profile
+	</div>
+	<div
+		class="ax-center"
+		style={{ flex: "none", gap: "6px", paddingTop: "8px" }}
+	>
+		<span class="ax-avatar" data-size="xl" data-photo="5">
+			AL
+		</span>
+		<span class="ax-title3">Ada Lovelace</span>
+	</div>
+	<div class="ax-body">
+		<div class="ax-row" data-justify="center" data-wrap>
+			<span class="ax-toast" style={{ padding: "8px 14px" }}>
+				<Glyph name="circle-x" size={18} class="ax-danger" />
+				Error
+			</span>
+			<span class="ax-toast" style={{ padding: "8px 14px" }}>
+				<Glyph name="info" size={18} class="ax-link" />
+				Info
+			</span>
+			<span class="ax-toast" style={{ padding: "8px 14px" }}>
+				<span class="ax-spinner" data-size="sm" />
+				Loading
+			</span>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add toast
+```
+
+Also copies: [`portal`](/docs/core/portal), [`spinner`](/docs/atoms/spinner).
+
+Installs: `react-native-reanimated`, `react-native-gesture-handler`, `react-native-safe-area-context`, `react-native-worklets`.
+
+Requires the `success`, `error` and `info` icons in your [icon registry](/docs/atoms/icon#icons-that-components-need). The store, timers and swipe live in `use-toast.ts`. Colors come from `toast.default.{default,success,error,info}` in the [component tokens](/docs/foundations/component-tokens).
+
+## Usage
+
+Toasts are shown from code rather than declared in JSX. Mount `<Toaster />` once at the root of the app.
+
+```tsx
+import { Toaster, toast } from "@/components/ui/toast";
+
+// app/_layout.tsx
+<Toaster />;
+
+// anywhere
+toast.show({ title: "Profile updated" });
+toast.success("Saved");
+```
+
+## API
+
+### toast.show(options)
+
+Returns the toast `id`.
+
+| Option        | Type                                                       | Default     | Description                                                                                                   |
+| ------------- | ---------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------- |
+| `title`       | `string`                                                   | —           | Main line. Keep it under 40 characters.                                                                       |
+| `description` | `string`                                                   | —           | Second line, in `content.muted`.                                                                              |
+| `type`        | `'default' \| 'success' \| 'error' \| 'info' \| 'loading'` | `'default'` | Sets the icon and the accessibility announcement. `loading` shows a spinner and never auto-dismisses.         |
+| `icon`        | `IconName`                                                 | per type    | Replaces the type icon.                                                                                       |
+| `duration`    | `number`                                                   | `4000`      | Time on screen in ms. `Infinity` keeps it until dismissed. The timer pauses while the user touches the toast. |
+| `id`          | `string`                                                   | generated   | Passing an existing id updates that toast in place instead of adding one.                                     |
+| `onPress`     | `() => void`                                               | —           | Makes the toast pressable, for example to open the item it is about.                                          |
+| `onDismiss`   | `() => void`                                               | —           | Called when the toast leaves, by timeout or swipe.                                                            |
+
+### Shortcuts and control
+
+| Method                                                                | Description                                                                      |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `toast.success(title, options?)` / `toast.error(…)` / `toast.info(…)` | `show` with the `type` set.                                                      |
+| `toast.loading(title, options?)`                                      | `show` with `type: 'loading'`. Update it later with the same id.                 |
+| `toast.promise(promise, { loading, success, error })`                 | Shows `loading`, then `success` or `error` depending on how the promise settles. |
+| `toast.dismiss(id?)`                                                  | Hides one toast, or all of them.                                                 |
+
+### Toaster
+
+| Prop             | Type                  | Default   | Description                                                                                      |
+| ---------------- | --------------------- | --------- | ------------------------------------------------------------------------------------------------ |
+| `visibleToasts`  | `number`              | `3`       | Toasts shown in the stack. Older ones wait in the queue.                                         |
+| `offset`         | `number`              | `8`       | Distance below the top safe area.                                                                |
+| `expand`         | `'press' \| 'always'` | `'press'` | `press` stacks toasts until the user presses the stack, `always` lists them one under the other. |
+| `swipeToDismiss` | `boolean`             | `true`    | Swipe up to dismiss.                                                                             |
+
+## Use cases
+
+### Confirming a background action
+
+A short success toast for something that happened without leaving the screen.
+
+<PhonePreview size="sm">
+	<div class="ax-float" style={{ top: "10px" }}>
+		<div class="ax-row" data-justify="center">
+			<div class="ax-toast">
+				<Glyph name="circle-check" size={20} class="ax-success" />
+				Link copied
+			</div>
+		</div>
+	</div>
+	<div class="ax-appbar" style={{ marginTop: "44px" }}>
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Invite</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body" style={{ gap: "12px" }}>
+		<span class="ax-subhead ax-muted">
+			Anyone with this link can join the workspace.
+		</span>
+		<div class="ax-input-group">
+			<span class="ax-grow ax-truncate">axiom.dev/join/k7qm2x</span>
+			<span class="ax-btn" data-size="sm" data-variant="ghost">
+				<Glyph name="copy" size={18} />
+			</span>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+async function copyLink() {
+	await Clipboard.setStringAsync(inviteUrl);
+	toast.success("Link copied");
+}
+```
+
+### Tracking a request
+
+`toast.promise` turns one toast from loading into success or error.
+
+<PhonePreview size="sm">
+	<div class="ax-float" style={{ top: "10px" }}>
+		<div class="ax-toast-stack" style={{ padding: "0 8px" }}>
+			<div class="ax-toast" data-depth="1">
+				<span>Uploading</span>
+			</div>
+			<div class="ax-toast" data-depth="0" data-shape="card">
+				<span class="ax-spinner" style={{ marginTop: "1px" }} />
+				<div class="ax-item-content">
+					<span class="ax-semibold">Uploading 3 photos</span>
+					<span class="ax-footnote ax-muted" style={{ fontWeight: 400 }}>
+						You can keep browsing.
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div
+		style={{
+			display: "grid",
+			gridTemplateColumns: "repeat(3, 1fr)",
+			gap: "2px",
+			paddingTop: "120px",
+		}}
+	>
+		<span class="ax-media" data-tone="1" style={{ height: "128px" }} />
+		<span class="ax-media" data-tone="2" style={{ height: "128px" }} />
+		<span class="ax-media" data-tone="5" style={{ height: "128px" }} />
+	</div>
+</PhonePreview>
+
+```tsx
+toast.promise(uploadPhotos(selection), {
+	loading: {
+		title: `Uploading ${selection.length} photos`,
+		description: "You can keep browsing.",
+	},
+	success: "Photos uploaded",
+	error: (e) => ({ title: "Upload failed", description: e.message }),
+});
+```
+
+### Several notifications in a row
+
+Toasts stack: the newest in front, older ones behind. Pressing the stack expands it.
+
+<PhonePreview size="sm">
+	<div class="ax-float" style={{ top: "10px" }}>
+		<div class="ax-stack" data-gap="8" style={{ padding: "0 8px" }}>
+			<div class="ax-toast" data-shape="card">
+				<span class="ax-avatar" data-size="sm" data-photo="2">
+					A
+				</span>
+				<div class="ax-item-content">
+					<span class="ax-semibold">Alan mentioned you</span>
+					<span class="ax-footnote ax-muted" style={{ fontWeight: 400 }}>
+						"@ada can you check this?"
+					</span>
+				</div>
+			</div>
+			<div class="ax-toast" data-shape="card">
+				<span class="ax-avatar" data-size="sm" data-photo="3">
+					G
+				</span>
+				<div class="ax-item-content">
+					<span class="ax-semibold">Grace joined #compilers</span>
+				</div>
+			</div>
+			<div class="ax-toast" data-shape="card">
+				<Glyph name="download" size={22} class="ax-link" />
+				<div class="ax-item-content">
+					<span class="ax-semibold">Export ready</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+socket.on("mention", (m) =>
+	toast.show({
+		title: `${m.author} mentioned you`,
+		description: m.excerpt,
+		icon: <Avatar size="sm" source={m.avatar} />,
+		onPress: () => router.push(m.url),
+	}),
+);
+```
+
+## Toast or Snackbar?
+
+|                 | Toast   | Snackbar |
+| --------------- | ------- | -------- |
+| Position        | Top     | Bottom   |
+| Visible at once | Several | One      |
+| Action          | —       | Optional |
+
+## Related
+
+- [Snackbar](/docs/atoms/snackbar)
+- [Alert](/docs/atoms/alert)

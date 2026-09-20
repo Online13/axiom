@@ -1,0 +1,144 @@
+---
+title: useRefreshControl
+description: "Add Axiom pull-to-refresh to any compatible list or ScrollView."
+---
+
+The hook behind [Pull-to-refresh](/docs/behaviors/pull-to-refresh). That page explains the statuses, the resistance, the platform differences and accessibility. This one covers the API.
+
+## Installation
+
+```npm
+npx axiom add use-refresh-control
+```
+
+Installs: `react-native-reanimated`, `react-native-gesture-handler`, `react-native-worklets`.
+
+## Usage
+
+The list goes in a `GestureDetector` and takes `scrollProps`. The indicator is a sibling, positioned over the space the pull opens.
+
+```tsx
+import { GestureDetector } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
+import { useRefreshControl } from "@/hooks/use-refresh-control";
+
+function Inbox() {
+	const { data, refetch } = useMessages();
+	const refresh = useRefreshControl({ onRefresh: refetch });
+
+	return (
+		<View style={{ flex: 1 }}>
+			<PullIndicator control={refresh} />
+			<GestureDetector gesture={refresh.gesture}>
+				<Animated.FlatList
+					data={data}
+					renderItem={renderMessage}
+					{...refresh.scrollProps}
+				/>
+			</GestureDetector>
+		</View>
+	);
+}
+```
+
+Three things the list needs:
+
+- **An `Animated` component.** `Animated.FlatList`, `Animated.ScrollView`, `Animated.SectionList`, or FlashList wrapped in `Animated.createAnimatedComponent`. `scrollProps` carries a Reanimated scroll handler and an animated style, which a plain list ignores.
+- **The `GestureDetector`.** On Android the pull is a `Pan` gesture running alongside the list's own scroll, and a gesture can't travel as a prop. On iOS the detector only carries the native gesture, so the wrapper stays the same on both platforms.
+- **`scrollProps` before your own `style`**, or the two merged in an array. It sets `style` on Android to move the list down.
+
+`onRefresh` can return a promise. The status stays `refreshing` until it resolves or rejects, so there is no `refreshing` flag to keep in sync.
+
+### Errors
+
+The hook doesn't catch the error: handle it in `onRefresh`, for example with a [Toast](/docs/atoms/toast). A pull whose `onRefresh` rejects still settles, and the rejection goes no further. `refresh()` returns the same promise, so a caller that awaits it does see the failure.
+
+```tsx
+const refresh = useRefreshControl({
+	onRefresh: async () => {
+		try {
+			await refetch();
+		} catch {
+			toast.error("Could not refresh");
+		}
+	},
+});
+```
+
+### A custom indicator
+
+The indicator doesn't lay out the list. It sits over the gap that the pull opens, absolutely positioned at the top, `threshold` tall:
+
+```tsx
+function PullIndicator({ control }: { control: RefreshControl }) {
+	const { progress, status } = control;
+
+	const style = useAnimatedStyle(() => ({
+		opacity: progress.value,
+		transform: [{ rotate: `${progress.value * 180}deg` }],
+	}));
+
+	return (
+		<View style={styles.indicator} pointerEvents="none">
+			<Animated.View style={style}>
+				{status === "refreshing" ? <Spinner /> : <Icon name="arrow-down" />}
+			</Animated.View>
+		</View>
+	);
+}
+
+const styles = StyleSheet.create({
+	indicator: {
+		position: "absolute",
+		top: 0,
+		left: 0,
+		right: 0,
+		height: 64,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+});
+```
+
+Giving it a height that follows `distance` would push the list down a second time on iOS, where the native bounce has already moved it. See [One pull, two platforms](/docs/behaviors/pull-to-refresh#one-pull-two-platforms).
+
+`progress` and `distance` are Reanimated shared values, read on the UI thread with no React render per frame. `status` is React state. It changes a few times per pull, so it's fine to switch icons on it. Use the shared values for anything that moves with the finger.
+
+### Refresh from code
+
+`refresh()` goes straight to `refreshing` and opens the list to `threshold`, like a released pull. Use it for a retry button, a screen focus, a push notification, or the accessible refresh button. It does nothing while a refresh is already running.
+
+```tsx
+<Button onPress={refresh.refresh}>Retry</Button>
+```
+
+## Options
+
+| Option        | Type                             | Default | Description                                                                                                                               |
+| ------------- | -------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `onRefresh`   | `() => Promise<unknown> \| void` | —       | Called on release past the threshold, or by `refresh()`.                                                                                  |
+| `threshold`   | `number`                         | `64`    | Distance in pt that arms the refresh. Also the height held while refreshing.                                                              |
+| `maxDistance` | `number`                         | `160`   | Limit of the rubber band.                                                                                                                 |
+| `minDuration` | `number`                         | `500`   | Minimum time in ms spent in `refreshing`, so a fast request doesn't flash the indicator.                                                  |
+| `enabled`     | `boolean`                        | `true`  | Turns the pull off, for example while the first page loads. Set to `false` mid-pull, it drops the pull and lets a running refresh finish. |
+| `onArmed`     | `() => void`                     | —       | Called once per pull when the status becomes `armed`. A good place for a light haptic.                                                    |
+
+## Return value
+
+| Key           | Type                                                           | Description                                                                             |
+| ------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `status`      | `'idle' \| 'pulling' \| 'armed' \| 'refreshing' \| 'settling'` | Current status. React state. See [statuses](/docs/behaviors/pull-to-refresh#how-it-works).   |
+| `refreshing`  | `boolean`                                                      | `true` while `status` is `refreshing`.                                                  |
+| `distance`    | `SharedValue<number>`                                          | Current pull distance in pt, after [resistance](/docs/behaviors/pull-to-refresh#resistance). |
+| `progress`    | `SharedValue<number>`                                          | `distance / threshold`, from `0` to `1`.                                                |
+| `refresh`     | `() => Promise<void>`                                          | Starts a refresh without a pull.                                                        |
+| `gesture`     | `GestureType`                                                  | For the `GestureDetector` around the list.                                              |
+| `scrollProps` | `object`                                                       | Props to spread on the `Animated` `ScrollView`, `FlatList`, `SectionList` or FlashList. |
+
+The whole return value is typed as `RefreshControl`, which is what a custom indicator takes.
+
+## Related
+
+- [Pull-to-refresh](/docs/behaviors/pull-to-refresh)
+- [Async content state](/docs/patterns/async-content-state)
+- [Spinner](/docs/atoms/spinner)

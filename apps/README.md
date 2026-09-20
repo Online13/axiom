@@ -4,26 +4,21 @@ Applications in the monorepo. Each folder is a standalone Bun workspace with its
 
 | App                                 | Purpose                        | Stack             |
 | ----------------------------------- | ------------------------------ | ----------------- |
-| [docs](docs/)                       | Public Axiom documentation     | Astro + Fumadocs  |
-| [landing](landing/)                 | Axiom presentation page        | Astro             |
+| [web](web/)                         | Landing and documentation      | Astro + Fumadocs  |
 | [demo-stylesheet](demo-stylesheet/) | Demo app, `stylesheet` variant | Expo + StyleSheet |
 | [demo-unistyles](demo-unistyles/)   | Demo app, `unistyles` variant  | Expo + Unistyles  |
 | [demo-nativewind](demo-nativewind/) | Demo app, `tailwind` variant   | Expo + NativeWind |
 | [demo-uniwind](demo-uniwind/)       | Demo app, `tailwind` variant   | Expo + Uniwind    |
 
-## docs
+## web
 
-The reference site for Axiom users. It covers:
+The website serves the presentation page at `/` and the documentation at `/docs`. The documentation covers:
 
 - what Axiom offers: foundations, core, atoms, molecules, organisms, templates, blocks;
 - a page for each component, with preview, API and usage;
 - the source code to copy into your project, alongside the `npx axiom add` CLI.
 
 Content comes from the spec in [`/docs`](../docs/README.md).
-
-## landing
-
-A single Astro page that presents Axiom: its positioning, its promise (_Build mobile experiences, not isolated components_) and links to the documentation.
 
 ## Demo apps
 
@@ -68,11 +63,8 @@ The first build can take around 30 minutes. The native `.app` is cached by Expo 
 From the repo root, pass the script name after the app shortcut:
 
 ```bash
-bun docs dev        # docs dev server → http://localhost:4322
-bun landing dev     # landing dev server → http://localhost:4321
-bun landing build   # landing production build
+bun web dev         # landing and docs → http://localhost:4321
+bun web build       # production build
 ```
 
-Ports are fixed in each app's `astro.config.mjs`, so both servers can run at the same time. Cross-links default to these local URLs; set `PUBLIC_DOCS_URL` (landing) and `PUBLIC_LANDING_URL` (docs) for other environments.
-
-These shortcuts are defined in the root `package.json` with `bun run --filter './apps/<app>'`. The demo shortcuts use `--cwd` instead, see [Demo apps](#demo-apps).
+The root `package.json` runs `web` and the demos with `bun run --cwd`, which keeps their interactive terminal behavior.

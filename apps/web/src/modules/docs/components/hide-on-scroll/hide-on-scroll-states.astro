@@ -1,0 +1,64 @@
+---
+// Five frozen frames of the same screen with hide-on-scroll on the AppBar and the BottomTabBar.
+// `hidden` is how many pt of the bars are out of view, from 0 to their height (here 40).
+// The list offset and the bars move independently: the bars follow the scroll delta, not the position.
+import TokenFrame from '@docs/components/tokens/token-frame.astro';
+import Glyph from '@docs/components/preview/glyph.astro';
+
+const bar = 40;
+
+const states = [
+  { label: 'at top', hidden: 0, offset: 0, arrow: null, caption: 'Bars always visible near the top.' },
+  { label: 'scrolling down', hidden: 24, offset: 24, arrow: 'down', caption: 'Bars leave with the finger, pt for pt.' },
+  { label: 'hidden', hidden: bar, offset: 72, arrow: 'down', caption: 'Clamped at the bar height. Content gets the room.' },
+  { label: 'scrolling up', hidden: 24, offset: 56, arrow: 'up', caption: 'Any scroll up brings them back, mid-list.' },
+  { label: 'released', hidden: 0, offset: 52, arrow: null, caption: 'Half-way on release: snaps to the nearest end.' },
+] as const;
+---
+
+<TokenFrame>
+  <div class="grid min-w-[40rem] grid-cols-5 gap-px bg-fd-border">
+    {
+      states.map(({ label, hidden, offset, arrow, caption }) => (
+        <div class="flex flex-col gap-3 bg-fd-card p-3">
+          <div class="relative h-[13rem] overflow-hidden rounded-md border bg-fd-card">
+            <div class="absolute inset-x-0 flex flex-col" style={`top:${bar - offset}px`}>
+              {Array.from({ length: 9 }, () => (
+                <div class="flex items-center gap-2 border-b px-2 py-2">
+                  <span class="size-4 flex-none rounded-full bg-fd-muted" />
+                  <span class="h-1.5 flex-1 rounded-full bg-fd-muted" />
+                </div>
+              ))}
+            </div>
+
+            <div
+              class="absolute inset-x-0 top-0 flex items-center border-b bg-fd-muted px-2 transition-none"
+              style={`height:${bar}px;transform:translateY(-${hidden}px)`}
+            >
+              <span class="h-2 w-12 rounded-full bg-fd-foreground/70" />
+            </div>
+            <div
+              class="absolute inset-x-0 bottom-0 flex items-center justify-around border-t bg-fd-muted text-fd-muted-foreground"
+              style={`height:${bar}px;transform:translateY(${hidden}px)`}
+            >
+              <Glyph name="home" size={14} class="text-fd-foreground" />
+              <Glyph name="search" size={14} />
+              <Glyph name="user" size={14} />
+            </div>
+
+            {arrow && (
+              <span class="absolute right-2 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-full bg-blue-500 text-white">
+                <Glyph name={arrow === 'down' ? 'arrow-down' : 'arrow-up'} size={12} strokeWidth={2.6} />
+              </span>
+            )}
+          </div>
+          <div class="font-mono text-xs">
+            <div>{label}</div>
+            <div class="text-fd-muted-foreground">hidden {hidden}</div>
+          </div>
+          <p class="text-xs text-fd-muted-foreground">{caption}</p>
+        </div>
+      ))
+    }
+  </div>
+</TokenFrame>

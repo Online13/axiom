@@ -1,0 +1,276 @@
+---
+title: Card
+description: "Content container, elevated or outlined."
+---
+
+<PhonePreview grouped>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Discover
+	</div>
+	<div class="ax-body" style={{ gap: "14px", paddingTop: "0px" }}>
+		<div class="ax-card">
+			<div class="ax-media" data-tone="1" style={{ height: "150px" }}>
+				<Glyph name="map" size={44} />
+			</div>
+			<div class="ax-card-header">
+				<div class="ax-item-content">
+					<span class="ax-headline">Weekend in Porto</span>
+					<span class="ax-subhead ax-muted">3 days · from $240</span>
+				</div>
+				<span class="ax-icon-btn" data-size="sm">
+					<Glyph name="heart" size={20} />
+				</span>
+			</div>
+			<div
+				class="ax-card-content ax-subhead ax-muted"
+				style={{ paddingTop: "6px" }}
+			>
+				Bookshops, port cellars and the Ribeira at sunset.
+			</div>
+			<div class="ax-card-footer">
+				<span class="ax-btn ax-grow" data-size="sm" data-variant="outline">
+					Details
+				</span>
+				<span class="ax-btn ax-grow" data-size="sm">
+					Book
+				</span>
+			</div>
+		</div>
+		<div class="ax-card" data-variant="outlined" style={{ padding: "14px" }}>
+			<div class="ax-row">
+				<span class="ax-tile" data-size="lg" data-color="indigo">
+					<Glyph name="star" />
+				</span>
+				<div class="ax-item-content">
+					<span class="ax-headline">Outlined</span>
+					<span class="ax-subhead ax-muted">
+						No shadow, a border instead
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add card
+```
+
+Colors come from `card.{elevated,outlined,filled}.{default,pressed}` in the [component tokens](/docs/foundations/component-tokens). The `elevated` shadow is a `boxShadow` in the component file.
+
+## Usage
+
+```tsx
+import { Card } from "@/components/ui/card";
+
+<Card variant="outlined">
+	<Card.Header>
+		<Card.Title>Weekend in Porto</Card.Title>
+		<Card.Description>3 days · from $240</Card.Description>
+	</Card.Header>
+	<Card.Content>…</Card.Content>
+	<Card.Footer>…</Card.Footer>
+</Card>;
+```
+
+## Props
+
+### Card
+
+| Prop                 | Type                                   | Default      | Description                                                                                                                                                                          |
+| -------------------- | -------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `variant`            | `'elevated' \| 'outlined' \| 'filled'` | `'elevated'` | `elevated`: `background.elevated` with a shadow, stands out on grouped backgrounds. `outlined`: a border, for plain backgrounds. `filled`: `background.subtle`, no border or shadow. |
+| `padding`            | `SpacingToken \| 'none'`               | `'none'`     | Inner padding for a card without sub-components. With `Card.Header`/`Content`/`Footer`, leave it to `none`: they pad themselves.                                                     |
+| `radius`             | `RadiusToken`                          | `'lg'`       | Corner radius, 14pt by default. Media inside is clipped to it.                                                                                                                       |
+| `onPress`            | `() => void`                           | —            | Makes the whole card pressable with a pressed state. Buttons inside still receive their own presses.                                                                                 |
+| `disabled`           | `boolean`                              | `false`      | With `onPress`, blocks presses and lowers the opacity.                                                                                                                               |
+| `accessibilityLabel` | `string`                               | —            | With `onPress`, read instead of the texts inside the card: say what it opens.                                                                                                        |
+| `children`           | `ReactNode`                            | —            | The sub-components below, or any content.                                                                                                                                            |
+| `style`              | `StyleProp<ViewStyle>`                 | —            | Extra styles for the container.                                                                                                                                                      |
+
+### Card.Media
+
+| Prop          | Type                  | Default  | Description                                                 |
+| ------------- | --------------------- | -------- | ----------------------------------------------------------- |
+| `source`      | `ImageSourcePropType` | —        | Image shown edge to edge at the top of the card.            |
+| `aspectRatio` | `number`              | `16 / 9` | Height relative to the card width.                          |
+| `children`    | `ReactNode`           | —        | Overlay content on the image, like a [Badge](/docs/atoms/badge). |
+
+### Card.Header, Card.Content, Card.Footer
+
+| Prop       | Type                   | Default | Description                                                                                                                      |
+| ---------- | ---------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `children` | `ReactNode`            | —       | Header: `Card.Title`, `Card.Description` and an optional trailing action. Content: the body. Footer: actions, laid out in a row. |
+| `style`    | `StyleProp<ViewStyle>` | —       | Extra styles. Each part uses 16pt horizontal padding and shares the vertical spacing with its neighbors.                         |
+
+## Use cases
+
+### Summary widget on a dashboard
+
+A small elevated card with a value and a trend. `onPress` opens the details.
+
+<PhonePreview size="sm" grouped>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Today
+	</div>
+	<div
+		class="ax-row"
+		style={{ padding: "0 16px", alignItems: "stretch", gap: "12px" }}
+	>
+		<div class="ax-card ax-grow" style={{ padding: "14px", gap: "6px" }}>
+			<div class="ax-row">
+				<Glyph name="bolt" size={18} class="ax-link" />
+				<span class="ax-footnote ax-muted">Energy</span>
+			</div>
+			<span class="ax-title1">482</span>
+			<span class="ax-footnote ax-success">▲ 12% vs yesterday</span>
+		</div>
+		<div class="ax-card ax-grow" style={{ padding: "14px", gap: "6px" }}>
+			<div class="ax-row">
+				<Glyph name="clock" size={18} style={{ color: "#FF9500" }} />
+				<span class="ax-footnote ax-muted">Focus</span>
+			</div>
+			<span class="ax-title1">3h 20</span>
+			<span class="ax-footnote ax-danger">▼ 20 min</span>
+		</div>
+	</div>
+	<div class="ax-body">
+		<div class="ax-card" style={{ padding: "14px", gap: "8px" }}>
+			<div class="ax-row" data-justify="between">
+				<span class="ax-headline">Weekly goal</span>
+				<span class="ax-subhead ax-muted">4 / 5 days</span>
+			</div>
+			<div class="ax-progress">
+				<span style={{ width: "80%" }} />
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<Card padding={4} onPress={openEnergy}>
+	<Text variant="footnote" color="muted">
+		Energy
+	</Text>
+	<Title variant="headingLg">482</Title>
+	<Text variant="footnote" color="success">
+		▲ 12% vs yesterday
+	</Text>
+</Card>
+```
+
+### Feed item with media
+
+`Card.Media` on top, a header with the author, a footer with actions.
+
+<PhonePreview size="sm">
+	<div class="ax-body" style={{ paddingTop: "12px" }}>
+		<div class="ax-card" data-variant="outlined">
+			<div class="ax-card-header" style={{ paddingBottom: "12px" }}>
+				<span class="ax-avatar" data-size="sm" data-photo="4">
+					LT
+				</span>
+				<div class="ax-item-content">
+					<span class="ax-headline">Linus Torvalds</span>
+					<span class="ax-footnote ax-muted">Helsinki · 3h</span>
+				</div>
+				<span class="ax-icon-btn" data-size="sm">
+					<Glyph name="more" size={20} />
+				</span>
+			</div>
+			<div class="ax-media" data-tone="4" style={{ height: "150px" }}>
+				<Glyph name="image" size={40} />
+			</div>
+			<div
+				class="ax-card-footer"
+				style={{ paddingTop: "8px", paddingBottom: "8px", gap: "0px" }}
+			>
+				<span class="ax-icon-btn">
+					<Glyph name="heart" />
+				</span>
+				<span class="ax-icon-btn">
+					<Glyph name="send" />
+				</span>
+				<span class="ax-grow" />
+				<span class="ax-icon-btn">
+					<Glyph name="flag" />
+				</span>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<Card variant="outlined">
+  <Card.Header>
+    <Avatar size="sm" … />
+    <Card.Title>Linus Torvalds</Card.Title>
+  </Card.Header>
+  <Card.Media source={{ uri: post.image }} aspectRatio={4 / 3} />
+  <Card.Footer>
+    <IconButton icon="heart" accessibilityLabel="Like" />
+    <IconButton icon="send" accessibilityLabel="Share" />
+  </Card.Footer>
+</Card>
+```
+
+### Horizontal carousel of cards
+
+Cards with a fixed width in a [Carousel](/docs/atoms/carousel), peeking at the next one.
+
+<PhonePreview size="sm">
+	<div class="ax-row" data-justify="between" style={{ padding: "12px 16px" }}>
+		<span class="ax-title3">Continue watching</span>
+		<span class="ax-link ax-subhead">See all</span>
+	</div>
+	<div class="ax-carousel">
+		<div class="ax-card" style={{ width: "230px" }}>
+			<div class="ax-media" data-tone="5" style={{ height: "130px" }}>
+				<Glyph name="play" size={36} />
+			</div>
+			<div class="ax-progress" style={{ borderRadius: "0px" }}>
+				<span style={{ width: "64%", borderRadius: "0px" }} />
+			</div>
+			<div class="ax-card-content ax-stack" data-gap="4">
+				<span class="ax-headline">Episode 4</span>
+				<span class="ax-footnote ax-muted">18 min left</span>
+			</div>
+		</div>
+		<div class="ax-card" style={{ width: "230px" }}>
+			<div class="ax-media" data-tone="3" style={{ height: "130px" }}>
+				<Glyph name="play" size={36} />
+			</div>
+			<div class="ax-progress" style={{ borderRadius: "0px" }}>
+				<span style={{ width: "20%", borderRadius: "0px" }} />
+			</div>
+			<div class="ax-card-content ax-stack" data-gap="4">
+				<span class="ax-headline">The keynote</span>
+				<span class="ax-footnote ax-muted">42 min left</span>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<Carousel
+	data={shows}
+	itemWidth={230}
+	renderItem={({ item }) => (
+		<Card onPress={() => play(item.id)}>
+			<Card.Media source={item.poster} />
+			<Card.Content>…</Card.Content>
+		</Card>
+	)}
+/>
+```
+
+## Guidelines
+
+Avoid nesting cards inside cards. On a small screen, every level of padding and border takes space from the content. See [Mobile design guidelines](/docs/patterns/guidelines#avoid-excessive-card-nesting).
+
+## Related
+
+- [Item](/docs/atoms/item)
+- [Carousel](/docs/atoms/carousel)

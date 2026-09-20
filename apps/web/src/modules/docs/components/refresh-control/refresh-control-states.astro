@@ -1,0 +1,73 @@
+---
+// The five statuses of useRefreshControl, each drawn as a frozen frame of the same list.
+// Distances are the real values in pt, drawn at their size: threshold 64, maxDistance 160.
+import TokenFrame from '@docs/components/tokens/token-frame.astro';
+
+const threshold = 64;
+const ring = 2 * Math.PI * 9;
+
+const states = [
+  { status: 'idle', distance: 0, progress: 0, caption: 'At rest, list at the top.' },
+  { status: 'pulling', distance: 36, progress: 36 / threshold, caption: 'Below threshold. Releasing cancels.' },
+  { status: 'armed', distance: 88, progress: 1, caption: 'Past threshold. Releasing refreshes.' },
+  { status: 'refreshing', distance: threshold, progress: 0.3, caption: 'onRefresh runs, held at threshold.' },
+  { status: 'settling', distance: 20, progress: 0.3, caption: 'Returning to 0, pulls ignored.' },
+];
+---
+
+<TokenFrame>
+  <div class="grid min-w-[40rem] grid-cols-5 gap-px bg-fd-border">
+    {
+      states.map(({ status, distance, progress, caption }) => (
+        <div class="flex flex-col gap-3 bg-fd-card p-3">
+          <div class="relative h-[10rem] overflow-hidden rounded-md border bg-fd-muted">
+            <div class="absolute inset-x-0 top-0 flex items-center justify-center overflow-hidden" style={`height:${distance}px`}>
+              {distance > 0 && (
+                <svg width="24" height="24" viewBox="0 0 24 24" class={status === 'refreshing' ? 'text-blue-500' : status === 'armed' ? 'text-fd-foreground' : 'text-fd-muted-foreground'}>
+                  <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-opacity="0.2" stroke-width="2" />
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="9"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-dasharray={ring}
+                    stroke-dashoffset={ring * (1 - progress)}
+                    transform="rotate(-90 12 12)"
+                  />
+                  {(status === 'pulling' || status === 'armed') && (
+                    <path
+                      d="M12 8v8M8.5 12.5L12 16l3.5-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      transform={status === 'armed' ? 'rotate(180 12 12)' : undefined}
+                    />
+                  )}
+                </svg>
+              )}
+            </div>
+            <div class="absolute inset-x-0 bottom-0 flex flex-col bg-fd-card" style={`top:${distance}px`}>
+              {[0, 1, 2, 3].map(() => (
+                <div class="flex items-center gap-2 border-b px-2 py-2">
+                  <span class="size-4 flex-none rounded-full bg-fd-muted" />
+                  <span class="h-1.5 flex-1 rounded-full bg-fd-muted" />
+                </div>
+              ))}
+            </div>
+            <div class="absolute inset-x-0 border-t border-dashed border-blue-500" style={`top:${threshold}px`} />
+          </div>
+          <div class="font-mono text-xs">
+            <div>{status}</div>
+            <div class="text-fd-muted-foreground">distance {distance}</div>
+          </div>
+          <p class="text-xs text-fd-muted-foreground">{caption}</p>
+        </div>
+      ))
+    }
+  </div>
+</TokenFrame>

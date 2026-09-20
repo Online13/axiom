@@ -1,0 +1,20 @@
+---
+// What a row does with a swipe. On release, velocity decides first, position second.
+import StateMachine, { type StateEdge, type StateNode } from '@docs/components/state-machine/state-machine.astro';
+
+const nodes: StateNode[] = [
+  { id: 'closed', label: 'closed', x: 120, y: 150, caption: 'The row at rest. A horizontal swipe past 8pt takes it; a vertical one goes to the list.' },
+  { id: 'dragging', label: 'dragging', x: 360, y: 150, caption: 'The row follows the finger 1:1, then with resistance. On release: a flick over 500pt/s wins, otherwise the row compares |x| with w / 2.' },
+  { id: 'open', label: 'open', x: 600, y: 150, caption: 'The actions are visible. Any tap closes the row; a tap on an action also runs it.' },
+];
+
+const edges: StateEdge[] = [
+  { from: 'closed', to: 'dragging', label: 'swipe past 8pt', via: [240, 70] },
+  { from: 'dragging', to: 'closed', label: 'flick close · |x| ≤ w/2', via: [240, 230] },
+  { from: 'dragging', to: 'open', label: 'flick open · |x| > w/2', via: [480, 70] },
+  { from: 'open', to: 'dragging', label: 'swipe', via: [480, 230] },
+  { from: 'open', to: 'closed', label: 'tap row, screen or action', via: [360, 330], labelOffset: [0, 8] },
+];
+---
+
+<StateMachine nodes={nodes} edges={edges} initial="closed" width={720} height={270} />
