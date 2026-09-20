@@ -1,4 +1,4 @@
-import type { ThemeColors } from '@/theme/colors';
+import type { ThemeColors } from "@/theme/colors";
 
 // Component tokens: <component>.<variant>.<state>.<property>.
 // Each component brings its own tokens file (`button-tokens.ts`); `axiom add` registers it below.
@@ -9,13 +9,13 @@ import type { ThemeColors } from '@/theme/colors';
 
 /** States other than `default` only list what changes; a missing property falls back to `default`. */
 export type States<Colors, State extends string> = { default: Colors } & {
-  [S in State]?: Partial<Colors>;
+	[S in State]?: Partial<Colors>;
 };
 
 // Pure: only reads `colors`. No raw values and no branching on the scheme.
 export const components = (colors: ThemeColors) => ({
-  // axiom:components:start
-  // axiom:components:end
+	// axiom:components:start
+	// axiom:components:end
 });
 
 export type Components = ReturnType<typeof components>;

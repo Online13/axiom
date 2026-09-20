@@ -11,6 +11,7 @@ import {
 	remarkNpm,
 	remarkStructure,
 } from "fumadocs-core/mdx-plugins";
+import { loadEnv } from "vite";
 
 const remarkPlugins = [
 	remarkHeading,
@@ -20,10 +21,10 @@ const remarkPlugins = [
 	[remarkStructure, { exportAs: "structuredData" }],
 ];
 const rehypePlugins = [rehypeCode];
+const env = loadEnv("dev", process.cwd(), "");
 
 export default defineConfig({
-	// Docs runs on 4322, landing on 4321, so both dev servers can run side by side.
-	server: { port: 4322 },
+	server: { port: env.PORT ? Number(env.PORT) : 3000 },
 	markdown: {
 		processor: unified({
 			syntaxHighlight: false,

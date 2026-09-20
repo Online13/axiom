@@ -10,12 +10,12 @@ bun docs dev   # from the repo root → http://localhost:4322
 
 Pages live in `content/docs`. The sidebar order and section separators are defined in `content/docs/meta.json`; each folder has its own `meta.json` and an `index.mdx` overview.
 
-| Section | Folders |
-| --- | --- |
-| Get Started | `index`, `installation`, `cli`, `styling` |
-| System | `foundations`, `core`, `hooks` |
-| Components | `atoms`, `molecules`, `organisms`, `templates` |
-| Experience | `patterns`, `blocks` |
+| Section     | Folders                                        |
+| ----------- | ---------------------------------------------- |
+| Get Started | `index`, `installation`, `cli`, `styling`      |
+| System      | `foundations`, `core`, `hooks`                 |
+| Components  | `atoms`, `molecules`, `organisms`, `templates` |
+| Experience  | `patterns`, `blocks`                           |
 
 Component pages go inside their layer folder (e.g. `content/docs/atoms/button.mdx`).
 

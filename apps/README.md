@@ -2,14 +2,14 @@
 
 Applications in the monorepo. Each folder is a standalone Bun workspace with its own `package.json`.
 
-| App | Purpose | Stack |
-| --- | --- | --- |
-| [docs](docs/) | Public Axiom documentation | Astro + Fumadocs |
-| [landing](landing/) | Axiom presentation page | Astro |
+| App                                 | Purpose                        | Stack             |
+| ----------------------------------- | ------------------------------ | ----------------- |
+| [docs](docs/)                       | Public Axiom documentation     | Astro + Fumadocs  |
+| [landing](landing/)                 | Axiom presentation page        | Astro             |
 | [demo-stylesheet](demo-stylesheet/) | Demo app, `stylesheet` variant | Expo + StyleSheet |
-| [demo-unistyles](demo-unistyles/) | Demo app, `unistyles` variant | Expo + Unistyles |
-| [demo-nativewind](demo-nativewind/) | Demo app, `tailwind` variant | Expo + NativeWind |
-| [demo-uniwind](demo-uniwind/) | Demo app, `tailwind` variant | Expo + Uniwind |
+| [demo-unistyles](demo-unistyles/)   | Demo app, `unistyles` variant  | Expo + Unistyles  |
+| [demo-nativewind](demo-nativewind/) | Demo app, `tailwind` variant   | Expo + NativeWind |
+| [demo-uniwind](demo-uniwind/)       | Demo app, `tailwind` variant   | Expo + Uniwind    |
 
 ## docs
 
@@ -23,7 +23,7 @@ Content comes from the spec in [`/docs`](../docs/README.md).
 
 ## landing
 
-A single Astro page that presents Axiom: its positioning, its promise (*Build mobile experiences, not isolated components*) and links to the documentation.
+A single Astro page that presents Axiom: its positioning, its promise (_Build mobile experiences, not isolated components_) and links to the documentation.
 
 ## Demo apps
 

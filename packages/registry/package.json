@@ -1,15 +1,15 @@
 {
-  "name": "@axiom/registry",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "description": "Source of every item Axiom can copy into a project",
-  "scripts": {
-    "tsconfig": "bun scripts/tsconfig.ts",
-    "typecheck": "bun scripts/tsconfig.ts && tsc -p tsconfig.json && tsc -p scripts/tsconfig.json"
-  },
-  "devDependencies": {
-    "@react-navigation/native": "^7.4.1",
-    "typescript": "~6.0.3"
-  }
+	"name": "@axiom/registry",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Source of every item Axiom can copy into a project",
+	"scripts": {
+		"tsconfig": "bun scripts/tsconfig.ts",
+		"typecheck": "bun scripts/tsconfig.ts && tsc -p tsconfig.json && tsc -p scripts/tsconfig.json"
+	},
+	"devDependencies": {
+		"@react-navigation/native": "^7.4.1",
+		"typescript": "~6.0.3"
+	}
 }

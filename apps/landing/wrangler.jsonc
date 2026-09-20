@@ -1,15 +1,15 @@
 {
-  "$schema": "../../node_modules/wrangler/config-schema.json",
-  "name": "axiom",
-  "compatibility_date": "2026-09-14",
-  "assets": {
-    "directory": "./dist"
-  },
-  "observability": {
-    "logs": {
-      "enabled": true,
-      "invocation_logs": true,
-      "persist": true
-    }
-  }
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "axiom",
+	"compatibility_date": "2026-09-14",
+	"assets": {
+		"directory": "./dist",
+	},
+	"observability": {
+		"logs": {
+			"enabled": true,
+			"invocation_logs": true,
+			"persist": true,
+		},
+	},
 }

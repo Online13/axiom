@@ -10,13 +10,13 @@ Axiom is in early development. This document describes the intended structure of
 Foundations → Components → Behaviors → Patterns → Blocks
 ```
 
-| Layer | Role |
-| --- | --- |
-| Foundations | Theme, tokens and shared low-level primitives |
-| Components | Reusable UI pieces, organized with Atomic Design |
-| Behaviors | Reusable interaction logic, independent of a specific look |
-| Patterns | Components and behaviors combined to solve a recurring UX problem |
-| Blocks | Compositions that make up a significant part of a real app |
+| Layer       | Role                                                              |
+| ----------- | ----------------------------------------------------------------- |
+| Foundations | Theme, tokens and shared low-level primitives                     |
+| Components  | Reusable UI pieces, organized with Atomic Design                  |
+| Behaviors   | Reusable interaction logic, independent of a specific look        |
+| Patterns    | Components and behaviors combined to solve a recurring UX problem |
+| Blocks      | Compositions that make up a significant part of a real app        |
 
 Atomic Design organizes the UI elements (components and blocks). It doesn't describe behaviors or patterns.
 
@@ -42,13 +42,13 @@ Raw tokens are values with no meaning attached. Semantic tokens give them a role
 
 ## Atomic Design
 
-| Level | Role |
-| --- | --- |
-| Atoms | The smallest usable UI units, such as a button or an input |
-| Molecules | A few atoms forming one coherent UI function, such as a search bar |
-| Organisms | Complex components that own a full interaction, such as a passcode entry |
+| Level     | Role                                                                                |
+| --------- | ----------------------------------------------------------------------------------- |
+| Atoms     | The smallest usable UI units, such as a button or an input                          |
+| Molecules | A few atoms forming one coherent UI function, such as a search bar                  |
+| Organisms | Complex components that own a full interaction, such as a passcode entry            |
 | Templates | Structures that organize a screen or a large area, such as an app bar or a scaffold |
-| Blocks | Complete screens or large sections meant to be adapted, such as an onboarding flow |
+| Blocks    | Complete screens or large sections meant to be adapted, such as an onboarding flow  |
 
 Use this classification as a guide. When an element doesn't fit cleanly, pick the level that best describes its responsibility and explain the choice in the pull request.
 

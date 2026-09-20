@@ -1,8 +1,10 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
+import { loadEnv } from "vite";
+
+const env = loadEnv("dev", process.cwd(), "");
 
 // https://astro.build/config
 export default defineConfig({
-	// Landing runs on 4321, docs on 4322, so both dev servers can run side by side.
-	server: { port: 4321 },
+	server: { port: env.PORT ? Number(env.PORT) : 3000 },
 });

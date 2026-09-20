@@ -1,89 +1,75 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://axiom.dev/schema.json",
-  "title": "axiom.json",
-  "description": "Axiom project configuration: styling variant, aliases and copied items. See https://axiom.dev/configuration.",
-  "type": "object",
-  "required": [
-    "styling"
-  ],
-  "additionalProperties": false,
-  "properties": {
-    "$schema": {
-      "type": "string",
-      "description": "JSON Schema used by your editor. The CLI ignores it."
-    },
-    "styling": {
-      "description": "The styling tool of the project. Decides which variant `add` copies.",
-      "enum": [
-        "stylesheet",
-        "unistyles",
-        "nativewind",
-        "uniwind"
-      ]
-    },
-    "icons": {
-      "description": "Where the icons of the project come from. Decides which icon registry `add icon` creates. Asked the first time an item needs icons.",
-      "enum": [
-        "expo-symbols",
-        "custom"
-      ]
-    },
-    "navigation": {
-      "description": "The navigation library of the project. Decides which version of navigation-aware items, like `use-overlay-back-handler`, `add` copies. Detected from package.json the first time an item needs it.",
-      "enum": [
-        "expo-router",
-        "react-navigation",
-        "react-native"
-      ]
-    },
-    "aliases": {
-      "type": "object",
-      "description": "Where each layer is copied and imported from. A missing key uses its default.",
-      "additionalProperties": false,
-      "properties": {
-        "theme": {
-          "$ref": "#/definitions/alias",
-          "description": "Foundations layer.",
-          "default": "@/theme"
-        },
-        "core": {
-          "$ref": "#/definitions/alias",
-          "description": "Core layer.",
-          "default": "@/components/core"
-        },
-        "hooks": {
-          "$ref": "#/definitions/alias",
-          "description": "Hooks layer.",
-          "default": "@/hooks"
-        },
-        "components": {
-          "$ref": "#/definitions/alias",
-          "description": "Typography, atoms, molecules, organisms and templates layers.",
-          "default": "@/components/ui"
-        },
-        "blocks": {
-          "$ref": "#/definitions/alias",
-          "description": "Blocks layer.",
-          "default": "@/components/blocks"
-        }
-      }
-    },
-    "items": {
-      "type": "array",
-      "description": "Every Axiom item copied into the project, internal dependencies included, sorted alphabetically.",
-      "uniqueItems": true,
-      "items": {
-        "type": "string",
-        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
-      }
-    }
-  },
-  "definitions": {
-    "alias": {
-      "type": "string",
-      "minLength": 1,
-      "description": "An import alias resolved through the `paths` of tsconfig.json."
-    }
-  }
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "https://axiom.dev/schema.json",
+	"title": "axiom.json",
+	"description": "Axiom project configuration: styling variant, aliases and copied items. See https://axiom.dev/configuration.",
+	"type": "object",
+	"required": ["styling"],
+	"additionalProperties": false,
+	"properties": {
+		"$schema": {
+			"type": "string",
+			"description": "JSON Schema used by your editor. The CLI ignores it."
+		},
+		"styling": {
+			"description": "The styling tool of the project. Decides which variant `add` copies.",
+			"enum": ["stylesheet", "unistyles", "nativewind", "uniwind"]
+		},
+		"icons": {
+			"description": "Where the icons of the project come from. Decides which icon registry `add icon` creates. Asked the first time an item needs icons.",
+			"enum": ["expo-symbols", "custom"]
+		},
+		"navigation": {
+			"description": "The navigation library of the project. Decides which version of navigation-aware items, like `use-overlay-back-handler`, `add` copies. Detected from package.json the first time an item needs it.",
+			"enum": ["expo-router", "react-navigation", "react-native"]
+		},
+		"aliases": {
+			"type": "object",
+			"description": "Where each layer is copied and imported from. A missing key uses its default.",
+			"additionalProperties": false,
+			"properties": {
+				"theme": {
+					"$ref": "#/definitions/alias",
+					"description": "Foundations layer.",
+					"default": "@/theme"
+				},
+				"core": {
+					"$ref": "#/definitions/alias",
+					"description": "Core layer.",
+					"default": "@/components/core"
+				},
+				"hooks": {
+					"$ref": "#/definitions/alias",
+					"description": "Hooks layer.",
+					"default": "@/hooks"
+				},
+				"components": {
+					"$ref": "#/definitions/alias",
+					"description": "Typography, atoms, molecules, organisms and templates layers.",
+					"default": "@/components/ui"
+				},
+				"blocks": {
+					"$ref": "#/definitions/alias",
+					"description": "Blocks layer.",
+					"default": "@/components/blocks"
+				}
+			}
+		},
+		"items": {
+			"type": "array",
+			"description": "Every Axiom item copied into the project, internal dependencies included, sorted alphabetically.",
+			"uniqueItems": true,
+			"items": {
+				"type": "string",
+				"pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+			}
+		}
+	},
+	"definitions": {
+		"alias": {
+			"type": "string",
+			"minLength": 1,
+			"description": "An import alias resolved through the `paths` of tsconfig.json."
+		}
+	}
 }

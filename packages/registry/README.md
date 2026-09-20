@@ -67,17 +67,17 @@ Rendering and behavior are still checked in a demo app (`apps/demo-*`).
 
 ```json
 {
-  "name": "switch",
-  "type": "atoms",
-  "tokens": "atoms/switch/switch-tokens.ts",
-  "files": ["atoms/switch/switch-tokens.ts", "atoms/switch/use-switch.ts"],
-  "dependencies": ["react-native-reanimated"],
-  "internalDependencies": ["tappable"],
-  "variants": {
-    "stylesheet": { "files": ["atoms/switch/stylesheet/switch.tsx"] },
-    "unistyles": { "files": ["atoms/switch/unistyles/switch.tsx"] },
-    "tailwind": { "files": ["atoms/switch/tailwind/switch.tsx"] }
-  }
+	"name": "switch",
+	"type": "atoms",
+	"tokens": "atoms/switch/switch-tokens.ts",
+	"files": ["atoms/switch/switch-tokens.ts", "atoms/switch/use-switch.ts"],
+	"dependencies": ["react-native-reanimated"],
+	"internalDependencies": ["tappable"],
+	"variants": {
+		"stylesheet": { "files": ["atoms/switch/stylesheet/switch.tsx"] },
+		"unistyles": { "files": ["atoms/switch/unistyles/switch.tsx"] },
+		"tailwind": { "files": ["atoms/switch/tailwind/switch.tsx"] }
+	}
 }
 ```
 

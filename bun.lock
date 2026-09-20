@@ -183,6 +183,7 @@
         "@types/react": "^19.2.18",
         "@types/react-dom": "^19.2.7",
         "tailwindcss": "^4.3.3",
+        "vite": "^8.3.0",
       },
     },
     "apps/landing": {
@@ -190,6 +191,9 @@
       "version": "0.0.1",
       "dependencies": {
         "astro": "^7.3.2",
+      },
+      "devDependencies": {
+        "vite": "^8.3.0",
       },
     },
     "apps/theme-builder": {

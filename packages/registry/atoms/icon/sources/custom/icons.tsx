@@ -1,4 +1,4 @@
-import type { IconRegistry } from '../../icon-types';
+import type { IconRegistry } from "../../icon-types";
 
 // The icon registry of your app. Every icon the app shows is declared here, and only here.
 // `axiom add icon` creates this file once and never overwrites it: it's yours.

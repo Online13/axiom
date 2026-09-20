@@ -22,21 +22,28 @@ export function autoplay(
 	let hovered = false;
 	let focused = false;
 
-	if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || count < 2) {
+	if (
+		window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+		count < 2
+	) {
 		return { restart: () => {} };
 	}
 
-	root.dataset.autoplay = '';
-	root.style.setProperty('--autoplay-duration', `${duration}ms`);
+	root.dataset.autoplay = "";
+	root.style.setProperty("--autoplay-duration", `${duration}ms`);
 
 	function sync() {
 		const running = visible && !hovered && !focused;
-		root.style.setProperty('--autoplay-state', running ? 'running' : 'paused');
+		root.style.setProperty(
+			"--autoplay-state",
+			running ? "running" : "paused",
+		);
 	}
 	sync();
 
-	root.addEventListener('animationend', (event) => {
-		if (event.animationName === 'autoplay-progress') select((current() + 1) % count);
+	root.addEventListener("animationend", (event) => {
+		if (event.animationName === "autoplay-progress")
+			select((current() + 1) % count);
 	});
 
 	new IntersectionObserver(([entry]) => {
@@ -44,10 +51,10 @@ export function autoplay(
 		sync();
 	}).observe(root);
 
-	root.addEventListener('pointerenter', () => ((hovered = true), sync()));
-	root.addEventListener('pointerleave', () => ((hovered = false), sync()));
-	root.addEventListener('focusin', () => ((focused = true), sync()));
-	root.addEventListener('focusout', (event) => {
+	root.addEventListener("pointerenter", () => ((hovered = true), sync()));
+	root.addEventListener("pointerleave", () => ((hovered = false), sync()));
+	root.addEventListener("focusin", () => ((focused = true), sync()));
+	root.addEventListener("focusout", (event) => {
 		if (root.contains(event.relatedTarget as Node | null)) return;
 		focused = false;
 		sync();
@@ -56,11 +63,13 @@ export function autoplay(
 	return {
 		restart() {
 			// Selecting another item restarts its bar on its own; this covers re-selecting the same one.
-			root.querySelectorAll<HTMLElement>('[data-progress]').forEach((bar) => {
-				bar.style.animation = 'none';
-				void bar.offsetWidth;
-				bar.style.animation = '';
-			});
+			root
+				.querySelectorAll<HTMLElement>("[data-progress]")
+				.forEach((bar) => {
+					bar.style.animation = "none";
+					void bar.offsetWidth;
+					bar.style.animation = "";
+				});
 		},
 	};
 }

@@ -10,8 +10,9 @@
 	--gutter: clamp(1.25rem, 4vw, 3rem);
 	--max: 1440px;
 
-	--font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-	--font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+	--font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-mono:
+		"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 
 *,
@@ -96,7 +97,7 @@ p {
 }
 
 .cli::before {
-	content: '$';
+	content: "$";
 	color: var(--muted);
 }
 
@@ -113,7 +114,9 @@ p {
 	background: var(--fg);
 	color: var(--bg);
 	font-weight: 500;
-	transition: color 0.25s ease, border-color 0.25s ease;
+	transition:
+		color 0.25s ease,
+		border-color 0.25s ease;
 }
 
 .btn--hover-white {
@@ -122,7 +125,7 @@ p {
 }
 
 .btn::before {
-	content: '';
+	content: "";
 	position: absolute;
 	inset: 0;
 	background: var(--btn-hover-bg);
