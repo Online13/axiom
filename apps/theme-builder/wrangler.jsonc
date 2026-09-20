@@ -1,8 +1,8 @@
 {
 	"$schema": "../../node_modules/wrangler/config-schema.json",
-	"name": "axiom",
+	"name": "axiom-theme-builder",
 	"workers_dev": false,
-	"compatibility_date": "2026-09-14",
+	"compatibility_date": "2026-09-20",
 	"assets": {
 		"directory": "./dist",
 	},

@@ -6,7 +6,7 @@ import { structure, type StructuredData } from "fumadocs-core/mdx-plugins";
 
 export const source = loader({
 	source: await createMySource(),
-	baseUrl: "/",
+	baseUrl: "/docs",
 });
 
 export function getStructuredData(

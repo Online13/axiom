@@ -93,19 +93,22 @@ import Layout from "@/components/layout.astro";
 import type { TOCItemType } from "fumadocs-core/toc";
 
 interface Props {
-  page: CollectionEntry<"docs">;
+	page: CollectionEntry<"docs">;
 }
 
 export async function getStaticPaths() {
-  return source.getPages().map((page) => ({
-    params: { slug: page.slugs.length > 0 ? page.slugs.join("/") : undefined },
-    props: { page: page.data._raw },
-  }));
+	return source.getPages().map((page) => ({
+		params: {
+			slug: page.slugs.length > 0 ? page.slugs.join("/") : undefined,
+		},
+		props: { page: page.data._raw },
+	}));
 }
 
 const { page } = Astro.props;
 const { Content, headings } = await render(page);
-const slugs = typeof Astro.params.slug === "string" ? Astro.params.slug.split("/") : [];
+const slugs =
+	typeof Astro.params.slug === "string" ? Astro.params.slug.split("/") : [];
 const docsPage = source.getPage(slugs)!;
 const image = getPageImageUrl(docsPage).url;
 // Pages that only have frontmatter so far show a placeholder instead of a blank screen.
@@ -113,116 +116,126 @@ const isEmpty = !page.body?.trim();
 const Callout = defaultMdxComponents.Callout;
 
 const toc: TOCItemType[] = headings.map((heading) => ({
-  depth: heading.depth,
-  title: heading.text,
-  url: "#" + heading.slug,
+	depth: heading.depth,
+	title: heading.text,
+	url: "#" + heading.slug,
 }));
+const publicPathname =
+	Astro.url.pathname === "/" ? "/docs" : `/docs${Astro.url.pathname}`;
 ---
 
 <Layout>
-  <PreviewTheme />
-  <title>{page.data.title}</title>
-  <meta name="title" content={page.data.title} />
-  <meta name="description" content={page.data.description} />
-  <meta property="og:image" content={image} />
-  <Docs
-    tree={source.getPageTree()}
-    pathname={Astro.url.pathname}
-    params={Astro.params}
-    page={{ toc }}
-    client:load
-  >
-    <h1 class="font-semibold text-3xl">{page.data.title}</h1>
-    <p class="text-lg text-fd-muted-foreground mb-8">{page.data.description}</p>
-    <div class="prose flex-1">
-      {isEmpty && <Callout title="Available soon">This page is still being written.</Callout>}
-      <Content
-        components={{
-          ...defaultMdxComponents,
-          CodeBlockTabs,
-          CodeBlockTabsList,
-          CodeBlockTabsTrigger,
-          CodeBlockTab,
-          PaletteGrid,
-          SpacingScale,
-          RadiusScale,
-          TypeScale,
-          SizesScale,
-          MetricsPreview,
-          ColorRoleTable,
-          RolePreview,
-          TokenChain,
-          ThemeLayers,
-          ComponentTokenPath,
-          ComponentTokenPreview,
-          ComponentTokenTable,
-          OverlayPreview,
-          OverlayLayers,
-          AtomGrid,
-          BehaviorGrid,
-          BehaviorCard,
-          PatternGrid,
-          PatternCard,
-          AtomCard,
-          ComponentGrid,
-          ComponentCard,
-          TappablePreview,
-          TappableHitSlop,
-          RefreshControlPreview,
-          RefreshControlStates,
-          RefreshControlResistance,
-          HideOnScrollPreview,
-          HideOnScrollStates,
-          CollapsibleHeaderPreview,
-          CollapsibleHeaderStates,
-          ScrollToTopPreview,
-          ScrollAwareAppBarPreview,
-          LongPressPreview,
-          LongPressTimeline,
-          SwipeActionsPreview,
-          SwipeActionsStates,
-          FullSwipePreview,
-          FullSwipeStates,
-          DragToReorderPreview,
-          DragToReorderStates,
-          PaginationPreview,
-          PaginationStates,
-          DynamicToolbarPreview,
-          DynamicToolbarStates,
-          OtpVerificationPreview,
-          OtpVerificationStates,
-          UndoableActionPreview,
-          UndoableActionStates,
-          SearchExperiencePreview,
-          SearchExperienceStates,
-          SelectionModePreview,
-          SelectionModeStates,
-          FloatingActionMenuPreview,
-          FloatingActionMenuStates,
-          AsyncContentStatePreview,
-          AsyncContentStateStates,
-          AsyncContentStateMachine,
-          SwipeActionsMachine,
-          PullToRefreshMachine,
-          ScrollToTopMachine,
-          PaginationMachine,
-          UndoableActionMachine,
-          SearchExperienceMachine,
-          SelectionModeMachine,
-          TabSwipeFrames,
-          TabSwipeMachine,
-          PhonePreview,
-          Glyph,
-          ScaffoldAnatomy,
-          AxiomBanner,
-          AtomicLevels,
-          PhaseTimeline,
-          PhaseChecklist,
-          ShowcaseGrid,
-          ShowcaseCard,
-          ShowcaseScreens,
-        }}
-      />
-    </div>
-  </Docs>
+	<PreviewTheme />
+	<title>{page.data.title}</title>
+	<meta name="title" content={page.data.title} />
+	<meta name="description" content={page.data.description} />
+	<meta property="og:image" content={image} />
+	<Docs
+		tree={source.getPageTree()}
+		pathname={publicPathname}
+		params={Astro.params}
+		page={{ toc }}
+		client:load
+	>
+		<h1 class="font-semibold text-3xl">{page.data.title}</h1>
+		<p class="text-lg text-fd-muted-foreground mb-8">
+			{page.data.description}
+		</p>
+		<div class="prose flex-1">
+			{
+				isEmpty && (
+					<Callout title="Available soon">
+						This page is still being written.
+					</Callout>
+				)
+			}
+			<Content
+				components={{
+					...defaultMdxComponents,
+					CodeBlockTabs,
+					CodeBlockTabsList,
+					CodeBlockTabsTrigger,
+					CodeBlockTab,
+					PaletteGrid,
+					SpacingScale,
+					RadiusScale,
+					TypeScale,
+					SizesScale,
+					MetricsPreview,
+					ColorRoleTable,
+					RolePreview,
+					TokenChain,
+					ThemeLayers,
+					ComponentTokenPath,
+					ComponentTokenPreview,
+					ComponentTokenTable,
+					OverlayPreview,
+					OverlayLayers,
+					AtomGrid,
+					BehaviorGrid,
+					BehaviorCard,
+					PatternGrid,
+					PatternCard,
+					AtomCard,
+					ComponentGrid,
+					ComponentCard,
+					TappablePreview,
+					TappableHitSlop,
+					RefreshControlPreview,
+					RefreshControlStates,
+					RefreshControlResistance,
+					HideOnScrollPreview,
+					HideOnScrollStates,
+					CollapsibleHeaderPreview,
+					CollapsibleHeaderStates,
+					ScrollToTopPreview,
+					ScrollAwareAppBarPreview,
+					LongPressPreview,
+					LongPressTimeline,
+					SwipeActionsPreview,
+					SwipeActionsStates,
+					FullSwipePreview,
+					FullSwipeStates,
+					DragToReorderPreview,
+					DragToReorderStates,
+					PaginationPreview,
+					PaginationStates,
+					DynamicToolbarPreview,
+					DynamicToolbarStates,
+					OtpVerificationPreview,
+					OtpVerificationStates,
+					UndoableActionPreview,
+					UndoableActionStates,
+					SearchExperiencePreview,
+					SearchExperienceStates,
+					SelectionModePreview,
+					SelectionModeStates,
+					FloatingActionMenuPreview,
+					FloatingActionMenuStates,
+					AsyncContentStatePreview,
+					AsyncContentStateStates,
+					AsyncContentStateMachine,
+					SwipeActionsMachine,
+					PullToRefreshMachine,
+					ScrollToTopMachine,
+					PaginationMachine,
+					UndoableActionMachine,
+					SearchExperienceMachine,
+					SelectionModeMachine,
+					TabSwipeFrames,
+					TabSwipeMachine,
+					PhonePreview,
+					Glyph,
+					ScaffoldAnatomy,
+					AxiomBanner,
+					AtomicLevels,
+					PhaseTimeline,
+					PhaseChecklist,
+					ShowcaseGrid,
+					ShowcaseCard,
+					ShowcaseScreens,
+				}}
+			/>
+		</div>
+	</Docs>
 </Layout>
