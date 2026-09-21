@@ -1,0 +1,214 @@
+---
+import Base from '@landing/layouts/Base.astro';
+import Nav from '@landing/components/sections/Nav.astro';
+import Footer from '@landing/components/sections/Footer.astro';
+import Title from '@landing/components/Title.astro';
+import Button from '@landing/components/Button.astro';
+import { docs, githubUrl } from '@landing/lib/links';
+
+const suggestions = [
+	{ label: 'Home', href: '/', hint: 'Back to the landing page' },
+	{ label: 'Documentation', href: docs(), hint: 'Install, theme and components' },
+	{ label: 'GitHub', href: githubUrl, hint: 'Source, issues and releases' },
+];
+---
+
+<Base
+	title="404 — Page not found | Axiom"
+	description="This page does not exist. Head back to the Axiom home page or the documentation."
+>
+	<Nav />
+	<main class="section notfound">
+		<div class="container notfound__inner">
+			<div class="notfound__copy">
+				<p class="eyebrow">Error 404</p>
+				<Title variant="display" as="h1">This screen<br /> was never built.</Title>
+				<p class="notfound__lede">
+					The page you asked for does not exist, or it moved while you were
+					away. Nothing is broken on your side.
+				</p>
+				<div class="notfound__actions">
+					<Button href="/">Back home</Button>
+					<Button href={docs()} variant="ghost">Read the docs</Button>
+				</div>
+			</div>
+
+			<div class="notfound__visual" aria-hidden="true">
+				<span class="notfound__digits">404</span>
+			</div>
+		</div>
+
+		<nav class="container notfound__suggestions" aria-label="Suggested pages">
+			{
+				suggestions.map((item) => (
+					<a
+						class="notfound__link"
+						href={item.href}
+						{...(item.href.startsWith('http')
+							? { target: '_blank', rel: 'noopener noreferrer' }
+							: {})}
+					>
+						<span class="notfound__link-label">{item.label}</span>
+						<span class="notfound__link-hint">{item.hint}</span>
+						<span class="notfound__link-arrow">→</span>
+					</a>
+				))
+			}
+		</nav>
+	</main>
+	<Footer />
+</Base>
+
+<style>
+	.notfound {
+		min-height: var(--full-h);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 4rem;
+		padding-block: 4rem;
+	}
+
+	.notfound__inner {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		align-items: center;
+		gap: 3rem;
+	}
+
+	.notfound__copy {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+		max-width: 34rem;
+	}
+
+	.notfound__lede {
+		color: var(--muted);
+		font-size: 1.125rem;
+		max-width: 26rem;
+	}
+
+	.notfound__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+	}
+
+	.notfound__visual {
+		display: grid;
+		place-items: center;
+	}
+
+	/* The numeral is an outline so the page shader keeps showing through it. */
+	.notfound__digits {
+		font-size: clamp(7rem, 22vw, 18rem);
+		font-weight: 700;
+		line-height: 0.8;
+		letter-spacing: -0.05em;
+		color: transparent;
+		-webkit-text-stroke: 1px var(--line);
+		animation: notfound-drift 9s ease-in-out infinite;
+	}
+
+	@keyframes notfound-drift {
+		0%,
+		100% {
+			transform: translate3d(0, 0, 0);
+			-webkit-text-stroke-color: var(--line);
+		}
+		50% {
+			transform: translate3d(0, -0.6rem, 0);
+			-webkit-text-stroke-color: color-mix(in srgb, var(--fg) 45%, transparent);
+		}
+	}
+
+	.notfound__suggestions {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		border-top: 1px solid var(--line);
+	}
+
+	.notfound__link {
+		display: grid;
+		grid-template-areas:
+			'label arrow'
+			'hint arrow';
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 0.25rem 1rem;
+		padding: 1.5rem 0;
+		padding-right: 1.5rem;
+		border-bottom: 1px solid transparent;
+		transition: border-color 0.25s ease;
+	}
+
+	.notfound__link + .notfound__link {
+		padding-left: 1.5rem;
+		border-left: 1px solid var(--line);
+	}
+
+	.notfound__link:is(:hover, :focus-visible) {
+		border-bottom-color: var(--fg);
+	}
+
+	.notfound__link-label {
+		grid-area: label;
+		font-weight: 500;
+	}
+
+	.notfound__link-hint {
+		grid-area: hint;
+		color: var(--muted);
+		font-size: 0.875rem;
+	}
+
+	.notfound__link-arrow {
+		grid-area: arrow;
+		color: var(--muted);
+		transition:
+			transform 0.25s cubic-bezier(0.76, 0, 0.24, 1),
+			color 0.25s ease;
+	}
+
+	.notfound__link:is(:hover, :focus-visible) .notfound__link-arrow {
+		color: var(--fg);
+		transform: translateX(0.35rem);
+	}
+
+	@media (max-width: 900px) {
+		.notfound__inner {
+			grid-template-columns: 1fr;
+		}
+
+		.notfound__visual {
+			order: -1;
+			justify-items: start;
+		}
+
+		.notfound__suggestions {
+			grid-template-columns: 1fr;
+		}
+
+		.notfound__link + .notfound__link {
+			padding-left: 0;
+			border-left: none;
+			border-top: 1px solid var(--line);
+		}
+
+		.notfound__link {
+			padding-right: 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.notfound__digits {
+			animation: none;
+		}
+
+		.notfound__link,
+		.notfound__link-arrow {
+			transition: none;
+		}
+	}
+</style>
