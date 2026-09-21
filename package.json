@@ -2,10 +2,18 @@
 	"name": "axiom-project",
 	"type": "module",
 	"private": true,
-	"workspaces": [
-		"packages/*",
-		"apps/*"
-	],
+	"workspaces": {
+		"packages": [
+			"packages/*",
+			"apps/*"
+		],
+		"catalog": {
+			"react": "19.2.3",
+			"react-dom": "19.2.3",
+			"@types/react": "~19.2.2",
+			"@types/react-dom": "~19.2.2"
+		}
+	},
 	"scripts": {
 		"web": "bun run --cwd apps/web",
 		"demo:stylesheet": "bun run --cwd apps/demo-stylesheet",

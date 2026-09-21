@@ -1,0 +1,10 @@
+---
+import ThemeBuilder from '@theme-builder/components/ThemeBuilder';
+import ThemeBuilderLayout from '@theme-builder/layouts/ThemeBuilderLayout.astro';
+---
+
+<ThemeBuilderLayout>
+	{/* The builder owns its own state and renders the phones, so it runs
+	    entirely on the client — there is no useful server pass. */}
+	<ThemeBuilder client:only="react" />
+</ThemeBuilderLayout>

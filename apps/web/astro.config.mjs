@@ -25,6 +25,26 @@ const remarkPlugins = [
 const rehypePlugins = [rehypeCode];
 const env = loadEnv("dev", process.cwd(), "");
 
+/**
+ * The theme builder is still a work in progress: its route only exists while
+ * running `astro dev`, so production builds never emit `/theme-builder`.
+ *
+ * @type {import("astro").AstroIntegration}
+ */
+const devOnlyThemeBuilder = {
+	name: "dev-only-theme-builder",
+	hooks: {
+		"astro:config:setup": ({ command, injectRoute }) => {
+			if (command !== "dev") return;
+
+			injectRoute({
+				pattern: "/theme-builder",
+				entrypoint: "./src/modules/theme-builder/pages/index.astro",
+			});
+		},
+	},
+};
+
 export default defineConfig({
 	server: { port: env.PORT ? Number(env.PORT) : 4321 },
 	markdown: {
@@ -35,6 +55,7 @@ export default defineConfig({
 	},
 	integrations: [
 		react(),
+		devOnlyThemeBuilder,
 		mdx({
 			extendMarkdownConfig: true,
 			syntaxHighlight: false,

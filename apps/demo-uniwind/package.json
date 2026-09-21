@@ -18,8 +18,8 @@
 		"expo-symbols": "~57.0.3",
 		"expo-system-ui": "~57.0.4",
 		"expo-web-browser": "~57.0.3",
-		"react": "19.2.3",
-		"react-dom": "19.2.3",
+		"react": "catalog:",
+		"react-dom": "catalog:",
 		"react-native": "0.86.3",
 		"react-native-gesture-handler": "~2.32.0",
 		"react-native-reanimated": "4.5.1",
@@ -31,7 +31,7 @@
 		"uniwind": "^1.12.0"
 	},
 	"devDependencies": {
-		"@types/react": "~19.2.2",
+		"@types/react": "catalog:",
 		"expo-mcp": "~0.2.1",
 		"typescript": "~6.0.3"
 	},
