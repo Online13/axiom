@@ -133,7 +133,9 @@ Every key is optional. A missing key uses its default.
 
 ### Where files go
 
-Files are copied flat into the alias folder, without subfolders. Only the files of your styling variant are copied. `add bottom-sheet` gives:
+A component that copies a single file lands as that file. One that copies several gets a folder named after it, plus an `index.ts` written by the CLI, so `@/components/ui/bottom-sheet` keeps resolving and you never import a file inside the folder yourself.
+
+Only the files of your styling variant are copied. `add button bottom-sheet` gives:
 
 ```text
 components/
@@ -141,11 +143,24 @@ components/
 │   ├── overlay.tsx
 │   └── portal.tsx
 └── ui/
-    ├── bottom-sheet.tsx
-    └── use-bottom-sheet.ts
+    ├── button.tsx
+    └── bottom-sheet/
+        ├── bottom-sheet.tsx
+        ├── bottom-sheet-root.tsx
+        ├── use-bottom-sheet.ts
+        └── index.ts
+theme/
+└── components/
+    ├── index.ts
+    ├── button.ts
+    └── bottom-sheet.ts
 ```
 
 A hook used by a single component, like `use-bottom-sheet.ts`, stays next to that component. Only items from the hooks layer, like `use-refresh-control`, go to `aliases.hooks`.
+
+A component's [tokens](/docs/foundations/component-tokens) go to `aliases.theme`, in `components/<name>.ts`: the theme is the only thing that reads them.
+
+`aliases.core` and `aliases.hooks` hold one file per item, so they stay flat.
 
 A few files don't use aliases because their location is fixed, for example a config file that must sit at the project root.
 
@@ -154,7 +169,7 @@ A few files don't use aliases because their location is fixed, for example a con
 The CLI rewrites imports in the files it copies:
 
 - imports between files of the same item become relative (`./use-bottom-sheet`);
-- imports of other items use your aliases.
+- imports of other items use your aliases, pointing at the file itself, folder included (`@/components/ui/icon/icons`). They never go through an `index.ts`, so no import cycle runs through a barrel.
 
 With `"core": "@/ui/core"`, a copied component imports `@/ui/core/portal` instead of `@/components/core/portal`.
 

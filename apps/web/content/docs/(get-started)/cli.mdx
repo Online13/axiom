@@ -19,10 +19,34 @@ npx axiom init
 
 Sets up a project for Axiom:
 
-1. Asks for the styling tool: `stylesheet`, `unistyles`, `nativewind` or `uniwind`.
-2. Copies the foundations (theme, tokens, `light` / `dark`) and the core primitives.
-3. Installs the styling dependency, if any.
-4. Writes `axiom.json`, with the copied foundations and core primitives listed in `items`.
+1. Asks for the styling tool: `stylesheet`, `unistyles`, `nativewind` or `uniwind`. Only the ones the registry has a variant for are offered.
+2. Checks that `tsconfig.json` resolves the aliases, and offers to add the missing `paths` entries (see [Aliases](#aliases)).
+3. Copies the foundations (theme, tokens, `light` / `dark`) and the core primitives.
+4. Installs the styling dependency and what the copied files need.
+5. Writes `axiom.json`, with everything it copied listed in `items`.
+
+Nothing is copied before step 2 passes: a project with half its aliases resolved is worse than one with none.
+
+| Option             | What it does                                                                 |
+| ------------------ | ---------------------------------------------------------------------------- |
+| `--styling <tool>` | Answers the styling question, for a script or a CI job.                      |
+| `--no-install`     | Prints the install command instead of running it.                            |
+| `--force`          | Sets up a project that already has an `axiom.json`. Existing files are kept. |
+
+### Aliases
+
+Components are imported through an alias, so `init` resolves each one through the `paths` of your `tsconfig.json` before copying anything. When an alias doesn't resolve, it shows the entry it would add:
+
+```txt title="Terminal" noCopy
+tsconfig.json doesn't resolve @/theme, @/components/core, @/hooks, @/components/ui, @/components/blocks.
+Add "@/*": ["./src/*"] to its "compilerOptions.paths"? [Y]es [n]o
+```
+
+Answer `n`, or keep a `tsconfig.json` the CLI can't rewrite safely — one with comments — and it asks for aliases your project already resolves instead.
+
+### Installing
+
+`init` installs with the package manager of your project, from its lockfile, and goes through `expo install` when the project has Expo, so the versions match your SDK. `add` prints the command instead of running it; pass `--install` to have it install too.
 
 ## add
 
@@ -49,21 +73,34 @@ Internal dependencies are resolved as a graph. Adding `bottom-sheet` also brings
   portal    overlay
 ```
 
-Names are plain component names, the same as the file you get:
+Names are plain component names. A component that is one file stays one file; one that brings a hook or a subcomponent gets a folder with an `index.ts`:
 
 ```npm
-npx axiom add button     # → components/ui/button.tsx
+npx axiom add button         # → components/ui/button.tsx
+npx axiom add bottom-sheet   # → components/ui/bottom-sheet/
 ```
+
+```text
+components/ui/
+├── button.tsx
+└── bottom-sheet/
+    ├── bottom-sheet.tsx
+    ├── bottom-sheet-root.tsx
+    ├── use-bottom-sheet.ts
+    └── index.ts          # so "@/components/ui/bottom-sheet" resolves here
+```
+
+Either way you import it the same: `import { BottomSheet } from "@/components/ui/bottom-sheet"`. Its [tokens](/docs/foundations/component-tokens) go to `theme/components/`, not here.
 
 ### Existing files
 
 Copied files belong to your project, so `add` protects your changes. A file identical to the registry is skipped silently. When a file differs:
 
-| File                                                                                      | What happens                                                                                            |
-| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| A file of the component you named                                                         | The CLI asks: `[y]es`, `[n]o`, `[a]ll` for every remaining file, `[N]one` to keep all of them.          |
-| A file of an internal dependency already in your project                                  | Kept. `add button` never touches your `tappable.tsx`. Name the dependency to update it: `add tappable`. |
-| A file your project owns once created, like the [icon registry](/docs/atoms/icon#the-registry) | Kept, always.                                                                                           |
+| File                                                                                           | What happens                                                                                                 |
+| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| A file of the component you named                                                              | The CLI asks, per file: keep yours, overwrite it, overwrite all of the remaining ones, or keep all of yours. |
+| A file of an internal dependency already in your project                                       | Kept. `add button` never touches your `tappable.tsx`. Name the dependency to update it: `add tappable`.      |
+| A file your project owns once created, like the [icon registry](/docs/atoms/icon#the-registry) | Kept, always.                                                                                                |
 
 ```npm
 npx axiom add button --overwrite

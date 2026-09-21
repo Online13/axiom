@@ -3,17 +3,28 @@
 		{
 			"name": "tokens",
 			"type": "foundations",
-			"files": ["foundations/tokens/tokens.ts"]
+			"files": [
+				"foundations/tokens/tokens.ts"
+			]
 		},
 		{
 			"name": "theme",
 			"type": "foundations",
 			"files": [
 				"foundations/theme/colors.ts",
-				"foundations/theme/components.ts",
+				{
+					"path": "foundations/theme/components/states.ts",
+					"as": "components/states.ts"
+				},
+				{
+					"path": "foundations/theme/components/index.ts",
+					"as": "components/index.ts"
+				},
 				"foundations/theme/theme.ts"
 			],
-			"internalDependencies": ["tokens"],
+			"internalDependencies": [
+				"tokens"
+			],
 			"variants": {
 				"stylesheet": {
 					"files": [
@@ -26,30 +37,47 @@
 		{
 			"name": "slot",
 			"type": "core",
-			"files": ["core/slot/slot.tsx"]
+			"files": [
+				"core/slot/slot.tsx"
+			]
 		},
 		{
 			"name": "tappable",
 			"type": "core",
-			"files": ["core/tappable/tappable.tsx"],
-			"internalDependencies": ["tokens"]
+			"files": [
+				"core/tappable/tappable.tsx"
+			],
+			"internalDependencies": [
+				"tokens"
+			]
 		},
 		{
 			"name": "portal",
 			"type": "core",
-			"files": ["core/portal/portal.tsx"],
-			"dependencies": ["react-native-teleport"]
+			"files": [
+				"core/portal/portal.tsx"
+			],
+			"dependencies": [
+				"react-native-teleport"
+			]
 		},
 		{
 			"name": "overlay",
 			"type": "core",
-			"files": ["core/overlay/overlay.tsx"],
-			"dependencies": ["react-native-reanimated", "react-native-worklets"]
+			"files": [
+				"core/overlay/overlay.tsx"
+			],
+			"dependencies": [
+				"react-native-reanimated",
+				"react-native-worklets"
+			]
 		},
 		{
 			"name": "use-controllable-state",
 			"type": "hooks",
-			"files": ["hooks/use-controllable-state/use-controllable-state.ts"]
+			"files": [
+				"hooks/use-controllable-state/use-controllable-state.ts"
+			]
 		},
 		{
 			"name": "use-overlay-back-handler",
@@ -59,13 +87,17 @@
 					"files": [
 						"hooks/use-overlay-back-handler/sources/expo-router/use-overlay-back-handler.ts"
 					],
-					"dependencies": ["expo-router"]
+					"dependencies": [
+						"expo-router"
+					]
 				},
 				"react-navigation": {
 					"files": [
 						"hooks/use-overlay-back-handler/sources/react-navigation/use-overlay-back-handler.ts"
 					],
-					"dependencies": ["@react-navigation/native"]
+					"dependencies": [
+						"@react-navigation/native"
+					]
 				},
 				"react-native": {
 					"files": [
@@ -77,7 +109,9 @@
 		{
 			"name": "use-refresh-control",
 			"type": "hooks",
-			"files": ["hooks/use-refresh-control/use-refresh-control.ts"],
+			"files": [
+				"hooks/use-refresh-control/use-refresh-control.ts"
+			],
 			"dependencies": [
 				"react-native-gesture-handler",
 				"react-native-reanimated",
@@ -87,27 +121,39 @@
 		{
 			"name": "text",
 			"type": "typography",
-			"internalDependencies": ["slot", "theme"],
+			"internalDependencies": [
+				"slot",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["typography/text/stylesheet/text.tsx"]
+					"files": [
+						"typography/text/stylesheet/text.tsx"
+					]
 				}
 			}
 		},
 		{
 			"name": "title",
 			"type": "typography",
-			"internalDependencies": ["slot", "theme"],
+			"internalDependencies": [
+				"slot",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["typography/title/stylesheet/title.tsx"]
+					"files": [
+						"typography/title/stylesheet/title.tsx"
+					]
 				}
 			}
 		},
 		{
 			"name": "icon",
 			"type": "atoms",
-			"files": ["atoms/icon/icon-types.ts"],
+			"files": [
+				"atoms/icon/icon-types.ts"
+			],
 			"iconSources": {
 				"expo-symbols": {
 					"files": [
@@ -116,7 +162,9 @@
 							"createOnly": true
 						}
 					],
-					"dependencies": ["expo-symbols"]
+					"dependencies": [
+						"expo-symbols"
+					]
 				},
 				"custom": {
 					"files": [
@@ -127,10 +175,14 @@
 					]
 				}
 			},
-			"internalDependencies": ["theme"],
+			"internalDependencies": [
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/icon/stylesheet/icon.tsx"]
+					"files": [
+						"atoms/icon/stylesheet/icon.tsx"
+					]
 				}
 			}
 		},
@@ -138,23 +190,41 @@
 			"name": "button",
 			"type": "atoms",
 			"tokens": "atoms/button/button-tokens.ts",
-			"internalDependencies": ["icon", "slot", "tappable", "text", "theme"],
+			"internalDependencies": [
+				"icon",
+				"slot",
+				"tappable",
+				"text",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/button/stylesheet/button.tsx"]
+					"files": [
+						"atoms/button/stylesheet/button.tsx"
+					]
 				}
 			},
-			"files": ["atoms/button/button-tokens.ts"]
+			"files": [
+				"atoms/button/button-tokens.ts"
+			]
 		},
 		{
 			"name": "icon-button",
 			"type": "atoms",
 			"tokens": "atoms/icon-button/icon-button-tokens.ts",
-			"files": ["atoms/icon-button/icon-button-tokens.ts"],
-			"internalDependencies": ["icon", "tappable", "theme"],
+			"files": [
+				"atoms/icon-button/icon-button-tokens.ts"
+			],
+			"internalDependencies": [
+				"icon",
+				"tappable",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/icon-button/stylesheet/icon-button.tsx"]
+					"files": [
+						"atoms/icon-button/stylesheet/icon-button.tsx"
+					]
 				}
 			}
 		},
@@ -170,10 +240,17 @@
 				"react-native-reanimated",
 				"react-native-safe-area-context"
 			],
-			"internalDependencies": ["icon", "tappable", "text", "theme"],
+			"internalDependencies": [
+				"icon",
+				"tappable",
+				"text",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/floating-button/stylesheet/floating-button.tsx"]
+					"files": [
+						"atoms/floating-button/stylesheet/floating-button.tsx"
+					]
 				}
 			}
 		},
@@ -185,7 +262,9 @@
 				"atoms/switch/switch-tokens.ts",
 				"atoms/switch/use-switch.ts"
 			],
-			"dependencies": ["react-native-reanimated"],
+			"dependencies": [
+				"react-native-reanimated"
+			],
 			"internalDependencies": [
 				"tappable",
 				"theme",
@@ -193,7 +272,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/switch/stylesheet/switch.tsx"]
+					"files": [
+						"atoms/switch/stylesheet/switch.tsx"
+					]
 				}
 			}
 		},
@@ -201,8 +282,13 @@
 			"name": "checkbox",
 			"type": "atoms",
 			"tokens": "atoms/checkbox/checkbox-tokens.ts",
-			"files": ["atoms/checkbox/checkbox-tokens.ts"],
-			"requiredIcons": ["check", "minus"],
+			"files": [
+				"atoms/checkbox/checkbox-tokens.ts"
+			],
+			"requiredIcons": [
+				"check",
+				"minus"
+			],
 			"internalDependencies": [
 				"icon",
 				"tappable",
@@ -212,7 +298,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/checkbox/stylesheet/checkbox.tsx"]
+					"files": [
+						"atoms/checkbox/stylesheet/checkbox.tsx"
+					]
 				}
 			}
 		},
@@ -220,7 +308,9 @@
 			"name": "radio",
 			"type": "atoms",
 			"tokens": "atoms/radio/radio-tokens.ts",
-			"files": ["atoms/radio/radio-tokens.ts"],
+			"files": [
+				"atoms/radio/radio-tokens.ts"
+			],
 			"internalDependencies": [
 				"tappable",
 				"text",
@@ -229,7 +319,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/radio/stylesheet/radio.tsx"]
+					"files": [
+						"atoms/radio/stylesheet/radio.tsx"
+					]
 				}
 			}
 		},
@@ -274,10 +366,15 @@
 				"react-native-reanimated",
 				"react-native-worklets"
 			],
-			"internalDependencies": ["theme", "use-controllable-state"],
+			"internalDependencies": [
+				"theme",
+				"use-controllable-state"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/slider/stylesheet/slider.tsx"]
+					"files": [
+						"atoms/slider/stylesheet/slider.tsx"
+					]
 				}
 			}
 		},
@@ -285,8 +382,15 @@
 			"name": "input",
 			"type": "atoms",
 			"tokens": "atoms/input/input-tokens.ts",
-			"files": ["atoms/input/input-tokens.ts", "atoms/input/use-input.ts"],
-			"internalDependencies": ["text", "theme", "use-controllable-state"],
+			"files": [
+				"atoms/input/input-tokens.ts",
+				"atoms/input/use-input.ts"
+			],
+			"internalDependencies": [
+				"text",
+				"theme",
+				"use-controllable-state"
+			],
 			"variants": {
 				"stylesheet": {
 					"files": [
@@ -299,10 +403,16 @@
 		{
 			"name": "text-area",
 			"type": "atoms",
-			"internalDependencies": ["input", "text", "theme"],
+			"internalDependencies": [
+				"input",
+				"text",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/text-area/stylesheet/text-area.tsx"]
+					"files": [
+						"atoms/text-area/stylesheet/text-area.tsx"
+					]
 				}
 			}
 		},
@@ -323,7 +433,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/input-group/stylesheet/input-group.tsx"]
+					"files": [
+						"atoms/input-group/stylesheet/input-group.tsx"
+					]
 				}
 			}
 		},
@@ -335,11 +447,19 @@
 				"atoms/input-otp/input-otp-tokens.ts",
 				"atoms/input-otp/use-input-otp.ts"
 			],
-			"dependencies": ["react-native-reanimated"],
-			"internalDependencies": ["text", "theme", "use-controllable-state"],
+			"dependencies": [
+				"react-native-reanimated"
+			],
+			"internalDependencies": [
+				"text",
+				"theme",
+				"use-controllable-state"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/input-otp/stylesheet/input-otp.tsx"]
+					"files": [
+						"atoms/input-otp/stylesheet/input-otp.tsx"
+					]
 				}
 			}
 		},
@@ -372,29 +492,45 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/bottom-sheet/stylesheet/bottom-sheet.tsx"]
+					"files": [
+						"atoms/bottom-sheet/stylesheet/bottom-sheet.tsx"
+					]
 				}
 			},
-			"requiredIcons": ["close"]
+			"requiredIcons": [
+				"close"
+			]
 		},
 		{
 			"name": "separator",
 			"type": "atoms",
-			"internalDependencies": ["text", "theme"],
+			"internalDependencies": [
+				"text",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/separator/stylesheet/separator.tsx"]
+					"files": [
+						"atoms/separator/stylesheet/separator.tsx"
+					]
 				}
 			}
 		},
 		{
 			"name": "spinner",
 			"type": "atoms",
-			"dependencies": ["react-native-reanimated"],
-			"internalDependencies": ["text", "theme"],
+			"dependencies": [
+				"react-native-reanimated"
+			],
+			"internalDependencies": [
+				"text",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/spinner/stylesheet/spinner.tsx"]
+					"files": [
+						"atoms/spinner/stylesheet/spinner.tsx"
+					]
 				}
 			}
 		},
@@ -406,11 +542,18 @@
 				"atoms/skeleton/skeleton-tokens.ts",
 				"atoms/skeleton/use-skeleton.ts"
 			],
-			"dependencies": ["react-native-reanimated"],
-			"internalDependencies": ["text", "theme"],
+			"dependencies": [
+				"react-native-reanimated"
+			],
+			"internalDependencies": [
+				"text",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/skeleton/stylesheet/skeleton.tsx"]
+					"files": [
+						"atoms/skeleton/stylesheet/skeleton.tsx"
+					]
 				}
 			}
 		},
@@ -418,12 +561,22 @@
 			"name": "badge",
 			"type": "atoms",
 			"tokens": "atoms/badge/badge-tokens.ts",
-			"files": ["atoms/badge/badge-tokens.ts"],
-			"dependencies": ["react-native-reanimated"],
-			"internalDependencies": ["icon", "text", "theme"],
+			"files": [
+				"atoms/badge/badge-tokens.ts"
+			],
+			"dependencies": [
+				"react-native-reanimated"
+			],
+			"internalDependencies": [
+				"icon",
+				"text",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/badge/stylesheet/badge.tsx"]
+					"files": [
+						"atoms/badge/stylesheet/badge.tsx"
+					]
 				}
 			}
 		},
@@ -431,11 +584,19 @@
 			"name": "avatar",
 			"type": "atoms",
 			"tokens": "atoms/avatar/avatar-tokens.ts",
-			"files": ["atoms/avatar/avatar-tokens.ts"],
-			"internalDependencies": ["tappable", "text", "theme"],
+			"files": [
+				"atoms/avatar/avatar-tokens.ts"
+			],
+			"internalDependencies": [
+				"tappable",
+				"text",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/avatar/stylesheet/avatar.tsx"]
+					"files": [
+						"atoms/avatar/stylesheet/avatar.tsx"
+					]
 				}
 			}
 		},
@@ -443,12 +604,23 @@
 			"name": "chip",
 			"type": "atoms",
 			"tokens": "atoms/chip/chip-tokens.ts",
-			"files": ["atoms/chip/chip-tokens.ts"],
-			"requiredIcons": ["close"],
-			"internalDependencies": ["icon", "tappable", "text", "theme"],
+			"files": [
+				"atoms/chip/chip-tokens.ts"
+			],
+			"requiredIcons": [
+				"close"
+			],
+			"internalDependencies": [
+				"icon",
+				"tappable",
+				"text",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/chip/stylesheet/chip.tsx"]
+					"files": [
+						"atoms/chip/stylesheet/chip.tsx"
+					]
 				}
 			}
 		},
@@ -456,11 +628,20 @@
 			"name": "card",
 			"type": "atoms",
 			"tokens": "atoms/card/card-tokens.ts",
-			"files": ["atoms/card/card-tokens.ts"],
-			"internalDependencies": ["tappable", "text", "theme", "title"],
+			"files": [
+				"atoms/card/card-tokens.ts"
+			],
+			"internalDependencies": [
+				"tappable",
+				"text",
+				"theme",
+				"title"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/card/stylesheet/card.tsx"]
+					"files": [
+						"atoms/card/stylesheet/card.tsx"
+					]
 				}
 			}
 		},
@@ -468,18 +649,30 @@
 			"name": "item",
 			"type": "atoms",
 			"tokens": "atoms/item/item-tokens.ts",
-			"files": ["atoms/item/item-tokens.ts"],
-			"internalDependencies": ["slot", "tappable", "text", "theme"],
+			"files": [
+				"atoms/item/item-tokens.ts"
+			],
+			"internalDependencies": [
+				"slot",
+				"tappable",
+				"text",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/item/stylesheet/item.tsx"]
+					"files": [
+						"atoms/item/stylesheet/item.tsx"
+					]
 				}
 			}
 		},
 		{
 			"name": "option-item",
 			"type": "atoms",
-			"requiredIcons": ["check", "chevron-right"],
+			"requiredIcons": [
+				"check",
+				"chevron-right"
+			],
 			"internalDependencies": [
 				"checkbox",
 				"icon",
@@ -490,7 +683,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/option-item/stylesheet/option-item.tsx"]
+					"files": [
+						"atoms/option-item/stylesheet/option-item.tsx"
+					]
 				}
 			}
 		},
@@ -498,11 +693,20 @@
 			"name": "empty",
 			"type": "atoms",
 			"tokens": "atoms/empty/empty-tokens.ts",
-			"files": ["atoms/empty/empty-tokens.ts"],
-			"internalDependencies": ["icon", "text", "theme", "title"],
+			"files": [
+				"atoms/empty/empty-tokens.ts"
+			],
+			"internalDependencies": [
+				"icon",
+				"text",
+				"theme",
+				"title"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/empty/stylesheet/empty.tsx"]
+					"files": [
+						"atoms/empty/stylesheet/empty.tsx"
+					]
 				}
 			}
 		},
@@ -510,8 +714,16 @@
 			"name": "alert",
 			"type": "atoms",
 			"tokens": "atoms/alert/alert-tokens.ts",
-			"files": ["atoms/alert/alert-tokens.ts"],
-			"requiredIcons": ["info", "success", "warning", "error", "close"],
+			"files": [
+				"atoms/alert/alert-tokens.ts"
+			],
+			"requiredIcons": [
+				"info",
+				"success",
+				"warning",
+				"error",
+				"close"
+			],
 			"internalDependencies": [
 				"icon",
 				"icon-button",
@@ -521,26 +733,40 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/alert/stylesheet/alert.tsx"]
+					"files": [
+						"atoms/alert/stylesheet/alert.tsx"
+					]
 				}
 			}
 		},
 		{
 			"name": "button-group",
 			"type": "atoms",
-			"internalDependencies": ["button", "theme"],
+			"internalDependencies": [
+				"button",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/button-group/stylesheet/button-group.tsx"]
+					"files": [
+						"atoms/button-group/stylesheet/button-group.tsx"
+					]
 				}
 			}
 		},
 		{
 			"name": "accordion",
 			"type": "atoms",
-			"files": ["atoms/accordion/use-accordion.ts"],
-			"requiredIcons": ["chevron-down"],
-			"dependencies": ["react-native-reanimated", "react-native-worklets"],
+			"files": [
+				"atoms/accordion/use-accordion.ts"
+			],
+			"requiredIcons": [
+				"chevron-down"
+			],
+			"dependencies": [
+				"react-native-reanimated",
+				"react-native-worklets"
+			],
 			"internalDependencies": [
 				"icon",
 				"tappable",
@@ -550,7 +776,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/accordion/stylesheet/accordion.tsx"]
+					"files": [
+						"atoms/accordion/stylesheet/accordion.tsx"
+					]
 				}
 			}
 		},
@@ -562,7 +790,10 @@
 				"atoms/dialog/dialog-tokens.ts",
 				"atoms/dialog/use-dialog.ts"
 			],
-			"dependencies": ["react-native-reanimated", "react-native-worklets"],
+			"dependencies": [
+				"react-native-reanimated",
+				"react-native-worklets"
+			],
 			"internalDependencies": [
 				"button",
 				"overlay",
@@ -577,7 +808,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/dialog/stylesheet/dialog.tsx"]
+					"files": [
+						"atoms/dialog/stylesheet/dialog.tsx"
+					]
 				}
 			}
 		},
@@ -585,8 +818,15 @@
 			"name": "menu",
 			"type": "atoms",
 			"tokens": "atoms/menu/menu-tokens.ts",
-			"files": ["atoms/menu/menu-tokens.ts", "atoms/menu/use-menu.ts"],
-			"requiredIcons": ["arrow-left", "check", "chevron-right"],
+			"files": [
+				"atoms/menu/menu-tokens.ts",
+				"atoms/menu/use-menu.ts"
+			],
+			"requiredIcons": [
+				"arrow-left",
+				"check",
+				"chevron-right"
+			],
 			"dependencies": [
 				"react-native-reanimated",
 				"react-native-safe-area-context",
@@ -605,7 +845,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/menu/stylesheet/menu.tsx"]
+					"files": [
+						"atoms/menu/stylesheet/menu.tsx"
+					]
 				}
 			}
 		},
@@ -613,8 +855,15 @@
 			"name": "toast",
 			"type": "atoms",
 			"tokens": "atoms/toast/toast-tokens.ts",
-			"files": ["atoms/toast/toast-tokens.ts", "atoms/toast/use-toast.ts"],
-			"requiredIcons": ["success", "error", "info"],
+			"files": [
+				"atoms/toast/toast-tokens.ts",
+				"atoms/toast/use-toast.ts"
+			],
+			"requiredIcons": [
+				"success",
+				"error",
+				"info"
+			],
 			"dependencies": [
 				"react-native-gesture-handler",
 				"react-native-reanimated",
@@ -631,7 +880,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/toast/stylesheet/toast.tsx"]
+					"files": [
+						"atoms/toast/stylesheet/toast.tsx"
+					]
 				}
 			}
 		},
@@ -658,7 +909,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/snackbar/stylesheet/snackbar.tsx"]
+					"files": [
+						"atoms/snackbar/stylesheet/snackbar.tsx"
+					]
 				}
 			}
 		},
@@ -670,7 +923,10 @@
 				"atoms/calendar/calendar-tokens.ts",
 				"atoms/calendar/use-calendar.ts"
 			],
-			"requiredIcons": ["chevron-left", "chevron-right"],
+			"requiredIcons": [
+				"chevron-left",
+				"chevron-right"
+			],
 			"dependencies": [
 				"react-native-gesture-handler",
 				"react-native-worklets"
@@ -684,19 +940,30 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/calendar/stylesheet/calendar.tsx"]
+					"files": [
+						"atoms/calendar/stylesheet/calendar.tsx"
+					]
 				}
 			}
 		},
 		{
 			"name": "carousel",
 			"type": "atoms",
-			"files": ["atoms/carousel/use-carousel.ts"],
-			"dependencies": ["react-native-reanimated"],
-			"internalDependencies": ["text", "theme"],
+			"files": [
+				"atoms/carousel/use-carousel.ts"
+			],
+			"dependencies": [
+				"react-native-reanimated"
+			],
+			"internalDependencies": [
+				"text",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["atoms/carousel/stylesheet/carousel.tsx"]
+					"files": [
+						"atoms/carousel/stylesheet/carousel.tsx"
+					]
 				}
 			}
 		},
@@ -708,8 +975,13 @@
 				"molecules/search-bar/search-bar-tokens.ts",
 				"molecules/search-bar/use-search-bar.ts"
 			],
-			"requiredIcons": ["search", "close"],
-			"dependencies": ["react-native-reanimated"],
+			"requiredIcons": [
+				"search",
+				"close"
+			],
+			"dependencies": [
+				"react-native-reanimated"
+			],
 			"internalDependencies": [
 				"icon",
 				"spinner",
@@ -720,7 +992,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["molecules/search-bar/stylesheet/search-bar.tsx"]
+					"files": [
+						"molecules/search-bar/stylesheet/search-bar.tsx"
+					]
 				}
 			}
 		},
@@ -732,7 +1006,13 @@
 				"molecules/attachment/attachment-tokens.ts",
 				"molecules/attachment/use-attachment.ts"
 			],
-			"requiredIcons": ["close", "error", "file", "image", "refresh"],
+			"requiredIcons": [
+				"close",
+				"error",
+				"file",
+				"image",
+				"refresh"
+			],
 			"internalDependencies": [
 				"icon",
 				"icon-button",
@@ -743,15 +1023,21 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["molecules/attachment/stylesheet/attachment.tsx"]
+					"files": [
+						"molecules/attachment/stylesheet/attachment.tsx"
+					]
 				}
 			}
 		},
 		{
 			"name": "date-picker",
 			"type": "molecules",
-			"files": ["molecules/date-picker/use-date-picker.ts"],
-			"requiredIcons": ["calendar"],
+			"files": [
+				"molecules/date-picker/use-date-picker.ts"
+			],
+			"requiredIcons": [
+				"calendar"
+			],
 			"internalDependencies": [
 				"bottom-sheet",
 				"button",
@@ -765,7 +1051,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["molecules/date-picker/stylesheet/date-picker.tsx"]
+					"files": [
+						"molecules/date-picker/stylesheet/date-picker.tsx"
+					]
 				}
 			}
 		},
@@ -777,8 +1065,13 @@
 				"organisms/passcode/passcode-tokens.ts",
 				"organisms/passcode/use-passcode.ts"
 			],
-			"requiredIcons": ["backspace", "biometrics"],
-			"dependencies": ["react-native-reanimated"],
+			"requiredIcons": [
+				"backspace",
+				"biometrics"
+			],
+			"dependencies": [
+				"react-native-reanimated"
+			],
 			"internalDependencies": [
 				"icon",
 				"tappable",
@@ -788,7 +1081,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["organisms/passcode/stylesheet/passcode.tsx"]
+					"files": [
+						"organisms/passcode/stylesheet/passcode.tsx"
+					]
 				}
 			}
 		},
@@ -804,10 +1099,16 @@
 				"react-native-reanimated",
 				"react-native-safe-area-context"
 			],
-			"internalDependencies": ["search-bar", "title", "theme"],
+			"internalDependencies": [
+				"search-bar",
+				"title",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["templates/app-bar/stylesheet/app-bar.tsx"]
+					"files": [
+						"templates/app-bar/stylesheet/app-bar.tsx"
+					]
 				}
 			}
 		},
@@ -823,10 +1124,17 @@
 				"react-native-reanimated",
 				"react-native-safe-area-context"
 			],
-			"internalDependencies": ["icon", "tappable", "text", "theme"],
+			"internalDependencies": [
+				"icon",
+				"tappable",
+				"text",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["templates/tool-bar/stylesheet/tool-bar.tsx"]
+					"files": [
+						"templates/tool-bar/stylesheet/tool-bar.tsx"
+					]
 				}
 			}
 		},
@@ -838,7 +1146,9 @@
 				"templates/bottom-tab-bar/bottom-tab-bar-tokens.ts",
 				"templates/bottom-tab-bar/use-bottom-tab-bar.ts"
 			],
-			"dependencies": ["react-native-safe-area-context"],
+			"dependencies": [
+				"react-native-safe-area-context"
+			],
 			"internalDependencies": [
 				"badge",
 				"icon",
@@ -860,8 +1170,12 @@
 			"name": "tab",
 			"type": "templates",
 			"tokens": "templates/tab/tab-tokens.ts",
-			"files": ["templates/tab/tab-tokens.ts"],
-			"dependencies": ["react-native-reanimated"],
+			"files": [
+				"templates/tab/tab-tokens.ts"
+			],
+			"dependencies": [
+				"react-native-reanimated"
+			],
 			"internalDependencies": [
 				"badge",
 				"icon",
@@ -872,7 +1186,9 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": ["templates/tab/stylesheet/tab.tsx"]
+					"files": [
+						"templates/tab/stylesheet/tab.tsx"
+					]
 				}
 			}
 		},
@@ -884,10 +1200,15 @@
 				"react-native-keyboard-controller",
 				"react-native-safe-area-context"
 			],
-			"internalDependencies": ["app-bar", "theme"],
+			"internalDependencies": [
+				"app-bar",
+				"theme"
+			],
 			"variants": {
 				"stylesheet": {
-					"files": ["templates/scaffold/stylesheet/scaffold.tsx"]
+					"files": [
+						"templates/scaffold/stylesheet/scaffold.tsx"
+					]
 				}
 			}
 		}

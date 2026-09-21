@@ -68,7 +68,7 @@ Every token follows the same path:
 
 States other than `default` only list what changes. A missing property falls back to `default`: a pressed outline button keeps its border and text color and only changes its background.
 
-```ts title="components/ui/button-tokens.ts"
+```ts title="theme/components/button.ts"
 type ButtonColors = {
 	background?: string;
 	foreground: string;
@@ -85,11 +85,15 @@ export type ButtonTokens = {
 
 `States` comes from the theme: `default` is complete, every other state is a `Partial` of it.
 
-## One file per component
+## One file per component, inside the theme
 
-Each component brings its tokens in its own file, copied next to it: `button-tokens.ts` next to `button.tsx`. The file exports a pure function of the semantic colors:
+Each component brings its tokens in its own file. `axiom add button` copies it to `theme/components/button.ts`, not next to the component.
 
-```ts title="components/ui/button-tokens.ts"
+It lives there because the theme is its only reader: a component never imports its own tokens file, it reads `components.button` from `useTheme()`. Keeping it in the theme means the foundations never import from the components layer, and everything you tune in a theme sits in one folder.
+
+The file exports a pure function of the semantic colors:
+
+```ts title="theme/components/button.ts"
 export const buttonTokens = (colors: ThemeColors): ButtonTokens => ({
 	solid: {
 		default: {
@@ -129,12 +133,12 @@ Rules:
 
 ## `components(colors)`
 
-The theme's `components.ts` gathers every tokens file of the project. You don't write it by hand: `npx axiom add <component>` copies the tokens file and registers it between two pairs of markers.
+`theme/components/index.ts` gathers every tokens file of the project. You don't write it by hand: `npx axiom add <component>` copies the tokens file into the folder and registers it between two pairs of markers.
 
-```ts title="theme/components.ts"
+```ts title="theme/components/index.ts"
 // axiom:imports:start
-import { bottomSheetTokens } from "@/components/ui/bottom-sheet-tokens";
-import { buttonTokens } from "@/components/ui/button-tokens";
+import { bottomSheetTokens } from "./bottom-sheet";
+import { buttonTokens } from "./button";
 // axiom:imports:end
 
 export const components = (colors: ThemeColors) => ({
@@ -150,7 +154,7 @@ export type Components = ReturnType<typeof components>;
 - The key is the component name in camelCase, the function is `<key>Tokens`.
 - The CLI only adds missing lines, and only when the tokens file is in the project. It never removes or rewrites a line.
 - Keep the markers. Without them, `add` stops and asks you to copy the theme again.
-- Removing a component: delete its two lines, then its files.
+- Removing a component: delete its two lines, then `theme/components/<name>.ts` and the component itself.
 
 `components` is called once per color scheme:
 
@@ -306,7 +310,7 @@ const styles = StyleSheet.create((theme) => ({
 
 Edit the tokens file of the component. It belongs to your project, like the component itself:
 
-```ts title="components/ui/button-tokens.ts — blue solid buttons" {3-4}
+```ts title="theme/components/button.ts — blue solid buttons" {3-4}
 solid: {
   default: {
     background: colors.content.link,
@@ -320,7 +324,7 @@ Pick the layer that matches the scope of the change:
 
 | You want to change                               | Edit                                       |
 | ------------------------------------------------ | ------------------------------------------ |
-| One component                                    | Its tokens file (`button-tokens.ts`)       |
+| One component                                    | Its tokens file (`theme/components/button.ts`) |
 | A role across the app (every border, every link) | [`ThemeColors`](/docs/foundations/colors)       |
 | The brand hue or a step everywhere               | The [palette](/docs/foundations/tokens/palette) |
 

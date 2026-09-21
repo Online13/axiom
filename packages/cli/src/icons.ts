@@ -1,8 +1,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
-import { createInterface } from "node:readline/promises";
-
 import { aliasToDir, hasDependency } from "./project.ts";
+import { select } from "./ui.ts";
+import { folderOf } from "./copy.ts";
 import {
 	ALIAS_OF,
 	ICON_SOURCES,
@@ -35,27 +35,14 @@ export function parseIconSource(value: string, cwd: string): IconSource {
 }
 
 export async function askIconSource(cwd: string): Promise<IconSource> {
-	const available = availableIconSources(cwd);
-	const rl = createInterface({ input: process.stdin, output: process.stdout });
-	try {
-		console.log("\nWhere do the icons of your app come from?");
-		available.forEach((source, i) =>
-			console.log(
-				`  ${i + 1}. ${source.padEnd(13)} ${DESCRIPTIONS[source]}`,
-			),
-		);
-		for (;;) {
-			const answer = (
-				await rl.question(`Icon source [1-${available.length}] `)
-			).trim();
-			const byIndex = available[Number(answer) - 1];
-			if (byIndex) return byIndex;
-			if (available.includes(answer as IconSource))
-				return answer as IconSource;
-		}
-	} finally {
-		rl.close();
-	}
+	return select({
+		message: "Where do the icons of your app come from?",
+		options: availableIconSources(cwd).map((source) => ({
+			value: source,
+			label: source,
+			hint: DESCRIPTIONS[source],
+		})),
+	});
 }
 
 /** Required icons of `items` missing from the project's registry, with the items that need them. */
@@ -70,6 +57,7 @@ export function missingIcons(
 
 	const file = join(
 		aliasToDir(cwd, config.aliases[ALIAS_OF[iconItem.type]]),
+		folderOf(iconItem, config) ?? "",
 		ICONS_FILE,
 	);
 	if (!existsSync(file)) return undefined;

@@ -98,7 +98,7 @@ Axiom doesn't pick an icon set for you. Your app builds its own base of icons, a
 
 `axiom add icon` creates `icons.tsx`, where you map names to components from any set: Lucide, Phosphor, SF Symbols through `expo-symbols`, or your own SVGs. The CLI creates the file once and [never overwrites it](/docs/cli#existing-files): it's yours.
 
-```tsx title="components/ui/icons.tsx"
+```tsx title="components/ui/icon/icons.tsx"
 import { Bell, House, Search, Settings } from "lucide-react-native";
 
 import type { IconRegistry } from "./icon-types";
@@ -122,7 +122,7 @@ Changing source later doesn't rewrite `icons.tsx`: replace its entries yourself.
 Some components draw an icon themselves: the close button of a sheet header, the check of a checkbox. Their registry entry lists these names, and `add` tells you which ones your registry lacks:
 
 ```text
-Add these icons to components/ui/icons.tsx:
+Add these icons to components/ui/icon/icons.tsx:
   close            used by bottom-sheet
 ```
 
@@ -145,7 +145,7 @@ Axiom holds every project to these rules. The components are built on them.
 
 Sets don't share prop names. Wrap them once, in the registry:
 
-```tsx title="components/ui/icons.tsx"
+```tsx title="components/ui/icon/icons.tsx"
 import { SymbolView } from "expo-symbols";
 
 import type { IconComponent, IconRegistry } from "./icon-types";
@@ -271,7 +271,7 @@ The registry can point to different sets, so you keep one API when a set lacks a
 	</div>
 </PhonePreview>
 
-```tsx title="components/ui/icons.tsx"
+```tsx title="components/ui/icon/icons.tsx"
 import { Mail, Globe } from "lucide-react-native";
 import { FaceIdIcon } from "@/assets/icons/face-id";
 

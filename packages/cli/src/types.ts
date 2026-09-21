@@ -53,6 +53,40 @@ export const DEFAULT_ALIASES: Aliases = {
 	blocks: "@/components/blocks",
 };
 
+/**
+ * Folder of `aliases.theme` holding the component token files, one per component. A token file is
+ * read by the theme and by nothing else, not even its own component, so it lives with the theme:
+ * the foundations never import from a layer above them.
+ */
+export const THEME_COMPONENTS_DIR = "components";
+
+/**
+ * Layers whose items are copied as a folder (`components/ui/bottom-sheet/`) with a generated
+ * `index.ts`, so `@/components/ui/bottom-sheet` keeps resolving. An item of these layers that
+ * copies a single file stays a single file. The other layers always hold one file per item.
+ */
+export const FOLDERED_LAYERS: ReadonlySet<Layer> = new Set<Layer>([
+	"typography",
+	"atoms",
+	"molecules",
+	"organisms",
+	"templates",
+	"blocks",
+]);
+
+/**
+ * The folder an item's files land in, inside its alias directory. A single file needs no folder,
+ * and a flat layer never gets one.
+ */
+export function itemFolder(
+	item: Pick<RegistryItem, "name" | "type">,
+	fileCount: number,
+) {
+	return FOLDERED_LAYERS.has(item.type) && fileCount > 1
+		? item.name
+		: undefined;
+}
+
 export const ALIAS_OF: Record<Layer, AliasName> = {
 	foundations: "theme",
 	core: "core",
@@ -67,12 +101,15 @@ export const ALIAS_OF: Record<Layer, AliasName> = {
 
 /**
  * A path relative to the registry root, or an object:
+ * - `as`: destination relative to the item's alias folder, instead of the file name. It is how a
+ *   file keeps a subfolder in the project (`components/index.ts` under `aliases.theme`);
  * - `target`: fixed destination relative to the project root, ignoring aliases;
  * - `createOnly`: the file belongs to the project once created (an icon registry, for instance). It is written
  *   when missing and never overwritten.
  */
 export type RegistryFile =
-	string | { path: string; target?: string; createOnly?: boolean };
+	| string
+	| { path: string; as?: string; target?: string; createOnly?: boolean };
 
 export type FileSet = {
 	files?: RegistryFile[];
@@ -83,8 +120,9 @@ export type RegistryItem = FileSet & {
 	name: string;
 	type: Layer;
 	/**
-	 * Component tokens file, also listed in `files`. It exports `<name>Tokens(colors)`, and the CLI registers it
-	 * in the theme's `components.ts` under `<name>` (camelCase).
+	 * Component tokens file, also listed in `files`. It exports `<name>Tokens(colors)`. The CLI copies it to
+	 * the theme's `components/` folder as `<name>.ts` and registers it in that folder's `index.ts` under
+	 * `<name>` (camelCase).
 	 */
 	tokens?: string;
 	internalDependencies?: string[];

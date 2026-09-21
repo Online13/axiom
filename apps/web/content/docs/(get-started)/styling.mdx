@@ -48,10 +48,13 @@ hooks/   useSwitch, useSlider… unistyles/   StyleSheet.create((theme) => …)
 You only receive the shared behavior and the file for your variant, side by side:
 
 ```text
-components/ui/
+components/ui/switch/
 ├── use-switch.ts   # shared behavior
-└── switch.tsx      # your variant
+├── switch.tsx      # your variant
+└── index.ts        # so "@/components/ui/switch" resolves here
 ```
+
+A component without shared behavior is a single file: `components/ui/badge.tsx`.
 
 See [Where files go](/docs/configuration#where-files-go).
 

@@ -1,5 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
-import type { States } from "@/theme/components";
+import type { States } from "@/theme/components/states";
 
 type AvatarColors = { background: string; foreground: string; ring: string };
 type AvatarStatusColors = {

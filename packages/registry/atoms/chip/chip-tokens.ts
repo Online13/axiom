@@ -1,5 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
-import type { States } from "@/theme/components";
+import type { States } from "@/theme/components/states";
 
 type ChipColors = { background?: string; foreground: string; border?: string };
 type ChipStates = States<ChipColors, "pressed" | "selected" | "disabled">;

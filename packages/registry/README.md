@@ -24,7 +24,7 @@ Write each file as it will look **in the user's project**, not as it sits here:
 
 ### Component tokens
 
-A component with colors has a `<item>-tokens.ts` exporting `<item>Tokens(colors)` (camelCase), declared in `tokens` and in `files`. Don't add it to `foundations/theme/components.ts`: that file is a template, and `axiom add` registers tokens between its markers in the project. The typecheck uses `.generated/components.ts`, the template with every item's tokens registered.
+A component with colors has a `<item>-tokens.ts` exporting `<item>Tokens(colors)` (camelCase), declared in `tokens` and in `files`. It stays next to the component here, but `axiom add` copies it to the project's `theme/components/<item>.ts`: the theme is its only reader. Don't add it to `foundations/theme/components/index.ts`: that file is a template, and `axiom add` registers tokens between its markers in the project. The typecheck uses `.generated/components/`, the template with every item's tokens registered.
 
 ### Icon sources
 
@@ -52,7 +52,7 @@ A file the project fills once copied, like the icon registry `icons.tsx`, is dec
 bun run typecheck
 ```
 
-Aliases don't resolve in this folder on their own, since each file lands somewhere else once copied. `scripts/tsconfig.ts` reads `registry.json` and maps every alias import to its registry file with the CLI's flattening rules:
+Aliases don't resolve in this folder on their own, since each file lands somewhere else once copied. `scripts/tsconfig.ts` reads `registry.json` and maps every alias import to its registry file, the same way the CLI maps it to the project:
 
 - `tsconfig.json`: the `stylesheet` variant. It's the file your editor reads, so imports like `@/components/core/tappable` resolve while you write code here;
 - `tsconfig.<variant>.json`: the other variants, once they have files;

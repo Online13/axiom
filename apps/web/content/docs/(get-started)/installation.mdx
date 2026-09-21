@@ -13,7 +13,7 @@ description: "Set up Axiom in an Expo or React Native project."
 
 You need an existing Expo or React Native app. Axiom doesn't create the project for you.
 
-Copied components are imported through a path alias (`@/components/ui` by default), so make sure your project resolves `@/` or pick another alias during `init`.
+Copied components are imported through a path alias (`@/components/ui` by default). If your `tsconfig.json` doesn't resolve `@/` yet, `init` offers to add the entry for you, or lets you pick aliases your project already resolves.
 
 ## 1. Initialize your project
 
@@ -34,13 +34,16 @@ It asks which styling tool your project uses:
 └
 ```
 
-`nativewind` and `uniwind` both get the `tailwind` variant.
+`nativewind` and `uniwind` both get the `tailwind` variant. Only the stylings the registry has a variant for are offered.
 
 Then it:
 
+- checks that your `tsconfig.json` resolves the aliases, and offers to add the missing `paths` entries;
 - copies the foundations: theme contracts, default tokens, `light` and `dark` themes;
 - copies the core primitives;
 - installs the styling dependency when there is one (`react-native-unistyles`, `nativewind` or `uniwind`). This happens once, not for every component.
+
+Pass `--no-install` to print the install command instead of running it.
 
 Your choices are saved in a config file at the root of the project:
 

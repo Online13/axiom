@@ -1,5 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
-import type { States } from "@/theme/components";
+import type { States } from "@/theme/components/states";
 
 type CardColors = { background: string; border?: string };
 type CardStates = States<CardColors, "pressed">;

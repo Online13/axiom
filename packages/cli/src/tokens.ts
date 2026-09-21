@@ -2,19 +2,24 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, extname, join, relative } from "node:path";
 
 import { aliasToDir } from "./project.ts";
-import { ALIAS_OF, type Aliases, type RegistryItem } from "./types.ts";
+import {
+	THEME_COMPONENTS_DIR,
+	type Aliases,
+	type RegistryItem,
+} from "./types.ts";
 
-// The theme's components.ts has two marked regions the CLI fills, one line per component:
+// Every component's tokens file is copied to the theme's `components/` folder as `<component>.ts`.
+// That folder's index.ts has two marked regions the CLI fills, one line per component:
 //
 //   // axiom:imports:start
-//   import { buttonTokens } from '@/components/ui/button-tokens';
+//   import { buttonTokens } from './button';
 //   // axiom:imports:end
 //   ...
 //     // axiom:components:start
 //     button: buttonTokens(colors),
 //     // axiom:components:end
 
-export const COMPONENTS_FILE = "components.ts";
+export const COMPONENTS_FILE = join(THEME_COMPONENTS_DIR, "index.ts");
 
 const IMPORTS_START = "// axiom:imports:start";
 const IMPORTS_END = "// axiom:imports:end";
@@ -44,11 +49,11 @@ export function tokenEntries(
 		)
 		.map((item) => {
 			const key = camelCase(item.name);
-			const file = basename(item.tokens, extname(item.tokens));
 			return {
 				key,
 				exportName: `${key}Tokens`,
-				specifier: `${aliases[ALIAS_OF[item.type]]}/${file}`,
+				// The tokens file sits next to the index.ts that imports it.
+				specifier: `./${item.name}`,
 			};
 		})
 		.sort((a, b) => a.key.localeCompare(b.key));
@@ -125,8 +130,13 @@ export function projectTokenEntries(
 		const item = items.find(
 			(candidate) => camelCase(candidate.name) === entry.key,
 		)!;
-		const dir = aliasToDir(cwd, aliases[ALIAS_OF[item.type]]);
-		return existsSync(join(dir, basename(item.tokens!)));
+		return existsSync(
+			join(
+				aliasToDir(cwd, aliases.theme),
+				THEME_COMPONENTS_DIR,
+				item.name + extname(item.tokens!),
+			),
+		);
 	});
 }
 
