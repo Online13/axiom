@@ -1,4 +1,6 @@
 ---
+import { codeToTokens } from "shiki";
+
 const styling = ["StyleSheet", "Unistyles", "NativeWind", "Uniwind"];
 
 // The same Button in every styling variant (see docs/architecture/styling.md).
@@ -103,6 +105,15 @@ const sets = [stylesheet, unistyles, tailwind].map(
 );
 const isShared = (line: string) =>
 	line.trim() !== "" && sets.every((set) => set.has(line.trim()));
+
+// Highlighted at build time: each line keeps its own span for the shared/styling markers.
+const highlighted = await Promise.all(
+	variants.map(async (variant) => ({
+		...variant,
+		lines: (await codeToTokens(variant.code, { lang: "tsx", theme: "dark-plus" }))
+			.tokens,
+	})),
+);
 ---
 
 <article class="bento__card bento__ownership">
@@ -121,7 +132,7 @@ const isShared = (line: string) =>
 				</span>
 			</div>
 			{
-				variants.map((variant, i) => (
+				highlighted.map((variant, i) => (
 					<div
 						class="code__panel"
 						role="tabpanel"
@@ -130,8 +141,8 @@ const isShared = (line: string) =>
 						hidden={i !== 0}
 					>
 						<!-- prettier-ignore -->
-						<pre><code>{variant.code.split('\n').map((line) => (
-							<span class:list={['code__line', { 'is-shared': isShared(line), 'is-empty': line.trim() === '' }]}>{line || ' '}</span>
+						<pre><code>{variant.code.split('\n').map((line, n) => (
+							<span class:list={['code__line', { 'is-shared': isShared(line), 'is-empty': line.trim() === '' }]}>{variant.lines[n]?.length ? variant.lines[n].map((token) => <span style={{ color: token.color }}>{token.content}</span>) : ' '}</span>
 						))}</code></pre>
 						<p class="code__note">{variant.note}</p>
 					</div>
@@ -453,7 +464,11 @@ const isShared = (line: string) =>
 
 	.code__line.is-shared {
 		border-left-color: var(--line);
-		color: var(--muted);
+	}
+
+	/* Shared lines recede without losing their highlighting; the border stays sharp. */
+	.code__line.is-shared > span {
+		opacity: 0.5;
 	}
 
 	.code__line.is-empty {

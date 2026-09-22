@@ -6,7 +6,8 @@ export const STYLINGS = [
 ] as const;
 export type Styling = (typeof STYLINGS)[number];
 
-export type Variant = "stylesheet" | "unistyles" | "tailwind";
+export const VARIANTS = ["stylesheet", "unistyles", "tailwind"] as const;
+export type Variant = (typeof VARIANTS)[number];
 
 /** Where the icons of the project come from. Decides which icon registry `add icon` creates. */
 export const ICON_SOURCES = ["expo-symbols", "custom"] as const;

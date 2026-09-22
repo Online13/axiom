@@ -11,20 +11,20 @@ so this is free.
 
 ## In the Axiom monorepo
 
-The Expo app is `apps/demo-stylesheet`, and Bun dependencies are installed from the
-repository root. Use the checked-in workflow and launcher from that root:
+The Expo apps are the demos under `apps/`, and Bun dependencies are installed from
+the repository root. Use the checked-in workflow and launcher from that root, and
+pick the demo with `--app` (`stylesheet` is the default; `unistyles`, `nativewind`
+and `uniwind` are the others):
 
 ```sh
-bun run sim:ios up --minutes 60
-bun run sim:ios status
-bun run sim:ios down
+bun run sim:ios up --app unistyles --minutes 60
+bun run sim:ios status --app unistyles
+bun run sim:ios down --app unistyles
 ```
 
 Commit and push the intended changes to `main` before `up`; the runner builds the
 GitHub commit. Open the URL on the `Simulator:` line, not the GitHub Actions URL.
-Wait for `Install and launch app` to succeed. See
-[`apps/demo-stylesheet/NATIVE_SIM.md`](../../../apps/demo-stylesheet/NATIVE_SIM.md)
-for the full procedure.
+Wait for `Install and launch app` to succeed. See [`apps/NATIVE_SIM.md`](../../../apps/NATIVE_SIM.md) for the full procedure.
 
 Do not run the upstream `native-sim up` or `native-sim init` in this monorepo.
 Those commands assume the Expo app is at the Git root and may commit and push

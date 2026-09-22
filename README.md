@@ -68,18 +68,18 @@ bun demo:stylesheet start     # start Metro
 
 More details in [`apps/README.md`](./apps/README.md).
 
-## Test the StyleSheet demo on iOS
+## Test a demo on iOS
 
-The `native-sim` workflow builds `apps/demo-stylesheet` on a GitHub macOS runner and streams an iOS Simulator to your browser. Authenticate `gh`, then commit and push your changes to `main` before starting a session:
+The `native-sim` workflow builds one of the demo apps on a GitHub macOS runner and streams an iOS Simulator to your browser. Authenticate `gh`, then commit and push your changes to `main` before starting a session:
 
 ```bash
-gh auth login                         # once, if gh is not connected
-bun run sim:ios up --minutes 60       # start the build and simulator
-bun run sim:ios status                # retrieve the Simulator URL
-bun run sim:ios down                  # stop the session
+gh auth login                                    # once, if gh is not connected
+bun run sim:ios up --app unistyles --minutes 60  # start the build and simulator
+bun run sim:ios status --app unistyles           # retrieve the Simulator URL
+bun run sim:ios down --app unistyles             # stop the session
 ```
 
-Open the URL on the `Simulator:` line. The GitHub Actions URL tracks the build; the app is ready when **Install and launch app** succeeds. Keep the Simulator URL private because it contains the session access key. The full procedure is in [apps/demo-stylesheet/NATIVE_SIM.md](./apps/demo-stylesheet/NATIVE_SIM.md).
+`--app` takes `stylesheet` (the default), `unistyles`, `nativewind` or `uniwind`. Open the URL on the `Simulator:` line. The GitHub Actions URL tracks the build; the app is ready when **Install and launch app** succeeds. Keep the Simulator URL private because it contains the session access key. The full procedure is in [apps/NATIVE_SIM.md](./apps/NATIVE_SIM.md).
 
 ## Learn more
 

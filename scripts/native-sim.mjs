@@ -3,7 +3,7 @@
 // Dispatch the monorepo workflow without native-sim's automatic git add/commit/push.
 import { randomBytes } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
@@ -22,21 +22,65 @@ function run(command, args, { optional = false } = {}) {
 
 const gh = (...args) => run("gh", args);
 const git = (...args) => run("git", args);
-const sessionPath = resolve(
-	root,
-	git("rev-parse", "--git-path", "native-sim-monorepo-session.json"),
-);
 
-function readSession() {
-	if (!existsSync(sessionPath))
-		throw new Error("No local native-sim session found.");
-	return JSON.parse(readFileSync(sessionPath, "utf8"));
+const DEFAULT_APP = "demo-stylesheet";
+
+/** Accepts `unistyles` or `demo-unistyles`, and checks the folder is a real Expo app. */
+function resolveApp(name) {
+	const app = name.startsWith("demo-") ? name : `demo-${name}`;
+	if (!existsSync(resolve(root, "apps", app, "app.json"))) {
+		throw new Error(
+			`No Expo app at apps/${app}. Try one of: ${readdirSync(
+				resolve(root, "apps"),
+			)
+				.filter((entry) => entry.startsWith("demo-"))
+				.join(", ")}`,
+		);
+	}
+	return app;
+}
+
+// One session file per app, so two demos can stream at once and `down` cancels
+// the run of the app it was asked about rather than the last one started.
+function sessionPathOf(app) {
+	return resolve(
+		root,
+		git("rev-parse", "--git-path", `native-sim-${app}-session.json`),
+	);
+}
+
+function readSession(app) {
+	let path = sessionPathOf(app);
+	// Sessions used to share one file, before `--app`. Keep reading it for the
+	// default app so a session started by the previous launcher still stops.
+	if (!existsSync(path) && app === DEFAULT_APP) {
+		const legacy = resolve(
+			root,
+			git("rev-parse", "--git-path", "native-sim-monorepo-session.json"),
+		);
+		if (existsSync(legacy)) path = legacy;
+	}
+	if (!existsSync(path))
+		throw new Error(
+			`No local native-sim session for ${app}. Start one with: bun run sim:ios up --app ${app.replace(/^demo-/, "")}`,
+		);
+	return { app, ...JSON.parse(readFileSync(path, "utf8")) };
 }
 
 function saveSession(session) {
-	writeFileSync(sessionPath, JSON.stringify(session, null, 2), {
+	writeFileSync(sessionPathOf(session.app), JSON.stringify(session, null, 2), {
 		mode: 0o600,
 	});
+}
+
+/** `--app <name>` for the read-only commands; defaults to the stylesheet demo. */
+function appFromArgs(args) {
+	let app = DEFAULT_APP;
+	for (let index = 0; index < args.length; index++) {
+		if (args[index] === "--app") app = resolveApp(args[++index] ?? "");
+		else throw new Error(`Unknown option: ${args[index]}`);
+	}
+	return app;
 }
 
 function workflowRun(session) {
@@ -79,9 +123,11 @@ function streamUrl(session) {
 async function up(args) {
 	let minutes = 60;
 	let agent = false;
+	let app = DEFAULT_APP;
 	for (let index = 0; index < args.length; index++) {
 		if (args[index] === "--agent") agent = true;
 		else if (args[index] === "--minutes") minutes = Number(args[++index]);
+		else if (args[index] === "--app") app = resolveApp(args[++index] ?? "");
 		else throw new Error(`Unknown option: ${args[index]}`);
 	}
 	if (!Number.isInteger(minutes) || minutes < 1 || minutes > 350) {
@@ -129,6 +175,8 @@ async function up(args) {
 		"--ref",
 		branch,
 		"-f",
+		`app=${app}`,
+		"-f",
 		`session=${id}`,
 		"-f",
 		`gate_token=${key}`,
@@ -142,9 +190,9 @@ async function up(args) {
 		`agent_device_version=${agentVersion}`,
 	);
 
-	const session = { id, key, repo, sha, runId: null };
+	const session = { id, key, repo, sha, app, runId: null };
 	saveSession(session);
-	console.log(`Dispatched native-sim for ${repo} (${id}).`);
+	console.log(`Dispatched native-sim for ${app} in ${repo} (${id}).`);
 
 	for (let attempt = 0; attempt < 20; attempt++) {
 		const current = workflowRun(session);
@@ -166,7 +214,9 @@ async function up(args) {
 				console.log(
 					`Agent: agent-device connect proxy --daemon-base-url ${url.split("/?k=")[0]}/agent-device --daemon-auth-token ${key}`,
 				);
-			console.log("Stop: bun run sim:ios down");
+			console.log(
+				`Stop: bun run sim:ios down --app ${app.replace(/^demo-/, "")}`,
+			);
 			return;
 		}
 		const current = JSON.parse(
@@ -189,12 +239,12 @@ async function up(args) {
 		await sleep(20_000);
 	}
 	throw new Error(
-		"Timed out waiting for the simulator URL. Run bun run sim:ios status.",
+		`Timed out waiting for the simulator URL. Run bun run sim:ios status --app ${app.replace(/^demo-/, "")}.`,
 	);
 }
 
-function status() {
-	const session = readSession();
+function status(args) {
+	const session = readSession(appFromArgs(args));
 	const runId = session.runId || workflowRun(session)?.databaseId;
 	if (!runId) throw new Error("Workflow run has not appeared yet.");
 	const current = JSON.parse(
@@ -217,22 +267,23 @@ function status() {
 	}
 }
 
-function down() {
-	const session = readSession();
+function down(args) {
+	const session = readSession(appFromArgs(args));
 	const runId = session.runId || workflowRun(session)?.databaseId;
 	if (!runId) throw new Error("Workflow run has not appeared yet.");
 	gh("run", "cancel", String(runId), "--repo", session.repo);
-	console.log(`Cancelled run ${runId}.`);
+	console.log(`Cancelled run ${runId} (${session.app ?? DEFAULT_APP}).`);
 }
 
 try {
 	const [command = "up", ...args] = process.argv.slice(2);
 	if (command === "up") await up(args);
-	else if (command === "status") status();
-	else if (command === "down") down();
+	else if (command === "status") status(args);
+	else if (command === "down") down(args);
 	else
 		throw new Error(
-			"Usage: bun run sim:ios <up [--agent] [--minutes N] | status | down>",
+			"Usage: bun run sim:ios <up [--app NAME] [--agent] [--minutes N] | status [--app NAME] | down [--app NAME]>\n" +
+				"  --app defaults to stylesheet; pass unistyles, nativewind or uniwind for the other demos.",
 		);
 } catch (error) {
 	console.error(error.message);

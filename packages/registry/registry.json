@@ -31,6 +31,12 @@
 						"foundations/theme/stylesheet/use-theme.ts",
 						"foundations/theme/stylesheet/index.ts"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"foundations/theme/unistyles/unistyles.ts",
+						"foundations/theme/unistyles/index.ts"
+					]
 				}
 			}
 		},
@@ -130,6 +136,11 @@
 					"files": [
 						"typography/text/stylesheet/text.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"typography/text/unistyles/text.tsx"
+					]
 				}
 			}
 		},
@@ -144,6 +155,11 @@
 				"stylesheet": {
 					"files": [
 						"typography/title/stylesheet/title.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"typography/title/unistyles/title.tsx"
 					]
 				}
 			}
@@ -183,6 +199,11 @@
 					"files": [
 						"atoms/icon/stylesheet/icon.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/icon/unistyles/icon.tsx"
+					]
 				}
 			}
 		},
@@ -201,6 +222,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/button/stylesheet/button.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/button/unistyles/button.tsx"
 					]
 				}
 			},
@@ -224,6 +250,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/icon-button/stylesheet/icon-button.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/icon-button/unistyles/icon-button.tsx"
 					]
 				}
 			}
@@ -251,6 +282,11 @@
 					"files": [
 						"atoms/floating-button/stylesheet/floating-button.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/floating-button/unistyles/floating-button.tsx"
+					]
 				}
 			}
 		},
@@ -274,6 +310,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/switch/stylesheet/switch.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/switch/unistyles/switch.tsx"
 					]
 				}
 			}
@@ -301,6 +342,11 @@
 					"files": [
 						"atoms/checkbox/stylesheet/checkbox.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/checkbox/unistyles/checkbox.tsx"
+					]
 				}
 			}
 		},
@@ -321,6 +367,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/radio/stylesheet/radio.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/radio/unistyles/radio.tsx"
 					]
 				}
 			}
@@ -350,6 +401,11 @@
 					"files": [
 						"atoms/segmented-control/stylesheet/segmented-control.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/segmented-control/unistyles/segmented-control.tsx"
+					]
 				}
 			}
 		},
@@ -375,6 +431,11 @@
 					"files": [
 						"atoms/slider/stylesheet/slider.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/slider/unistyles/slider.tsx"
+					]
 				}
 			}
 		},
@@ -397,6 +458,12 @@
 						"atoms/input/stylesheet/input.tsx",
 						"atoms/input/stylesheet/field.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/input/unistyles/input.tsx",
+						"atoms/input/unistyles/field.tsx"
+					]
 				}
 			}
 		},
@@ -412,6 +479,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/text-area/stylesheet/text-area.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/text-area/unistyles/text-area.tsx"
 					]
 				}
 			}
@@ -436,6 +508,11 @@
 					"files": [
 						"atoms/input-group/stylesheet/input-group.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/input-group/unistyles/input-group.tsx"
+					]
 				}
 			}
 		},
@@ -459,6 +536,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/input-otp/stylesheet/input-otp.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/input-otp/unistyles/input-otp.tsx"
 					]
 				}
 			}
@@ -495,6 +577,11 @@
 					"files": [
 						"atoms/bottom-sheet/stylesheet/bottom-sheet.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/bottom-sheet/unistyles/bottom-sheet.tsx"
+					]
 				}
 			},
 			"requiredIcons": [
@@ -513,6 +600,11 @@
 					"files": [
 						"atoms/separator/stylesheet/separator.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/separator/unistyles/separator.tsx"
+					]
 				}
 			}
 		},
@@ -530,6 +622,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/spinner/stylesheet/spinner.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/spinner/unistyles/spinner.tsx"
 					]
 				}
 			}
@@ -554,6 +651,11 @@
 					"files": [
 						"atoms/skeleton/stylesheet/skeleton.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/skeleton/unistyles/skeleton.tsx"
+					]
 				}
 			}
 		},
@@ -577,6 +679,11 @@
 					"files": [
 						"atoms/badge/stylesheet/badge.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/badge/unistyles/badge.tsx"
+					]
 				}
 			}
 		},
@@ -596,6 +703,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/avatar/stylesheet/avatar.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/avatar/unistyles/avatar.tsx"
 					]
 				}
 			}
@@ -621,6 +733,11 @@
 					"files": [
 						"atoms/chip/stylesheet/chip.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/chip/unistyles/chip.tsx"
+					]
 				}
 			}
 		},
@@ -642,6 +759,11 @@
 					"files": [
 						"atoms/card/stylesheet/card.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/card/unistyles/card.tsx"
+					]
 				}
 			}
 		},
@@ -662,6 +784,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/item/stylesheet/item.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/item/unistyles/item.tsx"
 					]
 				}
 			}
@@ -686,6 +813,11 @@
 					"files": [
 						"atoms/option-item/stylesheet/option-item.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/option-item/unistyles/option-item.tsx"
+					]
 				}
 			}
 		},
@@ -706,6 +838,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/empty/stylesheet/empty.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/empty/unistyles/empty.tsx"
 					]
 				}
 			}
@@ -736,6 +873,11 @@
 					"files": [
 						"atoms/alert/stylesheet/alert.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/alert/unistyles/alert.tsx"
+					]
 				}
 			}
 		},
@@ -750,6 +892,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/button-group/stylesheet/button-group.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/button-group/unistyles/button-group.tsx"
 					]
 				}
 			}
@@ -778,6 +925,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/accordion/stylesheet/accordion.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/accordion/unistyles/accordion.tsx"
 					]
 				}
 			}
@@ -810,6 +962,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/dialog/stylesheet/dialog.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/dialog/unistyles/dialog.tsx"
 					]
 				}
 			}
@@ -848,6 +1005,11 @@
 					"files": [
 						"atoms/menu/stylesheet/menu.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/menu/unistyles/menu.tsx"
+					]
 				}
 			}
 		},
@@ -883,6 +1045,11 @@
 					"files": [
 						"atoms/toast/stylesheet/toast.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/toast/unistyles/toast.tsx"
+					]
 				}
 			}
 		},
@@ -911,6 +1078,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/snackbar/stylesheet/snackbar.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/snackbar/unistyles/snackbar.tsx"
 					]
 				}
 			}
@@ -943,6 +1115,11 @@
 					"files": [
 						"atoms/calendar/stylesheet/calendar.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/calendar/unistyles/calendar.tsx"
+					]
 				}
 			}
 		},
@@ -963,6 +1140,11 @@
 				"stylesheet": {
 					"files": [
 						"atoms/carousel/stylesheet/carousel.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"atoms/carousel/unistyles/carousel.tsx"
 					]
 				}
 			}
@@ -995,6 +1177,11 @@
 					"files": [
 						"molecules/search-bar/stylesheet/search-bar.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"molecules/search-bar/unistyles/search-bar.tsx"
+					]
 				}
 			}
 		},
@@ -1026,6 +1213,11 @@
 					"files": [
 						"molecules/attachment/stylesheet/attachment.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"molecules/attachment/unistyles/attachment.tsx"
+					]
 				}
 			}
 		},
@@ -1053,6 +1245,11 @@
 				"stylesheet": {
 					"files": [
 						"molecules/date-picker/stylesheet/date-picker.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"molecules/date-picker/unistyles/date-picker.tsx"
 					]
 				}
 			}
@@ -1084,6 +1281,11 @@
 					"files": [
 						"organisms/passcode/stylesheet/passcode.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"organisms/passcode/unistyles/passcode.tsx"
+					]
 				}
 			}
 		},
@@ -1108,6 +1310,11 @@
 				"stylesheet": {
 					"files": [
 						"templates/app-bar/stylesheet/app-bar.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"templates/app-bar/unistyles/app-bar.tsx"
 					]
 				}
 			}
@@ -1134,6 +1341,11 @@
 				"stylesheet": {
 					"files": [
 						"templates/tool-bar/stylesheet/tool-bar.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"templates/tool-bar/unistyles/tool-bar.tsx"
 					]
 				}
 			}
@@ -1163,6 +1375,11 @@
 					"files": [
 						"templates/bottom-tab-bar/stylesheet/bottom-tab-bar.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"templates/bottom-tab-bar/unistyles/bottom-tab-bar.tsx"
+					]
 				}
 			}
 		},
@@ -1189,6 +1406,11 @@
 					"files": [
 						"templates/tab/stylesheet/tab.tsx"
 					]
+				},
+				"unistyles": {
+					"files": [
+						"templates/tab/unistyles/tab.tsx"
+					]
 				}
 			}
 		},
@@ -1208,6 +1430,11 @@
 				"stylesheet": {
 					"files": [
 						"templates/scaffold/stylesheet/scaffold.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"templates/scaffold/unistyles/scaffold.tsx"
 					]
 				}
 			}

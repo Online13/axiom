@@ -9,20 +9,19 @@
 //
 //   bun scripts/tsconfig.ts
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { basename, extname, join, relative } from "node:path";
+import { basename, dirname, extname, join, relative } from "node:path";
 
 import { readRegistry } from "../../cli/src/registry.ts";
 import { registerTokens, tokenEntries } from "../../cli/src/tokens.ts";
 import {
 	ALIAS_OF,
 	DEFAULT_ALIASES,
+	VARIANTS,
 	type RegistryFile,
-	type Variant,
 } from "../../cli/src/types.ts";
 
 const root = join(import.meta.dirname, "..");
 const registry = readRegistry(root);
-const VARIANTS: Variant[] = ["stylesheet", "unistyles", "tailwind"];
 
 const pathOf = (file: RegistryFile) =>
 	typeof file === "string" ? file : file.path;
@@ -59,12 +58,35 @@ for (const item of registry.items) {
 	);
 }
 
+/** The folder an item owns, shared by every file it can copy: the shallowest of their directories. */
+function itemRoot(item: (typeof registry.items)[number]): string | undefined {
+	const files = [
+		...(item.files ?? []),
+		...Object.values(item.variants ?? {}).flatMap((set) => set.files ?? []),
+		...Object.values(item.iconSources ?? {}).flatMap(
+			(set) => set.files ?? [],
+		),
+		...Object.values(item.navigationSources ?? {}).flatMap(
+			(set) => set.files ?? [],
+		),
+	];
+	const dirs = files.map((file) => dirname(pathOf(file)));
+	return dirs.sort((a, b) => a.length - b.length)[0];
+}
+
 for (const variant of VARIANTS) {
 	const paths: Record<string, string[]> = {};
+	const covered = new Set<string>();
+	const uncovered = new Set<string>();
 	let count = 0;
 
 	for (const item of registry.items) {
-		if (item.variants && !item.variants[variant]) continue;
+		const root = itemRoot(item);
+		if (item.variants && !item.variants[variant]) {
+			if (root) uncovered.add(root);
+			continue;
+		}
+		if (root) covered.add(root);
 
 		const alias = DEFAULT_ALIASES[ALIAS_OF[item.type]];
 		// Aliases point to the first icon and navigation source; the others are still typechecked through the include globs.
@@ -103,11 +125,22 @@ for (const variant of VARIANTS) {
 	const otherVariants = VARIANTS.filter((other) => other !== variant).map(
 		(other) => `**/${other}/**`,
 	);
+	// An item that doesn't offer the variant yet isn't part of it: its shared files import aliases
+	// this config doesn't map, so the whole folder stays out.
+	const missing = [...uncovered]
+		.filter(
+			(dir) =>
+				![...covered].some(
+					(other) => other === dir || other.startsWith(`${dir}/`),
+				),
+		)
+		.sort()
+		.map((dir) => `${dir}/**`);
 	const tsconfig = {
 		extends: "./tsconfig.base.json",
 		compilerOptions: { paths },
 		include: ["**/*.ts", "**/*.tsx"],
-		exclude: ["node_modules", "scripts", ...otherVariants],
+		exclude: ["node_modules", "scripts", ...otherVariants, ...missing],
 	};
 
 	const file =

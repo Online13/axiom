@@ -25,7 +25,7 @@ export default function ExperienceScreen() {
 			<Tab
 				value={section}
 				onValueChange={(value) => setSection(value as ExperienceSection)}
-				style={{ paddingTop: tokens.spacing[2] }}
+				style={{ flex: 1, paddingTop: tokens.spacing[2] }}
 			>
 				<Tab.List>
 					{SECTIONS.map((item) => (
@@ -34,35 +34,42 @@ export default function ExperienceScreen() {
 						</Tab.Item>
 					))}
 				</Tab.List>
-			</Tab>
-			<Scaffold.Content
-				contentContainerStyle={{
-					padding: tokens.metrics.screenMargin,
-					paddingBottom: tokens.spacing[12] * 3,
-					gap: tokens.spacing[8],
-				}}
-			>
-				{groupsOfSection(section).map((group) => {
-					const entries = experiencesOf(section).filter(
-						(experience) => experience.group === group,
-					);
+				<Tab.Pager>
+					{SECTIONS.map((item) => (
+						<Tab.Panel key={item.value} value={item.value}>
+							<Scaffold.Content
+								contentContainerStyle={{
+									padding: tokens.metrics.screenMargin,
+									// Room for the tab bar and the theme button.
+									paddingBottom: tokens.spacing[12] * 3,
+									gap: tokens.spacing[8],
+								}}
+							>
+								{groupsOfSection(item.value).map((group) => {
+									const entries = experiencesOf(item.value).filter(
+										(experience) => experience.group === group,
+									);
 
-					return (
-						<CatalogGroup key={group} title={group}>
-							{entries.map((experience, index) => (
-								<CatalogRow
-									key={experience.slug}
-									href={`/experiences/${experience.slug}`}
-									title={experience.title}
-									description={experience.description}
-									badge={STATUS_LABEL[experience.status]}
-									divider={index < entries.length - 1}
-								/>
-							))}
-						</CatalogGroup>
-					);
-				})}
-			</Scaffold.Content>
+									return (
+										<CatalogGroup key={group} title={group}>
+											{entries.map((experience, index) => (
+												<CatalogRow
+													key={experience.slug}
+													href={`/experiences/${experience.slug}`}
+													title={experience.title}
+													description={experience.description}
+													badge={STATUS_LABEL[experience.status]}
+													divider={index < entries.length - 1}
+												/>
+											))}
+										</CatalogGroup>
+									);
+								})}
+							</Scaffold.Content>
+						</Tab.Panel>
+					))}
+				</Tab.Pager>
+			</Tab>
 		</Scaffold>
 	);
 }

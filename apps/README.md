@@ -41,22 +41,24 @@ Each demo has its own app id (`dev.axiom.demo.<variant>`), so all four install s
 
 ## iOS simulator in the browser
 
-For the repeatable test procedure, see [native-sim testing](demo-stylesheet/NATIVE_SIM.md).
+For the repeatable test procedure, see [native-sim testing](NATIVE_SIM.md).
 
-The root [native-sim workflow](../.github/workflows/native-sim.yml) builds `demo-stylesheet` on a GitHub macOS runner. It installs the Bun workspace from the repo root, regenerates Axiom components, then builds the Expo app from `apps/demo-stylesheet`.
+The root [native-sim workflow](../.github/workflows/native-sim.yml) builds a demo on a GitHub macOS runner. It installs the Bun workspace from the repo root, regenerates Axiom components, then builds the Expo app from `apps/<demo>`. The demo is chosen with `--app`, which accepts `stylesheet` (the default), `unistyles`, `nativewind` or `uniwind`.
 
 Before the first run, commit and push the workflow, its auth gate, and the launcher on the default branch. Authenticate the GitHub CLI with `gh auth login`. The launcher checks that the current commit is on GitHub, then dispatches the workflow without staging or committing local changes.
 
 ```bash
-bun run sim:ios up --minutes 60       # build and print the simulator URL
-bun run sim:ios up --agent            # also enable agent-device control
-bun run sim:ios status                # show the current run and URL
-bun run sim:ios down                  # stop the current run
+bun run sim:ios up --app unistyles --minutes 60   # build and print the simulator URL
+bun run sim:ios up --app unistyles --agent        # also enable agent-device control
+bun run sim:ios status --app unistyles            # show the current run and URL
+bun run sim:ios down --app unistyles              # stop the current run
 ```
+
+Sessions are tracked per app, so two demos can stream at the same time and `down` only cancels the one you name.
 
 For `--agent`, install `agent-device` locally first. The launcher prints the proxy connection command. The session URL includes an access key; keep it private. Session details are stored locally under `.git/` and are not committed.
 
-The first build can take around 30 minutes. The native `.app` is cached by Expo fingerprint; later JavaScript-only changes reuse it. See the [native-sim guide](https://reactnativefeel.com/sim/llm.txt) for simulator controls and limitations. Use the `sim:ios` script for this monorepo: the upstream `native-sim up` command assumes the Expo app is at the Git root and automatically commits and pushes the whole working tree.
+The first build can take around 30 minutes. The native `.app` is cached by Expo fingerprint and keyed per app, so each demo builds once; later JavaScript-only changes reuse it. See the [native-sim guide](https://reactnativefeel.com/sim/llm.txt) for simulator controls and limitations. Use the `sim:ios` script for this monorepo: the upstream `native-sim up` command assumes the Expo app is at the Git root and automatically commits and pushes the whole working tree.
 
 ## Running an app
 
