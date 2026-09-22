@@ -74,6 +74,7 @@ export function FloatingButton({
 			]}
 		>
 			<Tappable
+				pressScale={tokens.metrics.pressScale}
 				{...props}
 				disabled={disabled || hidden}
 				accessibilityLabel={accessibilityLabel ?? label}

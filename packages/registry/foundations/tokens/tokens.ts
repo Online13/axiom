@@ -63,6 +63,8 @@ export type Sizes = {
 
 export type Metrics = {
 	touchTarget: number;
+	/** How far a button-like target shrinks while held. */
+	pressScale: number;
 	screenMargin: number;
 	hairline: number;
 };
@@ -294,6 +296,7 @@ export const sizes = {
 
 export const metrics = {
 	touchTarget: 44,
+	pressScale: 0.97,
 	screenMargin: 16,
 	hairline: StyleSheet.hairlineWidth,
 } satisfies Metrics;

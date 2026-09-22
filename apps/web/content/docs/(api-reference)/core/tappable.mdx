@@ -20,9 +20,10 @@ npx axiom add tappable
 - it tells the component it wraps whether it is pressed;
 - it blocks presses when disabled;
 - it extends the touch area of small elements to `touchTarget`;
+- it shrinks the element while it is held, when asked through `pressScale`;
 - it sets the accessibility role and state.
 
-`Tappable` draws nothing. The pressed color comes from the component that renders it, through its [component tokens](/docs/foundations/component-tokens): `button.solid.pressed.background`, `button.outline.pressed.background`… That's why the solid and outline buttons above react differently while the press behavior is the same.
+`Tappable` picks no colors. The pressed color comes from the component that renders it, through its [component tokens](/docs/foundations/component-tokens): `button.solid.pressed.background`, `button.outline.pressed.background`… That's why the solid and outline buttons above react differently while the press behavior is the same.
 
 You rarely render it yourself. Use it directly when you build your own pressable component, like a row, a tile or a card.
 
@@ -94,6 +95,20 @@ A 24pt icon gets `10` on each side. A 64×32 chip gets `6` above and below and n
 
 Pass `hitSlop` yourself to override the computed value, or `minTouchTarget={false}` to turn the behavior off, for example in a dense grid where the layout already gives each cell 44pt.
 
+## Press scale
+
+A color change alone reads late on a large target: the finger covers the part that changes. `pressScale` shrinks the whole element while it is held, so the feedback shows around the thumb instead of under it.
+
+```tsx
+<Tappable pressScale={tokens.metrics.pressScale} style={...} />
+```
+
+The scale is applied on touch, with no animation and no `Reanimated` — the point is that it lands with the finger, and a spring would add the delay back.
+
+It is off unless you pass it. [Button](/docs/atoms/button), [IconButton](/docs/atoms/icon-button) and [FloatingButton](/docs/atoms/floating-button) opt in with [`metrics.pressScale`](/docs/foundations/tokens/metrics); rows, cells, checkboxes and tab items leave it out, because a list row that shrinks under the finger reads as a glitch rather than as feedback. Pass `pressScale` on those buttons to tune it, or `1` to drop it.
+
+A `transform` of your own in `style` replaces the scale instead of fighting it.
+
 ## Disabled
 
 Turn on Disabled in the first preview: nothing reacts, and the colors come from the `disabled` component tokens.
@@ -118,6 +133,7 @@ A disabled element still takes up its touch area. A press on it does nothing and
 | `disabled`           | `boolean`                                                       | `false`    | Blocks every press callback and the pressed state.                        |
 | `hitSlop`            | `number \| Insets`                                              | computed   | Extra touch area around the element. Overrides the computed value.        |
 | `minTouchTarget`     | `boolean`                                                       | `true`     | Computes `hitSlop` from `touchTarget` when `hitSlop` isn't set.           |
+| `pressScale`         | `number`                                                        | —          | Scale the element takes while held. Left out, nothing moves.             |
 | `children`           | `ReactNode \| ({ pressed }) => ReactNode`                       | —          | Content, or a function of the pressed state.                              |
 | `style`              | `StyleProp<ViewStyle> \| ({ pressed }) => StyleProp<ViewStyle>` | —          | Style, or a function of the pressed state.                                |
 | `accessibilityRole`  | `AccessibilityRole`                                             | `'button'` | Role announced by screen readers.                                         |

@@ -140,6 +140,7 @@ export function Button({
 
 	return (
 		<Tappable
+			pressScale={tokens.metrics.pressScale}
 			{...props}
 			disabled={inactive}
 			accessibilityState={{ ...accessibilityState, busy: loading }}

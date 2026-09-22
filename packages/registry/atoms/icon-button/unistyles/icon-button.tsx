@@ -5,6 +5,7 @@ import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Icon, iconColor, type IconColor } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
 import type { Theme } from "@/theme";
+import { metrics } from "@/theme/tokens";
 
 export type IconButtonVariant = "ghost" | "tinted" | "outline" | "solid";
 export type IconButtonSize = "sm" | "md" | "lg";
@@ -67,6 +68,7 @@ export function IconButton({
 
 	return (
 		<Tappable
+			pressScale={metrics.pressScale}
 			{...props}
 			disabled={disabled}
 			accessibilityState={{ ...accessibilityState, selected }}

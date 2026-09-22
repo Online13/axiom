@@ -16,6 +16,13 @@ export type TappableState = { pressed: boolean };
 export type TappableProps = Omit<PressableProps, "children" | "style"> & {
 	/** Computes `hitSlop` from `touchTarget` when `hitSlop` isn't set. */
 	minTouchTarget?: boolean;
+	/**
+	 * Shrinks the target to this scale while it is held, e.g. `metrics.pressScale`.
+	 * Left out, nothing moves: only button-like components opt in, because rows,
+	 * cells and tab items look wrong when they shrink. A `transform` coming from
+	 * `style` wins over it.
+	 */
+	pressScale?: number;
 	children?: ReactNode | ((state: TappableState) => ReactNode);
 	style?:
 		StyleProp<ViewStyle> | ((state: TappableState) => StyleProp<ViewStyle>);
@@ -26,12 +33,14 @@ type Size = { width: number; height: number };
 
 /**
  * Headless press primitive: pressed state, disabled state, accessibility role and a minimum touch target.
- * It draws nothing: the component that renders it picks the colors for each state.
+ * It picks no colors: the component that renders it styles every state. The one thing it draws is the
+ * press itself, and only when asked through `pressScale`.
  */
 export function Tappable({
 	disabled: disabledProp,
 	hitSlop,
 	minTouchTarget = true,
+	pressScale,
 	delayLongPress = 500,
 	accessibilityRole = "button",
 	accessibilityState,
@@ -56,6 +65,14 @@ export function Tappable({
 	const computedHitSlop =
 		hitSlop ?? (minTouchTarget && size ? touchTargetSlop(size) : undefined);
 
+	// The scale goes first so a `transform` of its own in `style` replaces it rather than fighting it.
+	const resolveStyle = (pressed: boolean): StyleProp<ViewStyle> => {
+		const resolved = typeof style === "function" ? style({ pressed }) : style;
+		return pressed && pressScale !== undefined
+			? [{ transform: [{ scale: pressScale }] }, resolved]
+			: resolved;
+	};
+
 	return (
 		<Pressable
 			{...props}
@@ -65,11 +82,7 @@ export function Tappable({
 			accessibilityRole={accessibilityRole}
 			accessibilityState={{ ...accessibilityState, disabled }}
 			onLayout={handleLayout}
-			style={
-				typeof style === "function"
-					? ({ pressed }) => style({ pressed: pressed && !disabled })
-					: style
-			}
+			style={({ pressed }) => resolveStyle(pressed && !disabled)}
 		>
 			{typeof children === "function"
 				? ({ pressed }) => children({ pressed: pressed && !disabled })

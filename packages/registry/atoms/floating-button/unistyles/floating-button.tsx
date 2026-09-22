@@ -7,6 +7,7 @@ import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
 import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from "@/components/ui/text";
 import type { Theme } from "@/theme";
+import { metrics } from "@/theme/tokens";
 
 import {
 	useFloatingButton,
@@ -94,6 +95,7 @@ export function FloatingButton({
 			]}
 		>
 			<Tappable
+				pressScale={metrics.pressScale}
 				{...props}
 				disabled={off || hidden}
 				accessibilityLabel={accessibilityLabel ?? label}

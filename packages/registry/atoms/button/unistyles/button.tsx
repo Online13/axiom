@@ -10,6 +10,7 @@ import { StyleSheet, withUnistyles } from "react-native-unistyles";
 import { Slot } from "@/components/core/slot";
 import { Tappable, type TappableProps } from "@/components/core/tappable";
 import type { Theme } from "@/theme";
+import { metrics } from "@/theme/tokens";
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
 import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from "@/components/ui/text";
@@ -129,6 +130,7 @@ export function Button({
 
 	return (
 		<Tappable
+			pressScale={metrics.pressScale}
 			{...props}
 			disabled={inactive}
 			accessibilityState={{ ...accessibilityState, busy: loading }}

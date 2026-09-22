@@ -53,6 +53,7 @@ export function IconButton({
 
 	return (
 		<Tappable
+			pressScale={tokens.metrics.pressScale}
 			{...props}
 			disabled={disabled}
 			accessibilityState={{ ...accessibilityState, selected }}
