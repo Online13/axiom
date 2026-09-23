@@ -6,6 +6,7 @@ type BadgeStates = States<BadgeColors, never>;
 
 export type BadgeTokens = {
 	neutral: BadgeStates;
+	accent: BadgeStates;
 	info: BadgeStates;
 	success: BadgeStates;
 	warning: BadgeStates;
@@ -21,6 +22,12 @@ export const badgeTokens = (colors: ThemeColors): BadgeTokens => ({
 		default: {
 			background: colors.background.subtle,
 			foreground: colors.content.muted,
+		},
+	},
+	accent: {
+		default: {
+			background: colors.accent.default,
+			foreground: colors.accent.on,
 		},
 	},
 	info: {

@@ -24,6 +24,12 @@ export type ThemeColors = {
 		strong: string;
 		focus: string;
 	};
+	/** The brand highlight. Always a filled surface with `on` as its text, never text on a light surface. */
+	accent: {
+		default: string;
+		subtle: string;
+		on: string;
+	};
 	feedback: {
 		info: string;
 		infoSubtle: string;
@@ -56,6 +62,11 @@ export const lightColors = {
 		subtle: palette.gray[100],
 		strong: palette.gray[400],
 		focus: palette.blue[500],
+	},
+	accent: {
+		default: palette.yellow[500],
+		subtle: palette.yellow[100],
+		on: palette.gray[950],
 	},
 	feedback: {
 		info: palette.blue[500],
@@ -90,6 +101,12 @@ export const darkColors = {
 		subtle: palette.gray[900],
 		strong: palette.gray[600],
 		focus: palette.blue[400],
+	},
+	// The accent keeps step 500 in both schemes: yellow is already light enough to carry black text.
+	accent: {
+		default: palette.yellow[500],
+		subtle: palette.yellow[950],
+		on: palette.gray[950],
 	},
 	feedback: {
 		info: palette.blue[400],

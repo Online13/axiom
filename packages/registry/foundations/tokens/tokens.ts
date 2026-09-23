@@ -47,7 +47,9 @@ export type TypographyVariant =
 export type TypographyStyle = {
 	fontSize: number;
 	lineHeight: number;
-	fontWeight: "400" | "500" | "600" | "700";
+	fontWeight: "400" | "500" | "600" | "700" | "800";
+	/** Negative on display sizes, so large headings stay tight. */
+	letterSpacing?: number;
 	fontFamily?: string;
 };
 
@@ -266,26 +268,52 @@ export const spacing = {
 	12: 48,
 } satisfies Spacing;
 
+// Radii are generous: cards and sheets read as rounded surfaces, and `full` makes a pill.
 export const radius = {
 	none: 0,
-	sm: 6,
-	md: 10,
-	lg: 14,
-	xl: 20,
+	sm: 8,
+	md: 12,
+	lg: 18,
+	xl: 26,
 	full: 9999,
 } satisfies Radius;
 
 export const typography = {
-	largeTitle: { fontSize: 34, lineHeight: 41, fontWeight: "700" },
-	title1: { fontSize: 28, lineHeight: 34, fontWeight: "700" },
-	title2: { fontSize: 22, lineHeight: 28, fontWeight: "700" },
-	title3: { fontSize: 20, lineHeight: 25, fontWeight: "600" },
-	headline: { fontSize: 17, lineHeight: 22, fontWeight: "600" },
-	body: { fontSize: 17, lineHeight: 22, fontWeight: "400" },
+	largeTitle: {
+		fontSize: 34,
+		lineHeight: 40,
+		fontWeight: "800",
+		letterSpacing: -0.8,
+	},
+	title1: {
+		fontSize: 28,
+		lineHeight: 33,
+		fontWeight: "800",
+		letterSpacing: -0.6,
+	},
+	title2: {
+		fontSize: 22,
+		lineHeight: 27,
+		fontWeight: "700",
+		letterSpacing: -0.4,
+	},
+	title3: {
+		fontSize: 20,
+		lineHeight: 25,
+		fontWeight: "700",
+		letterSpacing: -0.3,
+	},
+	headline: {
+		fontSize: 17,
+		lineHeight: 22,
+		fontWeight: "600",
+		letterSpacing: -0.2,
+	},
+	body: { fontSize: 17, lineHeight: 23, fontWeight: "400" },
 	callout: { fontSize: 16, lineHeight: 21, fontWeight: "400" },
 	subheadline: { fontSize: 15, lineHeight: 20, fontWeight: "400" },
-	footnote: { fontSize: 13, lineHeight: 18, fontWeight: "400" },
-	caption: { fontSize: 12, lineHeight: 16, fontWeight: "400" },
+	footnote: { fontSize: 13, lineHeight: 18, fontWeight: "500" },
+	caption: { fontSize: 12, lineHeight: 16, fontWeight: "500" },
 } satisfies Typography;
 
 export const sizes = {

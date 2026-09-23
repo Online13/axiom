@@ -12,7 +12,14 @@ import type { IconName } from "@/components/ui/icons";
 import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from "@/components/ui/text";
 
 export type BadgeVariant =
-	"neutral" | "info" | "success" | "warning" | "error" | "outline" | "inverse";
+	| "neutral"
+	| "accent"
+	| "info"
+	| "success"
+	| "warning"
+	| "error"
+	| "outline"
+	| "inverse";
 export type BadgeSize = "sm" | "md";
 export type BadgePlacement = "top-right" | "bottom-right";
 

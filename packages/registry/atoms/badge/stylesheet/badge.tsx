@@ -12,7 +12,14 @@ import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from "@/components/ui/text";
 import { useTheme } from "@/theme";
 
 export type BadgeVariant =
-	"neutral" | "info" | "success" | "warning" | "error" | "outline" | "inverse";
+	| "neutral"
+	| "accent"
+	| "info"
+	| "success"
+	| "warning"
+	| "error"
+	| "outline"
+	| "inverse";
 
 export type BadgeProps = {
 	/** The label. One or two words. */

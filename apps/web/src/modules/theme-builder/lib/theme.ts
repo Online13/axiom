@@ -28,7 +28,7 @@ export type PaletteHue = keyof typeof palette;
 export type Ramp = Record<PaletteStep, string>;
 export type GeneratedPalette = Record<SeedName, Ramp>;
 
-// The five hues the semantic roles are built from — one seed each, like the
+// The six hues the semantic roles are built from — one seed each, like the
 // core colors of a Material theme.
 export const seeds = {
 	neutral: {
@@ -40,6 +40,11 @@ export const seeds = {
 		hue: "blue",
 		label: "Accent",
 		usage: "Links, focus rings, selection, info",
+	},
+	highlight: {
+		hue: "yellow",
+		label: "Highlight",
+		usage: "The brand fill — featured badges and chips",
 	},
 	success: { hue: "green", label: "Success", usage: "Confirmations" },
 	warning: { hue: "orange", label: "Warning", usage: "Cautions" },
@@ -236,6 +241,11 @@ export const contrastPairs = [
 		label: "Error text on its alert",
 		on: "feedback.error",
 		over: "feedback.errorSubtle",
+	},
+	{
+		label: "Label on the highlight fill",
+		on: "accent.on",
+		over: "accent.default",
 	},
 ] as const;
 

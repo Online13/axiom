@@ -19,6 +19,11 @@ function randomSeeds(): Record<SeedName, string> {
 			c: 0.13 + Math.random() * 0.08,
 			h: Math.random() * 360,
 		}),
+		highlight: oklchToHex({
+			l: 0.82 + Math.random() * 0.06,
+			c: 0.15 + Math.random() * 0.05,
+			h: around(95, 20),
+		}),
 		success: oklchToHex({ l: 0.68, c: 0.17, h: around(145, 25) }),
 		warning: oklchToHex({ l: 0.76, c: 0.16, h: around(70, 18) }),
 		error: oklchToHex({ l: 0.6, c: 0.21, h: around(27, 18) }),

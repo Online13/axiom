@@ -194,26 +194,52 @@ export const spacing = {
 	12: 48,
 };
 
+// Radii are generous: cards and sheets read as rounded surfaces, and `full` makes a pill.
 export const radius = {
 	none: 0,
-	sm: 6,
-	md: 10,
-	lg: 14,
-	xl: 20,
+	sm: 8,
+	md: 12,
+	lg: 18,
+	xl: 26,
 	full: 9999,
 };
 
 export const typography = {
-	largeTitle: { fontSize: 34, lineHeight: 41, fontWeight: "700" },
-	title1: { fontSize: 28, lineHeight: 34, fontWeight: "700" },
-	title2: { fontSize: 22, lineHeight: 28, fontWeight: "700" },
-	title3: { fontSize: 20, lineHeight: 25, fontWeight: "600" },
-	headline: { fontSize: 17, lineHeight: 22, fontWeight: "600" },
-	body: { fontSize: 17, lineHeight: 22, fontWeight: "400" },
+	largeTitle: {
+		fontSize: 34,
+		lineHeight: 40,
+		fontWeight: "800",
+		letterSpacing: -0.8,
+	},
+	title1: {
+		fontSize: 28,
+		lineHeight: 33,
+		fontWeight: "800",
+		letterSpacing: -0.6,
+	},
+	title2: {
+		fontSize: 22,
+		lineHeight: 27,
+		fontWeight: "700",
+		letterSpacing: -0.4,
+	},
+	title3: {
+		fontSize: 20,
+		lineHeight: 25,
+		fontWeight: "700",
+		letterSpacing: -0.3,
+	},
+	headline: {
+		fontSize: 17,
+		lineHeight: 22,
+		fontWeight: "600",
+		letterSpacing: -0.2,
+	},
+	body: { fontSize: 17, lineHeight: 23, fontWeight: "400" },
 	callout: { fontSize: 16, lineHeight: 21, fontWeight: "400" },
 	subheadline: { fontSize: 15, lineHeight: 20, fontWeight: "400" },
-	footnote: { fontSize: 13, lineHeight: 18, fontWeight: "400" },
-	caption: { fontSize: 12, lineHeight: 16, fontWeight: "400" },
+	footnote: { fontSize: 13, lineHeight: 18, fontWeight: "500" },
+	caption: { fontSize: 12, lineHeight: 16, fontWeight: "500" },
 };
 
 export const sizes = {
@@ -311,6 +337,23 @@ export const colorRoles = {
 			usage: "Focused input, selected item",
 			light: "blue.500",
 			dark: "blue.400",
+		},
+	},
+	accent: {
+		default: {
+			usage: "Brand highlight fill — badges, selected chips",
+			light: "yellow.500",
+			dark: "yellow.500",
+		},
+		subtle: {
+			usage: "Tinted accent background",
+			light: "yellow.100",
+			dark: "yellow.950",
+		},
+		on: {
+			usage: "Text and icons on an accent fill",
+			light: "gray.950",
+			dark: "gray.950",
 		},
 	},
 	feedback: {
@@ -602,6 +645,9 @@ export const componentTokens = {
 				background: "background.subtle",
 				foreground: "content.muted",
 			},
+		},
+		accent: {
+			default: { background: "accent.default", foreground: "accent.on" },
 		},
 		info: {
 			default: {

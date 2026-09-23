@@ -1,7 +1,7 @@
 /*
  * Drawing primitives for the component previews (PhonePreview).
  * Everything is in iOS points and reads the `--ax-*` semantic colors, so each mock follows the light / dark toggle.
- * Sizes follow the default tokens: spacing 4/8/12/16/20/24, radius sm 6 · md 10 · lg 14 · xl 20, controls 32/44/52.
+ * Sizes follow the default tokens: spacing 4/8/12/16/20/24, radius sm 8 · md 12 · lg 18 · xl 26, controls 32/44/52.
  */
 
 .ax-screen *,
@@ -11,10 +11,10 @@
 }
 
 .ax-screen {
-	--ax-radius-sm: 6px;
-	--ax-radius-md: 10px;
-	--ax-radius-lg: 14px;
-	--ax-radius-xl: 20px;
+	--ax-radius-sm: 8px;
+	--ax-radius-md: 12px;
+	--ax-radius-lg: 18px;
+	--ax-radius-xl: 26px;
 	--ax-control-sm: 32px;
 	--ax-control-md: 44px;
 	--ax-control-lg: 52px;
@@ -130,33 +130,37 @@
 
 .ax-large-title {
 	font-size: 34px;
-	line-height: 41px;
-	font-weight: 700;
-	letter-spacing: 0.01em;
+	line-height: 40px;
+	font-weight: 800;
+	letter-spacing: -0.8px;
 }
 .ax-title1 {
 	font-size: 28px;
-	line-height: 34px;
-	font-weight: 700;
+	line-height: 33px;
+	font-weight: 800;
+	letter-spacing: -0.6px;
 }
 .ax-title2 {
 	font-size: 22px;
-	line-height: 28px;
+	line-height: 27px;
 	font-weight: 700;
+	letter-spacing: -0.4px;
 }
 .ax-title3 {
 	font-size: 20px;
 	line-height: 25px;
-	font-weight: 600;
+	font-weight: 700;
+	letter-spacing: -0.3px;
 }
 .ax-headline {
 	font-size: 17px;
 	line-height: 22px;
 	font-weight: 600;
+	letter-spacing: -0.2px;
 }
 .ax-text {
 	font-size: 17px;
-	line-height: 22px;
+	line-height: 23px;
 }
 .ax-callout {
 	font-size: 16px;
@@ -169,10 +173,12 @@
 .ax-footnote {
 	font-size: 13px;
 	line-height: 18px;
+	font-weight: 500;
 }
 .ax-caption {
 	font-size: 12px;
 	line-height: 16px;
+	font-weight: 500;
 }
 .ax-muted {
 	color: var(--ax-content-muted);

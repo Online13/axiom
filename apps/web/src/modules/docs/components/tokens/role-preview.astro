@@ -106,6 +106,10 @@ const feedbackStates = [
                 <div class="rounded-[10px] px-3 py-2" style="background:var(--feedback-errorSubtle);color:var(--feedback-error);font-size:13px">
                   Sync failed. Try again.
                 </div>
+                <div class="flex items-center justify-between rounded-[10px] px-3 py-2" style="background:var(--accent-default);color:var(--accent-on);font-size:13px">
+                  <span style="font-weight:600">Upgrade to Pro</span>
+                  <span style="opacity:0.7">2 weeks left</span>
+                </div>
                 <div class="rounded-[10px] px-3 py-2.5" style="background:var(--background-inverse);color:var(--content-inverse);font-size:13px">
                   Changes saved
                 </div>
@@ -210,6 +214,33 @@ const feedbackStates = [
                 <div class="flex gap-3">
                   <div class="size-5 rounded-full" style="border:1.5px solid var(--border-strong)" />
                   <div class="size-5 rounded-full" style="border:6px solid var(--border-focus)" />
+                </div>
+              </div>
+            </div>
+          )
+        }
+
+        {
+          role === 'accent' && (
+            <div class="screen" style="background:var(--background-default)">
+              <div class="flex justify-center pt-3">
+                <div class="island" />
+              </div>
+              <div class="flex flex-col gap-3 px-4 pt-6">
+                <div class="flex flex-col gap-1.5 rounded-[18px] p-4" style="background:var(--accent-default);color:var(--accent-on)">
+                  <span style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase">Featured</span>
+                  <span style="font-size:20px;font-weight:700;line-height:1.15">Make Time</span>
+                  <span style="font-size:13px;opacity:0.7">Jake Knapp</span>
+                </div>
+                <div class="flex gap-2">
+                  <span class="rounded-full px-2.5 py-1" style="background:var(--accent-default);color:var(--accent-on);font-size:12px;font-weight:600">8.0</span>
+                  <span class="rounded-full px-2.5 py-1" style="background:var(--background-subtle);color:var(--content-muted);font-size:12px">Sci-Fi</span>
+                </div>
+                <div class="rounded-[12px] px-3 py-2.5" style="background:var(--accent-subtle);color:var(--content-default);font-size:13px">
+                  Two weeks left on your plan.
+                </div>
+                <div class="mt-1 flex h-11 items-center justify-center rounded-[12px]" style="background:var(--accent-default);color:var(--accent-on);font-size:15px;font-weight:600">
+                  Upgrade
                 </div>
               </div>
             </div>

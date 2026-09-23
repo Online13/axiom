@@ -13,13 +13,14 @@ Each color points to a step of the [palette](/docs/foundations/tokens/palette). 
 
 <RolePreview role="all" />
 
-Colors are grouped into four roles:
+Colors are grouped into five roles:
 
 | Role                        | Answers the question                  |
 | --------------------------- | ------------------------------------- |
 | [`background`](#background) | What is this surface painted with?    |
 | [`content`](#content)       | What color is the text or icon on it? |
 | [`border`](#border)         | What outlines or separates it?        |
+| [`accent`](#accent)         | What carries the brand highlight?     |
 | [`feedback`](#feedback)     | What state is it communicating?       |
 
 ```ts title="Conceptual"
@@ -39,6 +40,7 @@ export type ThemeColors = {
 		link: string;
 	};
 	border: { default: string; subtle: string; strong: string; focus: string };
+	accent: { default: string; subtle: string; on: string };
 	feedback: {
 		info: string;
 		infoSubtle: string;
@@ -97,6 +99,20 @@ Outlines and separators. Most borders use `default`; the other keys change the w
 - `subtle` divides content inside a surface that already has an outline.
 - `strong` is for controls that need to stay visible when empty: an unchecked checkbox or radio.
 - `focus` shows the focused input or the selected item.
+
+## `accent`
+
+The brand highlight — the one saturated color that is not a state. It is a fill, not a text color: put `on` on top of `default`, never `default` on a light surface.
+
+<RolePreview role="accent" />
+
+<ColorRoleTable role="accent" />
+
+- `default` is the filled highlight: a featured badge, a selected chip, a promoted card.
+- `subtle` is the tinted version, for a background that carries `content.default` text.
+- `on` is the text and icon color that sits on `default`. It stays dark in both themes, because the accent stays light in both.
+
+Unlike the other roles, `accent` keeps the same palette step in light and dark: yellow at step 500 is already light enough to read against black, and dimming it would cost the brand its recognition.
 
 ## `feedback`
 
