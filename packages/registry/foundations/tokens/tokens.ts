@@ -67,6 +67,8 @@ export type Metrics = {
 	touchTarget: number;
 	/** How far a button-like target shrinks while held. */
 	pressScale: number;
+	/** How far a modal surface shrinks when another one opens over it, per level of depth. */
+	stackScale: number;
 	screenMargin: number;
 	hairline: number;
 };
@@ -325,6 +327,7 @@ export const sizes = {
 export const metrics = {
 	touchTarget: 44,
 	pressScale: 0.97,
+	stackScale: 0.915,
 	screenMargin: 16,
 	hairline: StyleSheet.hairlineWidth,
 } satisfies Metrics;

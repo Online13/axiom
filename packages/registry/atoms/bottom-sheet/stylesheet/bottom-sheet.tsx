@@ -29,7 +29,7 @@ export type { KeyboardBehavior, SnapPoint } from "../use-bottom-sheet";
 
 export type BottomSheetContentProps = Omit<
 	UseBottomSheetContentOptions,
-	"bottomOffset"
+	"bottomOffset" | "stackScale"
 > & {
 	/** Dims the screen behind the sheet. The dimming follows the sheet position. */
 	overlay?: boolean;
@@ -54,7 +54,11 @@ function BottomSheetContent({
 	const margin = tokens.metrics.screenMargin;
 	const bottomOffset = detached ? insets.bottom + tokens.spacing[2] : 0;
 
-	const sheet = useBottomSheetContent({ ...options, bottomOffset });
+	const sheet = useBottomSheetContent({
+		...options,
+		bottomOffset,
+		stackScale: tokens.metrics.stackScale,
+	});
 	if (!sheet.mounted) return null;
 
 	const colors = components.bottomSheet.default.default;
@@ -72,9 +76,15 @@ function BottomSheetContent({
 				) : null}
 				<GestureDetector gesture={sheet.gesture}>
 					<Animated.View
-						accessibilityViewIsModal
+						accessibilityViewIsModal={sheet.isTop}
+						importantForAccessibility={
+							sheet.isTop ? "yes" : "no-hide-descendants"
+						}
 						style={[
 							styles.sheet,
+							// A covered sheet keeps its shape but stops answering: a button left
+							// visible beside the sheet above it can't be pressed.
+							!sheet.isTop && styles.inert,
 							{
 								height: sheet.sheetHeight,
 								bottom: bottomOffset,
@@ -291,6 +301,9 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		overflow: "hidden",
+	},
+	inert: {
+		pointerEvents: "none",
 	},
 	fill: {
 		flex: 1,

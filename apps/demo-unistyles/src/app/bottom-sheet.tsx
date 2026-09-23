@@ -27,6 +27,10 @@ function Rows({ count }: { count: number }) {
 export default function BottomSheetScreen() {
 	const [index, setIndex] = useState(0);
 	const [dismissible, setDismissible] = useState(true);
+	const [filtersOpen, setFiltersOpen] = useState(false);
+	const [sortOpen, setSortOpen] = useState(false);
+	const [resetOpen, setResetOpen] = useState(false);
+	const [pushes, setPushes] = useState(true);
 	const [mapOpen, setMapOpen] = useState(false);
 	const [events, setEvents] = useState<string[]>([]);
 	const [keyboardBehavior, setKeyboardBehavior] =
@@ -187,6 +191,97 @@ export default function BottomSheetScreen() {
 			</Section>
 
 			<Section
+				title="Stacked sheets"
+				description="Each sheet opened over another scales it down, then lets it grow back on close."
+			>
+				<Row
+					label="Second sheet pushes"
+					description="stack={false} opens over the first without scaling it"
+				>
+					<Switch
+						value={pushes}
+						onValueChange={setPushes}
+						accessibilityLabel="Second sheet pushes"
+					/>
+				</Row>
+				<Button
+					variant="outline"
+					fullWidth
+					onPress={() => setFiltersOpen(true)}
+				>
+					Filters
+				</Button>
+
+				<BottomSheet.Root open={filtersOpen} onOpenChange={setFiltersOpen}>
+					<BottomSheet.Content
+						snapPoints={["55%"]}
+						dismissible={dismissible}
+					>
+						<BottomSheet.Handle />
+						<BottomSheet.Header title="Filters" closeButton />
+						<View style={styles.stackBody}>
+							<Text color="muted">
+								Open the next sheet and watch this one step back.
+							</Text>
+							<Button
+								variant="outline"
+								fullWidth
+								onPress={() => setSortOpen(true)}
+							>
+								Sort by…
+							</Button>
+						</View>
+					</BottomSheet.Content>
+				</BottomSheet.Root>
+
+				<BottomSheet.Root open={sortOpen} onOpenChange={setSortOpen}>
+					<BottomSheet.Content
+						stack={pushes}
+						snapPoints={["40%"]}
+						dismissible={dismissible}
+					>
+						<BottomSheet.Handle />
+						<BottomSheet.Header title="Sort by" closeButton />
+						<View style={styles.stackBody}>
+							<Text color="muted">
+								A third level is as deep as it goes: the first sheet stays
+								where it is.
+							</Text>
+							<Button
+								variant="ghost"
+								fullWidth
+								onPress={() => setResetOpen(true)}
+							>
+								Reset everything
+							</Button>
+						</View>
+					</BottomSheet.Content>
+				</BottomSheet.Root>
+
+				<BottomSheet.Root open={resetOpen} onOpenChange={setResetOpen}>
+					<BottomSheet.Content detached dismissible={dismissible}>
+						<BottomSheet.Handle />
+						<View style={styles.stackBody}>
+							<Text variant="bodyLg" weight="semibold" align="center">
+								Reset every filter?
+							</Text>
+							<Button
+								fullWidth
+								onPress={() => {
+									record("reset");
+									setResetOpen(false);
+									setSortOpen(false);
+									setFiltersOpen(false);
+								}}
+							>
+								Reset
+							</Button>
+						</View>
+					</BottomSheet.Content>
+				</BottomSheet.Root>
+			</Section>
+
+			<Section
 				title="No overlay, always open"
 				description="The screen stays interactive behind the sheet."
 			>
@@ -238,6 +333,10 @@ const styles = StyleSheet.create((theme) => ({
 	form: {
 		paddingHorizontal: theme.tokens.metrics.screenMargin,
 		paddingBottom: theme.tokens.spacing[4],
+	},
+	stackBody: {
+		paddingHorizontal: theme.tokens.metrics.screenMargin,
+		gap: theme.tokens.spacing[3],
 	},
 	mapRow: {
 		paddingVertical: theme.tokens.spacing[3],

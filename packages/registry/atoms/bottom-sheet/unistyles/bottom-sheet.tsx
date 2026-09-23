@@ -27,7 +27,7 @@ export type { KeyboardBehavior, SnapPoint } from "../use-bottom-sheet";
 
 export type BottomSheetContentProps = Omit<
 	UseBottomSheetContentOptions,
-	"bottomOffset"
+	"bottomOffset" | "stackScale"
 > & {
 	/** Dims the screen behind the sheet. The dimming follows the sheet position. */
 	overlay?: boolean;
@@ -54,7 +54,11 @@ function BottomSheetContent({
 		? rt.insets.bottom + theme.tokens.spacing[2]
 		: 0;
 
-	const sheet = useBottomSheetContent({ ...options, bottomOffset });
+	const sheet = useBottomSheetContent({
+		...options,
+		bottomOffset,
+		stackScale: theme.tokens.metrics.stackScale,
+	});
 	if (!sheet.mounted) return null;
 
 	return (
@@ -69,9 +73,17 @@ function BottomSheetContent({
 				) : null}
 				<GestureDetector gesture={sheet.gesture}>
 					<Animated.View
-						accessibilityViewIsModal
+						accessibilityViewIsModal={sheet.isTop}
+						importantForAccessibility={
+							sheet.isTop ? "yes" : "no-hide-descendants"
+						}
 						style={[
-							styles.sheet(detached, sheet.sheetHeight, bottomOffset),
+							styles.sheet(
+								detached,
+								sheet.sheetHeight,
+								bottomOffset,
+								sheet.isTop,
+							),
 							style,
 							sheet.sheetStyle,
 						]}
@@ -239,13 +251,21 @@ const styles = StyleSheet.create((theme, rt) => {
 			...StyleSheet.absoluteFillObject,
 			pointerEvents: "box-none",
 		},
-		sheet: (detached: boolean, height: number, bottom: number) => ({
+		sheet: (
+			detached: boolean,
+			height: number,
+			bottom: number,
+			isTop: boolean,
+		) => ({
 			position: "absolute",
 			left: 0,
 			right: 0,
 			overflow: "hidden",
 			height,
 			bottom,
+			// A covered sheet keeps its shape but stops answering: a button left visible beside
+			// the sheet above it can't be pressed.
+			pointerEvents: isTop ? "auto" : "none",
 			backgroundColor: colors.background,
 			borderTopLeftRadius: theme.tokens.radius.xl,
 			borderTopRightRadius: theme.tokens.radius.xl,

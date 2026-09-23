@@ -36,6 +36,9 @@
       "@/components/core/overlay": [
         "./core/overlay/overlay.tsx"
       ],
+      "@/components/core/overlay-stack": [
+        "./core/overlay-stack/overlay-stack.ts"
+      ],
       "@/hooks/use-controllable-state": [
         "./hooks/use-controllable-state/use-controllable-state.ts"
       ],

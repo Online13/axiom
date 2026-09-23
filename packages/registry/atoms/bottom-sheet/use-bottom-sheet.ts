@@ -29,6 +29,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { scheduleOnRN } from "react-native-worklets";
 
+import { useOverlayStack } from "@/components/core/overlay-stack";
 import { useOverlayBackHandler } from "@/hooks/use-overlay-back-handler";
 
 import { useBottomSheet } from "./bottom-sheet-root";
@@ -56,6 +57,10 @@ export type UseBottomSheetContentOptions = {
 	bottomOffset?: number;
 	/** How the sheet reacts when an input inside it opens the keyboard. */
 	keyboardBehavior?: KeyboardBehavior;
+	/** Scales the sheet underneath when this one opens over it. `false` opens over it untouched. */
+	stack?: boolean;
+	/** How far a covered sheet shrinks per level. From `tokens.metrics.stackScale`. */
+	stackScale?: number;
 };
 
 // Critically damped: settles fast without bouncing.
@@ -72,8 +77,11 @@ export function useBottomSheetContent({
 	onDismiss,
 	bottomOffset = 0,
 	keyboardBehavior = "interactive",
+	stack = true,
+	stackScale = 1,
 }: UseBottomSheetContentOptions) {
 	const { open, setOpen } = useBottomSheet();
+	const { depth, isTop } = useOverlayStack(open, stack);
 	const { height: screenHeight } = useWindowDimensions();
 	const insets = useSafeAreaInsets();
 
@@ -117,6 +125,10 @@ export function useBottomSheetContent({
 	const canDismiss = useSharedValue(dismissible);
 	const isReady = useSharedValue(false);
 	const start = useSharedValue(0);
+
+	// Receding under another sheet. Depth only changes when a sheet opens or closes, so this is a
+	// spring started by that change, not a value tracked frame by frame from the sheet above.
+	const coveredScale = useSharedValue(1);
 
 	// The keyboard covers the bottom safe area, so the sheet only rises by what's above it.
 	const keyboard = useReanimatedKeyboardAnimation();
@@ -214,6 +226,10 @@ export function useBottomSheetContent({
 		sheetHeight,
 	]);
 
+	useEffect(() => {
+		coveredScale.value = withSpring(stackScale ** depth, SPRING);
+	}, [depth, stackScale]);
+
 	// `extend`: go to the highest snap point when the keyboard opens.
 	const highestIndex = snapPositions.indexOf(Math.min(...snapPositions));
 	useAnimatedReaction(
@@ -241,13 +257,14 @@ export function useBottomSheetContent({
 		return Math.min(lift, Math.max(0, topLimit.value + translateY.value));
 	});
 
-	useOverlayBackHandler(open, dismissible ? requestClose : undefined);
+	useOverlayBackHandler(open && isTop, dismissible ? requestClose : undefined);
 
 	const nativeGesture = useMemo(() => Gesture.Native(), []);
 
 	const panGesture = useMemo(
 		() =>
 			Gesture.Pan()
+				.enabled(isTop)
 				.activeOffsetY([-8, 8])
 				.simultaneousWithExternalGesture(nativeGesture)
 				.onStart(() => {
@@ -320,6 +337,7 @@ export function useBottomSheetContent({
 					scheduleOnRN(requestIndex, target);
 				}),
 		[
+			isTop,
 			nativeGesture,
 			start,
 			translateY,
@@ -364,7 +382,10 @@ export function useBottomSheetContent({
 	});
 
 	const sheetStyle = useAnimatedStyle(() => ({
-		transform: [{ translateY: translateY.value - keyboardLift.value }],
+		transform: [
+			{ translateY: translateY.value - keyboardLift.value },
+			{ scale: coveredScale.value },
+		],
 	}));
 
 	// Keeps the footer at the bottom of the screen at every snap point, and lets it leave with the sheet.
@@ -393,6 +414,7 @@ export function useBottomSheetContent({
 	return {
 		mounted,
 		open,
+		isTop,
 		dismissible,
 		close: requestClose,
 		sheetHeight,

@@ -17,6 +17,7 @@ export const metrics = {
 	pressScale: 0.97,
 	screenMargin: 16,
 	hairline: StyleSheet.hairlineWidth,
+	stackScale: 0.915,
 } satisfies Metrics;
 ```
 
@@ -26,12 +27,15 @@ export const metrics = {
 | `pressScale`   | 0.97             | Scale a button-like element takes while it is held      |
 | `screenMargin` | 16pt             | Horizontal padding between content and the screen edges |
 | `hairline`     | 1 physical pixel | Separators and thin borders                             |
+| `stackScale`   | 0.915            | How much a sheet shrinks per level in a stack           |
 
 ## Usage
 
 [Tappable](/docs/core/tappable) reads `touchTarget` and adds `hitSlop` when an element is smaller, so a 24pt icon button still gets a 44pt touch area.
 
 `pressScale` is the value [Button](/docs/atoms/button), [IconButton](/docs/atoms/icon-button) and [FloatingButton](/docs/atoms/floating-button) hand to `Tappable`'s `pressScale` prop. Lower it for a firmer press, or set it to `1` to keep the fill change as the only feedback.
+
+`stackScale` is how far a [BottomSheet](/docs/atoms/bottom-sheet#stacking) recedes when another one opens over it, applied once per level and capped at two levels. Set it to `1` to keep the sheet underneath at full size and leave the new overlay as the only sign that something opened on top.
 
 ```tsx title="Conceptual"
 <ScrollView

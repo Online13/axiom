@@ -79,6 +79,13 @@
 			]
 		},
 		{
+			"name": "overlay-stack",
+			"type": "core",
+			"files": [
+				"core/overlay-stack/overlay-stack.ts"
+			]
+		},
+		{
 			"name": "use-controllable-state",
 			"type": "hooks",
 			"files": [
@@ -564,6 +571,7 @@
 			"internalDependencies": [
 				"icon-button",
 				"overlay",
+				"overlay-stack",
 				"portal",
 				"slot",
 				"tappable",

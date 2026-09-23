@@ -39,6 +39,7 @@
     "menu",
     "option-item",
     "overlay",
+    "overlay-stack",
     "passcode",
     "portal",
     "radio",
