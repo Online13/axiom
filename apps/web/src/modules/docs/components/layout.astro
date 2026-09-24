@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from 'astro:transitions';
+import ThemeScript from '../../brand/ThemeScript.astro';
 ---
 
 <html lang="en">
@@ -11,30 +12,9 @@ import { ClientRouter } from 'astro:transitions';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@300;500&family=JetBrains+Mono:wght@400;500&display=swap"
     />
-    <!--
-      Paints the stored theme before first render so the page never flashes the wrong one.
-      next-themes (inside RootProvider) owns the `theme` key once React hydrates; this only
-      replays it, and again after each view transition, since a swap resets <html>.
-    -->
-    <script is:inline>
-      (() => {
-        const apply = () => {
-          const stored = localStorage.getItem('theme');
-          const dark =
-            stored === 'dark' ||
-            (stored !== 'light' &&
-              window.matchMedia('(prefers-color-scheme: dark)').matches);
-
-          document.documentElement.classList.toggle('dark', dark);
-          document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
-        };
-
-        apply();
-        document.addEventListener('astro:after-swap', apply);
-      })();
-    </script>
+    <ThemeScript />
     <ClientRouter />
   </head>
   <body

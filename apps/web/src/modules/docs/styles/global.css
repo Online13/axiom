@@ -74,6 +74,32 @@
 	--color-fd-muted-foreground: #8a8a8a;
 }
 
+/* Mystery: the site's secret palette, a night-violet take on dark. It keeps `.dark` too. */
+:root[data-theme="mystery"] {
+	--color-fd-background: #0c0a18;
+	--color-fd-foreground: #ece8ff;
+	--color-fd-muted: #16122c;
+	--color-fd-muted-foreground: #8b84b0;
+	--color-fd-popover: #120f26;
+	--color-fd-popover-foreground: #ece8ff;
+	--color-fd-card: #120f26;
+	--color-fd-card-foreground: #ece8ff;
+	--color-fd-border: #2b2548;
+	--color-fd-primary: #ece8ff;
+	--color-fd-primary-foreground: #0c0a18;
+	--color-fd-secondary: #16122c;
+	--color-fd-secondary-foreground: #ece8ff;
+	--color-fd-accent: #1f1a3a;
+	--color-fd-accent-foreground: #ece8ff;
+	--color-fd-ring: #5b5287;
+}
+
+:root[data-theme="mystery"] #nd-sidebar {
+	--color-fd-muted: #16122c;
+	--color-fd-secondary: #1f1a3a;
+	--color-fd-muted-foreground: #8b84b0;
+}
+
 /* Container values shared with the landing (src/modules/landing/styles/global.css). */
 :root {
 	--container-max: 1440px;

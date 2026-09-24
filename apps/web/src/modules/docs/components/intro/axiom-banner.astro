@@ -1,119 +1,214 @@
 ---
-// Banner for the introduction: the wordmark on one side, the system drawn as a stack of layers on the other.
+// Banner for the introduction: the logo and tagline on one side, the system drawn as a stack of layers on the other,
+// over a board of circuit traces. Everything is SVG and HTML; the art is always dark, whatever the docs theme.
 // Foundations sit at the bottom, Blocks on top, the same order as the proof chain described on the page.
+import { Logo } from "../../../brand/Logo";
 
-const layers = ['Foundations', 'Atoms', 'Molecules', 'Organisms', 'Templates', 'Blocks'];
+const layers = ["Foundations", "Atoms", "Molecules", "Organisms", "Templates", "Blocks"];
+
+// One layer is a rhombus seen in isometric view; each layer above sits `gap` units higher.
+const gap = 55;
+const plane = "0,111 245,0 467,121 223,238";
+// Labels run along the front-right edge, from the front corner toward the right corner.
+const edgeAngle = (Math.atan2(121 - 238, 467 - 223) * 180) / Math.PI;
+
+// Circuit traces on a 1672×941 board. Corners are rounded with a quarter arc.
+const traces = [
+	"M208 238 H313 Q329 238 329 222 V0",
+	"M267 165 H525 Q541 165 541 181 V941",
+	"M175 265 V382 Q175 398 159 398 H0",
+	"M0 630 H56",
+	"M147 630 H243 Q259 630 259 646 V715",
+	"M259 750 V662 M277 735 H700 Q728 735 728 763 V941",
+	"M259 678 H390 Q406 678 406 694 V941",
+	"M0 480 H150 Q175 480 175 505 V941",
+	"M1421 138 H1570 Q1586 138 1586 154 V244",
+	"M1500 0 V180 Q1500 200 1520 200 H1672",
+	"M1611 545 H1520 Q1502 545 1502 563 V645",
+	"M1519 660 H1600 Q1618 660 1618 642 V558",
+	"M1502 679 V941",
+];
+
+// [x, y, size, light?]
+const pads: [number, number, number, boolean][] = [
+	[117, 170, 92, true],
+	[222, 128, 45, false],
+	[63, 266, 45, false],
+	[56, 583, 92, false],
+	[241, 715, 36, false],
+	[1387, 120, 34, false],
+	[1570, 244, 35, true],
+	[1611, 514, 43, false],
+	[1485, 645, 34, true],
+];
+
+const gridX = [117, 210, 1405, 1540];
+const gridY = [168, 250, 480, 630, 735];
 ---
 
-<figure class="not-prose axb" aria-label="Axiom: from foundations to blocks">
-  <div class="axb__copy">
-    <span class="axb__word">AXIOM</span>
-    <p class="axb__tagline">Build mobile experiences,<br />not isolated components.</p>
-  </div>
+<figure class="not-prose axb" aria-label="Axiom: build mobile experiences, not isolated components. From foundations to blocks.">
+<div class="axb__frame">
+	<svg class="axb__board" viewBox="0 0 1672 941" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+		<g class="axb__grid">
+			{gridX.map((x) => <line x1={x} y1="0" x2={x} y2="941" />)}
+			{gridY.map((y) => <line x1="0" y1={y} x2="1672" y2={y} />)}
+		</g>
+		<g class="axb__traces">{traces.map((d) => <path d={d} />)}</g>
+		<g>
+			{
+				pads.map(([x, y, s, light]) => (
+					<rect x={x} y={y} width={s} height={s} rx={s * 0.12} class={light ? "axb__pad axb__pad--light" : "axb__pad"} />
+				))
+			}
+		</g>
+	</svg>
 
-  <div class="axb__scene" aria-hidden="true">
-    <div class="axb__stack">
-      {
-        layers.map((name, i) => (
-          <div class="axb__layer" style={`--i:${i}`}>
-            <span class="axb__label">{name}</span>
-          </div>
-        ))
-      }
-    </div>
-  </div>
+	<div class="axb__copy">
+		<Logo className="axb__logo" />
+		<p class="axb__tagline">Build mobile experiences,<br />not isolated components.</p>
+	</div>
+
+	<svg class="axb__stack" viewBox="-4 -4 475 522" aria-hidden="true">
+		{
+			layers.map((name, i) => {
+				const y = (layers.length - 1 - i) * gap;
+				return (
+					<g transform={`translate(0 ${y})`}>
+						<polygon points={plane} class="axb__plane" />
+						<text transform={`translate(238 220) rotate(${edgeAngle})`} class="axb__label">
+							{name}
+						</text>
+					</g>
+				);
+			})
+		}
+	</svg>
+</div>
 </figure>
 
 <style>
-  .axb {
-    --axb-line: color-mix(in oklab, var(--color-fd-foreground) 6%, transparent);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: center;
-    min-height: 20rem;
-    margin: 0 0 2.5rem;
-    overflow: hidden;
-    border: 1px solid var(--color-fd-border);
-    background-color: var(--color-fd-card);
-    background-image:
-      linear-gradient(var(--axb-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--axb-line) 1px, transparent 1px);
-    background-size: 28px 28px;
-  }
+	.axb {
+		--axb-bg: #0b0b0b;
+		--axb-ink: #f6f4ef;
+		--axb-muted: #a8a8a8;
+		--axb-line: rgb(255 255 255 / 0.26);
+		--axb-grid: rgb(255 255 255 / 0.07);
+		--axb-pad: #4b4b4b;
+		container-type: inline-size;
+		margin: 0 0 2.5rem;
+		overflow: hidden;
+		border: 1px solid var(--color-fd-border);
+		border-radius: 0.75rem;
+		background: var(--axb-bg);
+		color: var(--axb-ink);
+	}
 
-  .axb__copy {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 2.5rem;
-  }
+	.axb__frame {
+		position: relative;
+		aspect-ratio: 16 / 9;
+	}
 
-  .axb__word {
-    font-size: clamp(2.25rem, 5vw, 3.5rem);
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: 0.2em;
-    color: var(--color-fd-foreground);
-  }
+	.axb__board {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
 
-  .axb__tagline {
-    font-size: 1.05rem;
-    line-height: 1.5;
-    color: var(--color-fd-muted-foreground);
-  }
+	.axb__grid line {
+		stroke: var(--axb-grid);
+		stroke-dasharray: 4 6;
+	}
 
-  .axb__scene {
-    height: 100%;
-    min-height: 20rem;
-    display: grid;
-    place-items: center;
-    perspective: 1400px;
-  }
+	.axb__traces path {
+		fill: none;
+		stroke: var(--axb-line);
+		stroke-width: 1.2;
+	}
 
-  .axb__stack {
-    position: relative;
-    width: 180px;
-    height: 180px;
-    margin-top: 80px;
-    transform-style: preserve-3d;
-    transform: rotateX(58deg) rotateZ(-42deg);
-  }
+	.axb__pad {
+		fill: var(--axb-pad);
+	}
 
-  .axb__layer {
-    position: absolute;
-    inset: 0;
-    border: 1px solid var(--color-fd-muted-foreground);
-    background: var(--color-fd-card);
-    transform: translateZ(calc(var(--i) * 30px));
-  }
+	.axb__pad--light {
+		fill: var(--axb-ink);
+	}
 
-  .axb__label {
-    position: absolute;
-    left: 8px;
-    bottom: 6px;
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-fd-muted-foreground);
-  }
+	.axb__copy {
+		position: absolute;
+		left: 15.7%;
+		top: 36%;
+		display: flex;
+		flex-direction: column;
+		gap: 2.2cqw;
+	}
 
-  @media (max-width: 767px) {
-    .axb {
-      grid-template-columns: 1fr;
-    }
+	.axb__copy :global(.axb__logo) {
+		font-size: 7.5cqw;
+		color: var(--axb-ink);
+	}
 
-    .axb__copy {
-      padding: 1.75rem 1.5rem 0;
-    }
+	.axb__tagline {
+		margin: 0;
+		font-family: "Outfit", var(--font-sans);
+		font-weight: 300;
+		font-size: 2.65cqw;
+		line-height: 1.25;
+		color: var(--axb-muted);
+	}
 
-    .axb__scene {
-      min-height: 16rem;
-    }
+	.axb__stack {
+		position: absolute;
+		left: 59.5%;
+		top: 16.5%;
+		width: 28.4%;
+		overflow: visible;
+	}
 
-    .axb__stack {
-      scale: 0.8;
-      margin-top: 40px;
-    }
-  }
+	.axb__plane {
+		fill: var(--axb-bg);
+		stroke: rgb(255 255 255 / 0.75);
+		stroke-width: 1.2;
+		stroke-linejoin: round;
+	}
+
+	.axb__label {
+		font-family: var(--font-sans);
+		font-size: 18px;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		fill: rgb(255 255 255 / 0.8);
+	}
+
+	/* Narrow columns: the copy stays readable and the stack moves below it. */
+	@container (max-width: 560px) {
+		.axb__frame {
+			aspect-ratio: auto;
+		}
+
+		.axb__copy {
+			position: relative;
+			left: auto;
+			top: auto;
+			padding: 2rem 1.5rem 0;
+			gap: 0.75rem;
+		}
+
+		.axb__copy :global(.axb__logo) {
+			font-size: clamp(2rem, 13cqw, 2.75rem);
+		}
+
+		.axb__tagline {
+			font-size: clamp(0.95rem, 4.5cqw, 1.05rem);
+		}
+
+		.axb__stack {
+			position: relative;
+			left: auto;
+			top: auto;
+			display: block;
+			width: 62%;
+			margin: 1.5rem auto 2rem;
+		}
+	}
 </style>

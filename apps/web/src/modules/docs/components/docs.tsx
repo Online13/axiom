@@ -10,6 +10,8 @@ import { RootProvider } from "fumadocs-ui/provider/astro";
 import { Banner } from "fumadocs-ui/components/banner";
 import type { AstroProviderProps } from "fumadocs-core/framework/astro";
 import SearchDialog from "./search";
+import { Logo } from "../../brand/Logo";
+import { ThemeSwitcher } from "../../brand/ThemeSwitcher";
 
 const githubUrl = "https://github.com/Online13/axiom";
 
@@ -22,6 +24,12 @@ function preventActiveFolderNavigation(event: MouseEvent<HTMLElement>) {
 	);
 
 	if (link?.querySelector(":scope > [data-icon]")) event.preventDefault();
+}
+
+function DocsThemeSwitch() {
+	return (
+		<ThemeSwitcher className="text-fd-muted-foreground [--theme-switch-line:var(--color-fd-border)] [--theme-switch-bg:var(--color-fd-popover)]" />
+	);
 }
 
 export function Docs({
@@ -42,8 +50,8 @@ export function Docs({
 			pathname={pathname}
 			params={params}
 			navigate={navigate}
-			// The header switcher is the only toggle; `d` stays free for typing in the page.
-			theme={{ hotKey: false }}
+			// The site-wide ThemeScript owns the theme (it adds a `mystery` palette next-themes can't express).
+			theme={{ enabled: false }}
 			search={{ SearchDialog }}
 		>
 			{/* No `id`: the banner has no close button, so the status can't be dismissed for good. */}
@@ -68,8 +76,7 @@ export function Docs({
 			<DocsLayout
 				tree={tree}
 				containerProps={{ onClickCapture: preventActiveFolderNavigation }}
-				// System is the default theme, so it gets its own segment rather than being hidden.
-				themeSwitch={{ mode: "light-dark-system" }}
+				slots={{ themeSwitch: DocsThemeSwitch }}
 				// Collapsing is desktop-only; the mobile drawer trigger stays.
 				sidebar={{ collapsible: false }}
 				// Root folders become tabs; 'navbar' puts them on their own row under the header.
@@ -79,8 +86,8 @@ export function Docs({
 					mode: "top",
 					// Plain anchor: the logo leaves the docs for the landing page, outside the client router.
 					title: (props) => (
-						<a {...props} href="/">
-							<span className="font-bold tracking-[0.2em]">AXIOM</span>
+						<a {...props} href="/" aria-label="Axiom home">
+							<Logo className="text-lg" />
 						</a>
 					),
 				}}
