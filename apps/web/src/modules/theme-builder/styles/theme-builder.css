@@ -12,6 +12,13 @@
 	--line-strong: #3a3a3a;
 	--raised: #101010;
 	--accent: #ff5a1f;
+	--hover: #1a1a1a;
+	--pass: #6ee7a0;
+	--pass-line: #2f6b3f;
+	--warn: #f5cd6e;
+	--warn-line: #6b5a2f;
+	--fail: #ff8f8f;
+	--fail-line: #6b2f2f;
 
 	--header-h: 64px;
 	--panel-w: 340px;
@@ -22,6 +29,35 @@
 		"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
 	color-scheme: dark;
+}
+
+/* Site theme, set on <html> by brand/ThemeScript.astro. The phones keep their own --ax-* vars. */
+:root[data-theme="light"] {
+	--bg: #fafafa;
+	--fg: #0a0a0a;
+	--muted: #6b6b6b;
+	--line: #dedede;
+	--line-strong: #c4c4c4;
+	--raised: #ffffff;
+	--hover: #efefef;
+	--pass: #1b7a43;
+	--pass-line: #9fd4b3;
+	--warn: #8a6100;
+	--warn-line: #e3c98a;
+	--fail: #b42318;
+	--fail-line: #f0b1ab;
+
+	color-scheme: light;
+}
+
+:root[data-theme="mystery"] {
+	--bg: #0c0a18;
+	--fg: #ece8ff;
+	--muted: #8b84b0;
+	--line: #2b2548;
+	--line-strong: #3d3563;
+	--raised: #120f26;
+	--hover: #1f1a3a;
 }
 
 *,
@@ -113,9 +149,15 @@ input[type="color"] {
 	justify-content: flex-end;
 }
 
+.tb-header__theme {
+	--theme-switch-line: var(--line);
+	--theme-switch-bg: var(--raised);
+	color: var(--fg);
+}
+
 .tb-wordmark {
-	font-weight: 700;
-	letter-spacing: 0.2em;
+	font-size: 1.25rem;
+	line-height: 1;
 }
 
 .tb-header__sep {
@@ -789,18 +831,18 @@ input[type="color"] {
 }
 
 .tb-contrast__grade[data-tone="pass"] {
-	border-color: #2f6b3f;
-	color: #6ee7a0;
+	border-color: var(--pass-line);
+	color: var(--pass);
 }
 
 .tb-contrast__grade[data-tone="warn"] {
-	border-color: #6b5a2f;
-	color: #f5cd6e;
+	border-color: var(--warn-line);
+	color: var(--warn);
 }
 
 .tb-contrast__grade[data-tone="fail"] {
-	border-color: #6b2f2f;
-	color: #ff8f8f;
+	border-color: var(--fail-line);
+	color: var(--fail);
 }
 
 /* ---------- Palettes ---------- */
@@ -922,7 +964,7 @@ input[type="color"] {
 }
 
 .tb-note--warn {
-	color: #f5cd6e;
+	color: var(--warn);
 }
 
 .tb-tabs__sep {
@@ -1014,7 +1056,7 @@ input[type="color"] {
 
 .tb-fontpicker__list button:hover,
 .tb-fontpicker__list button[aria-selected="true"] {
-	background: #1a1a1a;
+	background: var(--hover);
 }
 
 .tb-fontpicker__list button svg {

@@ -3,6 +3,8 @@ import { Download, FolderOpen, Save } from "lucide-react";
 import { saveTheme } from "../state/library";
 import { theme$ } from "../state/theme";
 import { announce, ui$ } from "../state/ui";
+import { Logo } from "../../brand/Logo";
+import { ThemeSwitcher } from "../../brand/ThemeSwitcher";
 import { ThemeName } from "./ThemeName";
 
 export const Header = observer(function Header() {
@@ -14,8 +16,8 @@ export const Header = observer(function Header() {
 	return (
 		<header className="tb-header">
 			<div className="tb-header__side">
-				<a href="/" className="tb-wordmark">
-					AXIOM
+				<a href="/" className="tb-wordmark" aria-label="Axiom home">
+					<Logo />
 				</a>
 				<span className="tb-header__sep" aria-hidden="true" />
 				<span className="tb-header__title">Theme builder</span>
@@ -24,6 +26,7 @@ export const Header = observer(function Header() {
 			<ThemeName />
 
 			<div className="tb-header__side tb-header__side--end">
+				<ThemeSwitcher className="tb-header__theme" />
 				<button type="button" className="tb-btn tb-btn--ghost" onClick={save}>
 					<Save size={15} aria-hidden="true" />
 					<span>Save</span>

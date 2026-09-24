@@ -4,6 +4,7 @@
 // variables come from the seeds instead of the shipped tokens.
 import "@docs/styles/preview.css";
 import "../styles/theme-builder.css";
+import ThemeScript from "../../brand/ThemeScript.astro";
 
 interface Props {
 	title?: string;
@@ -19,6 +20,7 @@ const {
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
+		<ThemeScript />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
