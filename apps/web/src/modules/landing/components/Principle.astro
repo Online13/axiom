@@ -11,7 +11,7 @@ interface Props {
 const { index, class: className } = Astro.props;
 ---
 
-<section class:list={['section', 'section--solid', 'principle', className]} aria-label={`Principle ${index}`}>
+<section class:list={['section', 'principle', className]} aria-label={`Principle ${index}`}>
 	<div class="container principle__inner">
 		<div class="principle__copy">
 			<p class="eyebrow principle__label">Principle <span>/</span> {index}</p>

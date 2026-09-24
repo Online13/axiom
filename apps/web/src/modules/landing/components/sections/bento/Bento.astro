@@ -5,7 +5,7 @@ import OwnershipCard from "./OwnershipCard.astro";
 import AgentCard from "./AgentCard.astro";
 ---
 
-<section class="section section--solid workflow" id="workflow">
+<section class="section workflow" id="workflow">
 	<div class="container workflow__inner">
 		<header class="workflow__header">
 			<div>
@@ -32,7 +32,7 @@ import AgentCard from "./AgentCard.astro";
 		min-width: 0;
 		overflow: hidden;
 		border: 1px solid var(--line);
-		background: #0d0d0d;
+		background: var(--card);
 	}
 	.bento__card::before {
 		content: "";
@@ -40,8 +40,8 @@ import AgentCard from "./AgentCard.astro";
 		inset: 0;
 		pointer-events: none;
 		background-image:
-			linear-gradient(#ffffff04 1px, transparent 1px),
-			linear-gradient(90deg, #ffffff04 1px, transparent 1px);
+			linear-gradient(var(--grid) 1px, transparent 1px),
+			linear-gradient(90deg, var(--grid) 1px, transparent 1px);
 		background-size: 32px 32px;
 		mask-image: linear-gradient(to bottom right, #000, transparent 65%);
 	}
@@ -129,7 +129,7 @@ import AgentCard from "./AgentCard.astro";
 		min-width: 9rem;
 		padding: 0.75rem 1rem;
 		border: 1px solid var(--line);
-		background: #0d0d0d;
+		background: var(--card);
 		font: 0.78rem var(--font-mono);
 		text-align: center;
 		color: var(--muted);
@@ -171,7 +171,7 @@ import AgentCard from "./AgentCard.astro";
 	.file-tree strong {
 		padding-left: 2rem;
 		font-weight: 500;
-		color: #ff875d;
+		color: var(--accent-text);
 	}
 	.bento__agents {
 		grid-area: agents;

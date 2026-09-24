@@ -110,8 +110,13 @@ const isShared = (line: string) =>
 const highlighted = await Promise.all(
 	variants.map(async (variant) => ({
 		...variant,
-		lines: (await codeToTokens(variant.code, { lang: "tsx", theme: "dark-plus" }))
-			.tokens,
+		lines: (
+			await codeToTokens(variant.code, {
+				lang: "tsx",
+				themes: { dark: "dark-plus", light: "light-plus" },
+				defaultColor: false,
+			})
+		).tokens,
 	})),
 );
 ---
@@ -142,7 +147,7 @@ const highlighted = await Promise.all(
 					>
 						<!-- prettier-ignore -->
 						<pre><code>{variant.code.split('\n').map((line, n) => (
-							<span class:list={['code__line', { 'is-shared': isShared(line), 'is-empty': line.trim() === '' }]}>{variant.lines[n]?.length ? variant.lines[n].map((token) => <span style={{ color: token.color }}>{token.content}</span>) : ' '}</span>
+							<span class:list={['code__line', { 'is-shared': isShared(line), 'is-empty': line.trim() === '' }]}>{variant.lines[n]?.length ? variant.lines[n].map((token) => <span style={token.htmlStyle}>{token.content}</span>) : ' '}</span>
 						))}</code></pre>
 						<p class="code__note">{variant.note}</p>
 					</div>
@@ -464,6 +469,15 @@ const highlighted = await Promise.all(
 
 	.code__line.is-shared {
 		border-left-color: var(--line);
+	}
+
+	/* Tokens carry both palettes as --shiki-dark / --shiki-light. */
+	.code__line > span {
+		color: var(--shiki-dark);
+	}
+
+	:global(:root[data-theme="light"]) .code__line > span {
+		color: var(--shiki-light);
 	}
 
 	/* Shared lines recede without losing their highlighting; the border stays sharp. */

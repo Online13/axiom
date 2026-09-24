@@ -3,6 +3,14 @@
 	--fg: #f5f5f5;
 	--muted: #8a8a8a;
 	--line: #262626;
+	--line-soft: #222222;
+	--surface: #111111;
+	--surface-raised: #161616;
+	--card: #0d0d0d;
+	--grid: #ffffff04;
+	--accent: #ff5a1f;
+	--accent-text: #ff875d;
+	color-scheme: dark;
 
 	--nav-h: 80px;
 	/* Full-screen sections leave 80px of the next section visible. */
@@ -13,6 +21,34 @@
 	--font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 	--font-mono:
 		"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+/* Theme palettes. `data-theme` holds the resolved theme; see ThemeSwitcher.astro. */
+:root[data-theme="light"] {
+	--bg: #fafafa;
+	--fg: #0a0a0a;
+	--muted: #6b6b6b;
+	--line: #dedede;
+	--line-soft: #e8e8e8;
+	--surface: #f2f2f2;
+	--surface-raised: #ebebeb;
+	--card: #ffffff;
+	--grid: #00000006;
+	--accent-text: #c2410c;
+	color-scheme: light;
+}
+
+:root[data-theme="mystery"] {
+	--bg: #0c0a18;
+	--fg: #ece8ff;
+	--muted: #8b84b0;
+	--line: #2b2548;
+	--line-soft: #221d3b;
+	--surface: #120f26;
+	--surface-raised: #1a1634;
+	--card: #100d21;
+	--grid: #b9a8ff08;
+	--accent-text: #c4b5fd;
 }
 
 *,
@@ -27,6 +63,8 @@ html {
 }
 
 body {
+	position: relative;
+	isolation: isolate;
 	margin: 0;
 	background: var(--bg);
 	color: var(--fg);
@@ -57,11 +95,6 @@ p {
 
 .section {
 	position: relative;
-}
-
-/* Opaque sections hide the page shader to pull focus onto their content. */
-.section--solid {
-	background: var(--bg);
 }
 
 .section--full {
@@ -102,7 +135,7 @@ p {
 }
 
 .btn {
-	--btn-hover-bg: #ff5a1f;
+	--btn-hover-bg: var(--accent);
 	--btn-hover-fg: #fff;
 
 	position: relative;
@@ -120,8 +153,8 @@ p {
 }
 
 .btn--hover-white {
-	--btn-hover-bg: #fff;
-	--btn-hover-fg: #0a0a0a;
+	--btn-hover-bg: var(--fg);
+	--btn-hover-fg: var(--bg);
 }
 
 .btn::before {

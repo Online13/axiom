@@ -1,0 +1,119 @@
+---
+import {
+	CARD_RADIUS,
+	GROUP_WIDTH,
+	TILE_HEIGHT,
+	TILE_RADIUS,
+	left,
+	right,
+	route,
+	type Shape,
+} from '../lib/backdrops';
+
+const groups: { side: 'left' | 'right'; shapes: Shape[] }[] = [
+	{ side: 'left', shapes: left },
+	{ side: 'right', shapes: right },
+];
+---
+
+<div class="backdrop" aria-hidden="true">
+	{
+		groups.map(({ side, shapes }) => (
+			<svg class={`backdrop__group backdrop__group--${side}`} width={GROUP_WIDTH} fill="none">
+				<defs>
+					<pattern
+						id={`backdrop-${side}`}
+						patternUnits="userSpaceOnUse"
+						width={GROUP_WIDTH}
+						height={TILE_HEIGHT}
+					>
+						{shapes.map((shape) => {
+							switch (shape.kind) {
+								case 'card':
+									return (
+										<rect
+											class="backdrop__card"
+											x={shape.x}
+											y={shape.y}
+											width={shape.w}
+											height={shape.h}
+											rx={CARD_RADIUS}
+										/>
+									);
+								case 'tile':
+									return (
+										<rect
+											class="backdrop__tile"
+											x={shape.x}
+											y={shape.y}
+											width={shape.s}
+											height={shape.s}
+											rx={TILE_RADIUS}
+										/>
+									);
+								case 'line':
+									return <path class="backdrop__line" d={route(shape.points)} />;
+							}
+						})}
+					</pattern>
+				</defs>
+				<rect width="100%" height="100%" fill={`url(#backdrop-${side})`} />
+			</svg>
+		))
+	}
+</div>
+
+<style>
+	/* Spans the whole page (body is its containing block), so it scrolls with the content. */
+	.backdrop {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		overflow: hidden;
+		pointer-events: none;
+	}
+
+	.backdrop__group {
+		position: absolute;
+		top: 0;
+		height: 100%;
+	}
+
+	.backdrop__group--left {
+		left: 0;
+		transform-origin: top left;
+	}
+
+	.backdrop__group--right {
+		right: 0;
+		transform-origin: top right;
+	}
+
+	.backdrop__card,
+	.backdrop__tile,
+	.backdrop__line {
+		stroke-width: 1;
+	}
+
+	.backdrop__card {
+		fill: var(--surface);
+		stroke: var(--line-soft);
+	}
+
+	.backdrop__tile {
+		fill: var(--surface-raised);
+		stroke: var(--line);
+	}
+
+	.backdrop__line {
+		stroke: var(--line-soft);
+	}
+
+	/* Smaller shapes on phones; the taller box keeps the scaled strip full height. */
+	@media (max-width: 900px) {
+		.backdrop__group {
+			height: calc(100% / 0.55);
+			scale: 0.55;
+		}
+	}
+</style>

@@ -1,4 +1,5 @@
 ---
+import { Logo } from '../../../brand/Logo';
 import { docs, githubUrl } from '../../lib/links';
 import Button from '../Button.astro';
 
@@ -12,7 +13,7 @@ const links = [
 
 <header class="nav">
 	<div class="container nav__inner">
-		<a href="/" class="nav__logo">AXIOM</a>
+		<a href="/" class="nav__logo" aria-label="Axiom home"><Logo /></a>
 		<div class="nav__right">
 			<nav class="nav__links">
 				{links.map((link) => <a href={link.href}>{link.label}</a>)}
@@ -49,8 +50,7 @@ const links = [
 	}
 
 	.nav__logo {
-		font-weight: 700;
-		letter-spacing: 0.2em;
+		font-size: 1.375rem;
 	}
 
 	.nav__right {
