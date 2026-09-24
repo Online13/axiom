@@ -1,0 +1,52 @@
+---
+/*
+ * The site theme, shared by the landing, the docs and the theme builder.
+ * Include it first in each layout's <head>: it runs before paint, so a saved theme never
+ * flashes the dark default. It sets on <html>:
+ *   data-theme-pref  the choice: dark | light | system | mystery
+ *   data-theme       the resolved palette: dark | light | mystery
+ *   .dark            for dark and mystery, which the docs' Tailwind `dark:` variant reads
+ * ThemeSwitcher.tsx drives it through `window.axiomTheme`.
+ */
+---
+
+<script is:inline>
+	(() => {
+		// Same key next-themes used in the docs, so an existing choice carries over.
+		const KEY = 'theme';
+		const PREFERENCES = ['dark', 'light', 'system', 'mystery'];
+		const root = document.documentElement;
+		const light = matchMedia('(prefers-color-scheme: light)');
+		let preference = 'dark';
+		try {
+			const saved = localStorage.getItem(KEY);
+			if (PREFERENCES.includes(saved)) preference = saved;
+		} catch {}
+
+		const apply = () => {
+			const theme = preference === 'system' ? (light.matches ? 'light' : 'dark') : preference;
+			root.dataset.themePref = preference;
+			root.dataset.theme = theme;
+			root.classList.toggle('dark', theme !== 'light');
+			root.style.colorScheme = theme === 'light' ? 'light' : 'dark';
+		};
+
+		light.addEventListener('change', apply);
+		// The docs' view transitions swap <html> attributes; put the theme back.
+		document.addEventListener('astro:after-swap', apply);
+		apply();
+
+		window.axiomTheme = {
+			get: () => preference,
+			set(next) {
+				if (!PREFERENCES.includes(next)) return;
+				preference = next;
+				try {
+					localStorage.setItem(KEY, next);
+				} catch {}
+				apply();
+				window.dispatchEvent(new Event('axiom:themechange'));
+			},
+		};
+	})();
+</script>
