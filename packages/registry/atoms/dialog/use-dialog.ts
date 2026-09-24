@@ -6,6 +6,7 @@ import {
 } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 
+import { useOverlayStack } from "@/components/core/overlay-stack";
 import { useControllableState } from "@/hooks/use-controllable-state";
 import { useOverlayBackHandler } from "@/hooks/use-overlay-back-handler";
 
@@ -54,13 +55,15 @@ export function useDialogContent({
 	onDismiss,
 }: UseDialogContentOptions) {
 	const { open, setOpen } = useDialogContext();
+	// Pushes a sheet it opens over back, like a second sheet would.
+	const { isTop } = useOverlayStack(open);
 	const [mounted, setMounted] = useState(open);
 	if (open && !mounted) setMounted(true);
 
 	const progress = useSharedValue(0);
 	const close = () => setOpen(false);
 
-	useOverlayBackHandler(open, dismissible ? close : undefined);
+	useOverlayBackHandler(open && isTop, dismissible ? close : undefined);
 
 	useEffect(() => {
 		if (!mounted) return;
@@ -84,5 +87,5 @@ export function useDialogContent({
 		transform: [{ scale: 0.94 + progress.value * 0.06 }],
 	}));
 
-	return { mounted, open, close, dismissible, surfaceStyle };
+	return { mounted, open, isTop, close, dismissible, surfaceStyle };
 }

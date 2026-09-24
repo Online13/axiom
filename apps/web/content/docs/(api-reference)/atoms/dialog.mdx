@@ -57,7 +57,7 @@ description: "Compound confirmation modal."
 npx axiom add dialog
 ```
 
-Also copies: [`portal`](/docs/core/portal), [`overlay`](/docs/core/overlay), [`button`](/docs/atoms/button), `use-overlay-back-handler`, which closes the dialog on a back action (Android back button, and with a navigator the back gesture and header back button). See [navigation](/docs/configuration#navigation).
+Also copies: [`portal`](/docs/core/portal), [`overlay`](/docs/core/overlay), [`button`](/docs/atoms/button), `use-overlay-back-handler`, which closes the dialog on a back action (Android back button, and with a navigator the back gesture and header back button). See [navigation](/docs/configuration#navigation). And `overlay-stack`: a dialog opened from a [BottomSheet](/docs/atoms/bottom-sheet#dialog-and-menu) pushes the sheet back, and the back action closes whichever of the two is on top.
 
 Installs: `react-native-reanimated`, `react-native-worklets`.
 

@@ -512,11 +512,17 @@ over the sheet that asked for it:
 It still takes the drag, the backdrop and the back action while it's on top.
 What it doesn't do is touch the sheet underneath.
 
-<Callout title="Dialog and Menu don't scale the sheet yet">
-	A [Dialog](/docs/atoms/dialog) or a [Menu](/docs/atoms/menu) opened from a
-	sheet renders above it and leaves it at full size. Letting them push the
-	sheet back is planned; the shared registry is built for it.
-</Callout>
+### Dialog and Menu
+
+A [Dialog](/docs/atoms/dialog) and a [Menu](/docs/atoms/menu) join the same
+stack, with nothing to set up.
+
+A dialog opened from a sheet pushes it back one level, like a second sheet
+would. A menu takes the top spot but leaves the sheet at full size: it is
+anchored to a trigger on that sheet, and scaling the sheet would slide the
+trigger out from under it. Either way, the sheet underneath hands over the
+drag, the touches, the back action and the screen reader until the dialog or
+menu closes.
 
 ## When to use it
 

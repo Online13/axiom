@@ -88,13 +88,18 @@ function DialogContent({
 
 	return (
 		<Portal>
-			<View style={styles.layer}>
+			<View
+				importantForAccessibility={
+					dialog.isTop ? "auto" : "no-hide-descendants"
+				}
+				style={[styles.layer, !dialog.isTop && styles.inert]}
+			>
 				<Overlay
 					visible={dialog.open}
 					onPress={dialog.dismissible ? dialog.close : undefined}
 				/>
 				<Animated.View
-					accessibilityViewIsModal
+					accessibilityViewIsModal={dialog.isTop}
 					accessibilityRole="alert"
 					style={[
 						styles.surface,
@@ -253,6 +258,10 @@ const styles = StyleSheet.create({
 		...StyleSheet.absoluteFill,
 		alignItems: "center",
 		justifyContent: "center",
+	},
+	// Covered by a surface opened over it: it keeps its place but stops answering.
+	inert: {
+		pointerEvents: "none",
 	},
 	surface: {
 		boxShadow: "0px 12px 32px hsla(0, 0%, 0%, 0.18)",

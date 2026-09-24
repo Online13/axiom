@@ -129,7 +129,12 @@ function MenuContent({
 
 	return (
 		<Portal>
-			<View style={styles.layer}>
+			<View
+				importantForAccessibility={
+					content.isTop ? "auto" : "no-hide-descendants"
+				}
+				style={[styles.layer, !content.isTop && styles.inert]}
+			>
 				<Overlay
 					visible={content.open}
 					onPress={content.close}
@@ -151,7 +156,7 @@ function MenuContent({
 					</Animated.View>
 				) : null}
 				<Animated.View
-					accessibilityViewIsModal
+					accessibilityViewIsModal={content.isTop}
 					accessibilityRole="menu"
 					onLayout={content.onLayout}
 					style={[
@@ -356,6 +361,10 @@ export const Menu = {
 const styles = StyleSheet.create({
 	layer: {
 		...StyleSheet.absoluteFill,
+	},
+	// Covered by a surface opened over it: it keeps its place but stops answering.
+	inert: {
+		pointerEvents: "none",
 	},
 	preview: {
 		position: "absolute",

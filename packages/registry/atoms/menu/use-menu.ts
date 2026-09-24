@@ -20,6 +20,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { scheduleOnRN } from "react-native-worklets";
 
+import { useOverlayStack } from "@/components/core/overlay-stack";
 import { useControllableState } from "@/hooks/use-controllable-state";
 import { useOverlayBackHandler } from "@/hooks/use-overlay-back-handler";
 
@@ -120,8 +121,11 @@ export function useMenuContent({
 	if (menu.open && !mounted) setMounted(true);
 
 	const progress = useSharedValue(0);
+	// Takes the top spot without pushing the surface below back: the menu is anchored to a trigger
+	// on it, and scaling that surface would slide the trigger out from under the menu.
+	const { isTop } = useOverlayStack(menu.open, false);
 
-	useOverlayBackHandler(menu.open, () => menu.setOpen(false));
+	useOverlayBackHandler(menu.open && isTop, () => menu.setOpen(false));
 
 	useEffect(() => {
 		if (!mounted) return;
@@ -208,6 +212,7 @@ export function useMenuContent({
 	return {
 		mounted,
 		open: menu.open,
+		isTop,
 		close: () => menu.setOpen(false),
 		anchor,
 		position,

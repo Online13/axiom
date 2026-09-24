@@ -957,6 +957,7 @@
 			"internalDependencies": [
 				"button",
 				"overlay",
+				"overlay-stack",
 				"portal",
 				"slot",
 				"tappable",
@@ -1000,6 +1001,7 @@
 			"internalDependencies": [
 				"icon",
 				"overlay",
+				"overlay-stack",
 				"portal",
 				"slot",
 				"tappable",

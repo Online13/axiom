@@ -7,7 +7,9 @@ import {
 	type KeyboardBehavior,
 } from "@/components/ui/bottom-sheet";
 import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Menu } from "@/components/ui/menu";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { Switch } from "@/components/ui/switch";
 import { Text } from "@/components/ui/text";
@@ -276,6 +278,62 @@ export default function BottomSheetScreen() {
 							>
 								Reset
 							</Button>
+						</View>
+					</BottomSheet.Content>
+				</BottomSheet.Root>
+			</Section>
+
+			<Section
+				title="Dialog and Menu over a sheet"
+				description="The dialog pushes the sheet back, the menu leaves it in place."
+			>
+				<BottomSheet.Root>
+					<BottomSheet.Trigger asChild>
+						<Button variant="outline" fullWidth>
+							Shared list
+						</Button>
+					</BottomSheet.Trigger>
+					<BottomSheet.Content dismissible={dismissible}>
+						<BottomSheet.Handle />
+						<BottomSheet.Header title="Weekend trip" closeButton />
+						<View style={styles.stackBody}>
+							<Menu.Root>
+								<Menu.Trigger action="press" asChild>
+									<Button variant="outline" fullWidth>
+										Sort
+									</Button>
+								</Menu.Trigger>
+								<Menu.Content>
+									<Menu.Item onPress={() => record("sort by name")}>
+										Name
+									</Menu.Item>
+									<Menu.Item onPress={() => record("sort by date")}>
+										Date added
+									</Menu.Item>
+								</Menu.Content>
+							</Menu.Root>
+							<Dialog.Root>
+								<Dialog.Trigger asChild>
+									<Button variant="ghost" fullWidth>
+										Leave list
+									</Button>
+								</Dialog.Trigger>
+								<Dialog.Content>
+									<Dialog.Title>Leave this list?</Dialog.Title>
+									<Dialog.Description>
+										You will need a new invite to join it again.
+									</Dialog.Description>
+									<Dialog.Actions>
+										<Dialog.Cancel>Cancel</Dialog.Cancel>
+										<Dialog.Action
+											destructive
+											onPress={() => record("left list")}
+										>
+											Leave
+										</Dialog.Action>
+									</Dialog.Actions>
+								</Dialog.Content>
+							</Dialog.Root>
 						</View>
 					</BottomSheet.Content>
 				</BottomSheet.Root>
