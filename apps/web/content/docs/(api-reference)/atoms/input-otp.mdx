@@ -63,6 +63,7 @@ import { InputOTP } from "@/components/ui/input-otp";
 | `autoFocus`          | `boolean`                     | `true`                | Opens the keyboard on the first empty cell when the screen appears.     |
 | `secure`             | `boolean`                     | `false`               | Shows dots instead of digits, for a PIN.                                |
 | `error`              | `boolean`                     | `false`               | Red borders and a shake. Clear the value to let the user retry.         |
+| `haptic`             | `HapticKind \| false`         | `'error'`             | Haptic played when `error` turns on. `false` turns it off.              |
 | `success`            | `boolean`                     | `false`               | Green cells, once the code is accepted.                                 |
 | `disabled`           | `boolean`                     | `false`               | Blocks input, for example while the code is being verified.             |
 | `accessibilityLabel` | `string`                      | `'Verification code'` | What screen readers announce for the field.                             |
@@ -73,6 +74,10 @@ The field always sets `textContentType="oneTimeCode"`, so iOS suggests the code 
 Cell colors come from `inputOtp.default.{default,active,invalid,success,disabled}` in the [component tokens](/docs/foundations/component-tokens).
 
 Under the cells sits one hidden `TextInput`: it receives the system keyboard, paste and SMS autofill, and the cells only draw its value. This is why deleting and pasting behave like in any text field.
+
+## Haptics
+
+When `error` turns on, the field plays an `error` haptic along with the shake, so a wrong code is felt even without looking. Unlike the shake, it still plays with Reduce Motion on. Pass `haptic={false}` to turn it off. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

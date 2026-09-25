@@ -20,12 +20,20 @@ export const radius = {
 } satisfies Radius;
 ```
 
-| Key    | Typical use               |
-| ------ | ------------------------- |
-| `sm`   | Badges, chips, checkboxes |
-| `md`   | Buttons, inputs           |
-| `lg`   | Cards, list groups        |
-| `xl`   | Bottom sheets, dialogs    |
-| `full` | Avatars, pills, switches  |
+| Key    | Typical use                    |
+| ------ | ------------------------------ |
+| `sm`   | Checkboxes, small tags         |
+| `md`   | Buttons, inputs                |
+| `lg`   | Cards, list groups             |
+| `xl`   | Bottom sheets, dialogs         |
+| `full` | Avatars, chips, pills, switches |
+
+## The radius of a control
+
+Button, IconButton, FloatingButton, Chip, Input and SegmentedControl read their radius from their [component tokens](/docs/foundations/component-tokens), not from here. Changing `md` still reaches them, since their tokens point to it. To make only the buttons pills, change their tokens file:
+
+```ts title="theme/components/button.ts"
+radius: tokens.radius.full,
+```
 
 A nested surface should use a smaller radius than its container, so the corners look parallel.

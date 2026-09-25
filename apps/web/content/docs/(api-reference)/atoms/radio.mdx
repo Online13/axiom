@@ -95,6 +95,7 @@ import { Radio, RadioGroup } from "@/components/ui/radio";
 | `orientation`        | `'vertical' \| 'horizontal'` | `'vertical'` | Layout direction of the radios.                                                        |
 | `gap`                | `SpacingToken`               | `3`          | Space between radios.                                                                  |
 | `disabled`           | `boolean`                    | `false`      | Disables every radio in the group.                                                     |
+| `haptic`             | `HapticKind \| false`        | —            | Haptic played when the user picks another radio. Off unless you pass a kind.           |
 | `accessibilityLabel` | `string`                     | —            | Name of the question, announced once for the group (`accessibilityRole="radiogroup"`). |
 | `children`           | `ReactNode`                  | —            | `Radio` elements, or any element wrapping them.                                        |
 | `style`              | `StyleProp<ViewStyle>`       | —            | Extra styles for the group.                                                            |
@@ -111,6 +112,10 @@ import { Radio, RadioGroup } from "@/components/ui/radio";
 | `style`       | `StyleProp<ViewStyle>`                                         | —       | Extra styles for the row.                                              |
 
 A `Radio` outside a `RadioGroup` doesn't do anything useful: the group owns the selection.
+
+## Haptics
+
+Radios play nothing by default. Pass a kind to `RadioGroup`, usually `"selection"`, to play one when the user picks another option. Pressing the selected radio again plays nothing. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

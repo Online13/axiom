@@ -2,7 +2,7 @@
 
 Thanks for your interest in Axiom. This guide covers setting up the repository, finding something to work on, and opening a pull request.
 
-Axiom is in early development. The repository contains the documentation site, the landing page, four demo apps, an empty registry and a first version of the CLI. No component is written yet, so most contributions for now are on documentation and tooling.
+Axiom is in early development. The repository contains the documentation site, the landing page, four demo apps, a 55-entry registry and a CLI with `add` and `init`. The 45 components with styling variants have both `stylesheet` and `unistyles` implementations.
 
 ## Before contributing
 
@@ -80,7 +80,7 @@ Not every label may be in use yet. If nothing fits, open an issue describing wha
 - Tests
 - Examples
 
-Component, behavior and pattern contributions depend on the source code landing in the repository. Until then, discuss them in an issue.
+Discuss component, behavior and pattern contributions in an issue before starting work.
 
 ## Adding a component
 

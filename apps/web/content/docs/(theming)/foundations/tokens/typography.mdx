@@ -7,23 +7,31 @@ description: "The type scale, from 34 down to 12."
 	The values shown here are conceptual and may change.
 </Callout>
 
-Each style sets a font size, a line height and a weight together. The names and sizes follow the iOS text styles. Display styles carry negative `letterSpacing`, so headings stay tight at large sizes; body styles leave it at zero.
+Each style sets a font size, a line height, a weight and a font family together. The names and sizes follow the iOS text styles. Display styles carry negative `letterSpacing`, so headings stay tight at large sizes; body styles leave it at zero.
 
 <TypeScale />
 
+Two fonts cover the whole scale: `heading` for titles, `body` for everything else. `undefined` keeps the system font.
+
 ```ts title="Conceptual"
+export const fonts: Fonts = {
+	heading: undefined,
+	body: undefined,
+};
+
 export const typography = {
 	largeTitle: {
 		fontSize: 34,
 		lineHeight: 40,
 		fontWeight: "800",
 		letterSpacing: -0.8,
+		fontFamily: fonts.heading,
 	},
-	title1: { fontSize: 28, lineHeight: 33, fontWeight: "800", letterSpacing: -0.6 },
-	title2: { fontSize: 22, lineHeight: 27, fontWeight: "700", letterSpacing: -0.4 },
-	title3: { fontSize: 20, lineHeight: 25, fontWeight: "700", letterSpacing: -0.3 },
-	headline: { fontSize: 17, lineHeight: 22, fontWeight: "600", letterSpacing: -0.2 },
-	body: { fontSize: 17, lineHeight: 23, fontWeight: "400" },
+	title1: { /* … */ fontFamily: fonts.heading },
+	title2: { /* … */ fontFamily: fonts.heading },
+	title3: { /* … */ fontFamily: fonts.heading },
+	headline: { /* … */ fontFamily: fonts.heading },
+	body: { fontSize: 17, lineHeight: 23, fontWeight: "400", fontFamily: fonts.body },
 	callout: { fontSize: 16, lineHeight: 21, fontWeight: "400" },
 	subheadline: { fontSize: 15, lineHeight: 20, fontWeight: "400" },
 	footnote: { fontSize: 13, lineHeight: 18, fontWeight: "500" },
@@ -40,4 +48,17 @@ export const typography = {
 <Text>Saved automatically.</Text> // body
 ```
 
-To use a custom font, add `fontFamily` to the styles.
+## Custom fonts
+
+Load the fonts with [expo-font](https://docs.expo.dev/versions/latest/sdk/font/), then set their names in `fonts`:
+
+```ts title="theme/tokens.ts"
+export const fonts: Fonts = {
+	heading: "Fraunces_600SemiBold",
+	body: "Inter_400Regular",
+};
+```
+
+`largeTitle` to `headline` use `heading`; `body` to `caption` use `body`. Every component reads the typography styles, so the change reaches them all.
+
+A font file holds a single weight on Android. When a family has one file per weight, the `fontWeight` of a style does not switch files: pick the file that matches the weight you want most, or give a style its own `fontFamily`.

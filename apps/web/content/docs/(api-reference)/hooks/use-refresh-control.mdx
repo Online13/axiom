@@ -114,26 +114,31 @@ Giving it a height that follows `distance` would push the list down a second tim
 
 ## Options
 
-| Option        | Type                             | Default | Description                                                                                                                               |
-| ------------- | -------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `onRefresh`   | `() => Promise<unknown> \| void` | —       | Called on release past the threshold, or by `refresh()`.                                                                                  |
-| `threshold`   | `number`                         | `64`    | Distance in pt that arms the refresh. Also the height held while refreshing.                                                              |
-| `maxDistance` | `number`                         | `160`   | Limit of the rubber band.                                                                                                                 |
-| `minDuration` | `number`                         | `500`   | Minimum time in ms spent in `refreshing`, so a fast request doesn't flash the indicator.                                                  |
-| `enabled`     | `boolean`                        | `true`  | Turns the pull off, for example while the first page loads. Set to `false` mid-pull, it drops the pull and lets a running refresh finish. |
-| `onArmed`     | `() => void`                     | —       | Called once per pull when the status becomes `armed`. A good place for a light haptic.                                                    |
+| Option        | Type                             | Default   | Description                                                                                                                               |
+| ------------- | -------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `onRefresh`   | `() => Promise<unknown> \| void` | —         | Called on release past the threshold, or by `refresh()`.                                                                                  |
+| `threshold`   | `number`                         | `64`      | Distance in pt that arms the refresh. Also the height held while refreshing.                                                              |
+| `maxDistance` | `number`                         | `160`     | Limit of the rubber band.                                                                                                                 |
+| `minDuration` | `number`                         | `500`     | Minimum time in ms spent in `refreshing`, so a fast request doesn't flash the indicator.                                                  |
+| `enabled`     | `boolean`                        | `true`    | Turns the pull off, for example while the first page loads. Set to `false` mid-pull, it drops the pull and lets a running refresh finish. |
+| `onArmed`     | `() => void`                     | —         | Called once per pull when the status becomes `armed`.                                                                                     |
+| `haptic`      | `HapticKind \| false`            | `'light'` | Haptic played once per pull when the status becomes `armed`. `false` turns it off.                                                        |
+
+## Haptics
+
+A `light` haptic plays once per pull, when the list is pulled far enough to refresh: the user feels that releasing now will refresh. Pass `haptic: false` to turn it off, or another kind to change it. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Return value
 
-| Key           | Type                                                           | Description                                                                             |
-| ------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Key           | Type                                                           | Description                                                                                  |
+| ------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | `status`      | `'idle' \| 'pulling' \| 'armed' \| 'refreshing' \| 'settling'` | Current status. React state. See [statuses](/docs/behaviors/pull-to-refresh#how-it-works).   |
-| `refreshing`  | `boolean`                                                      | `true` while `status` is `refreshing`.                                                  |
+| `refreshing`  | `boolean`                                                      | `true` while `status` is `refreshing`.                                                       |
 | `distance`    | `SharedValue<number>`                                          | Current pull distance in pt, after [resistance](/docs/behaviors/pull-to-refresh#resistance). |
-| `progress`    | `SharedValue<number>`                                          | `distance / threshold`, from `0` to `1`.                                                |
-| `refresh`     | `() => Promise<void>`                                          | Starts a refresh without a pull.                                                        |
-| `gesture`     | `GestureType`                                                  | For the `GestureDetector` around the list.                                              |
-| `scrollProps` | `object`                                                       | Props to spread on the `Animated` `ScrollView`, `FlatList`, `SectionList` or FlashList. |
+| `progress`    | `SharedValue<number>`                                          | `distance / threshold`, from `0` to `1`.                                                     |
+| `refresh`     | `() => Promise<void>`                                          | Starts a refresh without a pull.                                                             |
+| `gesture`     | `GestureType`                                                  | For the `GestureDetector` around the list.                                                   |
+| `scrollProps` | `object`                                                       | Props to spread on the `Animated` `ScrollView`, `FlatList`, `SectionList` or FlashList.      |
 
 The whole return value is typed as `RefreshControl`, which is what a custom indicator takes.
 

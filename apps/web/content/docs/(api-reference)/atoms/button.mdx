@@ -93,13 +93,26 @@ import { Button } from '@/components/ui/button';
 | `onLongPress`        | `() => void`                                       | —          | Called after the finger is held on the button.                                                                                                                                                                      |
 | `loading`            | `boolean`                                          | `false`    | Replaces the leading icon with a spinner and blocks presses. The button keeps its width so the layout doesn't jump.                                                                                                 |
 | `disabled`           | `boolean`                                          | `false`    | Blocks presses, applies the `disabled` component tokens and sets `accessibilityState.disabled`.                                                                                                                     |
-| `leadingIcon`        | `IconName`                                         | —          | Icon before the label, from your [icon registry](/docs/atoms/icon#the-registry). Rendered with [Icon](/docs/atoms/icon), sized and colored for the button.                                                                    |
+| `leadingIcon`        | `IconName`                                         | —          | Icon before the label, from your [icon registry](/docs/atoms/icon#the-registry). Rendered with [Icon](/docs/atoms/icon), sized and colored for the button.                                                          |
 | `trailingIcon`       | `IconName`                                         | —          | Icon after the label, typically a chevron or an external-link mark.                                                                                                                                                 |
 | `fullWidth`          | `boolean`                                          | `false`    | Stretches the button to the width of its parent. Common for the main action at the bottom of a screen.                                                                                                              |
-| `asChild`            | `boolean`                                          | `false`    | Renders the child element instead of a pressable, and merges the button props and styles into it. See [Slot](/docs/core/slot).                                                                                           |
+| `asChild`            | `boolean`                                          | `false`    | Renders the child element instead of a pressable, and merges the button props and styles into it. See [Slot](/docs/core/slot).                                                                                      |
 | `accessibilityLabel` | `string`                                           | label text | What screen readers announce. Required when the label alone is ambiguous.                                                                                                                                           |
-| `pressScale`         | `number`                                           | `0.97`     | Scale the button takes while it is held, on top of the `pressed` color tokens. Set `1` to keep the color change alone. |
+| `pressScale`         | `number`                                           | `0.97`     | Scale the button takes while it is held, on top of the `pressed` color tokens. Set `1` to keep the color change alone.                                                                                              |
+| `haptic`             | `HapticKind \| false`                              | —          | Haptic played when the finger touches. Off unless you pass a kind.                                                                                                                                                  |
 | `style`              | `StyleProp<ViewStyle>`                             | —          | Extra styles for the container, applied after the variant styles.                                                                                                                                                   |
+
+## Haptics
+
+Buttons play nothing by default, like iOS buttons: a tap is not an event. For an action that deserves weight, such as paying or sending, pass a kind. It plays when the finger touches, together with the press scale:
+
+```tsx
+<Button onPress={pay} haptic="light">
+	Pay €84.00
+</Button>
+```
+
+Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

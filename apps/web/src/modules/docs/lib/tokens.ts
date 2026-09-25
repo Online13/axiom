@@ -339,19 +339,41 @@ export const colorRoles = {
 			dark: "blue.400",
 		},
 	},
-	accent: {
+	primary: {
 		default: {
-			usage: "Brand highlight fill — badges, selected chips",
+			usage: "Solid buttons, selected chips and tabs, checked controls",
+			light: "gray.950",
+			dark: "gray.50",
+		},
+		pressed: {
+			usage: "A primary fill while it is pressed",
+			light: "gray.600",
+			dark: "gray.400",
+		},
+		subtle: {
+			usage: "Tinted primary background",
+			light: "gray.100",
+			dark: "gray.900",
+		},
+		on: {
+			usage: "Text and icons on a primary fill",
+			light: "hsla(0, 0%, 100%, 1)",
+			dark: "gray.950",
+		},
+	},
+	highlight: {
+		default: {
+			usage: "Brand highlight fill — featured badges",
 			light: "yellow.500",
 			dark: "yellow.500",
 		},
 		subtle: {
-			usage: "Tinted accent background",
+			usage: "Tinted highlight background",
 			light: "yellow.100",
 			dark: "yellow.950",
 		},
 		on: {
-			usage: "Text and icons on an accent fill",
+			usage: "Text and icons on a highlight fill",
 			light: "gray.950",
 			dark: "gray.950",
 		},
@@ -435,10 +457,10 @@ export const componentTokens = {
 	button: {
 		solid: {
 			default: {
-				background: "background.inverse",
-				foreground: "content.inverse",
+				background: "primary.default",
+				foreground: "primary.on",
 			},
-			pressed: { background: "content.muted" },
+			pressed: { background: "primary.pressed" },
 			disabled: {
 				background: "border.default",
 				foreground: "content.disabled",
@@ -473,14 +495,14 @@ export const componentTokens = {
 	switch: {
 		default: {
 			default: { track: "border.default", thumb: "background.elevated" },
-			checked: { track: "feedback.success" },
+			checked: { track: "primary.default" },
 			disabled: { track: "border.subtle" },
 		},
 	},
 	checkbox: {
 		default: {
-			default: { border: "border.strong", indicator: "content.inverse" },
-			checked: { background: "content.link", border: "content.link" },
+			default: { border: "border.strong", indicator: "primary.on" },
+			checked: { background: "primary.default", border: "primary.default" },
 			invalid: { border: "feedback.error" },
 			disabled: { border: "border.subtle", indicator: "content.disabled" },
 		},
@@ -513,11 +535,11 @@ export const componentTokens = {
 		},
 		solid: {
 			default: {
-				background: "background.inverse",
-				foreground: "content.inverse",
+				background: "primary.default",
+				foreground: "primary.on",
 			},
-			pressed: { background: "content.muted" },
-			selected: { background: "content.muted" },
+			pressed: { background: "primary.pressed" },
+			selected: { background: "primary.pressed" },
 			disabled: {
 				background: "border.default",
 				foreground: "content.disabled",
@@ -527,10 +549,10 @@ export const componentTokens = {
 	floatingButton: {
 		solid: {
 			default: {
-				background: "background.inverse",
-				foreground: "content.inverse",
+				background: "primary.default",
+				foreground: "primary.on",
 			},
-			pressed: { background: "content.muted" },
+			pressed: { background: "primary.pressed" },
 			disabled: {
 				background: "border.default",
 				foreground: "content.disabled",
@@ -548,8 +570,8 @@ export const componentTokens = {
 	},
 	radio: {
 		default: {
-			default: { border: "border.strong", indicator: "content.link" },
-			checked: { border: "content.link" },
+			default: { border: "border.strong", indicator: "primary.default" },
+			checked: { border: "primary.default" },
 			disabled: { border: "border.subtle", indicator: "content.disabled" },
 		},
 	},
@@ -569,8 +591,8 @@ export const componentTokens = {
 		default: {
 			default: {
 				track: "border.default",
-				fill: "content.link",
-				thumb: "content.link",
+				fill: "primary.default",
+				thumb: "primary.default",
 			},
 			disabled: { fill: "content.disabled", thumb: "content.disabled" },
 		},
@@ -646,8 +668,11 @@ export const componentTokens = {
 				foreground: "content.muted",
 			},
 		},
-		accent: {
-			default: { background: "accent.default", foreground: "accent.on" },
+		highlight: {
+			default: {
+				background: "highlight.default",
+				foreground: "highlight.on",
+			},
 		},
 		info: {
 			default: {
@@ -716,9 +741,9 @@ export const componentTokens = {
 			},
 			pressed: { background: "background.subtle" },
 			selected: {
-				background: "background.inverse",
-				foreground: "content.inverse",
-				border: "background.inverse",
+				background: "primary.default",
+				foreground: "primary.on",
+				border: "primary.default",
 			},
 			disabled: { foreground: "content.disabled", border: "border.subtle" },
 		},
@@ -729,8 +754,8 @@ export const componentTokens = {
 			},
 			pressed: { background: "border.default" },
 			selected: {
-				background: "background.inverse",
-				foreground: "content.inverse",
+				background: "primary.default",
+				foreground: "primary.on",
 			},
 			disabled: { foreground: "content.disabled" },
 		},
@@ -833,9 +858,9 @@ export const componentTokens = {
 			pressed: { background: "background.subtle" },
 			today: { foreground: "content.link" },
 			selected: {
-				background: "content.link",
-				foreground: "content.inverse",
-				dot: "content.inverse",
+				background: "primary.default",
+				foreground: "primary.on",
+				dot: "primary.on",
 			},
 			inRange: { foreground: "content.default" },
 			outside: { foreground: "content.subtle" },

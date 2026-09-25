@@ -1,0 +1,53 @@
+---
+// The seven kinds `haptic()` accepts, drawn as the taps they play over time: bar height is the strength.
+// The shapes are approximate: each platform and each device plays them a little differently.
+import TokenFrame from '@docs/components/tokens/token-frame.astro';
+
+// Each tap: [start in ms, strength 0–1, width in ms].
+const kinds: { name: string; use: string; taps: [number, number, number][] }[] = [
+  { name: 'selection', use: 'A value changes: picker, slider step, segment', taps: [[20, 0.25, 10]] },
+  { name: 'light', use: 'A small thing lands: switch, threshold reached', taps: [[20, 0.4, 18]] },
+  { name: 'medium', use: 'Something opens under the finger: long-press menu', taps: [[20, 0.65, 22]] },
+  { name: 'heavy', use: 'A large, final action. Rare', taps: [[20, 0.95, 26]] },
+  { name: 'success', use: 'An action worked', taps: [[20, 0.45, 16], [110, 0.85, 20]] },
+  { name: 'warning', use: 'An action needs attention', taps: [[20, 0.85, 20], [110, 0.45, 16]] },
+  { name: 'error', use: 'An action failed: wrong code', taps: [[20, 0.7, 18], [90, 0.7, 18], [160, 0.9, 22]] },
+];
+
+const span = 200; // ms shown on the axis
+const w = 160;
+const h = 56;
+const x = (ms: number) => (ms / span) * w;
+---
+
+<TokenFrame>
+  <div class="grid gap-px bg-fd-border sm:grid-cols-2 lg:grid-cols-4">
+    {
+      kinds.map((kind) => (
+        <div class="flex flex-col gap-3 bg-fd-card p-4">
+          <svg viewBox={`0 0 ${w} ${h + 1}`} class="h-14 w-full text-fd-foreground" preserveAspectRatio="none" aria-hidden="true">
+            <line x1="0" y1={h} x2={w} y2={h} stroke="currentColor" stroke-opacity="0.2" />
+            {kind.taps.map(([start, strength, width]) => (
+              <rect
+                x={x(start)}
+                y={h - strength * h}
+                width={x(width)}
+                height={strength * h}
+                rx="2"
+                fill={kind.name === 'error' ? 'rgb(239 68 68)' : 'rgb(59 130 246)'}
+                fill-opacity={0.35 + strength * 0.5}
+              />
+            ))}
+          </svg>
+          <div>
+            <code class="text-sm font-medium">{kind.name}</code>
+            <p class="mt-1 text-xs text-fd-muted-foreground">{kind.use}</p>
+          </div>
+        </div>
+      ))
+    }
+    <div class="hidden flex-col justify-end bg-fd-card p-4 text-xs text-fd-muted-foreground lg:flex">
+      Bar height is the strength, the axis is about 200 ms. Approximate: each device plays them a little differently.
+    </div>
+  </div>
+</TokenFrame>

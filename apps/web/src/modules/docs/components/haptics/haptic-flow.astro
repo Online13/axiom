@@ -1,0 +1,43 @@
+---
+// Where a haptic goes: the component names a kind, `haptic()` in your copy of core/haptics.ts
+// translates it for the library you installed, and the library drives the device.
+// The middle step is the only file you edit, so components never import a haptics library.
+import TokenFrame from '@docs/components/tokens/token-frame.astro';
+
+const steps = [
+  { title: 'Component', detail: 'Switch, Slider, Menu…', code: 'haptic("light")', owner: 'Axiom' },
+  { title: 'core/haptics.ts', detail: 'Your copy, a no-op until you wire it', code: 'impactAsync(Light)', owner: 'You', highlight: true },
+  { title: 'Haptics library', detail: 'expo-haptics, react-native-haptic-feedback…', code: 'native call', owner: 'Your choice' },
+  { title: 'Device', detail: 'Taptic Engine, vibration motor', code: 'tap', owner: 'iOS · Android' },
+];
+---
+
+<TokenFrame>
+  <div class="flex flex-col items-stretch gap-2 p-5 md:flex-row md:items-center">
+    {
+      steps.map((step, i) => (
+        <>
+          {i > 0 && (
+            <span class="self-center text-fd-muted-foreground" aria-hidden="true">
+              <span class="md:hidden">↓</span>
+              <span class="hidden md:inline">→</span>
+            </span>
+          )}
+          <div
+            class:list={[
+              'flex flex-1 flex-col gap-1.5 border p-3',
+              step.highlight ? 'border-blue-500 bg-blue-500/5' : 'bg-fd-background',
+            ]}
+          >
+            <div class="flex items-baseline justify-between gap-2">
+              <span class="text-sm font-medium">{step.title}</span>
+              <span class:list={['text-[10px] uppercase tracking-wide', step.highlight ? 'text-blue-500' : 'text-fd-muted-foreground']}>{step.owner}</span>
+            </div>
+            <span class="text-xs text-fd-muted-foreground">{step.detail}</span>
+            <code class="text-xs">{step.code}</code>
+          </div>
+        </>
+      ))
+    }
+  </div>
+</TokenFrame>

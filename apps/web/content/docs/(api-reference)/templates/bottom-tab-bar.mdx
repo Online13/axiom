@@ -81,6 +81,7 @@ import { BottomTabBar } from "@/components/ui/bottom-tab-bar";
 | `onValueChange`  | `(value: string) => void`       | —         | Called when a different enabled item is pressed. This is where a router adapter navigates.                                                         |
 | `variant`        | `'fixed' \| 'floating'`         | `'fixed'` | Pins the bar to the screen edge or renders it as an inset pill.                                                                                    |
 | `hideOnKeyboard` | `boolean`                       | `true`    | Hides the bar while the software keyboard is open, leaving more room for the field.                                                                |
+| `haptic`         | `HapticKind \| false`           | —         | Haptic played when the user switches to another item. Off unless you pass a kind.                                                                  |
 | `safeArea`       | `boolean`                       | `true`    | Adds the bottom safe-area inset. Disable it only when the parent already provides that space.                                                      |
 | `mainAction`     | `ReactElement<IconButtonProps>` | —         | Optional raised action, dropped in the middle of the row whatever the number of items. It performs an action and never becomes the selected route. |
 | `children`       | `ReactNode`                     | —         | Two to five `BottomTabBar.Item` elements.                                                                                                          |
@@ -100,6 +101,10 @@ import { BottomTabBar } from "@/components/ui/bottom-tab-bar";
 | `testID`             | `string`                      | —       | Identifier for navigation tests.                                |
 
 The bar sets the tab accessibility role and selected state. It does not render navigation screens or own a history stack.
+
+## Haptics
+
+The bar plays nothing by default. Some apps play a `"selection"` haptic when the user switches tab: pass it to `BottomTabBar`. Pressing the active item plays nothing. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

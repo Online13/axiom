@@ -15,6 +15,9 @@
 	--ax-radius-md: 12px;
 	--ax-radius-lg: 18px;
 	--ax-radius-xl: 26px;
+	/* Shape of the controls (button, input, segmented control) and of the chips, as in their component tokens. */
+	--ax-radius-control: var(--ax-radius-md);
+	--ax-radius-chip: 999px;
 	--ax-control-sm: 32px;
 	--ax-control-md: 44px;
 	--ax-control-lg: 52px;
@@ -133,30 +136,35 @@
 	line-height: 40px;
 	font-weight: 800;
 	letter-spacing: -0.8px;
+	font-family: var(--ax-font-heading, inherit);
 }
 .ax-title1 {
 	font-size: 28px;
 	line-height: 33px;
 	font-weight: 800;
 	letter-spacing: -0.6px;
+	font-family: var(--ax-font-heading, inherit);
 }
 .ax-title2 {
 	font-size: 22px;
 	line-height: 27px;
 	font-weight: 700;
 	letter-spacing: -0.4px;
+	font-family: var(--ax-font-heading, inherit);
 }
 .ax-title3 {
 	font-size: 20px;
 	line-height: 25px;
 	font-weight: 700;
 	letter-spacing: -0.3px;
+	font-family: var(--ax-font-heading, inherit);
 }
 .ax-headline {
 	font-size: 17px;
 	line-height: 22px;
 	font-weight: 600;
 	letter-spacing: -0.2px;
+	font-family: var(--ax-font-heading, inherit);
 }
 .ax-text {
 	font-size: 17px;
@@ -217,9 +225,9 @@
 	gap: 8px;
 	height: var(--ax-control-md);
 	padding: 0 18px;
-	border-radius: var(--ax-radius-md);
-	background: var(--ax-background-inverse);
-	color: var(--ax-content-inverse);
+	border-radius: var(--ax-radius-control);
+	background: var(--ax-primary-default);
+	color: var(--ax-primary-on);
 	font-size: 17px;
 	font-weight: 600;
 	white-space: nowrap;
@@ -244,14 +252,12 @@
 .ax-btn[data-size="sm"] {
 	height: var(--ax-control-sm);
 	padding: 0 12px;
-	border-radius: var(--ax-radius-sm);
 	font-size: 15px;
 	gap: 6px;
 }
 .ax-btn[data-size="lg"] {
 	height: var(--ax-control-lg);
 	padding: 0 24px;
-	border-radius: var(--ax-radius-lg);
 }
 .ax-btn[data-block] {
 	display: flex;
@@ -296,8 +302,8 @@
 }
 
 .ax-icon-btn[data-variant="solid"] {
-	background: var(--ax-background-inverse);
-	color: var(--ax-content-inverse);
+	background: var(--ax-primary-default);
+	color: var(--ax-primary-on);
 }
 .ax-icon-btn[data-variant="outline"] {
 	box-shadow: inset 0 0 0 1px var(--ax-border-default);
@@ -320,7 +326,7 @@
 	color: var(--ax-content-disabled);
 }
 .ax-icon-btn[data-shape="square"] {
-	border-radius: var(--ax-radius-md);
+	border-radius: var(--ax-radius-control);
 }
 
 /* FloatingButton: a pill floating above the content, pinned above the home indicator. */
@@ -349,8 +355,8 @@
 	height: var(--ax-control-lg);
 	min-width: var(--ax-control-lg);
 	border-radius: 999px;
-	background: var(--ax-background-inverse);
-	color: var(--ax-content-inverse);
+	background: var(--ax-primary-default);
+	color: var(--ax-primary-on);
 	box-shadow: var(--ax-shadow);
 	font-size: 17px;
 	line-height: 22px;
@@ -479,7 +485,7 @@
 	gap: 8px;
 	height: var(--ax-control-md);
 	padding: 0 12px;
-	border-radius: var(--ax-radius-md);
+	border-radius: var(--ax-radius-control);
 	background: var(--ax-background-default);
 	box-shadow: inset 0 0 0 1px var(--ax-border-default);
 	color: var(--ax-content-default);
@@ -489,7 +495,6 @@
 .ax-control[data-size="sm"] {
 	height: var(--ax-control-sm);
 	font-size: 15px;
-	border-radius: var(--ax-radius-sm);
 }
 .ax-control[data-size="lg"] {
 	height: var(--ax-control-lg);
@@ -710,7 +715,7 @@
 }
 
 .ax-switch[data-checked] {
-	background: var(--ax-feedback-success);
+	background: var(--ax-primary-default);
 }
 .ax-switch[data-checked]::after {
 	transform: translateX(20px);
@@ -742,7 +747,7 @@
 	height: 22px;
 	border-radius: 6px;
 	box-shadow: inset 0 0 0 1.5px var(--ax-border-strong);
-	color: var(--ax-content-inverse);
+	color: var(--ax-primary-on);
 }
 
 .ax-radio {
@@ -751,13 +756,13 @@
 
 .ax-checkbox[data-checked],
 .ax-checkbox[data-indeterminate] {
-	background: var(--ax-content-link);
+	background: var(--ax-primary-default);
 	box-shadow: none;
-	color: #fff;
+	color: var(--ax-primary-on);
 }
 
 .ax-radio[data-checked] {
-	box-shadow: inset 0 0 0 7px var(--ax-content-link);
+	box-shadow: inset 0 0 0 7px var(--ax-primary-default);
 }
 
 .ax-checkbox[data-disabled],
@@ -807,7 +812,7 @@
 .ax-slider::after {
 	left: var(--from);
 	right: calc(100% - var(--to));
-	background: var(--ax-content-link);
+	background: var(--ax-primary-default);
 }
 
 .ax-thumb {
@@ -841,7 +846,7 @@
 .ax-segmented {
 	display: flex;
 	padding: 2px;
-	border-radius: 9px;
+	border-radius: var(--ax-radius-control);
 	background: var(--ax-background-subtle);
 	box-shadow: inset 0 0 0 1px var(--ax-border-subtle);
 }
@@ -853,7 +858,7 @@
 	justify-content: center;
 	gap: 6px;
 	height: 30px;
-	border-radius: 7px;
+	border-radius: calc(var(--ax-radius-control) - 2px);
 	color: var(--ax-content-default);
 	font-size: 14px;
 	font-weight: 500;
@@ -1189,6 +1194,10 @@
 	box-shadow: inset 0 0 0 1px var(--ax-border-default);
 	color: var(--ax-content-muted);
 }
+.ax-badge[data-variant="highlight"] {
+	background: var(--ax-highlight-default);
+	color: var(--ax-highlight-on);
+}
 .ax-badge[data-variant="inverse"] {
 	background: var(--ax-background-inverse);
 	color: var(--ax-content-inverse);
@@ -1246,7 +1255,7 @@
 	gap: 6px;
 	height: 34px;
 	padding: 0 14px;
-	border-radius: 999px;
+	border-radius: var(--ax-radius-chip);
 	background: var(--ax-background-default);
 	box-shadow: inset 0 0 0 1px var(--ax-border-default);
 	color: var(--ax-content-default);
@@ -1256,9 +1265,9 @@
 }
 
 .ax-chip[data-selected] {
-	background: var(--ax-background-inverse);
+	background: var(--ax-primary-default);
 	box-shadow: none;
-	color: var(--ax-content-inverse);
+	color: var(--ax-primary-on);
 }
 
 .ax-chip[data-variant="filled"] {
@@ -1468,13 +1477,13 @@
 	width: 40px;
 	height: 40px;
 	border-radius: 999px;
-	background: var(--ax-content-link);
+	background: var(--ax-primary-default);
 }
 
 .ax-calendar-grid > [data-selected],
 .ax-calendar-grid > [data-range-start],
 .ax-calendar-grid > [data-range-end] {
-	color: #fff;
+	color: var(--ax-primary-on);
 	font-weight: 600;
 }
 
@@ -1904,6 +1913,7 @@
 	text-align: center;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	font-family: var(--ax-font-heading, inherit);
 }
 
 .ax-appbar[data-border] {
@@ -1933,6 +1943,7 @@
 	font-size: 34px;
 	line-height: 41px;
 	font-weight: 700;
+	font-family: var(--ax-font-heading, inherit);
 }
 
 .ax-tabbar {
@@ -2022,7 +2033,7 @@
 	bottom: -1px;
 	height: 2px;
 	border-radius: 2px;
-	background: var(--ax-content-default);
+	background: var(--ax-primary-default);
 }
 
 .ax-tabs[data-scrollable] {
@@ -2048,8 +2059,8 @@
 }
 
 .ax-tabs[data-variant="pill"] > span[data-active] {
-	background: var(--ax-background-inverse);
-	color: var(--ax-content-inverse);
+	background: var(--ax-primary-default);
+	color: var(--ax-primary-on);
 }
 
 .ax-tabs[data-variant="pill"] > span[data-active]::after {

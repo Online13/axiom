@@ -1,6 +1,6 @@
 ---
 // Banner for the introduction: the logo and tagline on one side, the system drawn as a stack of layers on the other,
-// over a board of circuit traces. Everything is SVG and HTML; the art is always dark, whatever the docs theme.
+// over a board of circuit traces. Everything is SVG and HTML; the art follows the resolved docs theme.
 // Foundations sit at the bottom, Blocks on top, the same order as the proof chain described on the page.
 import { Logo } from "../../../brand/Logo";
 
@@ -88,12 +88,12 @@ const gridY = [168, 250, 480, 630, 735];
 
 <style>
 	.axb {
-		--axb-bg: #0b0b0b;
-		--axb-ink: #f6f4ef;
-		--axb-muted: #a8a8a8;
-		--axb-line: rgb(255 255 255 / 0.26);
-		--axb-grid: rgb(255 255 255 / 0.07);
-		--axb-pad: #4b4b4b;
+		--axb-bg: var(--color-fd-background);
+		--axb-ink: var(--color-fd-foreground);
+		--axb-muted: var(--color-fd-muted-foreground);
+		--axb-line: color-mix(in srgb, var(--axb-ink) 26%, transparent);
+		--axb-grid: color-mix(in srgb, var(--axb-ink) 7%, transparent);
+		--axb-pad: var(--color-fd-ring);
 		container-type: inline-size;
 		margin: 0 0 2.5rem;
 		overflow: hidden;
@@ -167,7 +167,7 @@ const gridY = [168, 250, 480, 630, 735];
 
 	.axb__plane {
 		fill: var(--axb-bg);
-		stroke: rgb(255 255 255 / 0.75);
+		stroke: color-mix(in srgb, var(--axb-ink) 75%, transparent);
 		stroke-width: 1.2;
 		stroke-linejoin: round;
 	}
@@ -177,7 +177,7 @@ const gridY = [168, 250, 480, 630, 735];
 		font-size: 18px;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		fill: rgb(255 255 255 / 0.8);
+		fill: color-mix(in srgb, var(--axb-ink) 80%, transparent);
 	}
 
 	/* Narrow columns: the copy stays readable and the stack moves below it. */

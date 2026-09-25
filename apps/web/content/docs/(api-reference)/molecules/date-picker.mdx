@@ -104,13 +104,13 @@ The field opens a sheet containing a calendar, so the user picks a date without 
 
 | Prop                  | Type                                             | Default            | Description                                                                                                              |
 | --------------------- | ------------------------------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------------ |
-| `mode`                | `'single' \| 'range'`                            | `'single'`         | One date, or a start and end date. Passed to the [Calendar](/docs/atoms/calendar).                                            |
+| `mode`                | `'single' \| 'range'`                            | `'single'`         | One date, or a start and end date. Passed to the [Calendar](/docs/atoms/calendar).                                       |
 | `value`               | `Date \| { from: Date; to?: Date } \| null`      | —                  | The selected date or range. `null` shows the placeholder.                                                                |
 | `onChange`            | `(value) => void`                                | —                  | Called with the new value when the user confirms.                                                                        |
 | `confirm`             | `'done' \| 'instant'`                            | `'done'`           | `done`: the value changes on Done, Cancel reverts it. `instant`: the sheet closes on the first press (single mode only). |
-| `label`               | `string`                                         | —                  | Label above the field, like [Input](/docs/atoms/input).                                                                       |
+| `label`               | `string`                                         | —                  | Label above the field, like [Input](/docs/atoms/input).                                                                  |
 | `placeholder`         | `string`                                         | `'Select a date'`  | Text in the empty field.                                                                                                 |
-| `helper`              | `string`                                         | —                  | Note under the field, like [Input](/docs/atoms/input).                                                                        |
+| `helper`              | `string`                                         | —                  | Note under the field, like [Input](/docs/atoms/input).                                                                   |
 | `error`               | `string \| boolean`                              | —                  | Puts the field in the `invalid` state. A string also replaces `helper`.                                                  |
 | `format`              | `(value) => string`                              | locale medium date | How the value is written in the field, e.g. "Thu 17 Sep 2026".                                                           |
 | `title`               | `string`                                         | `label`            | Title of the sheet.                                                                                                      |
@@ -119,9 +119,14 @@ The field opens a sheet containing a calendar, so the user picks a date without 
 | `presets`             | `Array<{ label: string; value: Date \| Range }>` | —                  | Shortcut chips above the calendar: "Today", "Next weekend".                                                              |
 | `clearable`           | `boolean`                                        | `false`            | Adds a Clear action in the sheet that sets the value to `null`.                                                          |
 | `disabled`            | `boolean`                                        | `false`            | The field can't open the sheet.                                                                                          |
-| `trigger`             | `ReactElement`                                   | input field        | Replaces the default field, for example with a [Chip](/docs/atoms/chip) or a [Button](/docs/atoms/button).                         |
+| `haptic`              | `HapticKind \| false`                            | `'selection'`      | Haptic played when the user picks a day or a preset. `false` turns it off.                                               |
+| `trigger`             | `ReactElement`                                   | input field        | Replaces the default field, for example with a [Chip](/docs/atoms/chip) or a [Button](/docs/atoms/button).               |
 | `calendarProps`       | `Partial<CalendarRootProps>`                     | —                  | Any other `Calendar.Root` prop, like `weekStartsOn` or `minRange`.                                                       |
 | `renderCalendar`      | `() => ReactNode`                                | full calendar      | Children of the `Calendar.Root` inside the sheet, to change its parts: event dots, a custom header.                      |
+
+## Haptics
+
+The picker plays a `selection` haptic when the user picks a day in the calendar or a preset. Pass `haptic={false}` to turn it off, or another kind to change it. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

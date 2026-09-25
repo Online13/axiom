@@ -1,0 +1,189 @@
+---
+title: Haptics
+description: "Connect your haptics library once, and the components that need a tap under the finger play it."
+---
+
+A haptic is the short tap the phone plays under the finger when something happens: the tick of a picker wheel, the bump when a switch flips, the buzz of a wrong passcode. It's not the long vibration of a phone call. It confirms an action without the user having to look at it.
+
+Axiom plays haptics where the platform does and leaves every other case to your app. It doesn't depend on any haptics library: components call one function, `haptic()`, and you connect it to the library you use.
+
+## What plays a haptic
+
+<HapticMap />
+
+The rule behind the three groups: **a haptic confirms a change of state or a threshold, not a tap**. iOS buttons don't vibrate. Its switches, pickers and long-press menus do. A haptic on every press stops meaning anything after a minute.
+
+## Kinds
+
+<HapticKinds />
+
+Components and your code name a kind, never a library call. These seven cover what iOS and Android offer through every common library:
+
+| Kind        | Use it when                                            |
+| ----------- | ------------------------------------------------------ |
+| `selection` | A value changes while the finger moves through a list. |
+| `light`     | A small thing lands or a threshold is reached.         |
+| `medium`    | Something opens under the finger.                      |
+| `heavy`     | A large, final action. Use it rarely.                  |
+| `success`   | An action the user just made worked.                   |
+| `warning`   | An action needs the user's attention.                  |
+| `error`     | An action failed.                                      |
+
+## How it works
+
+<HapticFlow />
+
+Components import `haptic` from `components/core/haptics.ts`. That file comes with [Tappable](/docs/core/tappable) and every component listed above, and does nothing by default:
+
+```ts title="components/core/haptics.ts"
+export type HapticKind =
+	"selection" | "light" | "medium" | "heavy" | "success" | "warning" | "error";
+
+/**
+ * Plays a haptic. Axiom components call it and never import a haptics library.
+ * Does nothing until you wire it to the library of your choice.
+ */
+export function haptic(kind: HapticKind): void {}
+```
+
+Since the file is yours, the components keep working with no library installed: they call a function that does nothing. `axiom add` writes it once and never overwrites it, so your wiring survives later updates.
+
+## Integration
+
+### 1. Install a library
+
+Any library that can play an impact, a selection and a notification works. The two most used:
+
+```bash tab="expo-haptics"
+npx expo install expo-haptics
+```
+
+```bash tab="react-native-haptic-feedback"
+npm install react-native-haptic-feedback
+```
+
+`expo-haptics` works in Expo Go. `react-native-haptic-feedback` has native code, so it needs a development build or `pod install` in a bare app.
+
+### 2. Wire `haptic()`
+
+Replace the body of `haptic()` with the calls of your library. Map each kind once:
+
+```ts tab="expo-haptics" title="components/core/haptics.ts"
+import * as Haptics from "expo-haptics";
+
+const play: Record<HapticKind, () => Promise<void>> = {
+	selection: () => Haptics.selectionAsync(),
+	light: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light),
+	medium: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium),
+	heavy: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy),
+	success: () =>
+		Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
+	warning: () =>
+		Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning),
+	error: () =>
+		Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error),
+};
+
+export function haptic(kind: HapticKind): void {
+	// Fire and forget: a haptic that fails must never break the interaction.
+	play[kind]().catch(() => {});
+}
+```
+
+```ts tab="react-native-haptic-feedback" title="components/core/haptics.ts"
+import {
+	trigger,
+	type HapticFeedbackTypes,
+} from "react-native-haptic-feedback";
+
+const types: Record<HapticKind, keyof typeof HapticFeedbackTypes> = {
+	selection: "selection",
+	light: "impactLight",
+	medium: "impactMedium",
+	heavy: "impactHeavy",
+	success: "notificationSuccess",
+	warning: "notificationWarning",
+	error: "notificationError",
+};
+
+export function haptic(kind: HapticKind): void {
+	trigger(types[kind]);
+}
+```
+
+That's the whole integration. Every component in the first two groups now plays its haptic.
+
+### 3. Test on a device
+
+The iOS Simulator and most Android emulators play nothing. Run a development build on a phone, flip a [Switch](/docs/atoms/switch) and drag a [Slider](/docs/atoms/slider) with a `step`: you should feel a bump, then a tick per step.
+
+If nothing plays on iOS, check Settings › Sounds & Haptics › System Haptics. iOS respects it for every app.
+
+## Per component
+
+Every component that can play a haptic takes the same prop:
+
+```ts
+haptic?: HapticKind | false;
+```
+
+- **Built in**: the default is the kind shown above. Pass `false` to turn it off, or another kind to change it.
+- **Optional** and **left to the app**: no default. Pass a kind to turn it on.
+
+```tsx
+<Switch value={on} onValueChange={setOn} haptic={false} />
+
+<SegmentedControl options={options} value={value} onValueChange={setValue} haptic="light" />
+
+<Button onPress={pay} haptic="light">Pay €84.00</Button>
+```
+
+On [Button](/docs/atoms/button) and the other pressable components, the haptic plays on `onPressIn`, when the finger touches, together with the [press scale](/docs/core/tappable#press-scale). Waiting for `onPress` would add the release delay back.
+
+## From your own code
+
+Call `haptic()` directly for moments no component knows about, like the result of a request:
+
+```tsx
+import { haptic } from "@/components/core/haptics";
+
+async function save() {
+	try {
+		await api.save(draft);
+		haptic("success");
+		toast.show("Saved");
+	} catch {
+		haptic("error");
+		toast.show("Couldn't save");
+	}
+}
+```
+
+[Toast](/docs/atoms/toast) and [Snackbar](/docs/atoms/snackbar) don't play a haptic on their own: they also show messages the user didn't trigger, like a sync that finished in the background.
+
+## Turning haptics off
+
+To follow a setting of your app, check it in `haptic()`. Every component goes through it, so one check covers the whole app:
+
+```ts title="components/core/haptics.ts"
+export function haptic(kind: HapticKind): void {
+	if (!settings.hapticsEnabled) return;
+	play[kind]().catch(() => {});
+}
+```
+
+## Guidelines
+
+- **Tie it to the user.** A haptic answers something the finger just did. Don't play one for a push notification or a background event.
+- **Play it on time.** On the touch or on the threshold, not after an animation or a request. A late haptic feels like a bug.
+- **One per step.** A slider plays one tick per step, not one per frame of the drag.
+- **Never the only feedback.** Some devices have no haptics and some users turn them off. The change must also be visible.
+- **Stay light.** `light` and `selection` cover most cases. `heavy` is for the few actions that deserve weight.
+
+## Related
+
+- [Tappable](/docs/core/tappable)
+- [Switch](/docs/atoms/switch)
+- [Slider](/docs/atoms/slider)
+- [Menu](/docs/atoms/menu)
+- [Pull to refresh](/docs/hooks/use-refresh-control)

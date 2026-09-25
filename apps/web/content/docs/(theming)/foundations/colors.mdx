@@ -13,14 +13,15 @@ Each color points to a step of the [palette](/docs/foundations/tokens/palette). 
 
 <RolePreview role="all" />
 
-Colors are grouped into five roles:
+Colors are grouped into six roles:
 
 | Role                        | Answers the question                  |
 | --------------------------- | ------------------------------------- |
 | [`background`](#background) | What is this surface painted with?    |
 | [`content`](#content)       | What color is the text or icon on it? |
 | [`border`](#border)         | What outlines or separates it?        |
-| [`accent`](#accent)         | What carries the brand highlight?     |
+| [`primary`](#primary)       | What color are the main actions?      |
+| [`highlight`](#highlight)   | What carries the brand highlight?     |
 | [`feedback`](#feedback)     | What state is it communicating?       |
 
 ```ts title="Conceptual"
@@ -40,7 +41,8 @@ export type ThemeColors = {
 		link: string;
 	};
 	border: { default: string; subtle: string; strong: string; focus: string };
-	accent: { default: string; subtle: string; on: string };
+	primary: { default: string; pressed: string; subtle: string; on: string };
+	highlight: { default: string; subtle: string; on: string };
 	feedback: {
 		info: string;
 		infoSubtle: string;
@@ -79,8 +81,8 @@ Text and icons. The keys go from most to least emphasis, so each piece of text p
 - `muted` is for supporting text: descriptions, secondary lines of an item, timestamps.
 - `subtle` is for placeholders and captions. Keep it off text the user has to read.
 - `disabled` is only for disabled controls.
-- `inverse` goes on `background.inverse` and on filled buttons.
-- `link` marks tappable text.
+- `inverse` goes on `background.inverse`.
+- `link` marks tappable text. `border.focus` and `feedback.info` use the same hue.
 
 <Callout title="Contrast">
 	`default` and `muted` are meant for readable text on `default`, `subtle` and
@@ -100,19 +102,55 @@ Outlines and separators. Most borders use `default`; the other keys change the w
 - `strong` is for controls that need to stay visible when empty: an unchecked checkbox or radio.
 - `focus` shows the focused input or the selected item.
 
-## `accent`
+## `primary`
 
-The brand highlight — the one saturated color that is not a state. It is a fill, not a text color: put `on` on top of `default`, never `default` on a light surface.
+The color of the main actions: solid buttons, the floating button, selected chips and tabs, and checked switches, checkboxes, radios and sliders. Change it to brand your actions without touching surfaces or text.
 
-<RolePreview role="accent" />
+<RolePreview role="primary" />
 
-<ColorRoleTable role="accent" />
+<ColorRoleTable role="primary" />
 
-- `default` is the filled highlight: a featured badge, a selected chip, a promoted card.
+- `default` is the fill of an action or a checked control.
+- `pressed` replaces `default` while the action is held.
+- `subtle` is a tinted background related to the primary action.
+- `on` is the text and icon color that sits on `default`.
+
+By default, `primary` points to the neutral ramp: black actions in light mode, white in dark mode, as Axiom always shipped. To brand the actions, point it to another hue:
+
+```ts title="theme/colors.ts" {3-6}
+export const lightColors = {
+	// …
+	primary: {
+		default: palette.indigo[500],
+		pressed: palette.indigo[600],
+		subtle: palette.indigo[50],
+		on: "hsla(0, 0%, 100%, 1)",
+	},
+} satisfies ThemeColors;
+```
+
+In dark mode, use a lighter step (`400` for `default`, `300` for `pressed`, `950` or `900` for `subtle`), and pick the `on` color that keeps a contrast of at least 4.5:1 on `default`.
+
+## `highlight`
+
+The brand highlight — the one saturated color that is neither an action nor a state. It is a fill, not a text color: put `on` on top of `default`, never `default` on a light surface.
+
+<RolePreview role="highlight" />
+
+<ColorRoleTable role="highlight" />
+
+- `default` is the filled highlight: a featured badge, a promoted card, a rating.
 - `subtle` is the tinted version, for a background that carries `content.default` text.
-- `on` is the text and icon color that sits on `default`. It stays dark in both themes, because the accent stays light in both.
+- `on` is the text and icon color that sits on `default`. It stays dark in both themes, because the highlight stays light in both.
 
-Unlike the other roles, `accent` keeps the same palette step in light and dark: yellow at step 500 is already light enough to read against black, and dimming it would cost the brand its recognition.
+Unlike the other roles, `highlight` keeps the same palette step in light and dark: yellow at step 500 is already light enough to read against black, and dimming it would cost the brand its recognition.
+
+<Callout title="Three brand colors">
+	`primary` is for actions, `highlight` for what you want noticed, and
+	`content.link` for links. Earlier versions called the highlight `accent`:
+	rename `colors.accent` to `colors.highlight` and the Badge `accent` variant
+	to `highlight`.
+</Callout>
 
 ## `feedback`
 
@@ -173,7 +211,7 @@ The `stylesheet` variant follows the system color scheme without a global provid
 
 Edit the copied theme files. Because components read [component tokens](/docs/foundations/component-tokens) derived from these colors, a change here reaches every component.
 
-To change the brand color, point `content.link`, `border.focus` and `feedback.info` to another hue.
+To change the brand color of the actions, point `primary` to another hue. To change the color of links and focus rings, point `content.link`, `border.focus` and `feedback.info` to another hue.
 
 ## Related
 

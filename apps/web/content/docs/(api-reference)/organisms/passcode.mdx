@@ -102,23 +102,24 @@ import { Passcode } from "@/components/ui/passcode";
 
 ### Passcode
 
-| Prop         | Type                                                             | Default  | Description                                                                                                                                                                              |
-| ------------ | ---------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `length`     | `number`                                                         | `4`      | Number of digits.                                                                                                                                                                        |
-| `value`      | `string`                                                         | —        | The code typed so far. Use with `onChange` for a controlled passcode.                                                                                                                    |
-| `onChange`   | `(value: string) => void`                                        | —        | Called on each key press and deletion.                                                                                                                                                   |
-| `onComplete` | `(value: string) => void \| boolean \| Promise<boolean \| void>` | —        | Called when the last digit is typed. Return `false`, or a promise of `false`, to play the error animation and clear the code. A promise puts the keypad in `verifying` until it settles. |
-| `status`     | `'idle' \| 'verifying' \| 'error' \| 'success'`                  | `'idle'` | Drives the slots: `verifying` blocks the keypad, `error` shakes and turns the slots red, `success` fills them green.                                                                     |
-| `secure`     | `boolean`                                                        | `true`   | Slots show filled dots. `false` shows the digits, for a code the user reads from somewhere.                                                                                              |
-| `children`   | `ReactNode`                                                      | —        | `Group` and `Keyboard`, in any layout. Left out, both are rendered in order.                                                                                                             |
+| Prop         | Type                                                             | Default   | Description                                                                                                                                                                              |
+| ------------ | ---------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `length`     | `number`                                                         | `4`       | Number of digits.                                                                                                                                                                        |
+| `value`      | `string`                                                         | —         | The code typed so far. Use with `onChange` for a controlled passcode.                                                                                                                    |
+| `onChange`   | `(value: string) => void`                                        | —         | Called on each key press and deletion.                                                                                                                                                   |
+| `onComplete` | `(value: string) => void \| boolean \| Promise<boolean \| void>` | —         | Called when the last digit is typed. Return `false`, or a promise of `false`, to play the error animation and clear the code. A promise puts the keypad in `verifying` until it settles. |
+| `status`     | `'idle' \| 'verifying' \| 'error' \| 'success'`                  | `'idle'`  | Drives the slots: `verifying` blocks the keypad, `error` shakes and turns the slots red, `success` fills them green.                                                                     |
+| `haptic`     | `HapticKind \| false`                                            | `'error'` | Haptic played when the status becomes `error`. `false` turns it off.                                                                                                                     |
+| `secure`     | `boolean`                                                        | `true`    | Slots show filled dots. `false` shows the digits, for a code the user reads from somewhere.                                                                                              |
+| `children`   | `ReactNode`                                                      | —         | `Group` and `Keyboard`, in any layout. Left out, both are rendered in order.                                                                                                             |
 
 ### Passcode.Group, Passcode.Slot
 
-| Prop      | Type             | Default | Description                                                                             |
-| --------- | ---------------- | ------- | --------------------------------------------------------------------------------------- |
-| `index`   | `number`         | —       | On `Slot`: position in the code.                                                        |
+| Prop      | Type             | Default | Description                                                                                  |
+| --------- | ---------------- | ------- | -------------------------------------------------------------------------------------------- |
+| `index`   | `number`         | —       | On `Slot`: position in the code.                                                             |
 | `variant` | `'dot' \| 'box'` | `'dot'` | On `Group`, applied to its slots: iOS dots, or boxes like [InputOTP](/docs/atoms/input-otp). |
-| `gap`     | `SpacingToken`   | `4`     | On `Group`: space between slots.                                                        |
+| `gap`     | `SpacingToken`   | `4`     | On `Group`: space between slots.                                                             |
 
 ### Passcode.Keyboard
 
@@ -140,7 +141,7 @@ import { Passcode } from "@/components/ui/passcode";
 
 ### Haptics
 
-Keys have no haptic feedback yet. The library that produces it depends on the project, like the icon source, so Axiom waits to ask for it once rather than pull in one per component. Wire your own in `onComplete` and on the keys meanwhile.
+A wrong code plays an `error` haptic when the status becomes `error`, along with the shake, whether `onComplete` returned `false` or the screen set `status="error"` itself. Pass `haptic={false}` to turn it off. Keys play nothing: a tap per digit would buzz four times for one code. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## In-app keypad
 

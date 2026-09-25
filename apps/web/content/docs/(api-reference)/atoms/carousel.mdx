@@ -130,10 +130,15 @@ import { Carousel } from "@/components/ui/carousel";
 | `onIndexChange`      | `(index: number) => void`                     | —                      | Called when the carousel settles on a new item.                                                                                  |
 | `loop`               | `boolean`                                     | `false`                | Wraps from the last item back to the first.                                                                                      |
 | `autoPlay`           | `number`                                      | —                      | Interval in ms to advance automatically. Paused while the user touches it and when reduce motion is on.                          |
+| `haptic`             | `HapticKind \| false`                         | —                      | Haptic played when a swipe lands on another item. Off unless you pass a kind.                                                    |
 | `windowSize`         | `number`                                      | `5`                    | Items rendered around the active one. Others are unmounted to keep long carousels light.                                         |
 | `ref`                | `Ref<CarouselRef>`                            | —                      | `scrollToIndex(index, animated?)`, `next()`, `prev()`.                                                                           |
 | `accessibilityLabel` | `string`                                      | —                      | Names the carousel for screen readers, such as `"Product photos"`.                                                               |
 | `style`              | `StyleProp<ViewStyle>`                        | —                      | Extra styles for the container.                                                                                                  |
+
+## Haptics
+
+Pass a kind, usually `"selection"`, to play a haptic when a swipe lands on another item. Autoplay and `ref.current.next()` play nothing. Keep it for carousels the user pages through one item at a time, like an onboarding: on a fast gallery it gets tiring. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

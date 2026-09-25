@@ -71,17 +71,22 @@ import { Switch } from "@/components/ui/switch";
 
 ## Props
 
-| Prop                 | Type                       | Default | Description                                                                                                        |
-| -------------------- | -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------ |
-| `value`              | `boolean`                  | —       | Whether the switch is on. Use with `onValueChange` for a controlled switch.                                        |
-| `defaultValue`       | `boolean`                  | `false` | Initial value when the switch manages its own state.                                                               |
-| `onValueChange`      | `(value: boolean) => void` | —       | Called with the new value when the user flips the switch.                                                          |
-| `disabled`           | `boolean`                  | `false` | Blocks changes and dims the switch with the `disabled` tokens.                                                     |
-| `size`               | `'sm' \| 'md'`             | `'md'`  | `md` matches the iOS system switch (51×31pt), `sm` is 40×24pt for dense rows. The touch area stays 44pt.           |
-| `accessibilityLabel` | `string`                   | —       | What the switch controls. Not needed when the switch sits in an [OptionItem](/docs/atoms/option-item), which labels it. |
-| `style`              | `StyleProp<ViewStyle>`     | —       | Extra styles for the track.                                                                                        |
+| Prop                 | Type                       | Default   | Description                                                                                                             |
+| -------------------- | -------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `value`              | `boolean`                  | —         | Whether the switch is on. Use with `onValueChange` for a controlled switch.                                             |
+| `defaultValue`       | `boolean`                  | `false`   | Initial value when the switch manages its own state.                                                                    |
+| `onValueChange`      | `(value: boolean) => void` | —         | Called with the new value when the user flips the switch.                                                               |
+| `disabled`           | `boolean`                  | `false`   | Blocks changes and dims the switch with the `disabled` tokens.                                                          |
+| `haptic`             | `HapticKind \| false`      | `'light'` | Haptic played when the user flips the switch. `false` turns it off.                                                     |
+| `size`               | `'sm' \| 'md'`             | `'md'`    | `md` matches the iOS system switch (51×31pt), `sm` is 40×24pt for dense rows. The touch area stays 44pt.                |
+| `accessibilityLabel` | `string`                   | —         | What the switch controls. Not needed when the switch sits in an [OptionItem](/docs/atoms/option-item), which labels it. |
+| `style`              | `StyleProp<ViewStyle>`     | —         | Extra styles for the track.                                                                                             |
 
 Track and thumb colors come from `switch.default.{default,checked,disabled}.{track,thumb}` in the [component tokens](/docs/foundations/component-tokens). The on/off logic and the thumb animation live in `use-switch.ts`, shared by every styling variant.
+
+## Haptics
+
+The switch plays a `light` haptic when the user flips it, like the iOS system switch. A change of `value` made in code plays nothing. Pass `haptic={false}` to turn it off, or another kind to change it. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

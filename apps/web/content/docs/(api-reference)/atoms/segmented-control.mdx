@@ -128,18 +128,23 @@ import { SegmentedControl } from "@/components/ui/segmented-control";
 
 ## Props
 
-| Prop            | Type                             | Default      | Description                                                                                                                            |
-| --------------- | -------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `options`       | `Array<string \| SegmentOption>` | —            | The segments. A string is used as both value and label. `SegmentOption` is `{ value, label?, icon?, accessibilityLabel?, disabled? }`. |
-| `value`         | `string`                         | —            | Value of the selected segment.                                                                                                         |
-| `defaultValue`  | `string`                         | first option | Initial selection when the control manages its own state.                                                                              |
-| `onValueChange` | `(value: string) => void`        | —            | Called when the user picks another segment.                                                                                            |
-| `size`          | `'md' \| 'lg'`                   | `'md'`       | Minimum height: 32 or 40pt. Grows with larger system text.                                                                             |
-| `fullWidth`     | `boolean`                        | `true`       | Stretches to the parent width with equal segments. `false` sizes it to its content.                                                    |
-| `disabled`      | `boolean`                        | `false`      | Disables the whole control.                                                                                                            |
-| `style`         | `StyleProp<ViewStyle>`           | —            | Extra styles for the track.                                                                                                            |
+| Prop            | Type                             | Default       | Description                                                                                                                            |
+| --------------- | -------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `options`       | `Array<string \| SegmentOption>` | —             | The segments. A string is used as both value and label. `SegmentOption` is `{ value, label?, icon?, accessibilityLabel?, disabled? }`. |
+| `value`         | `string`                         | —             | Value of the selected segment.                                                                                                         |
+| `defaultValue`  | `string`                         | first option  | Initial selection when the control manages its own state.                                                                              |
+| `onValueChange` | `(value: string) => void`        | —             | Called when the user picks another segment.                                                                                            |
+| `size`          | `'md' \| 'lg'`                   | `'md'`        | Minimum height: 32 or 40pt. Grows with larger system text.                                                                             |
+| `fullWidth`     | `boolean`                        | `true`        | Stretches to the parent width with equal segments. `false` sizes it to its content.                                                    |
+| `disabled`      | `boolean`                        | `false`       | Disables the whole control.                                                                                                            |
+| `haptic`        | `HapticKind \| false`            | `'selection'` | Haptic played when the user changes the segment, by tap or drag. `false` turns it off.                                                 |
+| `style`         | `StyleProp<ViewStyle>`           | —             | Extra styles for the track.                                                                                                            |
 
 The indicator slides on the UI thread with Reanimated and can be dragged from one segment to another. Keep it to 2–5 short options: past that, labels get truncated.
+
+## Haptics
+
+The control plays a `selection` haptic when the user changes the segment, by tap or by dragging the indicator. Pressing the segment that is already selected plays nothing. Pass `haptic={false}` to turn it off, or another kind to change it. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

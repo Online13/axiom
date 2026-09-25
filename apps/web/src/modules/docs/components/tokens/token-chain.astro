@@ -4,9 +4,9 @@ import TokenFrame from './token-frame.astro';
 import { colorRoles, resolveColor, type ColorRef, type ColorRole } from '@docs/lib/tokens';
 
 const traces: { path: string; ref: ColorRef }[] = [
-  { path: 'switch.default.checked.track', ref: 'feedback.success' },
+  { path: 'badge.highlight.default.background', ref: 'highlight.default' },
   { path: 'input.outline.focused.border', ref: 'border.focus' },
-  { path: 'button.solid.default.background', ref: 'background.inverse' },
+  { path: 'button.solid.default.background', ref: 'primary.default' },
 ];
 
 const schemes = ['light', 'dark'] as const;

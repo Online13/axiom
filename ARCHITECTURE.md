@@ -110,7 +110,7 @@ The registry is the manifest of everything Axiom can add to a project. For each 
 
 With this graph, a project can take one item and get exactly what that item needs.
 
-The registry lives in `packages/registry`. Its manifest, `registry.json`, has no items yet.
+The registry lives in `packages/registry`. Its manifest, `registry.json`, lists 55 items. All 45 entries with styling variants provide both `stylesheet` and `unistyles` implementations.
 
 ## CLI
 
@@ -118,7 +118,7 @@ The CLI is how a project uses the registry. It copies the requested items and th
 
 The copied code belongs to the project. The CLI is a tool for adding code and never becomes a runtime dependency of the app.
 
-The CLI lives in `packages/cli`. Only `add` exists so far. It copies files and rewrites imports, reads the registry from a local folder, and lists missing npm packages without installing them. Its commands aren't final.
+The CLI lives in `packages/cli`. Its `add` command copies files, rewrites imports and installs missing npm packages. Its `init` command configures styling and aliases, copies foundations and core primitives, installs their dependencies and writes `axiom.json`. The CLI reads the registry from a local folder.
 
 ## Repository structure
 

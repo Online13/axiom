@@ -128,7 +128,7 @@ import { FloatingButton } from "@/components/ui/floating-button";
 
 | Prop                 | Type                                                | Default        | Description                                                                                     |
 | -------------------- | --------------------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------- |
-| `icon`               | `IconName`                                          | —              | Required. An icon of your [registry](/docs/atoms/icon#the-registry).                                 |
+| `icon`               | `IconName`                                          | —              | Required. An icon of your [registry](/docs/atoms/icon#the-registry).                            |
 | `label`              | `string`                                            | —              | Makes the button extended: icon and text.                                                       |
 | `accessibilityLabel` | `string`                                            | `label`        | Required when there is no `label`.                                                              |
 | `variant`            | `'solid' \| 'tinted'`                               | `'solid'`      | `solid` for the main action, `tinted` for a quieter floating control.                           |
@@ -138,9 +138,14 @@ import { FloatingButton } from "@/components/ui/floating-button";
 | `visible`            | `boolean`                                           | `true`         | Shows or hides the button with a scale and fade. Hidden, it ignores touches and screen readers. |
 | `onPress`            | `() => void`                                        | —              | Called when the press ends on the button.                                                       |
 | `disabled`           | `boolean`                                           | `false`        | Blocks presses and uses the `disabled` tokens.                                                  |
+| `haptic`             | `HapticKind \| false`                               | —              | Haptic played when the finger touches. Off unless you pass a kind.                              |
 | `style`              | `StyleProp<ViewStyle>`                              | —              | Extra styles for the button.                                                                    |
 
 Colors come from `floatingButton.<variant>.{default,pressed,disabled}.{background,foreground,border}` in the [component tokens](/docs/foundations/component-tokens). Placement and the show / hide animation live in `use-floating-button.ts`, shared by every styling variant.
+
+## Haptics
+
+The floating button plays nothing by default. Pass a kind, usually `"light"`, when its action deserves one. It plays when the finger touches. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

@@ -113,14 +113,15 @@ import { Menu } from "@/components/ui/menu";
 
 ### Menu.Trigger
 
-| Prop                 | Type                     | Default                 | Description                                                                                                    |
-| -------------------- | ------------------------ | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `action`             | `'longPress' \| 'press'` | `'longPress'`           | `longPress` for context menus on content, `press` for a "more" button.                                         |
-| `preview`            | `boolean \| ReactNode`   | `true` with `longPress` | Lifts a copy of the pressed element above the backdrop. Pass a node to show it in the element's place instead. |
-| `asChild`            | `boolean`                | `false`                 | Uses the child as the trigger.                                                                                 |
-| `accessibilityLabel` | `string`                 | —                       | Label of the trigger, when its content has no text.                                                            |
-| `children`           | `ReactNode`              | —                       | The element that opens the menu.                                                                               |
-| `style`              | `StyleProp<ViewStyle>`   | —                       | Extra styles for the trigger.                                                                                  |
+| Prop                 | Type                     | Default                     | Description                                                                                                    |
+| -------------------- | ------------------------ | --------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `action`             | `'longPress' \| 'press'` | `'longPress'`               | `longPress` for context menus on content, `press` for a "more" button.                                         |
+| `preview`            | `boolean \| ReactNode`   | `true` with `longPress`     | Lifts a copy of the pressed element above the backdrop. Pass a node to show it in the element's place instead. |
+| `haptic`             | `HapticKind \| false`    | `'medium'` with `longPress` | Haptic played when the menu opens. Nothing by default with `press`. `false` turns it off.                      |
+| `asChild`            | `boolean`                | `false`                     | Uses the child as the trigger.                                                                                 |
+| `accessibilityLabel` | `string`                 | —                           | Label of the trigger, when its content has no text.                                                            |
+| `children`           | `ReactNode`              | —                           | The element that opens the menu.                                                                               |
+| `style`              | `StyleProp<ViewStyle>`   | —                           | Extra styles for the trigger.                                                                                  |
 
 ### Menu.Content
 
@@ -157,6 +158,10 @@ import { Menu } from "@/components/ui/menu";
 `Menu.Sub` replaces the items in place and adds a back row at the top. `Menu.Item` also takes `keepOpen`, to run `onPress` without closing the menu. The menu has `accessibilityRole="menu"`, its items `menuitem`, and a back action closes it.
 
 Not implemented yet: dragging from the trigger to an item, and haptics (the haptics library depends on the project, see the roadmap).
+
+## Haptics
+
+A menu opened by a long press plays a `medium` haptic as it opens: it confirms the press was long enough, the way iOS context menus do. A menu opened by a simple press plays nothing. Set `haptic` on `Menu.Trigger` to change the kind, or `false` to turn it off. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

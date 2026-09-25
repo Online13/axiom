@@ -111,28 +111,29 @@ import { Item } from "@/components/ui/item";
 
 ### Item
 
-| Prop                 | Type                   | Default                   | Description                                                                                                                |
-| -------------------- | ---------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `children`           | `ReactNode`            | —                         | `Item.Leading`, `Item.Content` and `Item.Trailing`, in that order. All three are optional.                                 |
+| Prop                 | Type                   | Default                   | Description                                                                                                                     |
+| -------------------- | ---------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `children`           | `ReactNode`            | —                         | `Item.Leading`, `Item.Content` and `Item.Trailing`, in that order. All three are optional.                                      |
 | `onPress`            | `() => void`           | —                         | Makes the whole row pressable through [Tappable](/docs/core/tappable), with a pressed background. Without it the row is static. |
 | `onLongPress`        | `() => void`           | —                         | Called on long press. Pair it with a [Menu](/docs/atoms/menu) for row actions.                                                  |
-| `size`               | `'sm' \| 'md' \| 'lg'` | `'md'`                    | Minimum height: 44, 52 or 64pt. Content can make the row taller.                                                           |
-| `selected`           | `boolean`              | `false`                   | Tints the background with `feedback.infoSubtle` and sets `accessibilityState.selected`.                                    |
-| `disabled`           | `boolean`              | `false`                   | Blocks presses and dims title, description and icons.                                                                      |
-| `divider`            | `boolean \| 'inset'`   | `false`                   | Hairline under the row. `'inset'` starts it after the leading area, like iOS lists.                                        |
-| `align`              | `'center' \| 'start'`  | `'center'`                | Vertical alignment of leading and trailing, `start` for rows with multi-line content.                                      |
+| `size`               | `'sm' \| 'md' \| 'lg'` | `'md'`                    | Minimum height: 44, 52 or 64pt. Content can make the row taller.                                                                |
+| `selected`           | `boolean`              | `false`                   | Tints the background with `feedback.infoSubtle` and sets `accessibilityState.selected`.                                         |
+| `disabled`           | `boolean`              | `false`                   | Blocks presses and dims title, description and icons.                                                                           |
+| `haptic`             | `HapticKind \| false`  | —                         | Haptic played when the finger touches a pressable row. Off unless you pass a kind.                                              |
+| `divider`            | `boolean \| 'inset'`   | `false`                   | Hairline under the row. `'inset'` starts it after the leading area, like iOS lists.                                             |
+| `align`              | `'center' \| 'start'`  | `'center'`                | Vertical alignment of leading and trailing, `start` for rows with multi-line content.                                           |
 | `asChild`            | `boolean`              | `false`                   | Merges the item into its child, for example a router `Link`. See [Slot](/docs/core/slot).                                       |
-| `accessibilityLabel` | `string`               | —                         | Replaces the text screen readers read from the row's content.                                                              |
-| `accessibilityRole`  | `AccessibilityRole`    | `'button'` with `onPress` | Role announced by screen readers, such as `link`.                                                                          |
-| `accessibilityState` | `AccessibilityState`   | —                         | Merged with `selected` and `disabled`.                                                                                     |
-| `style`              | `StyleProp<ViewStyle>` | —                         | Extra styles for the row.                                                                                                  |
+| `accessibilityLabel` | `string`               | —                         | Replaces the text screen readers read from the row's content.                                                                   |
+| `accessibilityRole`  | `AccessibilityRole`    | `'button'` with `onPress` | Role announced by screen readers, such as `link`.                                                                               |
+| `accessibilityState` | `AccessibilityState`   | —                         | Merged with `selected` and `disabled`.                                                                                          |
+| `style`              | `StyleProp<ViewStyle>` | —                         | Extra styles for the row.                                                                                                       |
 
 ### Item.Leading, Item.Trailing
 
-| Prop       | Type                   | Default | Description                                                                                                                                     |
-| ---------- | ---------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Prop       | Type                   | Default | Description                                                                                                                                                              |
+| ---------- | ---------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `children` | `ReactNode`            | —       | An [Avatar](/docs/atoms/avatar), an [Icon](/docs/atoms/icon), a [Checkbox](/docs/atoms/checkbox), a [Switch](/docs/atoms/switch), a value, a [Badge](/docs/atoms/badge)… |
-| `style`    | `StyleProp<ViewStyle>` | —       | Extra styles for the area.                                                                                                                      |
+| `style`    | `StyleProp<ViewStyle>` | —       | Extra styles for the area.                                                                                                                                               |
 
 ### Item.Content, Item.Title, Item.Description
 
@@ -140,6 +141,10 @@ import { Item } from "@/components/ui/item";
 | --------------- | ----------- | ------- | ------------------------------------------------------------------------------ |
 | `children`      | `ReactNode` | —       | `Item.Title` and `Item.Description` inside `Item.Content`, or anything custom. |
 | `numberOfLines` | `number`    | `1`     | On `Title` and `Description`: lines before truncation.                         |
+
+## Haptics
+
+Rows play nothing by default: tapping a row to navigate is not an event. Pass a kind for the rare row whose press changes something on the spot. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

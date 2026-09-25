@@ -106,12 +106,15 @@ const feedbackStates = [
                 <div class="rounded-[10px] px-3 py-2" style="background:var(--feedback-errorSubtle);color:var(--feedback-error);font-size:13px">
                   Sync failed. Try again.
                 </div>
-                <div class="flex items-center justify-between rounded-[10px] px-3 py-2" style="background:var(--accent-default);color:var(--accent-on);font-size:13px">
+                <div class="flex items-center justify-between rounded-[10px] px-3 py-2" style="background:var(--highlight-default);color:var(--highlight-on);font-size:13px">
                   <span style="font-weight:600">Upgrade to Pro</span>
                   <span style="opacity:0.7">2 weeks left</span>
                 </div>
                 <div class="rounded-[10px] px-3 py-2.5" style="background:var(--background-inverse);color:var(--content-inverse);font-size:13px">
                   Changes saved
+                </div>
+                <div class="flex h-10 items-center justify-center rounded-[10px]" style="background:var(--primary-default);color:var(--primary-on);font-size:14px;font-weight:600">
+                  Save
                 </div>
               </div>
             </div>
@@ -221,26 +224,58 @@ const feedbackStates = [
         }
 
         {
-          role === 'accent' && (
+          role === 'primary' && (
             <div class="screen" style="background:var(--background-default)">
               <div class="flex justify-center pt-3">
                 <div class="island" />
               </div>
               <div class="flex flex-col gap-3 px-4 pt-6">
-                <div class="flex flex-col gap-1.5 rounded-[18px] p-4" style="background:var(--accent-default);color:var(--accent-on)">
+                <div class="flex gap-2">
+                  <span class="rounded-full px-3 py-1.5" style="background:var(--primary-default);color:var(--primary-on);font-size:13px;font-weight:600">All</span>
+                  <span class="rounded-full px-3 py-1.5" style="border:1px solid var(--border-default);color:var(--content-default);font-size:13px">Music</span>
+                  <span class="rounded-full px-3 py-1.5" style="border:1px solid var(--border-default);color:var(--content-default);font-size:13px">Podcasts</span>
+                </div>
+                <div class="flex items-center justify-between rounded-[12px] px-3 py-2.5" style="background:var(--primary-subtle)">
+                  <span style="color:var(--content-default);font-size:14px">Download over Wi-Fi</span>
+                  <span class="flex h-[22px] w-[38px] items-center justify-end rounded-full p-0.5" style="background:var(--primary-default)">
+                    <span class="size-[18px] rounded-full" style="background:var(--background-elevated)" />
+                  </span>
+                </div>
+                <div class="flex items-center gap-2.5 px-1">
+                  <span class="flex size-[18px] items-center justify-center rounded-[5px]" style="background:var(--primary-default)">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--primary-on)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7" /></svg>
+                  </span>
+                  <span style="color:var(--content-default);font-size:14px">Remember my choice</span>
+                </div>
+                <div class="mt-1 flex h-11 items-center justify-center rounded-[12px]" style="background:var(--primary-default);color:var(--primary-on);font-size:15px;font-weight:600">
+                  Continue
+                </div>
+                <div class="flex h-11 items-center justify-center rounded-[12px]" style="background:var(--primary-pressed);color:var(--primary-on);font-size:15px;font-weight:600">
+                  Continue · pressed
+                </div>
+              </div>
+            </div>
+          )
+        }
+
+        {
+          role === 'highlight' && (
+            <div class="screen" style="background:var(--background-default)">
+              <div class="flex justify-center pt-3">
+                <div class="island" />
+              </div>
+              <div class="flex flex-col gap-3 px-4 pt-6">
+                <div class="flex flex-col gap-1.5 rounded-[18px] p-4" style="background:var(--highlight-default);color:var(--highlight-on)">
                   <span style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase">Featured</span>
                   <span style="font-size:20px;font-weight:700;line-height:1.15">Make Time</span>
                   <span style="font-size:13px;opacity:0.7">Jake Knapp</span>
                 </div>
                 <div class="flex gap-2">
-                  <span class="rounded-full px-2.5 py-1" style="background:var(--accent-default);color:var(--accent-on);font-size:12px;font-weight:600">8.0</span>
+                  <span class="rounded-full px-2.5 py-1" style="background:var(--highlight-default);color:var(--highlight-on);font-size:12px;font-weight:600">8.0</span>
                   <span class="rounded-full px-2.5 py-1" style="background:var(--background-subtle);color:var(--content-muted);font-size:12px">Sci-Fi</span>
                 </div>
-                <div class="rounded-[12px] px-3 py-2.5" style="background:var(--accent-subtle);color:var(--content-default);font-size:13px">
+                <div class="rounded-[12px] px-3 py-2.5" style="background:var(--highlight-subtle);color:var(--content-default);font-size:13px">
                   Two weeks left on your plan.
-                </div>
-                <div class="mt-1 flex h-11 items-center justify-center rounded-[12px]" style="background:var(--accent-default);color:var(--accent-on);font-size:15px;font-weight:600">
-                  Upgrade
                 </div>
               </div>
             </div>

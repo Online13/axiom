@@ -97,14 +97,15 @@ import { Chip } from '@/components/ui/chip';
 | Prop                 | Type                    | Default     | Description                                                                                                             |
 | -------------------- | ----------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------- |
 | `children`           | `ReactNode`             | —           | The label.                                                                                                              |
-| `selected`           | `boolean`               | —           | Selected state, drawn with the inverse colors. Setting it makes the chip a toggle (`accessibilityRole="togglebutton"`). |
+| `selected`           | `boolean`               | —           | Selected state, drawn with the `primary` colors. Setting it makes the chip a toggle (`accessibilityRole="togglebutton"`). |
 | `onPress`            | `() => void`            | —           | Called when the chip is pressed. Usually toggles `selected` or opens a picker.                                          |
 | `onRemove`           | `() => void`            | —           | Shows a close icon on the right. Pressing it calls `onRemove`; the icon has its own 44pt touch area.                    |
 | `variant`            | `'outline' \| 'filled'` | `'outline'` | `outline` for filters, `filled` for tags and entered values.                                                            |
 | `size`               | `'sm' \| 'md'`          | `'md'`      | Minimum height: 28 or 34pt. Grows with larger system text. The touch area stays 44pt.                                   |
-| `leading`            | `IconName \| ReactNode` | —           | Icon or [Avatar](/docs/atoms/avatar) before the label.                                                                       |
+| `leading`            | `IconName \| ReactNode` | —           | Icon or [Avatar](/docs/atoms/avatar) before the label.                                                                  |
 | `trailing`           | `IconName \| ReactNode` | —           | Icon after the label, like a chevron for a chip that opens a menu. Ignored with `onRemove`.                             |
 | `disabled`           | `boolean`               | `false`     | Blocks presses and dims the chip.                                                                                       |
+| `haptic`             | `HapticKind \| false`   | —           | Haptic played when the finger touches a pressable chip. Off unless you pass a kind.                                     |
 | `accessibilityLabel` | `string`                | label text  | Override when the label alone is unclear. The remove button is announced as `"Remove <label>"`.                         |
 | `style`              | `StyleProp<ViewStyle>`  | —           | Extra styles for the chip.                                                                                              |
 
@@ -115,6 +116,10 @@ import { Chip } from '@/components/ui/chip';
 | `children` | `ReactNode`          | —        | `Chip` elements.                                                                                      |
 | `layout`   | `'wrap' \| 'scroll'` | `'wrap'` | `wrap` flows onto several lines, `scroll` keeps one horizontal line that scrolls with screen margins. |
 | `gap`      | `SpacingToken`       | `2`      | Space between chips.                                                                                  |
+
+## Haptics
+
+Chips play nothing by default. A toggle chip in a filter bar can take `haptic="selection"`. The remove icon never plays one. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

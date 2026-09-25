@@ -104,12 +104,16 @@ Only one snackbar is visible. Calling `show` while one is on screen replaces it:
 
 ### SnackbarHost
 
-| Prop             | Type      | Default | Description                                                                                                                                                    |
-| ---------------- | --------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Prop             | Type      | Default | Description                                                                                                                                                              |
+| ---------------- | --------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `bottomOffset`   | `number`  | `0`     | Extra space on top of the default gap (bottom safe area + 16pt), to sit above a [BottomTabBar](/docs/templates/bottom-tab-bar) or a [ToolBar](/docs/templates/tool-bar). |
-| `swipeToDismiss` | `boolean` | `true`  | Swipe down, left or right to dismiss.                                                                                                                          |
+| `swipeToDismiss` | `boolean` | `true`  | Swipe down, left or right to dismiss.                                                                                                                                    |
 
 The snackbar uses `background.inverse` and `content.inverse`, so it stands out in both light and dark. It is announced to screen readers when it appears, and its duration is extended when a screen reader is on.
+
+## Haptics
+
+A snackbar plays nothing on its own. When it follows an action the user just made, such as a delete that can be undone, play the haptic next to it with `haptic("success")` or, after a failure, `haptic("error")`. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

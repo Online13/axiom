@@ -1,6 +1,6 @@
 ---
 title: Introduction
-description: "Raw primitive values: palette, spacing, radius, typography, sizes and metrics."
+description: "Raw primitive values: palette, spacing, radius, fonts, typography, sizes and metrics."
 ---
 
 <Callout title="Draft">
@@ -9,13 +9,14 @@ description: "Raw primitive values: palette, spacing, radius, typography, sizes 
 
 Tokens are the raw values of the design system. They carry no meaning on their own: a token says "16", not "screen margin" or "danger".
 
-The `Tokens` contract groups them into six sets:
+The `Tokens` contract groups them into seven sets:
 
 ```ts title="Conceptual"
 export type Tokens = {
 	palette: Palette;
 	spacing: Spacing;
 	radius: Radius;
+	fonts: Fonts;
 	typography: Typography;
 	sizes: Sizes;
 	metrics: Metrics;

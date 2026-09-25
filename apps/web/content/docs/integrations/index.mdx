@@ -1,0 +1,15 @@
+---
+title: Introduction
+description: "Plug the libraries your app already uses into Axiom components."
+---
+
+Some features need a native library: haptics, for example. Axiom doesn't pick one for you. Components call a small function in `components/core`, and you connect that function to the library of your choice. Until you do, it does nothing, and nothing breaks.
+
+Each integration is one file you own and edit once. Components never import the library themselves, so changing library later means changing that one file.
+
+<Cards>
+	<Card title="Haptics" href="/docs/integrations/haptics">
+		The small taps the phone plays under the finger: switches, pickers, long
+		press, wrong codes.
+	</Card>
+</Cards>

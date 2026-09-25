@@ -97,6 +97,7 @@ import { Tab } from "@/components/ui/tab";
 | `value`         | `string`                  | —       | Value of the selected tab in controlled usage.                                                   |
 | `defaultValue`  | `string`                  | —       | Initial selection when the component owns its state.                                             |
 | `onValueChange` | `(value: string) => void` | —       | Called after an enabled tab is pressed. Use it to swap nearby content, not to push a new screen. |
+| `haptic`        | `HapticKind \| false`     | —       | Haptic played when the user changes the tab, by tap or swipe. Off unless you pass a kind.        |
 | `children`      | `ReactNode`               | —       | A `Tab.List` and optional content.                                                               |
 | View props      | `ViewProps`               | —       | Passed to the root `View`, including `style`, accessibility props and `ref`.                     |
 
@@ -149,6 +150,10 @@ import { Tab } from "@/components/ui/tab";
 The indicator travels on a spring, and lands without animating the first time: it has nothing to travel from until the items have been measured. Reduced motion moves it without animation.
 
 `Tab` sets the tab list, tab and selected accessibility roles. Panels are optional. Without `Tab.Content` or `Tab.Pager`, the screen can render its content elsewhere from the selected value.
+
+## Haptics
+
+Tabs play nothing by default. Pass a kind to `Tab`, usually `"selection"`, to play one when the user changes the tab, by pressing an item or by swiping the pager. A `value` changed in code plays nothing. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Swipe to switch
 

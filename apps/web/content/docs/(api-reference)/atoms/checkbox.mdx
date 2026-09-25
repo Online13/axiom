@@ -86,11 +86,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 | `label`              | `ReactNode`                  | —          | Text next to the box. The whole row becomes pressable, not only the 22pt box.                  |
 | `description`        | `ReactNode`                  | —          | Secondary text under the label.                                                                |
 | `disabled`           | `boolean`                    | `false`    | Blocks changes and uses the `disabled` tokens.                                                 |
+| `haptic`             | `HapticKind \| false`        | —          | Haptic played when the user changes the value. Off unless you pass a kind.                     |
 | `error`              | `boolean`                    | `false`    | Red border, for a required checkbox left unchecked on submit.                                  |
 | `accessibilityLabel` | `string`                     | label text | Required when there is no `label`.                                                             |
 | `style`              | `StyleProp<ViewStyle>`       | —          | Extra styles for the pressable row.                                                            |
 
 Box and check colors come from `checkbox.default.{default,checked,invalid,disabled}` in the [component tokens](/docs/foundations/component-tokens).
+
+## Haptics
+
+A checkbox plays nothing by default: neither iOS nor Android does. Pass a kind, usually `"selection"`, to play one when the user changes the value. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 

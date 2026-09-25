@@ -63,5 +63,17 @@ export default defineConfig({
 	],
 	vite: {
 		plugins: [tailwindcss()],
+		optimizeDeps: {
+			// This client-only island is injected in dev, so Vite cannot discover its
+			// dependencies during the initial route scan. Pre-bundle them before the
+			// browser requests ThemeBuilder.tsx to avoid an immediate stale dep hash.
+			include: [
+				"@legendapp/state",
+				"@legendapp/state/react",
+				"@legendapp/state/sync",
+				"@legendapp/state/persist-plugins/local-storage",
+				"lucide-react",
+			],
+		},
 	},
 });

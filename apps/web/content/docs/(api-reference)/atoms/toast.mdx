@@ -255,6 +255,17 @@ socket.on("mention", (m) =>
 );
 ```
 
+## Haptics
+
+A toast plays nothing on its own: it also shows messages the user didn't trigger, like a sync that finished in the background. When it answers an action the user just made, play the haptic next to it:
+
+```tsx
+haptic("success");
+toast.show({ title: "Saved" });
+```
+
+Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
+
 ## Toast or Snackbar?
 
 |                 | Toast   | Snackbar |

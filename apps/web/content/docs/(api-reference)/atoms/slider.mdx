@@ -86,23 +86,33 @@ import { Slider } from '@/components/ui/slider';
 
 ## Props
 
-| Prop                    | Type                         | Default | Description                                                                                    |
-| ----------------------- | ---------------------------- | ------- | ---------------------------------------------------------------------------------------------- |
-| `value`                 | `number \| [number, number]` | —       | A number for one thumb, a tuple for a range with two thumbs.                                   |
-| `defaultValue`          | `number \| [number, number]` | `min`   | Initial value when the slider manages its own state.                                           |
-| `onValueChange`         | `(value) => void`            | —       | Called continuously while dragging. Runs on the JS thread, so keep it cheap.                   |
-| `onSlidingComplete`     | `(value) => void`            | —       | Called once when the finger lifts. Use it for expensive work: a request, a refetch.            |
-| `min`                   | `number`                     | `0`     | Lowest value.                                                                                  |
-| `max`                   | `number`                     | `100`   | Highest value.                                                                                 |
-| `step`                  | `number`                     | `1`     | Increment the value snaps to. `0` means continuous.                                            |
-| `minRange`              | `number`                     | `0`     | Smallest gap between the two thumbs of a range.                                                |
-| `showSteps`             | `boolean`                    | `false` | Draws a tick for each step. Only use it when there are few steps.                              |
-| `disabled`              | `boolean`                    | `false` | Blocks dragging and dims the slider.                                                           |
-| `accessibilityLabel`    | `string`                     | —       | What the slider controls. Screen reader users change it with swipe up and down, by one `step`. |
-| `getAccessibilityValue` | `(value) => string`          | —       | Text announced for the value, such as `"5 kilometers"`.                                        |
-| `style`                 | `StyleProp<ViewStyle>`       | —       | Extra styles for the container.                                                                |
+| Prop                    | Type                         | Default       | Description                                                                                                          |
+| ----------------------- | ---------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `value`                 | `number \| [number, number]` | —             | A number for one thumb, a tuple for a range with two thumbs.                                                         |
+| `defaultValue`          | `number \| [number, number]` | `min`         | Initial value when the slider manages its own state.                                                                 |
+| `onValueChange`         | `(value) => void`            | —             | Called continuously while dragging. Runs on the JS thread, so keep it cheap.                                         |
+| `onSlidingComplete`     | `(value) => void`            | —             | Called once when the finger lifts. Use it for expensive work: a request, a refetch.                                  |
+| `min`                   | `number`                     | `0`           | Lowest value.                                                                                                        |
+| `max`                   | `number`                     | `100`         | Highest value.                                                                                                       |
+| `step`                  | `number`                     | `1`           | Increment the value snaps to. `0` means continuous.                                                                  |
+| `minRange`              | `number`                     | `0`           | Smallest gap between the two thumbs of a range.                                                                      |
+| `showSteps`             | `boolean`                    | `false`       | Draws a tick for each step. Only use it when there are few steps.                                                    |
+| `disabled`              | `boolean`                    | `false`       | Blocks dragging and dims the slider.                                                                                 |
+| `haptic`                | `HapticKind \| false`        | `'selection'` | Haptic played while dragging: on each step when steps are drawn, otherwise at `min` and `max`. `false` turns it off. |
+| `accessibilityLabel`    | `string`                     | —             | What the slider controls. Screen reader users change it with swipe up and down, by one `step`.                       |
+| `getAccessibilityValue` | `(value) => string`          | —             | Text announced for the value, such as `"5 kilometers"`.                                                              |
+| `style`                 | `StyleProp<ViewStyle>`       | —             | Extra styles for the container.                                                                                      |
 
 The thumb is 20pt but its touch area is 44pt, and the whole track accepts a tap to jump to a value.
+
+## Haptics
+
+The slider plays a `selection` haptic while the user drags or taps the track:
+
+- with visible steps (a `step` and at most 50 of them), once per step;
+- otherwise, only when a thumb reaches `min` or `max`, so a continuous slider doesn't buzz the whole way.
+
+Screen reader adjustments play nothing: the value is already spoken. Pass `haptic={false}` to turn it off, or another kind to change it. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Use cases
 
