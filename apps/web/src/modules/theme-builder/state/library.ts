@@ -34,14 +34,20 @@ export function saveTheme(theme: Theme): SavedTheme {
 		id: id(),
 		name: theme.name.trim() || "Untitled",
 		savedAt: Date.now(),
-		theme: { ...theme, seeds: { ...theme.seeds } },
+		theme: { ...theme, seeds: { ...theme.seeds }, fonts: { ...theme.fonts } },
 	};
 
 	const existing = library$.themes
 		.peek()
-		.findIndex((saved) => saved.name.toLowerCase() === entry.name.toLowerCase());
+		.findIndex(
+			(saved) => saved.name.toLowerCase() === entry.name.toLowerCase(),
+		);
 
-	if (existing >= 0) library$.themes[existing].set({ ...entry, id: library$.themes[existing].id.peek() });
+	if (existing >= 0)
+		library$.themes[existing].set({
+			...entry,
+			id: library$.themes[existing].id.peek(),
+		});
 	else library$.themes.push(entry);
 
 	return entry;

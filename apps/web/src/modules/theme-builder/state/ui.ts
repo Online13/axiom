@@ -6,18 +6,39 @@ import { syncObservable } from "@legendapp/state/sync";
 import { ObservablePersistLocalStorage } from "@legendapp/state/persist-plugins/local-storage";
 import type { ColorScheme } from "@docs/lib/tokens";
 import { defaultExportOptions, type ExportOptions } from "../lib/export";
+import type { SeedName } from "../lib/theme";
 
-/** The demo apps the theme is judged on, plus the three inspection views. */
+/**
+ * The demo apps the theme is judged on, plus the inspection views.
+ * `label` names the tab, `name` and `tagline` head the preview.
+ */
 export const appTabs = {
-	todo: { label: "Todo", caption: "A task list app" },
-	productivity: { label: "Productivity", caption: "Focus and habits" },
-	recipes: { label: "Recipes", caption: "A cooking app" },
-	social: { label: "Social", caption: "A feed and profile" },
+	music: {
+		label: "Music",
+		name: "Wave",
+		tagline: "Music for wherever you are.",
+	},
+	travel: {
+		label: "Travel",
+		name: "Roam",
+		tagline: "Go somewhere slower.",
+	},
+	fitness: {
+		label: "Fitness",
+		name: "Pulse",
+		tagline: "Move a little more every day.",
+	},
+	finance: {
+		label: "Finance",
+		name: "North",
+		tagline: "Your money, at a glance.",
+	},
 } as const;
 
 export type AppTab = keyof typeof appTabs;
 
 export const inspectTabs = {
+	components: "Components",
 	roles: "Color roles",
 	palettes: "Palette",
 	code: "Code",
@@ -39,10 +60,12 @@ export type UiState = {
 	loadOpen: boolean;
 	exportOptions: ExportOptions;
 	status: string;
+	/** The seed last picked on a phone; `at` lets the same seed be picked twice. */
+	focusedSeed: { name: SeedName; at: number } | null;
 };
 
 export const ui$ = observable<UiState>({
-	tab: "todo",
+	tab: "music",
 	scheme: "light",
 	device: "ios",
 	settingsOpen: false,
@@ -50,15 +73,22 @@ export const ui$ = observable<UiState>({
 	loadOpen: false,
 	exportOptions: { ...defaultExportOptions },
 	status: "Changes apply instantly.",
+	focusedSeed: null,
 });
 
 // Only the render settings are worth remembering between visits; the open
 // overlays and the status line are not.
 syncObservable(ui$.scheme, {
-	persist: { name: "axiom.theme-builder.scheme", plugin: ObservablePersistLocalStorage },
+	persist: {
+		name: "axiom.theme-builder.scheme",
+		plugin: ObservablePersistLocalStorage,
+	},
 });
 syncObservable(ui$.device, {
-	persist: { name: "axiom.theme-builder.device", plugin: ObservablePersistLocalStorage },
+	persist: {
+		name: "axiom.theme-builder.device",
+		plugin: ObservablePersistLocalStorage,
+	},
 });
 
 export const announce = (message: string) => ui$.status.set(message);

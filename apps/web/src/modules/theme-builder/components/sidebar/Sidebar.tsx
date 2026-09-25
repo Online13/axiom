@@ -14,10 +14,15 @@ function randomSeeds(): Record<SeedName, string> {
 		base + (Math.random() * 2 - 1) * spread;
 	return {
 		neutral: oklchToHex({ l: 0.56, c: 0.012, h: around(280, 180) }),
-		accent: oklchToHex({
-			l: 0.5 + Math.random() * 0.2,
-			c: 0.13 + Math.random() * 0.08,
+		primary: oklchToHex({
+			l: 0.45 + Math.random() * 0.2,
+			c: 0.12 + Math.random() * 0.1,
 			h: Math.random() * 360,
+		}),
+		link: oklchToHex({
+			l: 0.55 + Math.random() * 0.1,
+			c: 0.15 + Math.random() * 0.06,
+			h: around(255, 30),
 		}),
 		highlight: oklchToHex({
 			l: 0.82 + Math.random() * 0.06,
@@ -35,7 +40,8 @@ export const Sidebar = observer(function Sidebar() {
 		<aside className="tb-panel" aria-label="Theme controls">
 			<SeedControls />
 			<ShapeControls />
-			<FontControl />
+			<FontControl role="heading" label="Heading font" />
+			<FontControl role="body" label="Body font" />
 
 			<section className="tb-group tb-group--actions">
 				<button
@@ -61,6 +67,11 @@ export const Sidebar = observer(function Sidebar() {
 					Reset to Axiom
 				</button>
 			</section>
+
+			<p className="tb-note">
+				Every preview is drawn with the real Axiom primitives, so the theme
+				flows through it exactly as it would in a shipped app.
+			</p>
 
 			<p className="tb-status" aria-live="polite">
 				{ui$.status.get()}

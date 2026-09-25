@@ -1,0 +1,9 @@
+<svg
+				viewBox="0 0 148 150"
+				fill="currentColor"
+				aria-hidden="true"
+				style={{ height: "2ex", width: "auto", flexShrink: 0, transform: "translateY(0.5ex)" }}
+			>
+				<path d="M14 20 H80 A6 6 0 0 1 86 26 V54 A10 10 0 0 0 96 64 H124 A6 6 0 0 1 130 70 V136 A14 14 0 0 1 116 150 H14 A14 14 0 0 1 0 136 V34 A14 14 0 0 1 14 20 Z" />
+				<rect x="104" y="0" width="44" height="44" rx="10" />
+			</svg>

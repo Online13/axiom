@@ -3,39 +3,40 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronDown, Search } from "lucide-react";
 import {
 	SYSTEM_FONT,
-	allFonts,
-	curatedFonts,
+	googleFonts,
 	loadFont,
 	systemEntry,
 	type FontEntry,
 } from "../../lib/fonts";
-import { setFont, theme$ } from "../../state/theme";
+import { setFont, theme$, type FontRole } from "../../state/theme";
 import { announce } from "../../state/ui";
 
 /**
- * A searchable list of real Google Fonts. Each row previews itself in its own
- * face, and picking one loads the stylesheet, so the phones change typeface for
- * real rather than falling back to the system stack.
+ * A searchable list of real Google Fonts for one role — titles or body text.
+ * Each row previews itself in its own face, and picking one loads the
+ * stylesheet, so the phones change typeface for real rather than falling back
+ * to the system stack.
  */
-export const FontControl = observer(function FontControl() {
-	const current = theme$.font.get();
+export const FontControl = observer(function FontControl({
+	role,
+	label,
+}: {
+	role: FontRole;
+	label: string;
+}) {
+	const current = theme$.fonts[role].get();
 	const [open, setOpen] = useState(false);
 	const [query, setQuery] = useState("");
-	const [catalogue, setCatalogue] = useState<FontEntry[]>(curatedFonts);
 	const box = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		allFonts().then(setCatalogue);
-	}, []);
 
 	const results = useMemo(() => {
 		const needle = query.trim().toLowerCase();
-		const list = [systemEntry, ...catalogue];
+		const list: FontEntry[] = [systemEntry, ...googleFonts];
 		const matches = needle
 			? list.filter((font) => font.family.toLowerCase().includes(needle))
 			: list;
 		return matches.slice(0, 80);
-	}, [query, catalogue]);
+	}, [query]);
 
 	// Only the visible rows are loaded — the catalogue can be two thousand
 	// families deep and each one is a network request.
@@ -54,25 +55,28 @@ export const FontControl = observer(function FontControl() {
 	}, [open]);
 
 	const pick = (family: string) => {
-		setFont(family);
-		announce(`${family} typeface`);
+		setFont(role, family);
+		announce(`${family} for ${role === "heading" ? "titles" : "body text"}`);
 		setOpen(false);
 		setQuery("");
 	};
 
 	return (
 		<section className="tb-group">
-			<h2 className="tb-eyebrow">Typeface</h2>
+			<h2 className="tb-eyebrow">{label}</h2>
 			<div className="tb-fontpicker" ref={box}>
 				<button
 					type="button"
 					className="tb-fontpicker__trigger"
+					aria-label={`${label}: ${current}`}
 					aria-expanded={open}
 					aria-haspopup="listbox"
 					onClick={() => setOpen((value) => !value)}
 					style={{
 						fontFamily:
-							current === SYSTEM_FONT ? undefined : `'${current}', system-ui`,
+							current === SYSTEM_FONT
+								? undefined
+								: `'${current}', system-ui`,
 					}}
 				>
 					<span className="tb-truncate">{current}</span>
@@ -120,17 +124,20 @@ export const FontControl = observer(function FontControl() {
 								</li>
 							))}
 							{results.length === 0 && (
-								<li className="tb-fontpicker__empty">No font matches that.</li>
+								<li className="tb-fontpicker__empty">
+									No font matches that.
+								</li>
 							)}
 						</ul>
 					</div>
 				)}
 			</div>
-			<p className="tb-note">
-				{catalogue.length > curatedFonts.length
-					? `${catalogue.length} families from the Google Fonts catalogue.`
-					: "A curated set of Google Fonts — set PUBLIC_GOOGLE_FONTS_API_KEY for the full catalogue."}
-			</p>
+			{role === "body" && (
+				<p className="tb-note">
+					{`${googleFonts.length} families from the Google Fonts catalogue.`}{" "}
+					Titles use the heading font; everything else uses the body font.
+				</p>
+			)}
 		</section>
 	);
 });

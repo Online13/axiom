@@ -445,6 +445,18 @@ input[type="color"] {
 	border-top: 0;
 }
 
+/* The row a click on a phone just opened. */
+.tb-seed[data-flash] {
+	animation: tb-seed-flash 1.2s ease-out;
+}
+
+@keyframes tb-seed-flash {
+	from {
+		background: color-mix(in srgb, var(--accent) 22%, transparent);
+		box-shadow: -0.75rem 0 0 color-mix(in srgb, var(--accent) 22%, transparent);
+	}
+}
+
 /* The swatch is the color input itself, squared off to match the chrome. */
 .tb-seed__swatch {
 	position: relative;
@@ -565,7 +577,7 @@ input[type="color"] {
 }
 
 .tb-view {
-	padding: 2rem var(--gutter) 5rem;
+	padding: 1.5rem var(--gutter) 5rem;
 }
 
 .tb-view__intro {
@@ -575,13 +587,41 @@ input[type="color"] {
 	font-size: 0.85rem;
 }
 
+/* App preview heading: the app's name and one line, nothing more. */
+.tb-app-head {
+	margin-bottom: 1.25rem;
+	text-align: center;
+}
+
+.tb-app-head__name {
+	margin: 0;
+	font-size: 1.5rem;
+	font-weight: 600;
+	letter-spacing: -0.02em;
+}
+
+.tb-app-head__tagline {
+	margin: 0.25rem 0 0;
+	color: var(--muted);
+	font-size: 0.9rem;
+}
+
 /* ---------- Devices ---------- */
 
+/* The three screens side by side at one scale. useFitScale sets
+   `--ax-scale` so the whole row fits the window; below a readable size the
+   phones stack instead. */
 .tb-devices {
+	--ax-scale: 0.6;
 	display: flex;
-	flex-wrap: wrap;
 	justify-content: center;
-	gap: clamp(1.5rem, 4vw, 3.5rem);
+	align-items: flex-start;
+	gap: clamp(1.25rem, 3vw, 3rem);
+}
+
+.tb-devices[data-layout="stack"] {
+	flex-direction: column;
+	align-items: center;
 }
 
 .tb-device {
@@ -600,17 +640,27 @@ input[type="color"] {
 }
 
 .tb-phone {
-	--ax-scale: 0.74;
 	flex: none;
 	padding: calc(12px * var(--ax-scale));
 	border-radius: calc(60px * var(--ax-scale));
 	background: #1c1c1e;
 	box-shadow:
 		inset 0 0 0 1.5px #3a3a3c,
-		0 30px 60px -30px rgb(0 0 0 / 0.9);
+		0 16px 32px -20px rgb(0 0 0 / 0.5);
 }
 
 /* ---------- Generated theme surface ---------- */
+
+/* Pointing at a part of a mockup outlines the element that carries its color. */
+.tb-devices .ax-screen {
+	cursor: pointer;
+	user-select: none;
+}
+
+.tb-devices [data-tb-inspect] {
+	outline: 2px solid var(--accent);
+	outline-offset: 1px;
+}
 
 .tb-devices .ax-screen {
 	position: relative;
@@ -699,7 +749,7 @@ input[type="color"] {
 
 /* The settings tiles follow the seeds instead of the fixed iOS colors. */
 .tb-devices .ax-tile[data-color="blue"] {
-	background: var(--ax-accent-500);
+	background: var(--ax-link-500);
 }
 .tb-devices .ax-tile[data-color="green"] {
 	background: var(--ax-success-500);
@@ -711,23 +761,85 @@ input[type="color"] {
 	background: var(--ax-error-500);
 }
 .tb-devices .ax-tile[data-color="purple"] {
-	background: var(--ax-accent-700);
+	background: var(--ax-link-700);
 }
 .tb-devices .ax-tile[data-color="gray"] {
 	background: var(--ax-neutral-500);
 }
 
+.tb-devices .tb-art {
+	display: block;
+	flex: none;
+}
+
 .tb-devices .ax-avatar[data-photo] {
-	background: var(--ax-accent-100);
-	color: var(--ax-accent-700);
+	background: var(--ax-link-100);
+	color: var(--ax-link-700);
 }
 
 .tb-devices .ax-media {
 	background: linear-gradient(
 		135deg,
-		var(--ax-accent-300),
-		var(--ax-accent-100)
+		var(--ax-link-300),
+		var(--ax-link-100)
 	);
+}
+
+/* ---------- Components ---------- */
+
+.tb-components {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	align-items: start;
+	gap: 1.5rem;
+}
+
+.tb-sample[data-wide] {
+	grid-column: span 2;
+}
+
+.tb-sample__title {
+	margin: 0 0 0.6rem;
+	color: var(--muted);
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
+	font-weight: 400;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+/* A slice of screen: same surface, font and radius as the phones. */
+.tb-components .tb-sample__body {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	padding: 20px;
+	border-radius: 16px;
+	background: var(--ax-background-default);
+	color: var(--ax-content-default);
+	font-family: var(--ax-font);
+	font-size: 17px;
+	line-height: 22px;
+	box-shadow: inset 0 0 0 1px var(--line);
+	transition:
+		background-color 200ms ease,
+		color 200ms ease;
+}
+
+/* Overlays need a screen to sit on. */
+.tb-sample__stage {
+	position: relative;
+	height: 220px;
+	margin: -20px;
+	overflow: hidden;
+	border-radius: inherit;
+	background: var(--ax-background-subtle);
+}
+
+@media (max-width: 760px) {
+	.tb-sample[data-wide] {
+		grid-column: auto;
+	}
 }
 
 /* ---------- Color roles ---------- */
@@ -965,6 +1077,18 @@ input[type="color"] {
 
 .tb-note--warn {
 	color: var(--warn);
+}
+
+.tb-tabs__group {
+	flex: none;
+	align-self: center;
+	margin-right: -0.75rem;
+	color: var(--muted);
+	font-family: var(--font-mono);
+	font-size: 0.65rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	opacity: 0.7;
 }
 
 .tb-tabs__sep {
@@ -1223,6 +1347,35 @@ input[type="color"] {
 	margin: 0;
 }
 
+.tb-export__preview {
+	display: flex;
+	min-width: 0;
+	flex-direction: column;
+}
+
+/* One tab per file of a multi-file export. */
+.tb-filetabs {
+	display: flex;
+	flex-wrap: wrap;
+	border: 1px solid var(--line);
+	border-bottom: 0;
+}
+
+.tb-filetabs button {
+	padding: 0.45rem 0.7rem;
+	border: 0;
+	border-right: 1px solid var(--line);
+	background: transparent;
+	color: var(--muted);
+	font-family: var(--font-mono);
+	font-size: 0.72rem;
+}
+
+.tb-filetabs button[aria-selected="true"] {
+	background: var(--fg);
+	color: var(--bg);
+}
+
 /* ---------- Saved themes ---------- */
 
 .tb-library {
@@ -1326,8 +1479,8 @@ input[type="color"] {
 
 /* ---------- Seed-driven accents inside the mockups ---------- */
 
-.tb-devices .ax-tile[data-color="accent"] {
-	background: var(--ax-accent-500);
+.tb-devices .ax-tile[data-color="link"] {
+	background: var(--ax-link-500);
 }
 .tb-devices .ax-tile[data-color="success"] {
 	background: var(--ax-success-500);
@@ -1342,8 +1495,8 @@ input[type="color"] {
 	background: var(--ax-neutral-500);
 }
 
-.tb-devices .ax-badge-dot[data-color="accent"] {
-	background: var(--ax-accent-500);
+.tb-devices .ax-badge-dot[data-color="link"] {
+	background: var(--ax-link-500);
 }
 .tb-devices .ax-badge-dot[data-color="success"] {
 	background: var(--ax-success-500);
@@ -1401,15 +1554,16 @@ input[type="color"] {
 	.tb-modal__foot .tb-btn span {
 		display: inline;
 	}
-
-	.tb-phone {
-		--ax-scale: 0.62;
-	}
 }
 
 @media (prefers-reduced-motion: reduce) {
 	.tb-devices .ax-screen,
+	.tb-components .tb-sample__body,
 	.tb-btn {
 		transition: none;
+	}
+
+	.tb-seed[data-flash] {
+		animation: none;
 	}
 }

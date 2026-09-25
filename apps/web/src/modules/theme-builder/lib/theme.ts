@@ -1,4 +1,4 @@
-// Turns five seed colors into the whole Axiom theme: eleven-step ramps, the
+// Turns seven seed colors into the whole Axiom theme: eleven-step ramps, the
 // semantic roles of both schemes, and the CSS the previews read.
 //
 // The ramps keep the shape of the shipped palettes (@docs/lib/tokens): a seed
@@ -21,6 +21,7 @@ import {
 	hslaToRgb,
 	oklchToHex,
 	oklchToHsla,
+	onColor,
 	rgbToOklch,
 } from "./color";
 
@@ -28,43 +29,81 @@ export type PaletteHue = keyof typeof palette;
 export type Ramp = Record<PaletteStep, string>;
 export type GeneratedPalette = Record<SeedName, Ramp>;
 
-// The six hues the semantic roles are built from — one seed each, like the
-// core colors of a Material theme.
+// The hues the semantic roles are built from — one seed each, like the core
+// colors of a Material theme. Primary is the only one without a palette hue of
+// its own: it borrows the curve of the closest hue (see `primaryReference`).
 export const seeds = {
 	neutral: {
 		hue: "gray",
 		label: "Neutral",
 		usage: "Surfaces, text, borders — the whole grey ramp",
 	},
-	accent: {
-		hue: "blue",
-		label: "Accent",
-		usage: "Links, focus rings, selection, info",
+	primary: {
+		hue: "primary",
+		label: "Primary",
+		usage: "Solid buttons, selected chips and tabs, checked controls",
 	},
 	highlight: {
 		hue: "yellow",
 		label: "Highlight",
-		usage: "The brand fill — featured badges and chips",
+		usage: "The brand fill — featured badges",
+	},
+	link: {
+		hue: "blue",
+		label: "Link",
+		usage: "Links, focus rings, info",
 	},
 	success: { hue: "green", label: "Success", usage: "Confirmations" },
 	warning: { hue: "orange", label: "Warning", usage: "Cautions" },
 	error: { hue: "red", label: "Error", usage: "Errors, destructive actions" },
 } as const satisfies Record<
 	string,
-	{ hue: PaletteHue; label: string; usage: string }
+	{ hue: PaletteHue | "primary"; label: string; usage: string }
 >;
 
 export type SeedName = keyof typeof seeds;
 export const seedNames = Object.keys(seeds) as SeedName[];
 
+/** The seeds that regenerate a hue of the shipped palette. */
+type PaletteSeed = Exclude<SeedName, "primary">;
+const paletteSeedNames = seedNames.filter(
+	(name): name is PaletteSeed => name !== "primary",
+);
+
 // Maps a palette hue back to the seed that generates it.
 const hueToSeed = Object.fromEntries(
-	seedNames.map((name) => [seeds[name].hue, name]),
+	paletteSeedNames.map((name) => [seeds[name].hue, name]),
 ) as Record<PaletteHue, SeedName>;
 
-export const defaultSeeds = Object.fromEntries(
-	seedNames.map((name) => [name, hslaToHex(palette[seeds[name].hue][500])]),
-) as Record<SeedName, string>;
+// Primary ships as the darkest neutral: black actions on white, white on black.
+export const defaultSeeds = {
+	...Object.fromEntries(
+		paletteSeedNames.map((name) => [
+			name,
+			hslaToHex(palette[seeds[name].hue][500]),
+		]),
+	),
+	primary: hslaToHex(palette.gray[950]),
+} as Record<SeedName, string>;
+
+/**
+ * A primary with almost no chroma is an "ink" primary, like the default: it
+ * flips to the lightest neutral in dark mode instead of lightening its own hue.
+ */
+export const isInk = (hex: string) => hexToOklch(hex).c < 0.03;
+
+// The palette hue whose step 500 sits closest on the color wheel.
+function primaryReference(hex: string): PaletteHue {
+	if (isInk(hex)) return "gray";
+	const { h } = hexToOklch(hex);
+	const distance = (hue: PaletteHue) => {
+		const d = Math.abs(rgbToOklch(hslaToRgb(palette[hue][500])).h - h) % 360;
+		return Math.min(d, 360 - d);
+	};
+	return (Object.keys(palette) as PaletteHue[])
+		.filter((hue) => hue !== "gray" && hue !== "brown")
+		.reduce((best, hue) => (distance(hue) < distance(best) ? hue : best));
+}
 
 /* ---------- Shape and type ---------- */
 
@@ -77,6 +116,31 @@ export const radiusScales = {
 
 export type RadiusScale = keyof typeof radiusScales;
 
+type RadiusKey = "sm" | "md" | "lg" | "xl" | "full";
+
+// The corner of the controls, written into their component tokens. `rounded`
+// is what Axiom ships: md controls, pill chips.
+export const controlShapes = {
+	square: { label: "Square", control: "sm", chip: "sm" },
+	rounded: { label: "Rounded", control: "md", chip: "full" },
+	pill: { label: "Pill", control: "full", chip: "full" },
+} as const satisfies Record<
+	string,
+	{ label: string; control: RadiusKey; chip: RadiusKey }
+>;
+
+export type ControlShape = keyof typeof controlShapes;
+
+/** The components whose tokens carry a radius, and which slot drives it. */
+export const shapedComponents = [
+	{ name: "button", key: "button", slot: "control" },
+	{ name: "icon-button", key: "iconButton", slot: "control" },
+	{ name: "input", key: "input", slot: "control" },
+	{ name: "segmented-control", key: "segmentedControl", slot: "control" },
+	{ name: "chip", key: "chip", slot: "chip" },
+	{ name: "floating-button", key: "floatingButton", slot: "chip" },
+] as const;
+
 /** The typeface a theme uses — a Google Fonts family, or `System`. */
 export type FontFamily = string;
 
@@ -84,14 +148,16 @@ export type Theme = {
 	name: string;
 	seeds: Record<SeedName, string>;
 	radius: RadiusScale;
-	font: FontFamily;
+	controls: ControlShape;
+	fonts: { heading: FontFamily; body: FontFamily };
 };
 
 export const defaultTheme: Theme = {
 	name: "Axiom",
 	seeds: defaultSeeds,
 	radius: "default",
-	font: SYSTEM_FONT,
+	controls: "rounded",
+	fonts: { heading: SYSTEM_FONT, body: SYSTEM_FONT },
 };
 
 export const radiusValues = (scale: RadiusScale) => {
@@ -103,6 +169,9 @@ export const radiusValues = (scale: RadiusScale) => {
 		xl: Math.round(defaultRadius.xl * factor),
 	};
 };
+
+const radiusPx = (theme: Theme, key: RadiusKey) =>
+	key === "full" ? 999 : radiusValues(theme.radius)[key];
 
 /* ---------- Ramps ---------- */
 
@@ -163,7 +232,12 @@ export const buildPalette = (theme: Theme): GeneratedPalette =>
 	Object.fromEntries(
 		seedNames.map((name) => [
 			name,
-			buildRamp(theme.seeds[name], seeds[name].hue),
+			buildRamp(
+				theme.seeds[name],
+				name === "primary"
+					? primaryReference(theme.seeds.primary)
+					: seeds[name as PaletteSeed].hue,
+			),
 		]),
 	) as GeneratedPalette;
 
@@ -176,20 +250,54 @@ export type Swatch = {
 	variable: string;
 	usage: string;
 	hex: string;
-	/** `gray.600`, or `—` for the raw white and black values. */
+	/** `gray.600`, `primary.500`, or `—` for the raw white and black values. */
 	source: string;
+	/** The raw value, `gray.600` or `hsla(…)`: what the exported colors.ts writes. */
+	value: string;
 };
+
+const WHITE = "hsla(0, 0%, 100%, 1)";
 
 const kebab = (value: string) =>
 	value.replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`);
 
 const resolve = (value: string, generated: GeneratedPalette): string => {
 	if (value.startsWith("hsla(")) return hslaToHex(value);
-	const [hue, step] = value.split(".") as [PaletteHue, string];
-	return hslaToHex(
-		generated[hueToSeed[hue]][Number(step) as PaletteStep],
-	);
+	const [hue, step] = value.split(".") as [PaletteHue | "primary", string];
+	const seed = hue === "primary" ? "primary" : hueToSeed[hue];
+	return hslaToHex(generated[seed][Number(step) as PaletteStep]);
 };
+
+// Primary reads its own ramp. An ink primary keeps the shipped behavior:
+// the seed in light, the lightest neutral in dark.
+function primaryValue(
+	generated: GeneratedPalette,
+	scheme: ColorScheme,
+	key: string,
+	shipped: string,
+): string {
+	const seed = hslaToHex(generated.primary[500]);
+	const on = (step: PaletteStep) =>
+		onColor(hslaToHex(generated.primary[step])) === "#ffffff"
+			? WHITE
+			: "gray.950";
+
+	if (isInk(seed)) {
+		if (scheme === "dark") return shipped;
+		if (key === "default")
+			return seed === defaultSeeds.primary ? shipped : "primary.500";
+		if (key === "on") return on(500);
+		return shipped;
+	}
+
+	const steps = {
+		light: { default: 500, pressed: 600, subtle: 100 },
+		dark: { default: 400, pressed: 300, subtle: 900 },
+	} as const;
+	const own = steps[scheme];
+	if (key === "on") return on(own.default);
+	return `primary.${own[key as keyof typeof own]}`;
+}
 
 export function buildScheme(
 	generated: GeneratedPalette,
@@ -197,9 +305,11 @@ export function buildScheme(
 ): Swatch[] {
 	return (Object.keys(colorRoles) as ColorRole[]).flatMap((role) =>
 		Object.entries(colorRoles[role]).map(([key, entry]) => {
-			const value = (entry as { light: string; dark: string; usage: string })[
-				scheme
-			];
+			const shipped = (entry as { light: string; dark: string })[scheme];
+			const value =
+				role === "primary"
+					? primaryValue(generated, scheme, key, shipped)
+					: shipped;
 			return {
 				role,
 				key,
@@ -207,9 +317,35 @@ export function buildScheme(
 				usage: (entry as { usage: string }).usage,
 				hex: resolve(value, generated),
 				source: value.startsWith("hsla(") ? "—" : value,
+				value,
 			};
 		}),
 	);
+}
+
+/**
+ * The seed behind a preview variable: `--ax-link-500` names its seed, and a
+ * role like `--ax-content-muted` reads it off the palette step it resolves to.
+ * The primary and highlight roles always belong to their own seed, even when
+ * an ink primary borrows a neutral step. Raw white and black count as neutral.
+ */
+export function seedForVariable(
+	variable: string,
+	theme: Theme,
+	scheme: ColorScheme,
+): SeedName | null {
+	const ramp = variable.match(/^--ax-([a-z]+)-\d+$/)?.[1];
+	if (ramp && ramp in seeds) return ramp as SeedName;
+
+	const swatch = buildScheme(buildPalette(theme), scheme).find(
+		(entry) => entry.variable === variable,
+	);
+	if (!swatch) return null;
+	if (swatch.role === "primary" || swatch.role === "highlight")
+		return swatch.role;
+	if (swatch.source === "—") return "neutral";
+	const [hue] = swatch.source.split(".") as [PaletteHue | "primary"];
+	return hue === "primary" ? "primary" : hueToSeed[hue];
 }
 
 /* ---------- Contrast ---------- */
@@ -233,6 +369,11 @@ export const contrastPairs = [
 		over: "background.default",
 	},
 	{
+		label: "Label on a primary button",
+		on: "primary.on",
+		over: "primary.default",
+	},
+	{
 		label: "Label on inverse surface",
 		on: "content.inverse",
 		over: "background.inverse",
@@ -244,8 +385,8 @@ export const contrastPairs = [
 	},
 	{
 		label: "Label on the highlight fill",
-		on: "accent.on",
-		over: "accent.default",
+		on: "highlight.on",
+		over: "highlight.default",
 	},
 ] as const;
 
@@ -276,14 +417,22 @@ export function themeCss(theme: Theme): string {
 	const ramps = seedNames
 		.map((name) =>
 			paletteSteps
-				.map((step) => `--ax-${name}-${step}:${hslaToHex(generated[name][step])};`)
+				.map(
+					(step) =>
+						`--ax-${name}-${step}:${hslaToHex(generated[name][step])};`,
+				)
 				.join(""),
 		)
 		.join("");
 
 	// preview.css declares the radius tokens on `.ax-screen` itself, so the
 	// override has to land on the same element, not on an ancestor.
-	const shape = `--ax-radius-sm:${sm}px;--ax-radius-md:${md}px;--ax-radius-lg:${lg}px;--ax-radius-xl:${xl}px;--ax-font:${fontStack(theme.font)};`;
+	const { control, chip } = controlShapes[theme.controls];
+	const shape = [
+		`--ax-radius-sm:${sm}px;--ax-radius-md:${md}px;--ax-radius-lg:${lg}px;--ax-radius-xl:${xl}px;`,
+		`--ax-radius-control:${radiusPx(theme, control)}px;--ax-radius-chip:${radiusPx(theme, chip)}px;`,
+		`--ax-font:${fontStack(theme.fonts.body)};--ax-font-heading:${fontStack(theme.fonts.heading)};`,
+	].join("");
 
 	return [
 		`[data-ax-preview]{${ramps}}`,
@@ -293,68 +442,48 @@ export function themeCss(theme: Theme): string {
 	].join("");
 }
 
-/* ---------- Export ---------- */
+/* ---------- Loading a theme ---------- */
 
-export function exportJson(theme: Theme): string {
-	const generated = buildPalette(theme);
-	return JSON.stringify(
-		{
-			name: theme.name,
-			seeds: theme.seeds,
-			radius: radiusValues(theme.radius),
-			fontFamily: fontStack(theme.font),
-			palette: Object.fromEntries(
-				seedNames.map((name) => [seeds[name].hue, generated[name]]),
-			),
-			colors: {
-				light: Object.fromEntries(
-					buildScheme(generated, "light").map((s) => [
-						`${s.role}.${s.key}`,
-						s.hex,
-					]),
-				),
-				dark: Object.fromEntries(
-					buildScheme(generated, "dark").map((s) => [
-						`${s.role}.${s.key}`,
-						s.hex,
-					]),
-				),
-			},
+const hex = (value: unknown) =>
+	typeof value === "string" && /^#?[0-9a-f]{6}$/i.test(value)
+		? `#${value.replace("#", "").toLowerCase()}`
+		: undefined;
+
+/**
+ * Fills whatever an older draft, saved theme or link lacks. The `accent` seed
+ * of earlier versions is the link seed, and their single `font` is both faces.
+ */
+export function normalizeTheme(raw: unknown): Theme {
+	const value = (raw ?? {}) as Record<string, unknown>;
+	const rawSeeds = (value.seeds ?? {}) as Record<string, unknown>;
+	const rawFonts = (value.fonts ?? {}) as Record<string, unknown>;
+	const font = typeof value.font === "string" ? value.font : undefined;
+	const text = (field: unknown, fallback: string) =>
+		typeof field === "string" && field ? field : fallback;
+
+	return {
+		name: text(value.name, defaultTheme.name),
+		seeds: Object.fromEntries(
+			seedNames.map((name) => [
+				name,
+				hex(rawSeeds[name]) ??
+					(name === "link" ? hex(rawSeeds.accent) : undefined) ??
+					defaultSeeds[name],
+			]),
+		) as Record<SeedName, string>,
+		radius:
+			typeof value.radius === "string" && value.radius in radiusScales
+				? (value.radius as RadiusScale)
+				: defaultTheme.radius,
+		controls:
+			typeof value.controls === "string" && value.controls in controlShapes
+				? (value.controls as ControlShape)
+				: defaultTheme.controls,
+		fonts: {
+			heading: text(rawFonts.heading, font ?? defaultTheme.fonts.heading),
+			body: text(rawFonts.body, font ?? defaultTheme.fonts.body),
 		},
-		null,
-		2,
-	);
-}
-
-// A drop-in replacement for the `palette` object of the token file.
-export function exportTokens(theme: Theme): string {
-	const generated = buildPalette(theme);
-	const ramp = (name: SeedName) =>
-		[
-			`\t${seeds[name].hue}: {`,
-			...paletteSteps.map(
-				(step) => `\t\t${step}: "${generated[name][step]}",`,
-			),
-			"\t},",
-		].join("\n");
-
-	const { sm, md, lg, xl } = radiusValues(theme.radius);
-
-	return [
-		`// ${theme.name} — generated with the Axiom theme builder.`,
-		"export const palette = {",
-		...seedNames.map(ramp),
-		"};",
-		"",
-		"export const radius = {",
-		"\tnone: 0,",
-		`\tsm: ${sm},`,
-		`\tmd: ${md},`,
-		`\tlg: ${lg},`,
-		`\txl: ${xl},`,
-		"\tfull: 9999,",
-		"};",
-	].join("\n");
+	};
 }
 
 /* ---------- URL state ---------- */
@@ -364,34 +493,26 @@ export function encodeTheme(theme: Theme): string {
 	for (const name of seedNames)
 		params.set(name, theme.seeds[name].replace("#", ""));
 	params.set("radius", theme.radius);
-	params.set("font", theme.font);
+	params.set("controls", theme.controls);
+	params.set("heading", theme.fonts.heading);
+	params.set("body", theme.fonts.body);
 	if (theme.name !== defaultTheme.name) params.set("name", theme.name);
 	return params.toString();
 }
 
 export function decodeTheme(search: string): Theme {
 	const params = new URLSearchParams(search);
-	const hex = (name: SeedName) => {
-		const value = params.get(name);
-		return value && /^#?[0-9a-f]{6}$/i.test(value)
-			? `#${value.replace("#", "").toLowerCase()}`
-			: defaultSeeds[name];
-	};
-	const radius = params.get("radius");
-	const font = params.get("font");
-
-	return {
-		name: params.get("name") ?? defaultTheme.name,
-		seeds: Object.fromEntries(seedNames.map((name) => [name, hex(name)])) as Record<
-			SeedName,
-			string
-		>,
-		radius:
-			radius && radius in radiusScales
-				? (radius as RadiusScale)
-				: defaultTheme.radius,
-		font: font || defaultTheme.font,
-	};
+	const get = (key: string) => params.get(key) ?? undefined;
+	return normalizeTheme({
+		name: get("name"),
+		seeds: Object.fromEntries(
+			[...seedNames, "accent"].map((name) => [name, get(name)]),
+		),
+		radius: get("radius"),
+		controls: get("controls"),
+		font: get("font"),
+		fonts: { heading: get("heading"), body: get("body") },
+	});
 }
 
 export { oklchToHex, hexToOklch };

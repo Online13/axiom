@@ -1,8 +1,8 @@
 import { observer } from "@legendapp/state/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { seedNames, seeds } from "../../lib/theme";
 import { setSeed, theme$ } from "../../state/theme";
-import { announce } from "../../state/ui";
+import { announce, ui$ } from "../../state/ui";
 
 const VALID_HEX = /^#?[0-9a-f]{6}$/i;
 
@@ -15,6 +15,21 @@ const SeedRow = observer(function SeedRow({
 	const [draft, setDraft] = useState(value.toUpperCase());
 	const [invalid, setInvalid] = useState(false);
 	const [known, setKnown] = useState(value);
+	const row = useRef<HTMLLIElement>(null);
+	const field = useRef<HTMLInputElement>(null);
+	const focused = ui$.focusedSeed.get();
+
+	// A part clicked on a phone lands here: bring the row into view, flash it,
+	// and put the caret in its hex field, ready to type.
+	useEffect(() => {
+		if (focused?.name !== name || !row.current) return;
+		row.current.scrollIntoView({ block: "nearest", behavior: "smooth" });
+		row.current.removeAttribute("data-flash");
+		void row.current.offsetWidth; // restarts the animation on a repeat pick
+		row.current.setAttribute("data-flash", "");
+		field.current?.focus({ preventScroll: true });
+		field.current?.select();
+	}, [focused, name]);
 
 	// The picker and the hex field are two views of one value. The field keeps
 	// whatever is being typed, and only re-syncs when the seed moves elsewhere
@@ -33,12 +48,19 @@ const SeedRow = observer(function SeedRow({
 			return;
 		}
 		setInvalid(false);
-		setSeed(name, `#${draft.replace("#", "")}`);
+		const hex = `#${draft.replace("#", "")}`.toLowerCase();
+		// Leaving an untouched field (after a pick on a phone) is not an edit.
+		if (hex === theme$.seeds[name].peek()) return;
+		setSeed(name, hex);
 		announce(`${seeds[name].label} updated`);
 	};
 
 	return (
-		<li className="tb-seed">
+		<li
+			className="tb-seed"
+			ref={row}
+			onAnimationEnd={() => row.current?.removeAttribute("data-flash")}
+		>
 			<span className="tb-seed__swatch">
 				<input
 					type="color"
@@ -52,6 +74,7 @@ const SeedRow = observer(function SeedRow({
 				<span className="tb-seed__usage">{seeds[name].usage}</span>
 			</span>
 			<input
+				ref={field}
 				className="tb-input tb-input--hex"
 				type="text"
 				maxLength={7}
@@ -75,8 +98,9 @@ export function SeedControls() {
 		<section className="tb-group">
 			<h2 className="tb-eyebrow">Core colors</h2>
 			<p className="tb-note">
-				Each seed becomes an eleven-step ramp. The semantic roles of both
-				schemes are read off those ramps, exactly like the shipped tokens.
+				Each seed becomes an eleven-step ramp, and the semantic roles of
+				both schemes are read off those ramps. A near-black Primary keeps
+				Axiom's ink buttons, white in dark mode; any other hue brands them.
 			</p>
 			<ul className="tb-seeds">
 				{seedNames.map((name) => (

@@ -21,13 +21,23 @@ export const CanvasBar = observer(function CanvasBar() {
 
 	return (
 		<div className="tb-canvas__bar">
-			<div className="tb-tabs" role="tablist" aria-label="Preview and inspection views">
+			<div
+				className="tb-tabs"
+				role="tablist"
+				aria-label="Preview and inspection views"
+			>
+				<span className="tb-tabs__group" aria-hidden="true">
+					Apps
+				</span>
 				{(Object.keys(appTabs) as (keyof typeof appTabs)[]).map((id) =>
 					tab(id, appTabs[id].label),
 				)}
 				<span className="tb-tabs__sep" aria-hidden="true" />
-				{(Object.keys(inspectTabs) as (keyof typeof inspectTabs)[]).map((id) =>
-					tab(id, inspectTabs[id]),
+				<span className="tb-tabs__group" aria-hidden="true">
+					Inspect
+				</span>
+				{(Object.keys(inspectTabs) as (keyof typeof inspectTabs)[]).map(
+					(id) => tab(id, inspectTabs[id]),
 				)}
 			</div>
 

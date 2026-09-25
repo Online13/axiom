@@ -1,10 +1,9 @@
 import { observer } from "@legendapp/state/react";
 import { Trash2 } from "lucide-react";
-import { seedNames } from "../../lib/theme";
+import { normalizeTheme, seedNames } from "../../lib/theme";
 import { deleteTheme, library$ } from "../../state/library";
-import { theme$ } from "../../state/theme";
+import { loadThemeFonts, theme$ } from "../../state/theme";
 import { announce, ui$ } from "../../state/ui";
-import { loadFont } from "../../lib/fonts";
 import { Modal } from "./Modal";
 
 const when = (timestamp: number) =>
@@ -27,8 +26,8 @@ export const LoadModal = observer(function LoadModal() {
 		>
 			{saved.length === 0 ? (
 				<p className="tb-note">
-					Nothing saved yet. Hit <strong>Save</strong> in the header and the theme
-					lands here under its name.
+					Nothing saved yet. Hit <strong>Save</strong> in the header and
+					the theme lands here under its name.
 				</p>
 			) : (
 				<ul className="tb-library">
@@ -40,27 +39,34 @@ export const LoadModal = observer(function LoadModal() {
 									type="button"
 									className="tb-library__load"
 									onClick={() => {
-										loadFont(entry.theme.font);
-										theme$.set({
-											...entry.theme,
-											seeds: { ...entry.theme.seeds },
-										});
+										const theme = normalizeTheme(entry.theme);
+										loadThemeFonts(theme);
+										theme$.set(theme);
 										announce(`Loaded “${entry.name}”`);
 										close();
 									}}
 								>
-									<span className="tb-library__chips" aria-hidden="true">
+									<span
+										className="tb-library__chips"
+										aria-hidden="true"
+									>
 										{seedNames.map((name) => (
 											<span
 												key={name}
-												style={{ background: entry.theme.seeds[name] }}
+												style={{
+													background: normalizeTheme(entry.theme)
+														.seeds[name],
+												}}
 											/>
 										))}
 									</span>
 									<span className="tb-library__text">
-										<span className="tb-library__name">{entry.name}</span>
+										<span className="tb-library__name">
+											{entry.name}
+										</span>
 										<span className="tb-library__meta">
-											{entry.theme.font} · {entry.theme.radius} corners ·{" "}
+											{normalizeTheme(entry.theme).fonts.heading} ·{" "}
+											{entry.theme.radius} corners ·{" "}
 											{when(entry.savedAt)}
 										</span>
 									</span>

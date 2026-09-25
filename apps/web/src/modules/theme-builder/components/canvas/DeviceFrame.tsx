@@ -1,6 +1,17 @@
 import { observer } from "@legendapp/state/react";
-import type { ReactNode } from "react";
-import { ui$ } from "../../state/ui";
+import { type MouseEvent, type ReactNode, useRef } from "react";
+import { seedForVariable, seeds } from "../../lib/theme";
+import { theme$ } from "../../state/theme";
+import { announce, ui$ } from "../../state/ui";
+import { inspect } from "./inspect";
+
+// The element under the pointer and the seed that colors it, if any.
+function pick(event: MouseEvent<HTMLDivElement>) {
+	const hit = inspect(event.target as Element, event.currentTarget);
+	if (!hit) return null;
+	const seed = seedForVariable(hit.variable, theme$.peek(), ui$.scheme.peek());
+	return seed ? { ...hit, seed } : null;
+}
 
 /**
  * A phone drawn at real device points and scaled down, so the previews use real
@@ -19,6 +30,16 @@ export const DeviceFrame = observer(function DeviceFrame({
 	children: ReactNode;
 }) {
 	const device = ui$.device.get();
+	const hovered = useRef<Element | null>(null);
+
+	// The outline is a DOM attribute, not React state: hovering must not
+	// re-render the mockup under the pointer.
+	const outline = (element: Element | null) => {
+		if (hovered.current === element) return;
+		hovered.current?.removeAttribute("data-tb-inspect");
+		hovered.current = element;
+		element?.setAttribute("data-tb-inspect", "");
+	};
 
 	return (
 		<figure className="tb-device">
@@ -28,7 +49,16 @@ export const DeviceFrame = observer(function DeviceFrame({
 					data-device={device}
 					data-grouped={grouped ? "true" : undefined}
 					// The mockups are pictures, not apps: nothing inside is focusable.
-					inert
+					// Pointing at a part outlines it; clicking it opens its seed in
+					// the sidebar, which is where it is edited from the keyboard.
+					onMouseOver={(event) => outline(pick(event)?.element ?? null)}
+					onMouseLeave={() => outline(null)}
+					onClick={(event) => {
+						const hit = pick(event);
+						if (!hit) return;
+						ui$.focusedSeed.set({ name: hit.seed, at: Date.now() });
+						announce(`${seeds[hit.seed].label} — ${hit.variable}`);
+					}}
 				>
 					<div className="ax-status" aria-hidden="true">
 						<span>9:41</span>
