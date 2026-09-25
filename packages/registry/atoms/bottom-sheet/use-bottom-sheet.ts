@@ -29,6 +29,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { scheduleOnRN } from "react-native-worklets";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
 import { useOverlayStack } from "@/components/core/overlay-stack";
 import { useOverlayBackHandler } from "@/hooks/use-overlay-back-handler";
 
@@ -61,6 +62,11 @@ export type UseBottomSheetContentOptions = {
 	stack?: boolean;
 	/** How far a covered sheet shrinks per level. From `tokens.metrics.stackScale`. */
 	stackScale?: number;
+	/**
+	 * Played when a drag lands the sheet on another snap point. Opening, closing and `index` changes
+	 * made in code don't play it. Off unless you pass a kind, e.g. `"light"`.
+	 */
+	haptic?: HapticKind | false;
 };
 
 // Critically damped: settles fast without bouncing.
@@ -79,6 +85,7 @@ export function useBottomSheetContent({
 	keyboardBehavior = "interactive",
 	stack = true,
 	stackScale = 1,
+	haptic: hapticKind,
 }: UseBottomSheetContentOptions) {
 	const { open, setOpen } = useBottomSheet();
 	const { depth, isTop } = useOverlayStack(open, stack);
@@ -149,6 +156,7 @@ export function useBottomSheetContent({
 		onIndexChange,
 		onDismiss,
 		setOpen,
+		hapticKind,
 	});
 	useLayoutEffect(() => {
 		latest.current = {
@@ -158,6 +166,7 @@ export function useBottomSheetContent({
 			onIndexChange,
 			onDismiss,
 			setOpen,
+			hapticKind,
 		};
 	});
 
@@ -170,6 +179,16 @@ export function useBottomSheetContent({
 		if (controlled === undefined) setUncontrolledIndex(next);
 		if (next !== current) onChange?.(next);
 	}, []);
+
+	// The end of a drag, the only snap change that plays the haptic.
+	const settleFromDrag = useCallback(
+		(next: number) => {
+			const { index: current, hapticKind: kind } = latest.current;
+			if (kind && next !== current) haptic(kind);
+			requestIndex(next);
+		},
+		[requestIndex],
+	);
 
 	const requestClose = useCallback(() => latest.current.setOpen(false), []);
 
@@ -334,7 +353,7 @@ export function useBottomSheetContent({
 					}
 
 					translateY.value = withSpring(positions.value[target], config);
-					scheduleOnRN(requestIndex, target);
+					scheduleOnRN(settleFromDrag, target);
 				}),
 		[
 			isTop,
@@ -349,7 +368,7 @@ export function useBottomSheetContent({
 			scrollRef,
 			onClosed,
 			requestClose,
-			requestIndex,
+			settleFromDrag,
 		],
 	);
 

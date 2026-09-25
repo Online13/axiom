@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	useAnimatedStyle,
 	useReducedMotion,
@@ -8,6 +8,7 @@ import {
 	type WithTimingConfig,
 } from "react-native-reanimated";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
 import { useControllableState } from "@/hooks/use-controllable-state";
 
 export type PasscodeStatus = "idle" | "verifying" | "error" | "success";
@@ -22,6 +23,8 @@ export type UsePasscodeOptions = {
 	/** Takes over the internal status, for a screen that verifies the code itself. */
 	status?: PasscodeStatus;
 	disabled?: boolean;
+	/** Played when the status becomes `error`: a wrong code. `false` turns it off. */
+	haptic?: HapticKind | false;
 };
 
 // One shake, out and back twice, at a distance the eye reads as a refusal.
@@ -39,6 +42,7 @@ export function usePasscode({
 	onComplete,
 	status: statusProp,
 	disabled = false,
+	haptic: hapticKind = "error",
 }: UsePasscodeOptions) {
 	const [value, setValue] = useControllableState({
 		value: valueProp,
@@ -47,6 +51,11 @@ export function usePasscode({
 	});
 	const [internalStatus, setInternalStatus] = useState<PasscodeStatus>("idle");
 	const status = statusProp ?? internalStatus;
+
+	// Follows the status rather than `fail()`, so a screen that sets `status="error"` itself gets it too.
+	useEffect(() => {
+		if (status === "error" && hapticKind) haptic(hapticKind);
+	}, [status, hapticKind]);
 
 	const reduceMotion = useReducedMotion();
 	const offset = useSharedValue(0);

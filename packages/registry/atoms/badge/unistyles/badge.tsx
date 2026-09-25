@@ -13,7 +13,7 @@ import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from "@/components/ui/text";
 
 export type BadgeVariant =
 	| "neutral"
-	| "accent"
+	| "highlight"
 	| "info"
 	| "success"
 	| "warning"

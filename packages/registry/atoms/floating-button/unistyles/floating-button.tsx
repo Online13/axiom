@@ -1,6 +1,10 @@
 import { View, type StyleProp, type ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
-import { StyleSheet, useUnistyles, withUnistyles } from "react-native-unistyles";
+import {
+	StyleSheet,
+	useUnistyles,
+	withUnistyles,
+} from "react-native-unistyles";
 
 import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
@@ -172,7 +176,7 @@ const styles = StyleSheet.create((theme) => ({
 			minHeight: dimension,
 			minWidth: dimension,
 			paddingHorizontal: extended ? theme.tokens.spacing[5] : 0,
-			borderRadius: theme.tokens.radius.full,
+			borderRadius: theme.components.floatingButton.radius,
 			backgroundColor: colors.background,
 			borderWidth: colors.border ? theme.tokens.metrics.hairline : 0,
 			borderColor: colors.border,

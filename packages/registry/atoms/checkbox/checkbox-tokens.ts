@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type CheckboxColors = {
@@ -11,13 +12,19 @@ export type CheckboxTokens = {
 	default: States<CheckboxColors, "checked" | "invalid" | "disabled">;
 };
 
-export const checkboxTokens = (colors: ThemeColors): CheckboxTokens => ({
+export const checkboxTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): CheckboxTokens => ({
 	default: {
 		default: {
 			border: colors.border.strong,
-			indicator: colors.content.inverse,
+			indicator: colors.primary.on,
 		},
-		checked: { background: colors.content.link, border: colors.content.link },
+		checked: {
+			background: colors.primary.default,
+			border: colors.primary.default,
+		},
 		invalid: { border: colors.feedback.error },
 		disabled: {
 			border: colors.border.subtle,

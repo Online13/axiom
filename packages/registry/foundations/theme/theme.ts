@@ -12,11 +12,11 @@ export type Theme = {
 export const light = {
 	tokens,
 	colors: lightColors,
-	components: components(lightColors),
+	components: components(lightColors, tokens),
 } satisfies Theme;
 
 export const dark = {
 	tokens,
 	colors: darkColors,
-	components: components(darkColors),
+	components: components(darkColors, tokens),
 } satisfies Theme;

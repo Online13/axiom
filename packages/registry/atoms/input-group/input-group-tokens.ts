@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type InputGroupColors = { addon?: string; divider: string };
@@ -8,7 +9,10 @@ export type InputGroupTokens = {
 	default: States<InputGroupColors, "disabled">;
 };
 
-export const inputGroupTokens = (colors: ThemeColors): InputGroupTokens => ({
+export const inputGroupTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): InputGroupTokens => ({
 	default: {
 		default: {
 			addon: colors.background.subtle,

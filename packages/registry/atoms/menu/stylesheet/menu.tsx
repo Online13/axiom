@@ -11,6 +11,7 @@ import Animated from "react-native-reanimated";
 import { Overlay } from "@/components/core/overlay";
 import { Portal } from "@/components/core/portal";
 import { Slot } from "@/components/core/slot";
+import { haptic, type HapticKind } from "@/components/core/haptics";
 import { Tappable } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
@@ -38,6 +39,8 @@ export type MenuTriggerProps = {
 	action?: "longPress" | "press";
 	/** Lifts a copy of the trigger above the backdrop. A node shows that node in its place instead. */
 	preview?: boolean | ReactNode;
+	/** Played when the menu opens. Defaults to `medium` for a long press, nothing for a press. `false` turns it off. */
+	haptic?: HapticKind | false;
 	asChild?: boolean;
 	accessibilityLabel?: string;
 	children?: ReactNode;
@@ -47,6 +50,7 @@ export type MenuTriggerProps = {
 function MenuTrigger({
 	action = "longPress",
 	preview,
+	haptic: hapticKind = action === "longPress" ? "medium" : false,
 	asChild = false,
 	accessibilityLabel,
 	children,
@@ -56,7 +60,10 @@ function MenuTrigger({
 	const lifted = preview ?? action === "longPress";
 	const previewNode =
 		lifted === true ? children : lifted === false ? null : lifted;
-	const open = () => openFromTrigger(previewNode);
+	const open = () => {
+		if (hapticKind) haptic(hapticKind);
+		openFromTrigger(previewNode);
+	};
 	const handlers =
 		action === "press" ? { onPress: open } : { onLongPress: open };
 

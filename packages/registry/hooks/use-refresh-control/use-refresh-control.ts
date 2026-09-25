@@ -11,6 +11,8 @@ import {
 } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
+
 /** See the five statuses a pull goes through in the Pull-to-refresh behavior. */
 export type RefreshStatus =
 	"idle" | "pulling" | "armed" | "refreshing" | "settling";
@@ -26,8 +28,10 @@ export type UseRefreshControlOptions = {
 	minDuration?: number;
 	/** Turns the pull off, for example while the first page loads. */
 	enabled?: boolean;
-	/** Called once per pull when the status becomes `armed`. A good place for a light haptic. */
+	/** Called once per pull when the status becomes `armed`. */
 	onArmed?: () => void;
+	/** Played once per pull when the status becomes `armed`. `false` turns it off. */
+	haptic?: HapticKind | false;
 };
 
 const isIOS = Platform.OS === "ios";
@@ -60,6 +64,7 @@ export function useRefreshControl({
 	minDuration = 500,
 	enabled = true,
 	onArmed,
+	haptic: hapticKind = "light",
 }: UseRefreshControlOptions) {
 	const [status, setStatus] = useState<RefreshStatus>("idle");
 	const reduceMotion = useReducedMotion();
@@ -80,9 +85,9 @@ export function useRefreshControl({
 	);
 
 	// Callbacks run from the UI thread read the latest render through this ref.
-	const latest = useRef({ onRefresh, onArmed });
+	const latest = useRef({ onRefresh, onArmed, hapticKind });
 	useEffect(() => {
-		latest.current = { onRefresh, onArmed };
+		latest.current = { onRefresh, onArmed, hapticKind };
 	});
 
 	const running = useRef(false);
@@ -99,7 +104,11 @@ export function useRefreshControl({
 		}
 	}, [threshold, maxDistance, enabled]);
 
-	const notifyArmed = useCallback(() => latest.current.onArmed?.(), []);
+	const notifyArmed = useCallback(() => {
+		const { onArmed: armed, hapticKind: kind } = latest.current;
+		if (kind) haptic(kind);
+		armed?.();
+	}, []);
 
 	const toIdle = useCallback(() => {
 		phase.value = "idle";

@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type SlotColors = {
@@ -26,7 +27,10 @@ export type PasscodeTokens = {
 	key: { round: KeyStates; flat: KeyStates };
 };
 
-export const passcodeTokens = (colors: ThemeColors): PasscodeTokens => ({
+export const passcodeTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): PasscodeTokens => ({
 	slot: {
 		dot: {
 			default: {

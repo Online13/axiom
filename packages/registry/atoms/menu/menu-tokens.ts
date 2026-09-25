@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type MenuColors = {
@@ -12,7 +13,10 @@ export type MenuTokens = {
 	default: States<MenuColors, "pressed" | "destructive" | "disabled">;
 };
 
-export const menuTokens = (colors: ThemeColors): MenuTokens => ({
+export const menuTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): MenuTokens => ({
 	default: {
 		default: {
 			background: colors.background.elevated,

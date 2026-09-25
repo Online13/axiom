@@ -111,7 +111,7 @@ export function Input({
 						minHeight: tokens.sizes.control[size],
 						paddingHorizontal: tokens.spacing[size === "sm" ? 2 : 3],
 						gap: tokens.spacing[2],
-						borderRadius: tokens.radius.md,
+						borderRadius: components.input.radius,
 						backgroundColor: colors.background ?? "transparent",
 						borderColor: colors.border ?? "transparent",
 					},

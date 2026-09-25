@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type InputOTPColors = {
@@ -15,7 +16,10 @@ export type InputOTPTokens = {
 	>;
 };
 
-export const inputOtpTokens = (colors: ThemeColors): InputOTPTokens => ({
+export const inputOtpTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): InputOTPTokens => ({
 	default: {
 		default: {
 			background: colors.background.default,

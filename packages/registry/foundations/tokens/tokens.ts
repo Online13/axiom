@@ -55,6 +55,14 @@ export type TypographyStyle = {
 
 export type Typography = Record<TypographyVariant, TypographyStyle>;
 
+/** Font families, as loaded with expo-font. `undefined` uses the system font. */
+export type Fonts = {
+	/** Titles and headlines: `largeTitle` to `headline`. */
+	heading: string | undefined;
+	/** Every other text style. */
+	body: string | undefined;
+};
+
 type Scale = Record<"sm" | "md" | "lg", number>;
 
 export type Sizes = {
@@ -77,6 +85,7 @@ export type Tokens = {
 	palette: Palette;
 	spacing: Spacing;
 	radius: Radius;
+	fonts: Fonts;
 	typography: Typography;
 	sizes: Sizes;
 	metrics: Metrics;
@@ -280,42 +289,78 @@ export const radius = {
 	full: 9999,
 } satisfies Radius;
 
+// Load a family with expo-font, then set its name here, e.g. `heading: "Fraunces-SemiBold"`.
+export const fonts: Fonts = {
+	heading: undefined,
+	body: undefined,
+};
+
 export const typography = {
 	largeTitle: {
 		fontSize: 34,
 		lineHeight: 40,
 		fontWeight: "800",
 		letterSpacing: -0.8,
+		fontFamily: fonts.heading,
 	},
 	title1: {
 		fontSize: 28,
 		lineHeight: 33,
 		fontWeight: "800",
 		letterSpacing: -0.6,
+		fontFamily: fonts.heading,
 	},
 	title2: {
 		fontSize: 22,
 		lineHeight: 27,
 		fontWeight: "700",
 		letterSpacing: -0.4,
+		fontFamily: fonts.heading,
 	},
 	title3: {
 		fontSize: 20,
 		lineHeight: 25,
 		fontWeight: "700",
 		letterSpacing: -0.3,
+		fontFamily: fonts.heading,
 	},
 	headline: {
 		fontSize: 17,
 		lineHeight: 22,
 		fontWeight: "600",
 		letterSpacing: -0.2,
+		fontFamily: fonts.heading,
 	},
-	body: { fontSize: 17, lineHeight: 23, fontWeight: "400" },
-	callout: { fontSize: 16, lineHeight: 21, fontWeight: "400" },
-	subheadline: { fontSize: 15, lineHeight: 20, fontWeight: "400" },
-	footnote: { fontSize: 13, lineHeight: 18, fontWeight: "500" },
-	caption: { fontSize: 12, lineHeight: 16, fontWeight: "500" },
+	body: {
+		fontSize: 17,
+		lineHeight: 23,
+		fontWeight: "400",
+		fontFamily: fonts.body,
+	},
+	callout: {
+		fontSize: 16,
+		lineHeight: 21,
+		fontWeight: "400",
+		fontFamily: fonts.body,
+	},
+	subheadline: {
+		fontSize: 15,
+		lineHeight: 20,
+		fontWeight: "400",
+		fontFamily: fonts.body,
+	},
+	footnote: {
+		fontSize: 13,
+		lineHeight: 18,
+		fontWeight: "500",
+		fontFamily: fonts.body,
+	},
+	caption: {
+		fontSize: 12,
+		lineHeight: 16,
+		fontWeight: "500",
+		fontFamily: fonts.body,
+	},
 } satisfies Typography;
 
 export const sizes = {
@@ -336,6 +381,7 @@ export const tokens = {
 	palette,
 	spacing,
 	radius,
+	fonts,
 	typography,
 	sizes,
 	metrics,

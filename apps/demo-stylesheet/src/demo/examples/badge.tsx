@@ -59,7 +59,7 @@ export default function BadgeScreen() {
 						}}
 					>
 						<Badge>Archived</Badge>
-						<Badge variant="accent">Featured</Badge>
+						<Badge variant="highlight">Featured</Badge>
 						<Badge variant="info" dot>
 							Building
 						</Badge>

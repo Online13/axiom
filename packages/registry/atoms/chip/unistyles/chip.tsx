@@ -1,12 +1,8 @@
 import type { ReactElement, ReactNode } from "react";
-import {
-	ScrollView,
-	View,
-	type StyleProp,
-	type ViewStyle,
-} from "react-native";
+import { ScrollView, View, type StyleProp, type ViewStyle } from "react-native";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
+import type { HapticKind } from "@/components/core/haptics";
 import { Tappable } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
@@ -31,6 +27,8 @@ export type ChipProps = {
 	/** Ignored with `onRemove`. */
 	trailing?: IconName | ReactElement;
 	disabled?: boolean;
+	/** Played on touch when the chip is pressable. Off unless you pass a kind. */
+	haptic?: HapticKind | false;
 	accessibilityLabel?: string;
 	style?: StyleProp<ViewStyle>;
 };
@@ -67,6 +65,7 @@ function ChipRoot({
 	leading,
 	trailing,
 	disabled = false,
+	haptic,
 	accessibilityLabel,
 	style,
 }: ChipProps) {
@@ -162,6 +161,7 @@ function ChipRoot({
 				selected === undefined ? undefined : { checked: selected }
 			}
 			onPress={onPress}
+			haptic={haptic}
 			style={({ pressed }) => containerStyle(pressed)}
 		>
 			{({ pressed }) => content(pressed)}
@@ -233,7 +233,7 @@ const styles = StyleSheet.create((theme) => ({
 				: trailing
 					? theme.tokens.spacing[2]
 					: theme.tokens.spacing[3],
-			borderRadius: theme.tokens.radius.full,
+			borderRadius: theme.components.chip.radius,
 			backgroundColor: colors.background ?? "transparent",
 			borderWidth: colors.border ? 1 : 0,
 			borderColor: colors.border,

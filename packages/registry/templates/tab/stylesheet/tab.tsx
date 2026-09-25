@@ -24,6 +24,7 @@ import Animated, {
 	withSpring,
 } from "react-native-reanimated";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
 import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/icon";
@@ -42,12 +43,14 @@ type UseTabOptions = {
 	value?: string;
 	defaultValue?: string;
 	onValueChange?: (value: string) => void;
+	haptic?: HapticKind | false;
 };
 
 function useTab({
 	value: valueProp,
 	defaultValue = "",
 	onValueChange,
+	haptic: hapticKind,
 }: UseTabOptions) {
 	const [value, setValue] = useControllableState({
 		value: valueProp,
@@ -101,7 +104,11 @@ function useTab({
 	return {
 		value,
 		listRef,
-		select: setValue,
+		// Taps and swipes between panels both land here.
+		select: (next: string) => {
+			if (hapticKind && next !== value) haptic(hapticKind);
+			setValue(next);
+		},
 		onItemLayout: (item: string) => (event: LayoutChangeEvent) => {
 			const { x, width } = event.nativeEvent.layout;
 			setLayouts((current) => {
@@ -150,6 +157,8 @@ export type TabProps = Omit<ComponentPropsWithRef<typeof View>, "children"> & {
 	value?: string;
 	defaultValue?: string;
 	onValueChange?: (value: string) => void;
+	/** Played when the user changes the tab, by tap or swipe. Off unless you pass a kind, e.g. `"selection"`. */
+	haptic?: HapticKind | false;
 	children?: ReactNode;
 };
 
@@ -157,10 +166,11 @@ function TabRoot({
 	value,
 	defaultValue,
 	onValueChange,
+	haptic,
 	children,
 	...props
 }: TabProps) {
-	const tab = useTab({ value, defaultValue, onValueChange });
+	const tab = useTab({ value, defaultValue, onValueChange, haptic });
 
 	return (
 		<TabContext value={tab}>

@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type TabColors = {
@@ -18,11 +19,11 @@ export type TabTokens = {
 	pill: TabStates;
 };
 
-export const tabTokens = (colors: ThemeColors): TabTokens => ({
+export const tabTokens = (colors: ThemeColors, tokens: Tokens): TabTokens => ({
 	underline: {
 		default: {
 			content: colors.content.muted,
-			indicator: colors.content.link,
+			indicator: colors.primary.default,
 			background: "transparent",
 			border: colors.border.subtle,
 		},

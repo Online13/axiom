@@ -147,7 +147,7 @@ const styles = StyleSheet.create((theme) => ({
 			minHeight: theme.tokens.sizes.control[size],
 			paddingHorizontal: theme.tokens.spacing[size === "sm" ? 2 : 3],
 			gap: theme.tokens.spacing[2],
-			borderRadius: theme.tokens.radius.md,
+			borderRadius: theme.components.input.radius,
 			backgroundColor: colors.background ?? "transparent",
 			borderColor: colors.border ?? "transparent",
 		};
@@ -170,11 +170,7 @@ const styles = StyleSheet.create((theme) => ({
 		flexDirection: "row",
 		alignItems: "center",
 	},
-	affixText: (
-		size: InputSize,
-		variant: InputVariant,
-		state: InputState,
-	) => ({
+	affixText: (size: InputSize, variant: InputVariant, state: InputState) => ({
 		fontSize: theme.tokens.typography[TEXT[size]].fontSize,
 		color: inputColors(theme.components, variant, state).affix,
 	}),

@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type SearchBarColors = {
@@ -19,7 +20,10 @@ export type SearchBarTokens = {
 	outline: SearchBarStates;
 };
 
-export const searchBarTokens = (colors: ThemeColors): SearchBarTokens => ({
+export const searchBarTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): SearchBarTokens => ({
 	filled: {
 		default: {
 			background: colors.background.subtle,

@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type AvatarColors = { background: string; foreground: string; ring: string };
@@ -15,7 +16,10 @@ export type AvatarTokens = {
 	status: States<AvatarStatusColors, never>;
 };
 
-export const avatarTokens = (colors: ThemeColors): AvatarTokens => ({
+export const avatarTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): AvatarTokens => ({
 	default: {
 		default: {
 			background: colors.border.default,

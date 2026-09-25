@@ -9,6 +9,7 @@ import { Chip } from "@/components/ui/chip";
 import { Field, inputColors } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
 import { MAX_FONT_SCALE, Text } from "@/components/ui/text";
+import type { HapticKind } from "@/components/core/haptics";
 import { Tappable } from "@/components/core/tappable";
 import type { InputState } from "@/components/ui/use-input";
 
@@ -28,6 +29,8 @@ export type DatePickerPreset = {
 
 export type DatePickerProps = {
 	mode?: DatePickerMode;
+	/** Played when a day or a preset is picked. `false` turns it off. */
+	haptic?: HapticKind | false;
 	/** The selected date or range. `null` shows the placeholder. */
 	value?: DatePickerValue;
 	/** Called with the new value when the user confirms. */
@@ -65,6 +68,7 @@ const ThemedIcon = withUnistyles(Icon);
 
 export function DatePicker({
 	mode = "single",
+	haptic,
 	value = null,
 	onChange,
 	confirm = "done",
@@ -92,6 +96,7 @@ export function DatePicker({
 		confirm,
 		format,
 		locale: calendarProps?.locale,
+		haptic,
 	});
 
 	const invalid = error !== undefined && error !== false && error !== "";

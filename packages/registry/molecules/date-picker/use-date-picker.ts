@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
 import type {
 	CalendarSelection,
 	DateRange,
@@ -18,6 +19,8 @@ export type UseDatePickerOptions = {
 	confirm?: DatePickerConfirm;
 	format?: (value: DatePickerValue) => string;
 	locale?: string;
+	/** Played when the user picks a day or a preset. `false` turns it off. */
+	haptic?: HapticKind | false;
 };
 
 const isRange = (value: DatePickerValue): value is DateRange =>
@@ -68,6 +71,7 @@ export function useDatePicker({
 	confirm = "done",
 	format,
 	locale,
+	haptic: hapticKind = "selection",
 }: UseDatePickerOptions) {
 	const [open, setOpenState] = useState(false);
 	const [draft, setDraft] = useState<CalendarSelection>(toSelection(value));
@@ -79,6 +83,7 @@ export function useDatePicker({
 	};
 
 	const select = (selection: CalendarSelection) => {
+		if (hapticKind) haptic(hapticKind);
 		setDraft(selection);
 		// `instant` only makes sense for one date: a range isn't complete after the first press.
 		if (

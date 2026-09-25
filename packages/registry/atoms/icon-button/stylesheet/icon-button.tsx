@@ -65,7 +65,9 @@ export function IconButton({
 						width: dimension,
 						height: dimension,
 						borderRadius:
-							shape === "circle" ? dimension / 2 : tokens.radius.md,
+							shape === "circle"
+								? dimension / 2
+								: components.iconButton.radius,
 						backgroundColor: state.background ?? "transparent",
 						borderWidth: state.border ? 1 : 0,
 						borderColor: state.border,

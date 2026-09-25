@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
 import { Tappable } from "@/components/core/tappable";
 import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/icon";
@@ -54,6 +55,8 @@ export type BottomTabBarProps = {
 	variant?: BottomTabBarVariant;
 	/** Hides the bar while the software keyboard is open. */
 	hideOnKeyboard?: boolean;
+	/** Played when the user switches to another item. Off unless you pass a kind, e.g. `"selection"`. */
+	haptic?: HapticKind | false;
 	safeArea?: boolean;
 	/** A raised action between the items. It never becomes the selected route. */
 	mainAction?: ReactElement<IconButtonProps>;
@@ -68,6 +71,7 @@ function BottomTabBarRoot({
 	onValueChange,
 	variant = "fixed",
 	hideOnKeyboard = true,
+	haptic: hapticKind,
 	safeArea = true,
 	mainAction,
 	children,
@@ -89,6 +93,7 @@ function BottomTabBarRoot({
 
 	const select = (next: string) => {
 		if (next === value) return;
+		if (hapticKind) haptic(hapticKind);
 		Keyboard.dismiss();
 		setValue(next);
 	};

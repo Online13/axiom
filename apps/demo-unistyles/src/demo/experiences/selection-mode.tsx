@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { StyleSheet } from "react-native-unistyles";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 import { Tappable } from "@/components/core/tappable";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ const PHOTOS = Array.from({ length: 12 }, (_, index) => ({
 }));
 
 export default function SelectionModeScreen() {
-
+	const { theme } = useUnistyles();
 	const [photos, setPhotos] = useState(PHOTOS);
 	const [selecting, setSelecting] = useState(false);
 	const [selected, setSelected] = useState<number[]>([]);
@@ -93,7 +93,11 @@ export default function SelectionModeScreen() {
 								</Text>
 								{isSelected ? (
 									<View style={styles.check}>
-										<Icon name="check" size={14} color="inverse" />
+										<Icon
+											name="check"
+											size={14}
+											color={theme.colors.primary.on}
+										/>
 									</View>
 								) : null}
 							</Tappable>
@@ -158,7 +162,7 @@ const styles = StyleSheet.create((theme) => ({
 		backgroundColor: theme.colors.background.elevated,
 		borderWidth: selected ? 2 : theme.tokens.metrics.hairline,
 		borderColor: selected
-			? theme.colors.content.link
+			? theme.colors.primary.default
 			: theme.colors.border.default,
 	}),
 	check: {
@@ -170,7 +174,7 @@ const styles = StyleSheet.create((theme) => ({
 		borderRadius: 10,
 		alignItems: "center",
 		justifyContent: "center",
-		backgroundColor: theme.colors.content.link,
+		backgroundColor: theme.colors.primary.default,
 	},
 	bottom: { position: "absolute", left: 0, right: 0, bottom: 0 },
 	bar: { backgroundColor: theme.colors.background.subtle },

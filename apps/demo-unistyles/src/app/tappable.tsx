@@ -43,10 +43,11 @@ export default function TappableScreen() {
 
 			<Section
 				title="Pressed state"
-				description="Slide your finger off before releasing to cancel the press."
+				description="A light impact plays on press-in. Slide your finger off before releasing to cancel the action."
 			>
 				<Tappable
 					disabled={disabled}
+					haptic="light"
 					onPress={() => record("onPress")}
 					onLongPress={() => record("onLongPress")}
 					style={({ pressed }) => {

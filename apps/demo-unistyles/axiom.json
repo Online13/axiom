@@ -30,6 +30,7 @@
     "dialog",
     "empty",
     "floating-button",
+    "haptics",
     "icon",
     "icon-button",
     "input",

@@ -10,6 +10,7 @@ import {
 import { StyleSheet } from "react-native-unistyles";
 
 import { Slot } from "@/components/core/slot";
+import type { HapticKind } from "@/components/core/haptics";
 import { Tappable } from "@/components/core/tappable";
 import { Text } from "@/components/ui/text";
 
@@ -30,6 +31,8 @@ export type ItemProps = {
 	divider?: ItemDivider;
 	/** Vertical alignment of leading and trailing. */
 	align?: ItemAlign;
+	/** Played on touch when the row is pressable. Off unless you pass a kind: a row tap is rarely an event. */
+	haptic?: HapticKind | false;
 	/** Merges the item into its child, for example a router `Link`. */
 	asChild?: boolean;
 	accessibilityLabel?: string;
@@ -64,6 +67,7 @@ function ItemRoot({
 	disabled = false,
 	divider = false,
 	align = "center",
+	haptic,
 	asChild = false,
 	accessibilityLabel,
 	accessibilityRole,
@@ -127,6 +131,7 @@ function ItemRoot({
 				accessibilityState={a11yState}
 				onPress={onPress}
 				onLongPress={onLongPress}
+				haptic={haptic}
 				style={({ pressed }) => rowStyle(pressed)}
 			>
 				{children}

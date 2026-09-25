@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type IconButtonColors = {
@@ -12,13 +13,19 @@ type IconButtonStates = States<
 >;
 
 export type IconButtonTokens = {
+	/** Corner radius of the `square` shape. The `circle` shape ignores it. */
+	radius: number;
 	ghost: IconButtonStates;
 	tinted: IconButtonStates;
 	outline: IconButtonStates;
 	solid: IconButtonStates;
 };
 
-export const iconButtonTokens = (colors: ThemeColors): IconButtonTokens => ({
+export const iconButtonTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): IconButtonTokens => ({
+	radius: tokens.radius.md,
 	ghost: {
 		default: { foreground: colors.content.default },
 		pressed: { background: colors.background.subtle },
@@ -49,11 +56,11 @@ export const iconButtonTokens = (colors: ThemeColors): IconButtonTokens => ({
 	},
 	solid: {
 		default: {
-			background: colors.background.inverse,
-			foreground: colors.content.inverse,
+			background: colors.primary.default,
+			foreground: colors.primary.on,
 		},
-		pressed: { background: colors.content.muted },
-		selected: { background: colors.content.muted },
+		pressed: { background: colors.primary.pressed },
+		selected: { background: colors.primary.pressed },
 		disabled: {
 			background: colors.border.default,
 			foreground: colors.content.disabled,

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
 import { Tappable } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
@@ -21,6 +22,8 @@ export type CheckboxProps = {
 	disabled?: boolean;
 	/** Error border, for a required checkbox left unchecked. */
 	error?: boolean;
+	/** Played when the user changes the value. Off unless you pass a kind, e.g. `"selection"`. */
+	haptic?: HapticKind | false;
 	/** Required when there is no `label`. */
 	accessibilityLabel?: string;
 	style?: StyleProp<ViewStyle>;
@@ -55,6 +58,7 @@ export function Checkbox({
 	description,
 	disabled = false,
 	error = false,
+	haptic: hapticKind,
 	accessibilityLabel,
 	style,
 }: CheckboxProps) {
@@ -75,7 +79,10 @@ export function Checkbox({
 			accessibilityState={{
 				checked: value === "indeterminate" ? "mixed" : value,
 			}}
-			onPress={() => setValue(value !== true)}
+			onPress={() => {
+				if (hapticKind) haptic(hapticKind);
+				setValue(value !== true);
+			}}
 			style={[styles.row, style]}
 		>
 			<CheckboxIndicator checked={value} error={error} disabled={disabled} />

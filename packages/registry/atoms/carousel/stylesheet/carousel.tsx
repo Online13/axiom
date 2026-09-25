@@ -6,6 +6,7 @@ import Animated, {
 	type SharedValue,
 } from "react-native-reanimated";
 
+import type { HapticKind } from "@/components/core/haptics";
 import { Text } from "@/components/ui/text";
 import { useTheme, type Spacing } from "@/theme";
 
@@ -39,6 +40,8 @@ export type CarouselProps<T> = {
 	onIndexChange?: (index: number) => void;
 	loop?: boolean;
 	autoPlay?: number;
+	/** Played when a swipe lands on another item. Off unless you pass a kind, e.g. `"selection"`. */
+	haptic?: HapticKind | false;
 	/** Items rendered around the visible ones, in viewport widths. */
 	windowSize?: number;
 	ref?: Ref<CarouselRef>;
@@ -59,6 +62,7 @@ export function Carousel<T>({
 	onIndexChange,
 	loop = false,
 	autoPlay,
+	haptic,
 	windowSize = 5,
 	ref,
 	accessibilityLabel,
@@ -91,6 +95,7 @@ export function Carousel<T>({
 		onIndexChange,
 		loop,
 		autoPlay,
+		haptic,
 		ref,
 	});
 

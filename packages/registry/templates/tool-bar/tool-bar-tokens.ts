@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type ToolBarColors = {
@@ -26,7 +27,10 @@ export type ToolBarTokens = {
 	action: ActionStates;
 };
 
-export const toolBarTokens = (colors: ThemeColors): ToolBarTokens => ({
+export const toolBarTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): ToolBarTokens => ({
 	docked: {
 		default: {
 			background: colors.background.default,

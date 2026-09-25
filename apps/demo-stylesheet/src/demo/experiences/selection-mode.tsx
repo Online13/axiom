@@ -100,7 +100,7 @@ export default function SelectionModeScreen() {
 											? 2
 											: tokens.metrics.hairline,
 										borderColor: isSelected
-											? colors.content.link
+											? colors.primary.default
 											: colors.border.default,
 									},
 								]}
@@ -112,10 +112,14 @@ export default function SelectionModeScreen() {
 									<View
 										style={[
 											styles.check,
-											{ backgroundColor: colors.content.link },
+											{ backgroundColor: colors.primary.default },
 										]}
 									>
-										<Icon name="check" size={14} color="inverse" />
+										<Icon
+											name="check"
+											size={14}
+											color={colors.primary.on}
+										/>
 									</View>
 								) : null}
 							</Tappable>

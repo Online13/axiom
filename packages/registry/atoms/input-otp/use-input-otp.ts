@@ -16,6 +16,7 @@ import {
 	withTiming,
 } from "react-native-reanimated";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
 import { useControllableState } from "@/hooks/use-controllable-state";
 
 export type InputOTPType = "numeric" | "alphanumeric";
@@ -31,6 +32,8 @@ export type UseInputOTPOptions = {
 	autoFocus?: boolean;
 	error?: boolean;
 	disabled?: boolean;
+	/** Played when `error` turns on: a wrong code. `false` turns it off. */
+	haptic?: HapticKind | false;
 	ref?: Ref<TextInput>;
 };
 
@@ -60,6 +63,7 @@ export function useInputOTP({
 	autoFocus = true,
 	error = false,
 	disabled = false,
+	haptic: hapticKind = "error",
 	ref,
 }: UseInputOTPOptions) {
 	const [value, setValue] = useControllableState({
@@ -87,7 +91,10 @@ export function useInputOTP({
 		filled: index < value.length,
 	}));
 
-	// Shake once when `error` turns on.
+	// Buzz and shake once when `error` turns on. The haptic doesn't depend on Reduce Motion.
+	useEffect(() => {
+		if (error && hapticKind) haptic(hapticKind);
+	}, [error, hapticKind]);
 	const reducedMotion = useReducedMotion();
 	const shake = useSharedValue(0);
 	useEffect(() => {

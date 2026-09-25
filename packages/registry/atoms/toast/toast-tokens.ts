@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type ToastColors = { background: string; border: string; icon: string };
@@ -7,7 +8,10 @@ export type ToastTokens = {
 	default: States<ToastColors, "success" | "error" | "info">;
 };
 
-export const toastTokens = (colors: ThemeColors): ToastTokens => ({
+export const toastTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): ToastTokens => ({
 	default: {
 		default: {
 			background: colors.background.elevated,

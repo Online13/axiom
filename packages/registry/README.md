@@ -24,7 +24,7 @@ Write each file as it will look **in the user's project**, not as it sits here:
 
 ### Component tokens
 
-A component with colors has a `<item>-tokens.ts` exporting `<item>Tokens(colors)` (camelCase), declared in `tokens` and in `files`. It stays next to the component here, but `axiom add` copies it to the project's `theme/components/<item>.ts`: the theme is its only reader. Don't add it to `foundations/theme/components/index.ts`: that file is a template, and `axiom add` registers tokens between its markers in the project. The typecheck uses `.generated/components/`, the template with every item's tokens registered.
+A component with colors has a `<item>-tokens.ts` exporting `<item>Tokens(colors, tokens)` (camelCase), declared in `tokens` and in `files`. It stays next to the component here, but `axiom add` copies it to the project's `theme/components/<item>.ts`: the theme is its only reader. Don't add it to `foundations/theme/components/index.ts`: that file is a template, and `axiom add` registers tokens between its markers in the project. The typecheck uses `.generated/components/`, the template with every item's tokens registered.
 
 ### Icon sources
 

@@ -15,6 +15,7 @@ import {
 } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
 import type { IconName } from "@/components/ui/icons";
 import { useControllableState } from "@/hooks/use-controllable-state";
 
@@ -37,6 +38,8 @@ export type UseSegmentedControlOptions = {
 	fullWidth?: boolean;
 	/** Padding of the track around the segments. */
 	inset?: number;
+	/** Played when the user changes the segment, by tap or by drag. `false` turns it off. */
+	haptic?: HapticKind | false;
 };
 
 type Layout = { x: number; width: number };
@@ -52,6 +55,7 @@ export function useSegmentedControl({
 	disabled = false,
 	fullWidth = true,
 	inset = 0,
+	haptic: hapticKind = "selection",
 }: UseSegmentedControlOptions) {
 	const segments = options.map((option) =>
 		typeof option === "string" ? { value: option, label: option } : option,
@@ -136,7 +140,9 @@ export function useSegmentedControl({
 
 	const selectIndex = (index: number) => {
 		const segment = segments[index];
-		if (segment && !segment.disabled) select(segment.value);
+		if (!segment || segment.disabled) return;
+		if (hapticKind && segment.value !== selected) haptic(hapticKind);
+		select(segment.value);
 	};
 
 	// The gesture runs on the UI thread and keeps its first callbacks: it selects through a ref to the latest render.

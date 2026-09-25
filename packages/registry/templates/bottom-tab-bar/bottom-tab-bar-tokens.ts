@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type BarColors = {
@@ -20,6 +21,7 @@ export type BottomTabBarTokens = {
 
 export const bottomTabBarTokens = (
 	colors: ThemeColors,
+	tokens: Tokens,
 ): BottomTabBarTokens => ({
 	fixed: {
 		default: {

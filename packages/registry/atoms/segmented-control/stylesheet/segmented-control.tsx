@@ -44,7 +44,7 @@ export function SegmentedControl({
 
 	const states = components.segmentedControl.default;
 	const height = size === "md" ? tokens.sizes.control.sm : tokens.spacing[10];
-	const radius = tokens.radius.md;
+	const radius = components.segmentedControl.radius;
 
 	return (
 		<GestureDetector gesture={gesture}>

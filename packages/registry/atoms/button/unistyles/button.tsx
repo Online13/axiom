@@ -175,7 +175,7 @@ const styles = StyleSheet.create((theme) => ({
 			minHeight: theme.tokens.sizes.control[size],
 			paddingHorizontal: PADDING[size](theme.tokens),
 			gap: theme.tokens.spacing[2],
-			borderRadius: theme.tokens.radius.md,
+			borderRadius: theme.components.button.radius,
 			backgroundColor: colors.background ?? "transparent",
 			borderWidth: colors.border ? 1 : 0,
 			borderColor: colors.border,

@@ -29,13 +29,14 @@ export default function ControlsScreen() {
 
 			<Section
 				title="SegmentedControl"
-				description="Tap a segment, or drag the indicator."
+				description="Tap a segment, or drag the indicator. Each change plays a selection tick."
 			>
 				<Panel>
 					<SegmentedControl
 						options={["All", "Active", "Done"]}
 						value={status}
 						onValueChange={setStatus}
+						haptic="selection"
 						disabled={disabled}
 					/>
 					<Label muted>Selected: {status}</Label>
@@ -104,6 +105,7 @@ export default function ControlsScreen() {
 					<Slider
 						value={rating}
 						onValueChange={setRating}
+						haptic="selection"
 						min={1}
 						max={5}
 						step={1}

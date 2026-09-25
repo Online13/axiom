@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type AlertColors = { background: string; icon: string; border?: string };
@@ -12,7 +13,10 @@ export type AlertTokens = {
 	neutral: AlertStates;
 };
 
-export const alertTokens = (colors: ThemeColors): AlertTokens => ({
+export const alertTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): AlertTokens => ({
 	info: {
 		default: {
 			background: colors.feedback.infoSubtle,

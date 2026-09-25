@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type BadgeColors = { background?: string; foreground: string; border?: string };
@@ -6,7 +7,7 @@ type BadgeStates = States<BadgeColors, never>;
 
 export type BadgeTokens = {
 	neutral: BadgeStates;
-	accent: BadgeStates;
+	highlight: BadgeStates;
 	info: BadgeStates;
 	success: BadgeStates;
 	warning: BadgeStates;
@@ -17,17 +18,20 @@ export type BadgeTokens = {
 	count: BadgeStates;
 };
 
-export const badgeTokens = (colors: ThemeColors): BadgeTokens => ({
+export const badgeTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): BadgeTokens => ({
 	neutral: {
 		default: {
 			background: colors.background.subtle,
 			foreground: colors.content.muted,
 		},
 	},
-	accent: {
+	highlight: {
 		default: {
-			background: colors.accent.default,
-			foreground: colors.accent.on,
+			background: colors.highlight.default,
+			foreground: colors.highlight.on,
 		},
 	},
 	info: {

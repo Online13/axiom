@@ -24,8 +24,16 @@ export type ThemeColors = {
 		strong: string;
 		focus: string;
 	};
+	/** The main action color: solid buttons, selected chips and tabs, checked controls. */
+	primary: {
+		default: string;
+		pressed: string;
+		subtle: string;
+		/** Text and icons on a `default` fill. */
+		on: string;
+	};
 	/** The brand highlight. Always a filled surface with `on` as its text, never text on a light surface. */
-	accent: {
+	highlight: {
 		default: string;
 		subtle: string;
 		on: string;
@@ -63,7 +71,15 @@ export const lightColors = {
 		strong: palette.gray[400],
 		focus: palette.blue[500],
 	},
-	accent: {
+	// Primary defaults to the neutral ramp, so actions stay black on white. Point it at another
+	// hue to give the actions a brand color.
+	primary: {
+		default: palette.gray[950],
+		pressed: palette.gray[600],
+		subtle: palette.gray[100],
+		on: "hsla(0, 0%, 100%, 1)",
+	},
+	highlight: {
 		default: palette.yellow[500],
 		subtle: palette.yellow[100],
 		on: palette.gray[950],
@@ -102,8 +118,14 @@ export const darkColors = {
 		strong: palette.gray[600],
 		focus: palette.blue[400],
 	},
-	// The accent keeps step 500 in both schemes: yellow is already light enough to carry black text.
-	accent: {
+	primary: {
+		default: palette.gray[50],
+		pressed: palette.gray[400],
+		subtle: palette.gray[900],
+		on: palette.gray[950],
+	},
+	// The highlight keeps step 500 in both schemes: yellow is already light enough to carry black text.
+	highlight: {
 		default: palette.yellow[500],
 		subtle: palette.yellow[950],
 		on: palette.gray[950],

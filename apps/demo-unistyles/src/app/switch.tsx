@@ -20,13 +20,14 @@ export default function SwitchScreen() {
 		<Screen>
 			<Section
 				title="Controlled"
-				description="The row label describes the switch."
+				description="The row label describes the switch. Each change plays a light impact."
 			>
 				<Panel>
 					<Row label="Read receipts">
 						<Switch
 							value={readReceipts}
 							onValueChange={setReadReceipts}
+							haptic="light"
 							accessibilityLabel="Read receipts"
 						/>
 					</Row>

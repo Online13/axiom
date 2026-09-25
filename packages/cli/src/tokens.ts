@@ -16,7 +16,7 @@ import {
 //   // axiom:imports:end
 //   ...
 //     // axiom:components:start
-//     button: buttonTokens(colors),
+//     button: buttonTokens(colors, tokens),
 //     // axiom:components:end
 
 export const COMPONENTS_FILE = join(THEME_COMPONENTS_DIR, "index.ts");
@@ -74,6 +74,13 @@ export function registerTokens(source: string, entries: TokenEntry[]): string {
 		}
 	}
 
+	// Since tokens files read `tokens` too, the function around the markers has to receive it.
+	if (!/components = \(colors[^)]*,\s*tokens\b/.test(source)) {
+		throw new Error(
+			`The theme's ${COMPONENTS_FILE} passes only \`colors\` to the component tokens. It predates shape tokens: run "axiom add theme" and overwrite it.`,
+		);
+	}
+
 	let next = source;
 	for (const { key, exportName, specifier } of entries) {
 		if (
@@ -95,7 +102,7 @@ export function registerTokens(source: string, entries: TokenEntry[]): string {
 			next = insertBefore(
 				next,
 				COMPONENTS_END,
-				`${key}: ${exportName}(colors),`,
+				`${key}: ${exportName}(colors, tokens),`,
 			);
 		}
 	}

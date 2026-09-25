@@ -69,7 +69,7 @@ export function Button({
 				minHeight: tokens.sizes.control[size],
 				paddingHorizontal: PADDING[size](tokens),
 				gap: tokens.spacing[2],
-				borderRadius: tokens.radius.md,
+				borderRadius: components.button.radius,
 				backgroundColor: colors.background ?? "transparent",
 				borderWidth: colors.border ? 1 : 0,
 				borderColor: colors.border,

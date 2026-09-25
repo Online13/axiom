@@ -168,11 +168,15 @@ export default function ButtonScreen() {
 				</Card>
 			</Section>
 
-			<Section title="Label with an icon">
+			<Section
+				title="Haptic action"
+				description="The light impact confirms the touch before the action runs."
+			>
 				<Panel>
 					<Button
 						size="lg"
 						leadingIcon="add"
+						haptic="light"
 						style={{ flex: 1 }}
 						onPress={() => setPresses((value) => value + 1)}
 					>

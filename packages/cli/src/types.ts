@@ -121,7 +121,7 @@ export type RegistryItem = FileSet & {
 	name: string;
 	type: Layer;
 	/**
-	 * Component tokens file, also listed in `files`. It exports `<name>Tokens(colors)`. The CLI copies it to
+	 * Component tokens file, also listed in `files`. It exports `<name>Tokens(colors, tokens)`. The CLI copies it to
 	 * the theme's `components/` folder as `<name>.ts` and registers it in that folder's `index.ts` under
 	 * `<name>` (camelCase).
 	 */

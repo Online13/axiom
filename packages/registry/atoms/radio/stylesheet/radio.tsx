@@ -1,6 +1,7 @@
 import { createContext, use, type ReactNode } from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
 import { Tappable } from "@/components/core/tappable";
 import { Text } from "@/components/ui/text";
 import { useControllableState } from "@/hooks/use-controllable-state";
@@ -22,6 +23,8 @@ export type RadioGroupProps = {
 	/** Space between radios, from the spacing tokens. */
 	gap?: keyof Spacing;
 	disabled?: boolean;
+	/** Played when the user picks another radio. Off unless you pass a kind, e.g. `"selection"`. */
+	haptic?: HapticKind | false;
 	/** Name of the question, announced once for the group. */
 	accessibilityLabel?: string;
 	style?: StyleProp<ViewStyle>;
@@ -35,6 +38,7 @@ export function RadioGroup({
 	orientation = "vertical",
 	gap = 3,
 	disabled = false,
+	haptic: hapticKind,
 	accessibilityLabel,
 	style,
 	children,
@@ -45,9 +49,13 @@ export function RadioGroup({
 		defaultValue,
 		onChange: (next) => next !== undefined && onValueChange?.(next),
 	});
+	const pick = (next: string) => {
+		if (hapticKind && next !== selected) haptic(hapticKind);
+		select(next);
+	};
 
 	return (
-		<RadioGroupContext value={{ value: selected, select, disabled }}>
+		<RadioGroupContext value={{ value: selected, select: pick, disabled }}>
 			<View
 				accessibilityRole="radiogroup"
 				accessibilityLabel={accessibilityLabel}

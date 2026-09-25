@@ -2,6 +2,7 @@ import { useState, type ReactNode, type Ref } from "react";
 import {
 	Pressable,
 	type Insets,
+	type GestureResponderEvent,
 	type LayoutChangeEvent,
 	type PressableProps,
 	type StyleProp,
@@ -9,6 +10,7 @@ import {
 	type ViewStyle,
 } from "react-native";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
 import { metrics } from "@/theme/tokens";
 
 export type TappableState = { pressed: boolean };
@@ -23,6 +25,11 @@ export type TappableProps = Omit<PressableProps, "children" | "style"> & {
 	 * `style` wins over it.
 	 */
 	pressScale?: number;
+	/**
+	 * Plays this haptic when the finger touches, together with `pressScale`. Left out, nothing plays:
+	 * a tap is not an event, so only the app knows which presses deserve one.
+	 */
+	haptic?: HapticKind | false;
 	children?: ReactNode | ((state: TappableState) => ReactNode);
 	style?:
 		StyleProp<ViewStyle> | ((state: TappableState) => StyleProp<ViewStyle>);
@@ -34,17 +41,19 @@ type Size = { width: number; height: number };
 /**
  * Headless press primitive: pressed state, disabled state, accessibility role and a minimum touch target.
  * It picks no colors: the component that renders it styles every state. The one thing it draws is the
- * press itself, and only when asked through `pressScale`.
+ * press itself, and only when asked through `pressScale`. Same for `haptic`.
  */
 export function Tappable({
 	disabled: disabledProp,
 	hitSlop,
 	minTouchTarget = true,
 	pressScale,
+	haptic: hapticKind,
 	delayLongPress = 500,
 	accessibilityRole = "button",
 	accessibilityState,
 	onLayout,
+	onPressIn,
 	children,
 	style,
 	...props
@@ -60,6 +69,12 @@ export function Tappable({
 				: { width, height },
 		);
 		onLayout?.(event);
+	};
+
+	// On touch rather than on release: waiting for `onPress` would add the release delay back.
+	const handlePressIn = (event: GestureResponderEvent) => {
+		if (hapticKind) haptic(hapticKind);
+		onPressIn?.(event);
 	};
 
 	const computedHitSlop =
@@ -82,6 +97,7 @@ export function Tappable({
 			accessibilityRole={accessibilityRole}
 			accessibilityState={{ ...accessibilityState, disabled }}
 			onLayout={handleLayout}
+			onPressIn={handlePressIn}
 			style={({ pressed }) => resolveStyle(pressed && !disabled)}
 		>
 			{typeof children === "function"

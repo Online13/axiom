@@ -15,6 +15,7 @@ import {
 } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
 import { useControllableState } from "@/hooks/use-controllable-state";
 
 /** A number for one thumb, a tuple for a range with two thumbs. */
@@ -36,6 +37,11 @@ export type UseSliderOptions<T extends SliderValue> = {
 	disabled?: boolean;
 	/** Text announced for a value, such as "5 kilometers". */
 	getAccessibilityValue?: (value: number) => string;
+	/**
+	 * Played while dragging or on a tap: on each step when the steps are drawn, otherwise when a thumb
+	 * reaches `min` or `max`. `false` turns it off.
+	 */
+	haptic?: HapticKind | false;
 };
 
 const SETTLE = { duration: 120 };
@@ -52,6 +58,7 @@ export function useSlider<T extends SliderValue>({
 	minRange = 0,
 	disabled = false,
 	getAccessibilityValue,
+	haptic: hapticKind = "selection",
 }: UseSliderOptions<T>) {
 	const [current, setCurrent] = useControllableState<T>({
 		value,
@@ -82,15 +89,30 @@ export function useSlider<T extends SliderValue>({
 		// `valuesKey` stands for `values`.
 	}, [valuesKey, width, min, max]);
 
+	const ticks =
+		step > 0 && (max - min) / step <= 50
+			? Math.floor((max - min) / step) + 1
+			: 0;
+
+	// One haptic per step when the steps are drawn: past 50 they would buzz. Otherwise only at the ends.
+	const stepHaptic = (v: number) => {
+		if (hapticKind && (ticks > 0 || v === min || v === max)) haptic(hapticKind);
+	};
+
 	// Gestures run on the UI thread and keep their first callbacks: they reach the latest render through a ref.
-	const latest = useRef({ setCurrent, onSlidingComplete, range });
+	const latest = useRef({ setCurrent, onSlidingComplete, range, stepHaptic });
 	useLayoutEffect(() => {
-		latest.current = { setCurrent, onSlidingComplete, range };
+		latest.current = { setCurrent, onSlidingComplete, range, stepHaptic };
 	});
 	const emit = useCallback((next: number[]) => {
 		const { setCurrent: set, range: isRange } = latest.current;
 		set((isRange ? [next[0], next[1]] : next[0]) as T);
 	}, []);
+	// A new stepped value from a gesture. Accessibility actions skip it: the screen reader already speaks the value.
+	const drag = useCallback((next: number[], index: number) => {
+		latest.current.stepHaptic(next[index]);
+		emit(next);
+	}, [emit]);
 	const complete = useCallback((next: number[]) => {
 		const { onSlidingComplete: done, range: isRange } = latest.current;
 		done?.((isRange ? [next[0], next[1]] : next[0]) as T);
@@ -125,7 +147,7 @@ export function useSlider<T extends SliderValue>({
 			const stepped = next.map((position) => toValue(position, total));
 			if (stepped.some((v, i) => v !== emitted.value[i])) {
 				emitted.value = stepped;
-				scheduleOnRN(emit, stepped);
+				scheduleOnRN(drag, stepped, index);
 			}
 		};
 
@@ -186,7 +208,7 @@ export function useSlider<T extends SliderValue>({
 		thumbs,
 		trackWidth,
 		emitted,
-		emit,
+		drag,
 		complete,
 	]);
 
@@ -248,11 +270,6 @@ export function useSlider<T extends SliderValue>({
 			},
 		};
 	};
-
-	const ticks =
-		step > 0 && (max - min) / step <= 50
-			? Math.floor((max - min) / step) + 1
-			: 0;
 
 	return {
 		range,

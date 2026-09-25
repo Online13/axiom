@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type FloatingButtonColors = {
@@ -12,19 +13,22 @@ type FloatingButtonStates = States<
 >;
 
 export type FloatingButtonTokens = {
+	radius: number;
 	solid: FloatingButtonStates;
 	tinted: FloatingButtonStates;
 };
 
 export const floatingButtonTokens = (
 	colors: ThemeColors,
+	tokens: Tokens,
 ): FloatingButtonTokens => ({
+	radius: tokens.radius.full,
 	solid: {
 		default: {
-			background: colors.background.inverse,
-			foreground: colors.content.inverse,
+			background: colors.primary.default,
+			foreground: colors.primary.on,
 		},
-		pressed: { background: colors.content.muted },
+		pressed: { background: colors.primary.pressed },
 		disabled: {
 			background: colors.border.default,
 			foreground: colors.content.disabled,

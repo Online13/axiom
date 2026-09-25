@@ -7,6 +7,7 @@ import {
 	type ViewStyle,
 } from "react-native";
 
+import type { HapticKind } from "@/components/core/haptics";
 import { Tappable } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
@@ -28,6 +29,8 @@ export type ChipProps = {
 	/** Ignored with `onRemove`. */
 	trailing?: IconName | ReactElement;
 	disabled?: boolean;
+	/** Played on touch when the chip is pressable. Off unless you pass a kind. */
+	haptic?: HapticKind | false;
 	accessibilityLabel?: string;
 	style?: StyleProp<ViewStyle>;
 };
@@ -44,6 +47,7 @@ function ChipRoot({
 	leading,
 	trailing,
 	disabled = false,
+	haptic,
 	accessibilityLabel,
 	style,
 }: ChipProps) {
@@ -75,7 +79,7 @@ function ChipRoot({
 					: trailing
 						? tokens.spacing[2]
 						: tokens.spacing[3],
-				borderRadius: tokens.radius.full,
+				borderRadius: components.chip.radius,
 				backgroundColor: colors.background ?? "transparent",
 				borderWidth: colors.border ? 1 : 0,
 				borderColor: colors.border,
@@ -155,6 +159,7 @@ function ChipRoot({
 				selected === undefined ? undefined : { checked: selected }
 			}
 			onPress={onPress}
+			haptic={haptic}
 			style={({ pressed }) => containerStyle(pressed)}
 		>
 			{({ pressed }) => content(pressed)}

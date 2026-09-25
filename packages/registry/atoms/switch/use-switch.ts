@@ -6,6 +6,7 @@ import {
 	type SharedValue,
 } from "react-native-reanimated";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
 import { useControllableState } from "@/hooks/use-controllable-state";
 
 export type UseSwitchOptions = {
@@ -13,6 +14,8 @@ export type UseSwitchOptions = {
 	defaultValue?: boolean;
 	onValueChange?: (value: boolean) => void;
 	disabled?: boolean;
+	/** Played when the user flips the value. `false` turns it off. */
+	haptic?: HapticKind | false;
 };
 
 export type UseSwitchResult = {
@@ -34,6 +37,7 @@ export function useSwitch({
 	defaultValue = false,
 	onValueChange,
 	disabled = false,
+	haptic: hapticKind = "light",
 }: UseSwitchOptions): UseSwitchResult {
 	const [checked, setChecked] = useControllableState({
 		value,
@@ -49,7 +53,9 @@ export function useSwitch({
 	}, [checked, progress]);
 
 	const toggle = () => {
-		if (!disabled) setChecked(!checked);
+		if (disabled) return;
+		if (hapticKind) haptic(hapticKind);
+		setChecked(!checked);
 	};
 
 	return {

@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type AttachmentColors = {
@@ -36,7 +37,10 @@ const base = (colors: ThemeColors): AttachmentColors => ({
 	progressFill: colors.content.link,
 });
 
-export const attachmentTokens = (colors: ThemeColors): AttachmentTokens => ({
+export const attachmentTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): AttachmentTokens => ({
 	row: {
 		default: base(colors),
 		done: { meta: colors.feedback.success },

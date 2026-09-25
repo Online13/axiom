@@ -27,6 +27,9 @@
       "@/components/core/slot": [
         "./core/slot/slot.tsx"
       ],
+      "@/components/core/haptics": [
+        "./core/haptics/haptics.ts"
+      ],
       "@/components/core/tappable": [
         "./core/tappable/tappable.tsx"
       ],

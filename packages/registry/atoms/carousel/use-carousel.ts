@@ -22,6 +22,8 @@ import Animated, {
 	type SharedValue,
 } from "react-native-reanimated";
 
+import { haptic, type HapticKind } from "@/components/core/haptics";
+
 export type CarouselRef = {
 	scrollToIndex: (index: number, animated?: boolean) => void;
 	next: () => void;
@@ -39,6 +41,11 @@ export type UseCarouselOptions = {
 	loop?: boolean;
 	/** Interval in ms. Paused while touched and with Reduce Motion. */
 	autoPlay?: number;
+	/**
+	 * Played when a swipe lands on another item. Autoplay and the imperative API don't play it.
+	 * Off unless you pass a kind, e.g. `"selection"`.
+	 */
+	haptic?: HapticKind | false;
 	ref?: Ref<CarouselRef>;
 };
 
@@ -53,6 +60,7 @@ export function useCarousel({
 	onIndexChange,
 	loop = false,
 	autoPlay,
+	haptic: hapticKind,
 	ref,
 }: UseCarouselOptions) {
 	const { width: screenWidth } = useWindowDimensions();
@@ -90,12 +98,13 @@ export function useCarousel({
 		settle(target * interval);
 	};
 
-	function settle(offset: number) {
+	function settle(offset: number, bySwipe = false) {
 		const next = Math.max(
 			0,
 			Math.min(Math.round(offset / interval), count - 1),
 		);
 		if (next === activeRef.current) return;
+		if (bySwipe && hapticKind) haptic(hapticKind);
 		activeRef.current = next;
 		if (controlledIndex === undefined) setUncontrolledIndex(next);
 		onIndexChange?.(next);
@@ -103,7 +112,7 @@ export function useCarousel({
 
 	const onMomentumScrollEnd = (
 		event: NativeSyntheticEvent<NativeScrollEvent>,
-	) => settle(event.nativeEvent.contentOffset.x);
+	) => settle(event.nativeEvent.contentOffset.x, true);
 
 	// A controlled index moves the list.
 	useEffect(() => {

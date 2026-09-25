@@ -124,9 +124,8 @@ const styles = StyleSheet.create((theme) => ({
 				? theme.tokens.sizes.control.sm
 				: theme.tokens.spacing[10],
 		padding: INSET,
-		borderRadius: theme.tokens.radius.md,
-		backgroundColor:
-			theme.components.segmentedControl.default.default.track,
+		borderRadius: theme.components.segmentedControl.radius,
+		backgroundColor: theme.components.segmentedControl.default.default.track,
 		...(!fullWidth && { alignSelf: "flex-start" }),
 	}),
 	indicator: {
@@ -136,7 +135,7 @@ const styles = StyleSheet.create((theme) => ({
 		boxShadow: "0px 1px 3px hsla(0, 0%, 0%, 0.12)",
 		top: INSET,
 		bottom: INSET,
-		borderRadius: theme.tokens.radius.md - INSET,
+		borderRadius: theme.components.segmentedControl.radius - INSET,
 		borderWidth: theme.tokens.metrics.hairline,
 		borderColor: theme.components.segmentedControl.default.default.border,
 		backgroundColor:

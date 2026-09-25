@@ -11,9 +11,15 @@ import {
 	groupsOfSection,
 	type ExperienceSection,
 } from "@/demo/experiences";
+import { View } from "react-native";
+import { Title } from "@/components/ui/title";
+import { Text } from "@/components/ui/text";
+import { SearchBar } from "@/components/ui/search-bar";
 
 export default function ExperienceScreen() {
 	const [section, setSection] = useState<ExperienceSection>("behaviors");
+	const [query, setQuery] = useState("");
+	const normalizedQuery = query.trim().toLowerCase();
 
 	return (
 		<Scaffold
@@ -21,6 +27,20 @@ export default function ExperienceScreen() {
 			safeAreaEdges={["top"]}
 			keyboardAvoiding={false}
 		>
+			<View style={styles.header}>
+				<View style={styles.heading}>
+					<Title variant="headingLg">Experience</Title>
+					<Text color="muted">
+						Explore the different aspects of the user experience.
+					</Text>
+				</View>
+				<SearchBar
+					placeholder="Search components"
+					value={query}
+					onChangeText={setQuery}
+					showCancel={false}
+				/>
+			</View>
 			<Tab
 				value={section}
 				onValueChange={(value) => setSection(value as ExperienceSection)}
@@ -39,7 +59,12 @@ export default function ExperienceScreen() {
 							<Scaffold.Content contentContainerStyle={styles.content}>
 								{groupsOfSection(item.value).map((group) => {
 									const entries = experiencesOf(item.value).filter(
-										(experience) => experience.group === group,
+										(experience) =>
+											experience.group === group &&
+											(normalizedQuery === "" ||
+												experience.title
+													.toLocaleLowerCase()
+													.includes(normalizedQuery)),
 									);
 
 									return (
@@ -67,6 +92,13 @@ export default function ExperienceScreen() {
 }
 
 const styles = StyleSheet.create((theme) => ({
+	header: {
+		paddingHorizontal: theme.tokens.metrics.screenMargin,
+		paddingTop: theme.tokens.spacing[6],
+		paddingBottom: theme.tokens.spacing[4],
+		gap: theme.tokens.spacing[4],
+	},
+	heading: { gap: theme.tokens.spacing[1] },
 	tabs: { flex: 1, paddingTop: theme.tokens.spacing[2] },
 	content: {
 		padding: theme.tokens.metrics.screenMargin,

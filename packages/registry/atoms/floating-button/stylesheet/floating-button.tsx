@@ -92,7 +92,7 @@ export function FloatingButton({
 							minHeight: dimension,
 							minWidth: dimension,
 							paddingHorizontal: label ? tokens.spacing[5] : 0,
-							borderRadius: tokens.radius.full,
+							borderRadius: components.floatingButton.radius,
 							backgroundColor: colors.background,
 							borderWidth: colors.border ? tokens.metrics.hairline : 0,
 							borderColor: colors.border,

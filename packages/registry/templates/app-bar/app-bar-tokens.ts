@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type AppBarColors = {
@@ -14,7 +15,10 @@ export type AppBarTokens = {
 	default: States<AppBarColors, never>;
 };
 
-export const appBarTokens = (colors: ThemeColors): AppBarTokens => ({
+export const appBarTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): AppBarTokens => ({
 	default: {
 		default: {
 			background: colors.background.default,

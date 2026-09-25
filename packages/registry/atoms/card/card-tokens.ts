@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type CardColors = { background: string; border?: string };
@@ -10,7 +11,10 @@ export type CardTokens = {
 	filled: CardStates;
 };
 
-export const cardTokens = (colors: ThemeColors): CardTokens => ({
+export const cardTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): CardTokens => ({
 	elevated: {
 		default: { background: colors.background.elevated },
 		pressed: { background: colors.background.subtle },

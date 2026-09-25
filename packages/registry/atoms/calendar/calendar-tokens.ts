@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type CalendarDayColors = {
@@ -15,7 +16,10 @@ export type CalendarTokens = {
 	>;
 };
 
-export const calendarTokens = (colors: ThemeColors): CalendarTokens => ({
+export const calendarTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): CalendarTokens => ({
 	day: {
 		default: {
 			foreground: colors.content.default,
@@ -25,9 +29,9 @@ export const calendarTokens = (colors: ThemeColors): CalendarTokens => ({
 		pressed: { background: colors.background.subtle },
 		today: { foreground: colors.content.link },
 		selected: {
-			background: colors.content.link,
-			foreground: colors.content.inverse,
-			dot: colors.content.inverse,
+			background: colors.primary.default,
+			foreground: colors.primary.on,
+			dot: colors.primary.on,
 		},
 		inRange: { foreground: colors.content.default },
 		outside: { foreground: colors.content.subtle },

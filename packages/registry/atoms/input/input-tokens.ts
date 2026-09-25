@@ -1,4 +1,5 @@
 import type { ThemeColors } from "@/theme/colors";
+import type { Tokens } from "@/theme/tokens";
 import type { States } from "@/theme/components/states";
 
 type InputColors = {
@@ -13,11 +14,16 @@ type InputColors = {
 type InputStates = States<InputColors, "focused" | "invalid" | "disabled">;
 
 export type InputTokens = {
+	radius: number;
 	outline: InputStates;
 	filled: InputStates;
 };
 
-export const inputTokens = (colors: ThemeColors): InputTokens => ({
+export const inputTokens = (
+	colors: ThemeColors,
+	tokens: Tokens,
+): InputTokens => ({
+	radius: tokens.radius.md,
 	outline: {
 		default: {
 			background: colors.background.default,

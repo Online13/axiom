@@ -123,7 +123,9 @@ const styles = StyleSheet.create((theme) => ({
 			width: dimension,
 			height: dimension,
 			borderRadius:
-				shape === "circle" ? dimension / 2 : theme.tokens.radius.md,
+				shape === "circle"
+					? dimension / 2
+					: theme.components.iconButton.radius,
 			backgroundColor: colors.background ?? "transparent",
 			borderWidth: colors.border ? 1 : 0,
 			borderColor: colors.border,

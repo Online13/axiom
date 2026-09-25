@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { haptic } from "@/components/core/haptics";
 import { Button } from "@/components/ui/button";
 import { snackbar } from "@/components/ui/snackbar";
 import { toast } from "@/components/ui/toast";
@@ -35,18 +36,22 @@ export default function ToastScreen() {
 					<Button
 						fullWidth
 						variant="outline"
-						onPress={() => toast.success("Saved to your library")}
+						onPress={() => {
+							haptic("success");
+							toast.success("Saved to your library");
+						}}
 					>
 						Success
 					</Button>
 					<Button
 						fullWidth
 						variant="outline"
-						onPress={() =>
+						onPress={() => {
+							haptic("error");
 							toast.error("Upload failed", {
 								description: "The file is larger than 20 MB.",
-							})
-						}
+							});
+						}}
 					>
 						Error with a description
 					</Button>

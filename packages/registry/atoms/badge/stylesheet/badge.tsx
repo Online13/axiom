@@ -13,7 +13,7 @@ import { useTheme } from "@/theme";
 
 export type BadgeVariant =
 	| "neutral"
-	| "accent"
+	| "highlight"
 	| "info"
 	| "success"
 	| "warning"
