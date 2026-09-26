@@ -15,8 +15,7 @@ export const ShapeControls = observer(function ShapeControls() {
 	const { sm, md, lg, xl } = radiusValues(current);
 
 	return (
-		<section className="tb-group">
-			<h2 className="tb-eyebrow">Shape</h2>
+		<div className="tb-group">
 			<div
 				className="tb-segmented"
 				role="group"
@@ -59,6 +58,6 @@ export const ShapeControls = observer(function ShapeControls() {
 				The corner of buttons, inputs, segmented controls and chips. Written
 				into their component tokens on export.
 			</p>
-		</section>
+		</div>
 	);
 });

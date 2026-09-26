@@ -2,6 +2,7 @@
  * Drawing primitives for the component previews (PhonePreview).
  * Everything is in iOS points and reads the `--ax-*` semantic colors, so each mock follows the light / dark toggle.
  * Sizes follow the default tokens: spacing 4/8/12/16/20/24, radius sm 8 · md 12 · lg 18 · xl 26, controls 32/44/52.
+ * Paddings, gaps and margins are multiples of `--ax-space`, one point at the default density; the theme builder rescales it.
  */
 
 .ax-screen *,
@@ -11,6 +12,7 @@
 }
 
 .ax-screen {
+	--ax-space: 1px;
 	--ax-radius-sm: 8px;
 	--ax-radius-md: 12px;
 	--ax-radius-lg: 18px;
@@ -38,8 +40,8 @@
 .ax-body {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
-	padding: 12px 16px;
+	gap: calc(12 * var(--ax-space));
+	padding: calc(12 * var(--ax-space)) calc(16 * var(--ax-space));
 }
 
 .ax-fill {
@@ -50,36 +52,36 @@
 .ax-stack {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: calc(12 * var(--ax-space));
 }
 
 .ax-stack[data-gap="4"] {
-	gap: 4px;
+	gap: calc(4 * var(--ax-space));
 }
 .ax-stack[data-gap="8"] {
-	gap: 8px;
+	gap: calc(8 * var(--ax-space));
 }
 .ax-stack[data-gap="16"] {
-	gap: 16px;
+	gap: calc(16 * var(--ax-space));
 }
 .ax-stack[data-gap="24"] {
-	gap: 24px;
+	gap: calc(24 * var(--ax-space));
 }
 
 .ax-row {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: calc(8 * var(--ax-space));
 }
 
 .ax-row[data-gap="4"] {
-	gap: 4px;
+	gap: calc(4 * var(--ax-space));
 }
 .ax-row[data-gap="12"] {
-	gap: 12px;
+	gap: calc(12 * var(--ax-space));
 }
 .ax-row[data-gap="16"] {
-	gap: 16px;
+	gap: calc(16 * var(--ax-space));
 }
 .ax-row[data-wrap] {
 	flex-wrap: wrap;
@@ -108,13 +110,13 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	gap: 12px;
-	padding: 16px;
+	gap: calc(12 * var(--ax-space));
+	padding: calc(16 * var(--ax-space));
 	text-align: center;
 }
 
 .ax-section {
-	padding: 20px 20px 6px;
+	padding: calc(20 * var(--ax-space)) calc(20 * var(--ax-space)) calc(6 * var(--ax-space));
 	color: var(--ax-content-muted);
 	font-size: 13px;
 	line-height: 18px;
@@ -123,7 +125,7 @@
 }
 
 .ax-footnote-block {
-	padding: 6px 20px 0;
+	padding: calc(6 * var(--ax-space)) calc(20 * var(--ax-space)) 0;
 	color: var(--ax-content-muted);
 	font-size: 13px;
 	line-height: 18px;
@@ -222,9 +224,9 @@
 	flex: none;
 	align-items: center;
 	justify-content: center;
-	gap: 8px;
+	gap: calc(8 * var(--ax-space));
 	height: var(--ax-control-md);
-	padding: 0 18px;
+	padding: 0 calc(18 * var(--ax-space));
 	border-radius: var(--ax-radius-control);
 	background: var(--ax-primary-default);
 	color: var(--ax-primary-on);
@@ -251,13 +253,13 @@
 
 .ax-btn[data-size="sm"] {
 	height: var(--ax-control-sm);
-	padding: 0 12px;
+	padding: 0 calc(12 * var(--ax-space));
 	font-size: 15px;
-	gap: 6px;
+	gap: calc(6 * var(--ax-space));
 }
 .ax-btn[data-size="lg"] {
 	height: var(--ax-control-lg);
-	padding: 0 24px;
+	padding: 0 calc(24 * var(--ax-space));
 }
 .ax-btn[data-block] {
 	display: flex;
@@ -351,7 +353,7 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	gap: 8px;
+	gap: calc(8 * var(--ax-space));
 	height: var(--ax-control-lg);
 	min-width: var(--ax-control-lg);
 	border-radius: 999px;
@@ -364,7 +366,7 @@
 }
 
 .ax-fab[data-extended] {
-	padding: 0 20px;
+	padding: 0 calc(20 * var(--ax-space));
 }
 .ax-fab[data-size="sm"] {
 	height: var(--ax-control-md);
@@ -459,7 +461,7 @@
 .ax-field {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	gap: calc(6 * var(--ax-space));
 }
 
 .ax-label {
@@ -482,9 +484,9 @@
 .ax-control {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: calc(8 * var(--ax-space));
 	height: var(--ax-control-md);
-	padding: 0 12px;
+	padding: 0 calc(12 * var(--ax-space));
 	border-radius: var(--ax-radius-control);
 	background: var(--ax-background-default);
 	box-shadow: inset 0 0 0 1px var(--ax-border-default);
@@ -588,8 +590,8 @@
 .ax-input-group > * {
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	padding: 0 12px;
+	gap: calc(6 * var(--ax-space));
+	padding: 0 calc(12 * var(--ax-space));
 }
 
 .ax-input-group > * + * {
@@ -611,7 +613,7 @@
 
 .ax-textarea {
 	min-height: 96px;
-	padding: 11px 12px;
+	padding: calc(11 * var(--ax-space)) calc(12 * var(--ax-space));
 	border-radius: var(--ax-radius-md);
 	background: var(--ax-background-default);
 	box-shadow: inset 0 0 0 1px var(--ax-border-default);
@@ -639,7 +641,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 8px;
+	gap: calc(8 * var(--ax-space));
 }
 
 .ax-otp-cell {
@@ -778,7 +780,7 @@
 .ax-choice {
 	display: flex;
 	align-items: flex-start;
-	gap: 12px;
+	gap: calc(12 * var(--ax-space));
 }
 
 .ax-choice > .ax-checkbox,
@@ -845,7 +847,7 @@
 
 .ax-segmented {
 	display: flex;
-	padding: 2px;
+	padding: calc(2 * var(--ax-space));
 	border-radius: var(--ax-radius-control);
 	background: var(--ax-background-subtle);
 	box-shadow: inset 0 0 0 1px var(--ax-border-subtle);
@@ -856,7 +858,7 @@
 	flex: 1;
 	align-items: center;
 	justify-content: center;
-	gap: 6px;
+	gap: calc(6 * var(--ax-space));
 	height: 30px;
 	border-radius: calc(var(--ax-radius-control) - 2px);
 	color: var(--ax-content-default);
@@ -886,7 +888,7 @@
 /* ---------- Item & lists ---------- */
 
 .ax-list {
-	margin: 0 16px;
+	margin: 0 calc(16 * var(--ax-space));
 	overflow: hidden;
 	border-radius: var(--ax-radius-lg);
 	background: var(--ax-background-elevated);
@@ -907,9 +909,9 @@
 	position: relative;
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: calc(12 * var(--ax-space));
 	min-height: var(--ax-control-md);
-	padding: 10px 16px;
+	padding: calc(10 * var(--ax-space)) calc(16 * var(--ax-space));
 	color: var(--ax-content-default);
 }
 
@@ -974,7 +976,7 @@
 	display: flex;
 	flex: none;
 	align-items: center;
-	gap: 6px;
+	gap: calc(6 * var(--ax-space));
 	color: var(--ax-content-muted);
 	font-size: 17px;
 }
@@ -1046,7 +1048,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 12px;
+	gap: calc(12 * var(--ax-space));
 	min-height: 52px;
 	font-size: 17px;
 	font-weight: 600;
@@ -1057,7 +1059,7 @@
 }
 
 .ax-accordion-content {
-	padding-bottom: 14px;
+	padding-bottom: calc(14 * var(--ax-space));
 	color: var(--ax-content-muted);
 	font-size: 15px;
 	line-height: 21px;
@@ -1161,9 +1163,9 @@
 	display: inline-flex;
 	flex: none;
 	align-items: center;
-	gap: 4px;
+	gap: calc(4 * var(--ax-space));
 	height: 22px;
-	padding: 0 8px;
+	padding: 0 calc(8 * var(--ax-space));
 	border-radius: 999px;
 	background: var(--ax-background-subtle);
 	color: var(--ax-content-default);
@@ -1207,7 +1209,7 @@
 	justify-content: center;
 	min-width: 20px;
 	height: 20px;
-	padding: 0 6px;
+	padding: 0 calc(6 * var(--ax-space));
 	background: var(--ax-feedback-error);
 	color: #fff;
 	font-variant-numeric: tabular-nums;
@@ -1252,9 +1254,9 @@
 	display: inline-flex;
 	flex: none;
 	align-items: center;
-	gap: 6px;
+	gap: calc(6 * var(--ax-space));
 	height: 34px;
-	padding: 0 14px;
+	padding: 0 calc(14 * var(--ax-space));
 	border-radius: var(--ax-radius-chip);
 	background: var(--ax-background-default);
 	box-shadow: inset 0 0 0 1px var(--ax-border-default);
@@ -1280,21 +1282,21 @@
 }
 .ax-chip[data-size="sm"] {
 	height: 28px;
-	padding: 0 10px;
+	padding: 0 calc(10 * var(--ax-space));
 	font-size: 13px;
 }
 .ax-chip .ax-glyph {
 	opacity: 0.8;
 }
 .ax-chip:has(> .ax-avatar) {
-	padding-left: 4px;
+	padding-left: calc(4 * var(--ax-space));
 }
 
 .ax-chips {
 	display: flex;
-	gap: 8px;
+	gap: calc(8 * var(--ax-space));
 	overflow: hidden;
-	padding: 0 16px;
+	padding: 0 calc(16 * var(--ax-space));
 }
 
 /* ---------- Card ---------- */
@@ -1321,19 +1323,19 @@
 .ax-card-header {
 	display: flex;
 	align-items: center;
-	gap: 12px;
-	padding: 16px 16px 0;
+	gap: calc(12 * var(--ax-space));
+	padding: calc(16 * var(--ax-space)) calc(16 * var(--ax-space)) 0;
 }
 
 .ax-card-content {
-	padding: 12px 16px;
+	padding: calc(12 * var(--ax-space)) calc(16 * var(--ax-space));
 }
 
 .ax-card-footer {
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	padding: 0 16px 16px;
+	gap: calc(8 * var(--ax-space));
+	padding: 0 calc(16 * var(--ax-space)) calc(16 * var(--ax-space));
 }
 
 .ax-media {
@@ -1376,7 +1378,7 @@
 }
 
 .ax-separator[data-inset] {
-	margin-left: 16px;
+	margin-left: calc(16 * var(--ax-space));
 }
 .ax-separator[data-variant="subtle"] {
 	background: var(--ax-border-subtle);
@@ -1385,7 +1387,7 @@
 .ax-separator-label {
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: calc(12 * var(--ax-space));
 	color: var(--ax-content-muted);
 	font-size: 13px;
 }
@@ -1421,20 +1423,20 @@
 .ax-calendar {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	gap: calc(6 * var(--ax-space));
 }
 
 .ax-calendar-head {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 0 4px 6px;
+	padding: 0 calc(4 * var(--ax-space)) calc(6 * var(--ax-space));
 }
 
 .ax-calendar-grid {
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
-	row-gap: 2px;
+	row-gap: calc(2 * var(--ax-space));
 	text-align: center;
 }
 
@@ -1525,9 +1527,9 @@
 
 .ax-carousel {
 	display: flex;
-	gap: 12px;
+	gap: calc(12 * var(--ax-space));
 	overflow: hidden;
-	padding: 0 16px;
+	padding: 0 calc(16 * var(--ax-space));
 }
 
 .ax-carousel > * {
@@ -1538,7 +1540,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 6px;
+	gap: calc(6 * var(--ax-space));
 }
 
 .ax-dots > span {
@@ -1618,8 +1620,8 @@
 .ax-alert {
 	display: flex;
 	align-items: flex-start;
-	gap: 12px;
-	padding: 12px 14px;
+	gap: calc(12 * var(--ax-space));
+	padding: calc(12 * var(--ax-space)) calc(14 * var(--ax-space));
 	border-radius: var(--ax-radius-md);
 	background: var(--ax-feedback-info-subtle);
 	color: var(--ax-content-default);
@@ -1670,8 +1672,8 @@
 .ax-toast {
 	display: flex;
 	align-items: center;
-	gap: 10px;
-	padding: 12px 16px;
+	gap: calc(10 * var(--ax-space));
+	padding: calc(12 * var(--ax-space)) calc(16 * var(--ax-space));
 	border-radius: 999px;
 	background: var(--ax-background-elevated);
 	box-shadow: var(--ax-shadow);
@@ -1699,7 +1701,7 @@
 .ax-toast-stack {
 	position: relative;
 	display: grid;
-	padding: 0 16px;
+	padding: 0 calc(16 * var(--ax-space));
 }
 
 .ax-toast-stack > * {
@@ -1721,9 +1723,9 @@
 .ax-snackbar {
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: calc(12 * var(--ax-space));
 	min-height: 48px;
-	padding: 6px 8px 6px 16px;
+	padding: calc(6 * var(--ax-space)) calc(8 * var(--ax-space)) calc(6 * var(--ax-space)) calc(16 * var(--ax-space));
 	border-radius: var(--ax-radius-md);
 	background: var(--ax-background-inverse);
 	color: var(--ax-content-inverse);
@@ -1734,7 +1736,7 @@
 
 .ax-snackbar-action {
 	flex: none;
-	padding: 8px 10px;
+	padding: calc(8 * var(--ax-space)) calc(10 * var(--ax-space));
 	color: var(--ax-content-link);
 	filter: brightness(1.25);
 	font-weight: 600;
@@ -1749,7 +1751,7 @@
 	position: absolute;
 	inset-inline: 0;
 	z-index: 20;
-	padding: 0 12px;
+	padding: 0 calc(12 * var(--ax-space));
 }
 
 /* ---------- Overlays ---------- */
@@ -1772,7 +1774,7 @@
 	z-index: 15;
 	display: flex;
 	flex-direction: column;
-	padding: 0 16px 34px;
+	padding: 0 calc(16 * var(--ax-space)) 34px;
 	border-radius: 14px 14px 0 0;
 	background: var(--ax-background-elevated);
 	box-shadow: 0 -10px 30px rgb(0 0 0 / 0.08);
@@ -1781,7 +1783,7 @@
 .ax-sheet[data-detached] {
 	inset-inline: 8px;
 	bottom: 30px;
-	padding-bottom: 16px;
+	padding-bottom: calc(16 * var(--ax-space));
 	border-radius: 28px;
 }
 
@@ -1789,7 +1791,7 @@
 	align-self: center;
 	width: 36px;
 	height: 5px;
-	margin: 6px 0 10px;
+	margin: calc(6 * var(--ax-space)) 0 calc(10 * var(--ax-space));
 	border-radius: 999px;
 	background: var(--ax-border-default);
 }
@@ -1820,9 +1822,9 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 12px;
+	gap: calc(12 * var(--ax-space));
 	min-height: 44px;
-	padding: 0 16px;
+	padding: 0 calc(16 * var(--ax-space));
 	font-size: 17px;
 }
 
@@ -1846,7 +1848,7 @@
 	border-top: 0;
 }
 .ax-menu-label {
-	padding: 10px 16px 6px;
+	padding: calc(10 * var(--ax-space)) calc(16 * var(--ax-space)) calc(6 * var(--ax-space));
 	color: var(--ax-content-muted);
 	font-size: 13px;
 	line-height: 18px;
@@ -1866,15 +1868,15 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 6px;
-	padding: 20px 20px 18px;
+	gap: calc(6 * var(--ax-space));
+	padding: calc(20 * var(--ax-space)) calc(20 * var(--ax-space)) calc(18 * var(--ax-space));
 	text-align: center;
 }
 
 .ax-dialog-actions {
 	display: flex;
-	gap: 8px;
-	padding: 0 16px 16px;
+	gap: calc(8 * var(--ax-space));
+	padding: 0 calc(16 * var(--ax-space)) calc(16 * var(--ax-space));
 }
 
 .ax-dialog-actions > .ax-btn {
@@ -1899,9 +1901,9 @@
 	display: flex;
 	flex: none;
 	align-items: center;
-	gap: 4px;
+	gap: calc(4 * var(--ax-space));
 	min-height: 44px;
-	padding: 0 8px;
+	padding: 0 calc(8 * var(--ax-space));
 }
 
 .ax-appbar-title {
@@ -1939,7 +1941,7 @@
 }
 
 .ax-large-heading {
-	padding: 2px 16px 8px;
+	padding: calc(2 * var(--ax-space)) calc(16 * var(--ax-space)) calc(8 * var(--ax-space));
 	font-size: 34px;
 	line-height: 41px;
 	font-weight: 700;
@@ -1951,7 +1953,7 @@
 	flex: none;
 	align-items: flex-start;
 	justify-content: space-around;
-	padding: 8px 8px 34px;
+	padding: calc(8 * var(--ax-space)) calc(8 * var(--ax-space)) 34px;
 	border-top: 0.5px solid var(--ax-border-default);
 	background: color-mix(
 		in srgb,
@@ -1965,7 +1967,7 @@
 	flex: 1;
 	flex-direction: column;
 	align-items: center;
-	gap: 3px;
+	gap: calc(3 * var(--ax-space));
 	color: var(--ax-content-subtle);
 	font-size: 10px;
 	line-height: 12px;
@@ -1993,8 +1995,8 @@
 }
 
 .ax-tabbar[data-variant="floating"] {
-	margin: 0 20px 30px;
-	padding: 10px 8px;
+	margin: 0 calc(20 * var(--ax-space)) 30px;
+	padding: calc(10 * var(--ax-space)) calc(8 * var(--ax-space));
 	border: 0;
 	border-radius: 999px;
 	background: var(--ax-background-elevated);
@@ -2013,7 +2015,7 @@
 	flex: 1;
 	align-items: center;
 	justify-content: center;
-	gap: 6px;
+	gap: calc(6 * var(--ax-space));
 	height: 44px;
 	color: var(--ax-content-muted);
 	font-size: 15px;
@@ -2038,23 +2040,23 @@
 
 .ax-tabs[data-scrollable] {
 	overflow: hidden;
-	padding: 0 8px;
+	padding: 0 calc(8 * var(--ax-space));
 }
 .ax-tabs[data-scrollable] > span {
 	flex: none;
-	padding: 0 12px;
+	padding: 0 calc(12 * var(--ax-space));
 }
 
 .ax-tabs[data-variant="pill"] {
-	gap: 8px;
-	padding: 0 16px;
+	gap: calc(8 * var(--ax-space));
+	padding: 0 calc(16 * var(--ax-space));
 	border: 0;
 }
 
 .ax-tabs[data-variant="pill"] > span {
 	flex: none;
 	height: 34px;
-	padding: 0 14px;
+	padding: 0 calc(14 * var(--ax-space));
 	border-radius: 999px;
 }
 
@@ -2072,16 +2074,16 @@
 	flex: none;
 	align-items: center;
 	justify-content: space-around;
-	gap: 4px;
-	padding: 6px 8px 34px;
+	gap: calc(4 * var(--ax-space));
+	padding: calc(6 * var(--ax-space)) calc(8 * var(--ax-space)) 34px;
 	border-top: 0.5px solid var(--ax-border-default);
 	background: var(--ax-background-default);
 }
 
 .ax-toolbar[data-variant="floating"] {
 	justify-content: space-between;
-	margin: 0 16px 30px;
-	padding: 6px;
+	margin: 0 calc(16 * var(--ax-space)) 30px;
+	padding: calc(6 * var(--ax-space));
 	border: 0;
 	border-radius: 999px;
 	background: var(--ax-background-inverse);
@@ -2097,7 +2099,7 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 2px;
+	gap: calc(2 * var(--ax-space));
 	min-width: 64px;
 	color: var(--ax-content-link);
 	font-size: 11px;
@@ -2117,9 +2119,9 @@
 	display: flex;
 	flex: 1;
 	align-items: center;
-	gap: 6px;
+	gap: calc(6 * var(--ax-space));
 	height: 36px;
-	padding: 0 8px;
+	padding: 0 calc(8 * var(--ax-space));
 	border-radius: var(--ax-radius-md);
 	background: var(--ax-background-subtle);
 	color: var(--ax-content-subtle);
@@ -2158,8 +2160,8 @@
 	position: relative;
 	display: flex;
 	align-items: center;
-	gap: 12px;
-	padding: 10px 12px;
+	gap: calc(12 * var(--ax-space));
+	padding: calc(10 * var(--ax-space)) calc(12 * var(--ax-space));
 	overflow: hidden;
 	border-radius: var(--ax-radius-md);
 	box-shadow: inset 0 0 0 1px var(--ax-border-default);
@@ -2250,7 +2252,7 @@
 .ax-pin {
 	display: flex;
 	justify-content: center;
-	gap: 18px;
+	gap: calc(18 * var(--ax-space));
 }
 
 .ax-pin > span {
@@ -2274,7 +2276,7 @@
 	display: grid;
 	grid-template-columns: repeat(3, 78px);
 	justify-content: center;
-	gap: 14px 26px;
+	gap: calc(14 * var(--ax-space)) calc(26 * var(--ax-space));
 }
 
 .ax-key {
@@ -2310,8 +2312,8 @@
 
 .ax-keypad[data-variant="flat"] {
 	grid-template-columns: repeat(3, 1fr);
-	gap: 6px;
-	padding: 6px 6px 34px;
+	gap: calc(6 * var(--ax-space));
+	padding: calc(6 * var(--ax-space)) calc(6 * var(--ax-space)) 34px;
 	background: var(--ax-background-subtle);
 }
 

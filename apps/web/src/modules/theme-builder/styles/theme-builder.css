@@ -11,6 +11,9 @@
 	--line: #262626;
 	--line-strong: #3a3a3a;
 	--raised: #101010;
+	/* The worktable under the screens: a step lighter than the floating panel,
+	   so the panel reads as a separate sheet on top of it. */
+	--canvas: #1c1c1c;
 	--accent: #ff5a1f;
 	--hover: #1a1a1a;
 	--pass: #6ee7a0;
@@ -22,6 +25,10 @@
 
 	--header-h: 64px;
 	--panel-w: 340px;
+	/* How far the floating panel and controls sit from the canvas edges. */
+	--float-inset: 1rem;
+	/* The corner button the panel folds into. */
+	--corner: 2.5rem;
 	--gutter: clamp(1rem, 2.5vw, 2rem);
 
 	--font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -39,6 +46,7 @@
 	--line: #dedede;
 	--line-strong: #c4c4c4;
 	--raised: #ffffff;
+	--canvas: #ececec;
 	--hover: #efefef;
 	--pass: #1b7a43;
 	--pass-line: #9fd4b3;
@@ -57,6 +65,7 @@
 	--line: #2b2548;
 	--line-strong: #3d3563;
 	--raised: #120f26;
+	--canvas: #1c1836;
 	--hover: #1f1a3a;
 }
 
@@ -226,9 +235,9 @@ input[type="color"] {
 	border-color: var(--accent);
 }
 
+/* The canvas takes the whole width; the sidebar floats over it. */
 .tb-main {
-	display: grid;
-	grid-template-columns: var(--panel-w) minmax(0, 1fr);
+	position: relative;
 	flex: 1;
 	min-height: 0;
 }
@@ -362,6 +371,21 @@ input[type="color"] {
 	border-left: 1px solid var(--line);
 }
 
+/* Too many options for one row: one per line, label on the left. */
+.tb-segmented[data-vertical] {
+	flex-direction: column;
+}
+
+.tb-segmented[data-vertical] button {
+	justify-content: flex-start;
+	padding: 0.6rem 0.75rem;
+}
+
+.tb-segmented[data-vertical] button + button {
+	border-left: 0;
+	border-top: 1px solid var(--line);
+}
+
 .tb-segmented button[aria-pressed="true"] {
 	background: var(--fg);
 	color: var(--bg);
@@ -379,16 +403,312 @@ input[type="color"] {
 
 /* ---------- Left panel ---------- */
 
+/* Floats over the canvas. Hidden, it folds into its top-left corner: the clip
+   closes onto the hide button, which the show button then takes the place of,
+   while the content shrinks, blurs and fades a beat ahead of the clip. */
 .tb-panel {
+	--fold: 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+	/* The slide between the sections and a page, kept by the fold's rules. */
+	--slide: 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+	/* The panel widening for a list page, in step with the slide. */
+	--widen: 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+	position: absolute;
+	z-index: 20;
+	top: var(--float-inset);
+	bottom: var(--float-inset);
+	left: var(--float-inset);
 	display: flex;
 	flex-direction: column;
-	gap: 1.75rem;
-	max-height: calc(100svh - var(--header-h));
-	padding: 1.5rem var(--gutter) 3rem;
-	overflow-y: auto;
+	width: min(var(--panel-w), 100% - var(--float-inset) * 2);
+	overflow: hidden;
+	border: 1px solid var(--line-strong);
+	background: color-mix(in srgb, var(--raised) 92%, transparent);
+	backdrop-filter: blur(16px);
+	box-shadow: 0 24px 48px -24px rgb(0 0 0 / 0.55);
+	clip-path: inset(0 calc(100% - var(--corner)) calc(100% - var(--corner)) 0);
+	transition:
+		clip-path var(--fold),
+		width var(--widen),
+		visibility 0s 0.5s;
+	visibility: hidden;
+}
+
+.tb-panel[data-open] {
+	clip-path: inset(0);
+	transition:
+		clip-path var(--fold),
+		width var(--widen);
+	visibility: visible;
+}
+
+/* A list page (fonts, presets) takes twice the width while it is open. */
+.tb-panel[data-wide] {
+	width: min(var(--panel-w) * 2, 100% - var(--float-inset) * 2);
+}
+
+.tb-panel__head {
+	display: flex;
+	flex: none;
+	align-items: center;
+	gap: 0.75rem;
+	height: var(--corner);
+	border-bottom: 1px solid var(--line);
+}
+
+.tb-panel__hide,
+.tb-show {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: var(--corner);
+	height: var(--corner);
+	padding: 0;
+	color: var(--muted);
+}
+
+.tb-panel__hide {
+	height: 100%;
+	border: 0;
 	border-right: 1px solid var(--line);
-	position: sticky;
-	top: var(--header-h);
+	background: transparent;
+}
+
+.tb-panel__hide:hover,
+.tb-show:hover {
+	color: var(--fg);
+	background: var(--hover);
+}
+
+.tb-panel__title {
+	color: var(--muted);
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+/* The content goes first on the way out and comes last on the way in. */
+.tb-panel__head > :not(.tb-panel__hide),
+.tb-panel > .tb-nav {
+	opacity: 0;
+	filter: blur(6px);
+	scale: 0.94;
+	transform-origin: top left;
+	transition:
+		opacity 0.2s ease,
+		filter 0.3s ease,
+		scale var(--fold),
+		transform var(--slide);
+}
+
+.tb-panel[data-open] > .tb-panel__head > :not(.tb-panel__hide),
+.tb-panel[data-open] > .tb-nav {
+	opacity: 1;
+	filter: none;
+	scale: 1;
+	transition:
+		opacity 0.3s ease 0.12s,
+		filter 0.35s ease 0.08s,
+		scale var(--fold),
+		transform var(--slide);
+}
+
+/* Stands where the hide button was, once the panel has folded into it. */
+.tb-show {
+	position: absolute;
+	z-index: 20;
+	top: var(--float-inset);
+	left: var(--float-inset);
+	opacity: 0;
+	scale: 0.6;
+	transition:
+		opacity 0.2s ease 0.3s,
+		scale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s;
+}
+
+.tb-show[inert] {
+	opacity: 0;
+	scale: 0.6;
+	pointer-events: none;
+	transition:
+		opacity 0.1s ease,
+		scale 0.1s ease;
+}
+
+.tb-show:not([inert]) {
+	opacity: 1;
+	scale: 1;
+}
+
+/* The sections and the page being picked on, side by side; a page slides in. */
+.tb-nav {
+	display: grid;
+	flex: 1;
+	grid-template-columns: 100% 100%;
+	min-height: 0;
+	transition: transform var(--slide);
+}
+
+.tb-nav[data-page] {
+	transform: translateX(-100%);
+}
+
+.tb-nav__pane {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+	min-height: 0;
+	padding: 0.5rem var(--gutter) 3rem;
+	overflow-y: auto;
+}
+
+/* Hidden once it has slid out, so it is not painted or scrolled for nothing. */
+.tb-nav__pane[inert] {
+	visibility: hidden;
+	transition: visibility 0s 0.9s;
+}
+
+.tb-page {
+	gap: 1rem;
+}
+
+.tb-page__head {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.5rem;
+}
+
+.tb-page__back {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	margin-left: -0.35rem;
+	padding: 0.3rem 0.5rem 0.3rem 0.2rem;
+	border: 0;
+	background: none;
+	color: var(--muted);
+	font-size: 0.8rem;
+}
+
+.tb-page__back:hover {
+	color: var(--fg);
+}
+
+.tb-page__title {
+	margin: 0;
+	font-family: var(--font-mono);
+	font-size: 0.95rem;
+	font-weight: 500;
+}
+
+.tb-page .tb-fontpicker__search {
+	border: 1px solid var(--line);
+	background: var(--raised);
+}
+
+/* On the page, the fonts are a grid of cards, each set in its own face. */
+.tb-page .tb-fontpicker__list {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+	gap: 0.5rem;
+	max-height: none;
+	overflow: visible;
+}
+
+.tb-page .tb-fontpicker__list button {
+	position: relative;
+	flex-direction: column;
+	justify-content: center;
+	gap: 0.35rem;
+	aspect-ratio: 4 / 3;
+	padding: 0.75rem;
+	border: 1px solid var(--line);
+	background: var(--raised);
+	text-align: center;
+	transition: border-color 0.15s;
+}
+
+.tb-page .tb-fontpicker__list button:hover {
+	border-color: var(--line-strong);
+	background: var(--raised);
+}
+
+.tb-page .tb-fontpicker__list button[aria-pressed="true"] {
+	border-color: var(--accent);
+}
+
+.tb-page .tb-fontpicker__list button svg {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+}
+
+.tb-page .tb-fontpicker__empty {
+	grid-column: 1 / -1;
+}
+
+.tb-fontpicker__sample {
+	font-size: 2rem;
+	line-height: 1.1;
+}
+
+.tb-fontpicker__family {
+	max-width: 100%;
+	color: var(--muted);
+	font-size: 0.8rem;
+}
+
+/* Foldable sections. */
+.tb-section {
+	border-bottom: 1px solid var(--line);
+}
+
+.tb-section__title {
+	margin: 0;
+}
+
+.tb-section__toggle {
+	display: flex;
+	width: 100%;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.25rem 0 1rem;
+	border: 0;
+	background: none;
+	color: var(--muted);
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+
+.tb-section__toggle:hover {
+	color: var(--fg);
+}
+
+.tb-section__toggle svg {
+	transition: transform 0.2s ease;
+}
+
+.tb-section__toggle[aria-expanded="false"] svg {
+	transform: rotate(-90deg);
+}
+
+.tb-section__body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	padding-bottom: 1.25rem;
+}
+
+.tb-section__body[hidden] {
+	display: none;
+}
+
+.tb-field__label {
+	font-size: 0.8rem;
 }
 
 .tb-eyebrow {
@@ -424,36 +744,189 @@ input[type="color"] {
 	margin-top: auto;
 }
 
-.tb-seeds {
+/* The semantic roles, grouped like theme/colors.ts, light and dark side by side. */
+.tb-croles {
 	display: flex;
 	flex-direction: column;
-	gap: 0.25rem;
-	margin: 0;
-	padding: 0;
-	list-style: none;
+	gap: 1rem;
 }
 
-.tb-seed {
-	display: flex;
+.tb-croles__head,
+.tb-crole {
+	display: grid;
+	grid-template-columns: 1fr 2.25rem 2.25rem;
 	align-items: center;
-	gap: 0.75rem;
-	padding: 0.5rem 0;
+	gap: 0.4rem;
+}
+
+.tb-croles__title {
+	margin: 0;
+	font-size: 0.8rem;
+	font-weight: 500;
+}
+
+.tb-croles__scheme {
+	color: var(--muted);
+	font-size: 0.6rem;
+	letter-spacing: 0.06em;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.tb-croles__list {
+	display: flex;
+	flex-direction: column;
+	margin: 0.3rem 0 0;
+	padding: 0;
+	list-style: none;
 	border-top: 1px solid var(--line);
 }
 
-.tb-seed:first-child {
-	border-top: 0;
+.tb-crole {
+	padding: 0.3rem 0;
+	border-bottom: 1px solid var(--line);
+	scroll-margin: 1rem;
 }
 
-/* The row a click on a phone just opened. */
-.tb-seed[data-flash] {
-	animation: tb-seed-flash 1.2s ease-out;
+.tb-crole[data-flash] {
+	animation: tb-flash 1.2s ease-out;
 }
 
-@keyframes tb-seed-flash {
+.tb-crole__name {
+	overflow: hidden;
+	font-family: var(--font-mono);
+	font-size: 0.72rem;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.tb-crole__chip {
+	position: relative;
+	height: 1.5rem;
+	padding: 0;
+	border: 1px solid var(--line-strong);
+	cursor: pointer;
+}
+
+.tb-crole__chip:hover {
+	outline: 1px solid var(--fg);
+}
+
+/* A value set by hand carries a corner mark. */
+.tb-crole__chip[data-custom]::after {
+	content: "";
+	position: absolute;
+	top: -1px;
+	right: -1px;
+	border-width: 0 7px 7px 0;
+	border-style: solid;
+	border-color: transparent var(--accent) transparent transparent;
+}
+
+.tb-crole__value {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.tb-crole__source {
+	flex: 1;
+	min-width: 0;
+	color: var(--muted);
+	font-family: var(--font-mono);
+	font-size: 0.68rem;
+	text-align: right;
+}
+
+.tb-crole__reset {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 1.75rem;
+	height: 1.75rem;
+	border: 1px solid var(--line);
+	background: transparent;
+	color: var(--muted);
+}
+
+.tb-crole__reset:hover {
+	border-color: var(--fg);
+	color: var(--fg);
+}
+
+.tb-primitives {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.tb-primitives__row {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.tb-primitives__label {
+	flex: none;
+	width: 3.75rem;
+	color: var(--muted);
+	font-family: var(--font-mono);
+	font-size: 0.66rem;
+}
+
+.tb-primitives__steps {
+	display: grid;
+	flex: 1;
+	grid-template-columns: repeat(11, minmax(0, 1fr));
+	gap: 2px;
+}
+
+/* The step numbers over the columns. */
+.tb-primitives__step {
+	color: var(--muted);
+	font-size: 0.56rem;
+	font-variant-numeric: tabular-nums;
+	text-align: center;
+}
+
+.tb-primitive {
+	position: relative;
+	aspect-ratio: 1;
+	padding: 0;
+	border: 1px solid rgb(128 128 128 / 0.25);
+	cursor: pointer;
+}
+
+.tb-primitive:hover {
+	z-index: 1;
+	outline: 1px solid var(--fg);
+}
+
+/* The generated value is dotted; the current one is ringed. */
+.tb-primitive[data-auto]::after {
+	content: "";
+	position: absolute;
+	inset: 50% auto auto 50%;
+	width: 4px;
+	height: 4px;
+	margin: -2px 0 0 -2px;
+	border-radius: 50%;
+	background: var(--fg);
+	box-shadow: 0 0 0 1px var(--bg);
+}
+
+.tb-primitive[aria-pressed="true"] {
+	z-index: 2;
+	outline: 2px solid var(--accent);
+	outline-offset: 1px;
+}
+
+@keyframes tb-flash {
 	from {
 		background: color-mix(in srgb, var(--accent) 22%, transparent);
-		box-shadow: -0.75rem 0 0 color-mix(in srgb, var(--accent) 22%, transparent);
+		box-shadow: -0.75rem 0 0
+			color-mix(in srgb, var(--accent) 22%, transparent);
 	}
 }
 
@@ -487,24 +960,6 @@ input[type="color"] {
 	border: 0;
 }
 
-.tb-seed__text {
-	display: flex;
-	flex: 1;
-	min-width: 0;
-	flex-direction: column;
-}
-
-.tb-seed__label {
-	font-size: 0.875rem;
-	font-weight: 500;
-}
-
-.tb-seed__usage {
-	color: var(--muted);
-	font-size: 0.7rem;
-	line-height: 1.4;
-}
-
 .tb-status {
 	color: var(--muted);
 	font-family: var(--font-mono);
@@ -513,136 +968,148 @@ input[type="color"] {
 
 /* ---------- Canvas ---------- */
 
+/* The canvas keeps the window's height; the screens pan and zoom inside it. */
 .tb-canvas {
+	position: relative;
 	display: flex;
+	height: calc(100svh - var(--header-h));
 	min-width: 0;
 	flex-direction: column;
 }
 
-.tb-canvas__bar {
-	position: sticky;
-	top: var(--header-h);
-	z-index: 20;
+/* The controls float over the top right of the canvas, as on a map. */
+.tb-overlay {
+	position: absolute;
+	z-index: 10;
+	top: var(--float-inset);
+	right: var(--float-inset);
 	display: flex;
+	align-items: stretch;
+	gap: 0.5rem;
+	pointer-events: none;
+}
+
+.tb-overlay > * {
+	pointer-events: auto;
+}
+
+.tb-float {
+	border: 1px solid var(--line-strong);
+	background: var(--raised);
+	box-shadow: 0 12px 24px -16px rgb(0 0 0 / 0.6);
+}
+
+/* Zoom out, the level, zoom in. */
+.tb-zoom {
+	display: flex;
+	align-items: stretch;
+}
+
+.tb-zoom button {
+	display: inline-flex;
 	align-items: center;
-	justify-content: space-between;
-	gap: 1rem;
-	padding: 0 var(--gutter);
-	border-bottom: 1px solid var(--line);
-	background: color-mix(in srgb, var(--bg) 85%, transparent);
-	backdrop-filter: blur(12px);
-}
-
-.tb-tabs {
-	display: flex;
-	gap: 1.5rem;
-	overflow-x: auto;
-	scrollbar-width: none;
-}
-
-.tb-tabs::-webkit-scrollbar {
-	display: none;
-}
-
-.tb-tabs button {
-	position: relative;
-	padding: 1rem 0;
+	justify-content: center;
+	min-width: 2rem;
+	padding: 0 0.4rem;
 	border: 0;
 	background: transparent;
 	color: var(--muted);
-	font-size: 0.875rem;
-	white-space: nowrap;
+	cursor: pointer;
 }
 
-.tb-tabs button[aria-selected="true"] {
+.tb-zoom button + button {
+	border-left: 1px solid var(--line);
+}
+
+.tb-zoom button:hover {
 	color: var(--fg);
 }
 
-.tb-tabs button[aria-selected="true"]::after {
-	content: "";
-	position: absolute;
-	inset-inline: 0;
-	bottom: -1px;
-	height: 2px;
-	background: var(--fg);
+.tb-zoom__level {
+	min-width: 3.25rem;
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
+	font-variant-numeric: tabular-nums;
 }
 
-.tb-segmented--scheme {
-	flex: none;
-	margin-block: 0.75rem;
-}
-
-.tb-segmented--scheme button {
-	padding-inline: 0.85rem;
-}
-
+/* The screens pan and zoom inside the view instead of scrolling: camera.ts
+   moves and scales `.tb-devices` with a transform. */
 .tb-view {
-	padding: 1.5rem var(--gutter) 5rem;
+	position: relative;
+	flex: 1;
+	min-height: 0;
+	overflow: hidden;
+	cursor: grab;
+	touch-action: none;
+	user-select: none;
+	overscroll-behavior: contain;
+	/* A faint worktable grid, moved and scaled with the screens by camera.ts:
+	   a major line every four cells, drawn over the minor ones. */
+	--grid-line: color-mix(in srgb, var(--fg) 4%, transparent);
+	--grid-line-major: color-mix(in srgb, var(--fg) 7%, transparent);
+	background-color: var(--canvas);
+	background-image:
+		linear-gradient(to right, var(--grid-line-major) 1px, transparent 1px),
+		linear-gradient(to bottom, var(--grid-line-major) 1px, transparent 1px),
+		linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+		linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+	background-size:
+		var(--grid-major, 96px) var(--grid-major, 96px),
+		var(--grid-major, 96px) var(--grid-major, 96px),
+		var(--grid-cell, 24px) var(--grid-cell, 24px),
+		var(--grid-cell, 24px) var(--grid-cell, 24px);
+	background-position: var(--grid-x, 0) var(--grid-y, 0);
 }
 
-.tb-view__intro {
-	max-width: 62ch;
-	margin-bottom: 1.5rem;
-	color: var(--muted);
-	font-size: 0.85rem;
+.tb-view[data-panning],
+.tb-view[data-panning] .ax-screen {
+	cursor: grabbing;
 }
 
-/* App preview heading: the app's name and one line, nothing more. */
-.tb-app-head {
-	margin-bottom: 1.25rem;
-	text-align: center;
+/* Promoted only while the camera moves, so text redraws sharp at rest. */
+.tb-view[data-moving] .tb-devices {
+	will-change: transform;
 }
 
-.tb-app-head__name {
-	margin: 0;
-	font-size: 1.5rem;
-	font-weight: 600;
-	letter-spacing: -0.02em;
-}
-
-.tb-app-head__tagline {
-	margin: 0.25rem 0 0;
-	color: var(--muted);
-	font-size: 0.9rem;
+.tb-view:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: -2px;
 }
 
 /* ---------- Devices ---------- */
 
-/* The three screens side by side at one scale. useFitScale sets
-   `--ax-scale` so the whole row fits the window; below a readable size the
-   phones stack instead. */
+/* Four screens to a row, at real device points: the camera scales the whole
+   grid, so the gaps are sized for a phone at full size. */
 .tb-devices {
-	--ax-scale: 0.6;
-	display: flex;
-	justify-content: center;
-	align-items: flex-start;
-	gap: clamp(1.25rem, 3vw, 3rem);
-}
-
-.tb-devices[data-layout="stack"] {
-	flex-direction: column;
-	align-items: center;
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: grid;
+	grid-template-columns: repeat(4, max-content);
+	gap: 4rem;
+	width: max-content;
+	transform-origin: 0 0;
 }
 
 .tb-device {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 0.85rem;
+	gap: 1.25rem;
 }
 
 .tb-device__caption {
 	color: var(--muted);
 	font-family: var(--font-mono);
-	font-size: 0.7rem;
+	font-size: 1.1rem;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
 }
 
 .tb-phone {
 	flex: none;
-	padding: calc(12px * var(--ax-scale));
-	border-radius: calc(60px * var(--ax-scale));
+	padding: 12px;
+	border-radius: 60px;
 	background: #1c1c1e;
 	box-shadow:
 		inset 0 0 0 1.5px #3a3a3c,
@@ -668,7 +1135,6 @@ input[type="color"] {
 	flex-direction: column;
 	width: 393px;
 	height: 852px;
-	zoom: var(--ax-scale);
 	overflow: hidden;
 	border-radius: 48px;
 	background: var(--ax-background-default);
@@ -742,285 +1208,26 @@ input[type="color"] {
 	transform: translateX(-50%);
 }
 
-/* The sample app keeps its tab bar, so the floating button clears it. */
-.tb-devices .ax-fab-layer {
-	bottom: 96px;
-}
-
-/* The settings tiles follow the seeds instead of the fixed iOS colors. */
-.tb-devices .ax-tile[data-color="blue"] {
-	background: var(--ax-link-500);
-}
-.tb-devices .ax-tile[data-color="green"] {
-	background: var(--ax-success-500);
-}
-.tb-devices .ax-tile[data-color="orange"] {
-	background: var(--ax-warning-500);
-}
-.tb-devices .ax-tile[data-color="red"] {
-	background: var(--ax-error-500);
-}
-.tb-devices .ax-tile[data-color="purple"] {
-	background: var(--ax-link-700);
-}
-.tb-devices .ax-tile[data-color="gray"] {
-	background: var(--ax-neutral-500);
-}
-
 .tb-devices .tb-art {
 	display: block;
 	flex: none;
 }
 
-.tb-devices .ax-avatar[data-photo] {
-	background: var(--ax-link-100);
-	color: var(--ax-link-700);
-}
-
-.tb-devices .ax-media {
-	background: linear-gradient(
-		135deg,
-		var(--ax-link-300),
-		var(--ax-link-100)
-	);
-}
-
-/* ---------- Components ---------- */
-
-.tb-components {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-	align-items: start;
-	gap: 1.5rem;
-}
-
-.tb-sample[data-wide] {
-	grid-column: span 2;
-}
-
-.tb-sample__title {
-	margin: 0 0 0.6rem;
-	color: var(--muted);
+/* A value set by hand in the sidebar carries this mark. */
+.tb-custom {
+	display: inline-block;
+	margin: 0 0.4rem;
+	padding: 0 0.3rem;
+	border: 1px solid var(--accent);
+	color: var(--accent);
 	font-family: var(--font-mono);
-	font-size: 0.7rem;
-	font-weight: 400;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-}
-
-/* A slice of screen: same surface, font and radius as the phones. */
-.tb-components .tb-sample__body {
-	display: flex;
-	flex-direction: column;
-	gap: 14px;
-	padding: 20px;
-	border-radius: 16px;
-	background: var(--ax-background-default);
-	color: var(--ax-content-default);
-	font-family: var(--ax-font);
-	font-size: 17px;
-	line-height: 22px;
-	box-shadow: inset 0 0 0 1px var(--line);
-	transition:
-		background-color 200ms ease,
-		color 200ms ease;
-}
-
-/* Overlays need a screen to sit on. */
-.tb-sample__stage {
-	position: relative;
-	height: 220px;
-	margin: -20px;
-	overflow: hidden;
-	border-radius: inherit;
-	background: var(--ax-background-subtle);
-}
-
-@media (max-width: 760px) {
-	.tb-sample[data-wide] {
-		grid-column: auto;
-	}
-}
-
-/* ---------- Color roles ---------- */
-
-.tb-roles + .tb-roles {
-	margin-top: 2.5rem;
-}
-
-.tb-roles__list,
-.tb-contrast {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-	gap: 0;
-	margin: 0.75rem 0 0;
-	padding: 0;
-	list-style: none;
-	border-top: 1px solid var(--line);
-	border-left: 1px solid var(--line);
-}
-
-.tb-role {
-	display: flex;
-	align-items: center;
-	gap: 0.85rem;
-	padding: 0.75rem 1rem;
-	border-right: 1px solid var(--line);
-	border-bottom: 1px solid var(--line);
-}
-
-.tb-role__chips {
-	display: flex;
-	flex: none;
-	border: 1px solid var(--line-strong);
-}
-
-.tb-role__chip {
-	width: 1.25rem;
-	height: 2.25rem;
-}
-
-.tb-role__text {
-	display: flex;
-	flex: 1;
-	min-width: 0;
-	flex-direction: column;
-}
-
-.tb-role__var {
-	overflow: hidden;
-	font-family: var(--font-mono);
-	font-size: 0.72rem;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.tb-role__usage {
-	color: var(--muted);
-	font-size: 0.7rem;
-	line-height: 1.4;
-}
-
-.tb-role__values {
-	display: flex;
-	flex: none;
-	flex-direction: column;
-	align-items: flex-end;
-	color: var(--muted);
-	font-family: var(--font-mono);
-	font-size: 0.65rem;
-}
-
-.tb-contrast__row {
-	display: flex;
-	align-items: center;
-	gap: 0.75rem;
-	padding: 0.75rem 1rem;
-	border-right: 1px solid var(--line);
-	border-bottom: 1px solid var(--line);
-}
-
-.tb-contrast__label {
-	flex: 1;
-	min-width: 0;
-	font-size: 0.8rem;
-}
-
-.tb-contrast__ratio {
-	font-family: var(--font-mono);
-	font-size: 0.8rem;
-}
-
-.tb-contrast__grade {
-	flex: none;
-	padding: 0.15rem 0.45rem;
-	border: 1px solid var(--line-strong);
-	color: var(--muted);
-	font-family: var(--font-mono);
-	font-size: 0.62rem;
-	text-transform: uppercase;
+	font-size: 0.58rem;
 	letter-spacing: 0.06em;
-}
-
-.tb-contrast__grade[data-tone="pass"] {
-	border-color: var(--pass-line);
-	color: var(--pass);
-}
-
-.tb-contrast__grade[data-tone="warn"] {
-	border-color: var(--warn-line);
-	color: var(--warn);
-}
-
-.tb-contrast__grade[data-tone="fail"] {
-	border-color: var(--fail-line);
-	color: var(--fail);
-}
-
-/* ---------- Palettes ---------- */
-
-.tb-ramp + .tb-ramp {
-	margin-top: 2rem;
-}
-
-.tb-ramp__hue {
-	margin-left: 0.5rem;
-	color: var(--line-strong);
-}
-
-.tb-ramp__steps {
-	display: grid;
-	grid-template-columns: repeat(11, minmax(0, 1fr));
-	gap: 0;
-	margin: 0.75rem 0 0;
-	padding: 0;
-	list-style: none;
-}
-
-.tb-ramp__step {
-	display: flex;
-	flex-direction: column;
-	gap: 0.4rem;
-	min-width: 0;
-}
-
-.tb-ramp__chip {
-	height: 4rem;
-}
-
-.tb-ramp__index,
-.tb-ramp__hex {
-	overflow: hidden;
-	color: var(--muted);
-	font-family: var(--font-mono);
-	font-size: 0.62rem;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.tb-ramp__index {
-	color: var(--fg);
+	text-transform: uppercase;
+	vertical-align: 1px;
 }
 
 /* ---------- Code ---------- */
-
-.tb-code__bar {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-start;
-	justify-content: space-between;
-	gap: 1rem;
-	margin-bottom: 1.25rem;
-}
-
-.tb-code__bar .tb-row {
-	flex-wrap: wrap;
-	justify-content: flex-end;
-}
-
-.tb-code__bar .tb-segmented button {
-	padding-inline: 0.7rem;
-}
 
 .tb-code {
 	max-height: 60vh;
@@ -1079,26 +1286,6 @@ input[type="color"] {
 	color: var(--warn);
 }
 
-.tb-tabs__group {
-	flex: none;
-	align-self: center;
-	margin-right: -0.75rem;
-	color: var(--muted);
-	font-family: var(--font-mono);
-	font-size: 0.65rem;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	opacity: 0.7;
-}
-
-.tb-tabs__sep {
-	flex: none;
-	align-self: center;
-	width: 1px;
-	height: 1rem;
-	background: var(--line-strong);
-}
-
 /* ---------- Font picker ---------- */
 
 .tb-fontpicker {
@@ -1127,19 +1314,6 @@ input[type="color"] {
 	color: var(--muted);
 }
 
-.tb-fontpicker__menu {
-	position: absolute;
-	z-index: 40;
-	top: calc(100% + 4px);
-	left: 0;
-	right: 0;
-	display: flex;
-	flex-direction: column;
-	border: 1px solid var(--line-strong);
-	background: var(--raised);
-	box-shadow: 0 20px 40px -20px rgb(0 0 0 / 0.9);
-}
-
 .tb-fontpicker__search {
 	display: flex;
 	align-items: center;
@@ -1155,6 +1329,26 @@ input[type="color"] {
 	background: transparent;
 	font-size: 0.85rem;
 	outline: none;
+}
+
+.tb-fontpicker__filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem;
+}
+
+.tb-fontpicker__filters button {
+	padding: 0.25rem 0.6rem;
+	border: 1px solid var(--line);
+	background: transparent;
+	color: var(--muted);
+	font-size: 0.75rem;
+}
+
+.tb-fontpicker__filters button[aria-pressed="true"] {
+	border-color: var(--fg);
+	background: var(--fg);
+	color: var(--bg);
 }
 
 .tb-fontpicker__list {
@@ -1192,34 +1386,6 @@ input[type="color"] {
 	padding: 0.75rem 0.65rem;
 	color: var(--muted);
 	font-size: 0.8rem;
-}
-
-/* ---------- Render settings ---------- */
-
-.tb-settings {
-	position: relative;
-	flex: none;
-}
-
-.tb-settings__menu {
-	position: absolute;
-	z-index: 40;
-	top: calc(100% + 6px);
-	right: 0;
-	display: flex;
-	width: 15rem;
-	flex-direction: column;
-	gap: 1rem;
-	padding: 1rem;
-	border: 1px solid var(--line-strong);
-	background: var(--raised);
-	box-shadow: 0 20px 40px -20px rgb(0 0 0 / 0.9);
-}
-
-.tb-settings__group {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
 }
 
 /* ---------- Modals ---------- */
@@ -1347,6 +1513,20 @@ input[type="color"] {
 	margin: 0;
 }
 
+/* Shiki tokens carry both VS Code palettes as --shiki-dark / --shiki-light. */
+.tb-code__line {
+	display: block;
+	min-height: 1lh;
+}
+
+.tb-code__line > span {
+	color: var(--shiki-dark);
+}
+
+:root[data-theme="light"] .tb-code__line > span {
+	color: var(--shiki-light);
+}
+
 .tb-export__preview {
 	display: flex;
 	min-width: 0;
@@ -1443,8 +1623,8 @@ input[type="color"] {
 /* ---------- Android mockup ---------- */
 
 .tb-phone[data-device="android"] {
-	padding: calc(10px * var(--ax-scale));
-	border-radius: calc(44px * var(--ax-scale));
+	padding: 10px;
+	border-radius: 44px;
 }
 
 .tb-devices .ax-screen[data-device="android"] {
@@ -1477,59 +1657,9 @@ input[type="color"] {
 	height: 4px;
 }
 
-/* ---------- Seed-driven accents inside the mockups ---------- */
-
-.tb-devices .ax-tile[data-color="link"] {
-	background: var(--ax-link-500);
-}
-.tb-devices .ax-tile[data-color="success"] {
-	background: var(--ax-success-500);
-}
-.tb-devices .ax-tile[data-color="warning"] {
-	background: var(--ax-warning-500);
-}
-.tb-devices .ax-tile[data-color="error"] {
-	background: var(--ax-error-500);
-}
-.tb-devices .ax-tile[data-color="neutral"] {
-	background: var(--ax-neutral-500);
-}
-
-.tb-devices .ax-badge-dot[data-color="link"] {
-	background: var(--ax-link-500);
-}
-.tb-devices .ax-badge-dot[data-color="success"] {
-	background: var(--ax-success-500);
-}
-.tb-devices .ax-badge-dot[data-color="warning"] {
-	background: var(--ax-warning-500);
-}
-.tb-devices .ax-badge-dot[data-color="error"] {
-	background: var(--ax-error-500);
-}
-
 /* ---------- Narrow screens ---------- */
 
 @media (max-width: 1024px) {
-	.tb-main {
-		grid-template-columns: minmax(0, 1fr);
-	}
-
-	.tb-panel {
-		position: static;
-		max-height: none;
-		border-right: 0;
-		border-bottom: 1px solid var(--line);
-	}
-
-	.tb-canvas__bar {
-		top: 0;
-	}
-
-	.tb-ramp__steps {
-		grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
-	}
-
 	.tb-export {
 		grid-template-columns: minmax(0, 1fr);
 	}
@@ -1558,12 +1688,112 @@ input[type="color"] {
 
 @media (prefers-reduced-motion: reduce) {
 	.tb-devices .ax-screen,
-	.tb-components .tb-sample__body,
 	.tb-btn {
 		transition: none;
 	}
 
-	.tb-seed[data-flash] {
+	.tb-crole[data-flash] {
 		animation: none;
 	}
+
+	.tb-nav,
+	.tb-section__toggle svg,
+	.tb-panel,
+	.tb-panel *,
+	.tb-show {
+		transition: none !important;
+	}
+}
+
+/* The preset picker sits above the sections, spaced like one of them. */
+.tb-preset {
+	padding-block: 1rem;
+	border-bottom: 1px solid var(--line);
+}
+
+/* The preset page: one card per theme, drawn in its own colors and face. */
+.tb-presets {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.tb-presets__card {
+	display: flex;
+	width: 100%;
+	align-items: flex-start;
+	gap: 0.75rem;
+	padding: 0.65rem;
+	border: 1px solid var(--line);
+	background: var(--raised);
+	text-align: left;
+	transition: border-color 0.15s;
+}
+
+.tb-presets__card:hover {
+	border-color: var(--line-strong);
+}
+
+.tb-presets__card[aria-pressed="true"] {
+	border-color: var(--accent);
+}
+
+.tb-presets__swatch {
+	position: relative;
+	display: grid;
+	flex: none;
+	width: 3.25rem;
+	height: 3.25rem;
+	place-items: center;
+	border: 1px solid;
+	font-size: 1.1rem;
+	font-weight: 600;
+}
+
+.tb-presets__dots {
+	position: absolute;
+	right: 0.3rem;
+	bottom: 0.3rem;
+	display: flex;
+	gap: 0.2rem;
+}
+
+.tb-presets__dots i {
+	width: 0.5rem;
+	height: 0.5rem;
+	border-radius: 50%;
+}
+
+.tb-presets__text {
+	display: flex;
+	min-width: 0;
+	flex-direction: column;
+	gap: 0.2rem;
+}
+
+.tb-presets__name {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	font-size: 0.9rem;
+	font-weight: 600;
+}
+
+.tb-presets__name svg {
+	color: var(--accent);
+}
+
+.tb-presets__description {
+	color: var(--muted);
+	font-size: 0.78rem;
+	line-height: 1.45;
+}
+
+.tb-presets__meta {
+	color: var(--muted);
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
 }

@@ -34,7 +34,7 @@ export function saveTheme(theme: Theme): SavedTheme {
 		id: id(),
 		name: theme.name.trim() || "Untitled",
 		savedAt: Date.now(),
-		theme: { ...theme, seeds: { ...theme.seeds }, fonts: { ...theme.fonts } },
+		theme: structuredClone(theme),
 	};
 
 	const existing = library$.themes

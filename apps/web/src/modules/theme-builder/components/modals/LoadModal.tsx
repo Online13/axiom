@@ -1,10 +1,19 @@
 import { observer } from "@legendapp/state/react";
 import { Trash2 } from "lucide-react";
-import { normalizeTheme, seedNames } from "../../lib/theme";
+import { buildScheme, normalizeTheme } from "../../lib/theme";
 import { deleteTheme, library$ } from "../../state/library";
 import { loadThemeFonts, theme$ } from "../../state/theme";
 import { announce, ui$ } from "../../state/ui";
 import { Modal } from "./Modal";
+
+// The roles that tell two saved themes apart at a glance.
+const chipRoles = [
+	"background.default",
+	"content.default",
+	"primary.default",
+	"highlight.default",
+	"content.link",
+];
 
 const when = (timestamp: number) =>
 	new Date(timestamp).toLocaleString(undefined, {
@@ -50,15 +59,19 @@ export const LoadModal = observer(function LoadModal() {
 										className="tb-library__chips"
 										aria-hidden="true"
 									>
-										{seedNames.map((name) => (
-											<span
-												key={name}
-												style={{
-													background: normalizeTheme(entry.theme)
-														.seeds[name],
-												}}
-											/>
-										))}
+										{buildScheme(
+											"light",
+											normalizeTheme(entry.theme).overrides,
+										)
+											.filter(({ role, key }) =>
+												chipRoles.includes(`${role}.${key}`),
+											)
+											.map((swatch) => (
+												<span
+													key={swatch.variable}
+													style={{ background: swatch.hex }}
+												/>
+											))}
 									</span>
 									<span className="tb-library__text">
 										<span className="tb-library__name">

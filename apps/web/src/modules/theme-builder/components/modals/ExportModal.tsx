@@ -9,6 +9,7 @@ import {
 	type ExportFormat,
 	type ExportOptions,
 } from "../../lib/export";
+import { CodeBlock } from "./CodeBlock";
 import { FileTabs } from "./FileTabs";
 import { theme$ } from "../../state/theme";
 import { announce, ui$ } from "../../state/ui";
@@ -20,7 +21,7 @@ const includes: { id: Toggle; label: string; hint: string }[] = [
 	{
 		id: "palette",
 		label: "Palette ramps",
-		hint: "Eleven steps for each seed",
+		hint: "Eleven steps for each hue",
 	},
 	{
 		id: "light",
@@ -33,6 +34,11 @@ const includes: { id: Toggle; label: string; hint: string }[] = [
 		hint: "The semantic roles of the dark scheme",
 	},
 	{ id: "radius", label: "Radius scale", hint: "sm, md, lg, xl and full" },
+	{
+		id: "spacing",
+		label: "Spacing scale",
+		hint: "The steps of the chosen density",
+	},
 	{
 		id: "typography",
 		label: "Typography",
@@ -163,22 +169,28 @@ export const ExportModal = observer(function ExportModal() {
 					) : (
 						<section className="tb-group">
 							<h3 className="tb-eyebrow">Files</h3>
-							<p className="tb-note">
-								Drop-in replacements for your project's theme folder:
-								the shipped files with your values in them. A component
-								file only appears when its shape differs from Axiom's.
-								To go further, edit those component files by hand —
-								every variant and state is there.
-							</p>
+							{options.format === "agent" ? (
+								<p className="tb-note">
+									The Axiom theme files, wrapped in instructions for a
+									coding agent. Copy it into a chat with Claude Code,
+									Cursor or any agent working in your project.
+								</p>
+							) : (
+								<p className="tb-note">
+									Drop-in replacements for your project's theme folder:
+									the shipped files with your values in them. A
+									component file only appears when its shape differs
+									from Axiom's. To go further, edit those component
+									files by hand — every variant and state is there.
+								</p>
+							)}
 						</section>
 					)}
 				</div>
 
 				<div className="tb-export__preview">
 					<FileTabs files={files} selected={file} onSelect={setSelected} />
-					<pre className="tb-code tb-code--modal">
-						<code>{file.code}</code>
-					</pre>
+					<CodeBlock path={file.path} code={file.code} />
 				</div>
 			</div>
 		</Modal>

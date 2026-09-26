@@ -4,11 +4,13 @@
 // guessing from computed pixels (an ink primary and the neutral ramp share
 // values, their variables don't).
 
-const COLOR_VAR = /var\(\s*(--ax-[a-z0-9-]+)/;
+import type { Paint } from "../../state/ui";
 
-// Checked in this order on the element itself: what fills it wins over what
-// outlines it, which wins over its text.
-const FILL = ["background", "background-color", "background-image", "fill"];
+// Color variables only: the elevation, radius, size and font tokens are not.
+const COLOR_VAR =
+	/var\(\s*(--ax-(?!shadow|radius|control|font|scale)[a-z0-9-]+)/;
+
+const FILL = ["background", "background-color", "background-image"];
 const LINE = [
 	"border",
 	"border-color",
@@ -18,8 +20,11 @@ const LINE = [
 	"border-left",
 	"outline",
 	"outline-color",
-	"stroke",
+	// Outlined buttons draw their border as an inset ring.
+	"box-shadow",
 ];
+// What an svg shape paints with — a chart line or a pie slice.
+const SHAPE = ["stroke", "fill"];
 const TEXT = ["color"];
 
 let rules: CSSStyleRule[] = [];
@@ -77,36 +82,60 @@ const hasText = (element: Element) =>
 		(node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim(),
 	);
 
-export type Inspected = {
-	/** What to outline: the element that carries the color. */
+export type Inspected = Paint & {
+	/** What to outline: the part these colors belong to. */
 	element: Element;
-	variable: string;
 };
 
+/** The first element from `start` up to the screen that declares one of `props`. */
+function climb(start: Element, screen: Element, props: string[]) {
+	for (
+		let element: Element | null = start;
+		element && screen.contains(element);
+		element = element.parentElement
+	) {
+		const variable = declared(element, props);
+		if (variable) return { element, variable };
+	}
+	return null;
+}
+
 /**
- * The color behind whatever is under the pointer. Text and glyphs inherit
- * their color, so for them the search climbs `color` only; a bare box shows
- * the fill of the nearest painted ancestor instead.
+ * The part under the pointer and the colors it is drawn with. Text and icons
+ * inherit their color and sit on an ancestor's fill, so both are climbed for;
+ * a bare wrapper stands for the nearest filled box around it instead.
  */
 export function inspect(target: Element, screen: Element): Inspected | null {
 	if (!screen.contains(target)) return null;
-	const all = [...FILL, ...LINE, ...TEXT];
 
-	// A chart path carries its own stroke; an icon's paths take the svg's color.
-	const direct = declared(target, all);
-	if (direct) return { element: target, variable: direct };
-	const element = target.closest("svg") ?? target;
-	const own = element === target ? null : declared(element, all);
-	if (own) return { element, variable: own };
+	// A chart path paints itself; an icon's paths take the svg's color.
+	const shape = target instanceof SVGElement ? declared(target, SHAPE) : null;
+	let element = shape ? target : (target.closest("svg") ?? target);
 
-	const text = element instanceof SVGElement || hasText(element);
-	for (
-		let parent = element.parentElement;
-		parent && screen.contains(parent);
-		parent = parent.parentElement
-	) {
-		const variable = declared(parent, text ? TEXT : FILL);
-		if (variable) return { element: text ? element : parent, variable };
+	const painted =
+		shape ||
+		element instanceof SVGElement ||
+		hasText(element) ||
+		declared(element, [...FILL, ...LINE]);
+	if (!painted) {
+		const box = climb(element, screen, FILL);
+		if (!box) return null;
+		element = box.element;
 	}
-	return null;
+
+	// The border of the box the part sits in — a label inside an outlined
+	// button — but never one from beyond the fill it sits on.
+	const fill = climb(element, screen, FILL);
+	const line = climb(element, screen, LINE);
+	const border =
+		line && (!fill || fill.element.contains(line.element))
+			? line.variable
+			: undefined;
+
+	return {
+		element,
+		text: shape ?? climb(element, screen, TEXT)?.variable,
+		background: fill?.variable,
+		border,
+	};
 }

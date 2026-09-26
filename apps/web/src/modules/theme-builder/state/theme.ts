@@ -1,24 +1,27 @@
 // The single source of truth for the builder. Everything on screen — the
 // phones, the role tables, the ramps, the code block — is derived from
-// `theme$`, so a seed change lands everywhere in one pass.
+// `theme$`, so a change lands everywhere in one pass.
 
 import { observable } from "@legendapp/state";
 import { syncObservable } from "@legendapp/state/sync";
 import { ObservablePersistLocalStorage } from "@legendapp/state/persist-plugins/local-storage";
+import type { ColorScheme } from "@docs/lib/tokens";
 import { loadFont } from "../lib/fonts";
 import {
 	decodeTheme,
 	defaultTheme,
 	encodeTheme,
 	normalizeTheme,
-	type SeedName,
 	type Theme,
 } from "../lib/theme";
 
 const DRAFT_KEY = "axiom.theme-builder.draft";
 
-/** The theme being edited. */
-export const theme$ = observable<Theme>({ ...defaultTheme });
+/**
+ * The theme being edited. Always seeded with copies: edits mutate the nested
+ * objects in place, and must never reach `defaultTheme` or a preset.
+ */
+export const theme$ = observable<Theme>(structuredClone(defaultTheme));
 
 syncObservable(theme$, {
 	persist: {
@@ -27,7 +30,8 @@ syncObservable(theme$, {
 		// A draft from an earlier version of the builder may lack fields. No
 		// draft at all stays empty, so it never overrides a theme from the URL.
 		transform: {
-			load: (value: unknown) => (value == null ? value : normalizeTheme(value)),
+			load: (value: unknown) =>
+				value == null ? value : normalizeTheme(value),
 		},
 	},
 });
@@ -52,8 +56,20 @@ export function syncUrl(theme: Theme) {
 
 /* ---------- Mutations ---------- */
 
-export const setSeed = (name: SeedName, hex: string) =>
-	theme$.seeds[name].set(hex.toLowerCase());
+/** Sets one role of one scheme to a primitive, or back to the shipped value with `null`. */
+export function setRole(
+	path: string,
+	scheme: ColorScheme,
+	value: string | null,
+) {
+	const entry = { ...theme$.overrides[path].peek() };
+	if (value === null) delete entry[scheme];
+	else entry[scheme] = value;
+	if (Object.keys(entry).length) theme$.overrides[path].set(entry);
+	else theme$.overrides[path].delete();
+}
+
+export const resetRoles = () => theme$.overrides.set({});
 
 export type FontRole = keyof Theme["fonts"];
 
@@ -69,4 +85,10 @@ export const loadThemeFonts = (theme: Theme) => {
 };
 
 export const resetTheme = () =>
-	theme$.set({ ...defaultTheme, name: theme$.name.peek() });
+	theme$.set({ ...structuredClone(defaultTheme), name: theme$.name.peek() });
+
+/** Replaces the whole theme with a ready-made one, fonts loaded. */
+export const applyPreset = (theme: Theme) => {
+	loadThemeFonts(theme);
+	theme$.set(structuredClone(theme));
+};

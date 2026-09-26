@@ -2,17 +2,17 @@
 // modal. Every format reads the same derived data as the previews, so what is
 // downloaded is what was on screen.
 
-import { paletteSteps, type ColorScheme } from "@docs/lib/tokens";
-import { hslaToHex } from "./color";
+import { palette, paletteSteps, type ColorScheme } from "@docs/lib/tokens";
+import { hexToRgb, hslaToHex, rgbToHsla } from "./color";
 import { SYSTEM_FONT, fontStack } from "./fonts";
 import {
-	buildPalette,
 	buildScheme,
 	controlShapes,
+	primitives,
 	radiusValues,
-	seedNames,
-	seeds,
 	shapedComponents,
+	spacingScales,
+	spacingValues,
 	type Theme,
 } from "./theme";
 
@@ -54,19 +54,21 @@ export const exportFormats = {
 		extension: "ts",
 		language: "typescript",
 	},
+	agent: { label: "Agent prompt", extension: "md", language: "markdown" },
 } as const;
 
 export type ExportFormat = keyof typeof exportFormats;
 
 export type ExportOptions = {
 	format: ExportFormat;
-	/** Eleven-step ramps for the seeds. */
+	/** The eleven-step ramps of the Axiom palette. */
 	palette: boolean;
 	/** Semantic roles for the light scheme. */
 	light: boolean;
 	/** Semantic roles for the dark scheme. */
 	dark: boolean;
 	radius: boolean;
+	spacing: boolean;
 	typography: boolean;
 };
 
@@ -76,6 +78,7 @@ export const defaultExportOptions: ExportOptions = {
 	light: true,
 	dark: true,
 	radius: true,
+	spacing: true,
 	typography: true,
 };
 
@@ -90,7 +93,7 @@ const camel = (value: string) =>
 	value.replace(/-(.)/g, (_, c) => c.toUpperCase());
 
 const roleEntries = (theme: Theme, scheme: ColorScheme) =>
-	buildScheme(buildPalette(theme), scheme).map((swatch) => ({
+	buildScheme(scheme, theme.overrides).map((swatch) => ({
 		// `--ax-content-muted` → `content-muted`
 		name: swatch.variable.slice("--ax-".length),
 		variable: swatch.variable,
@@ -100,30 +103,33 @@ const roleEntries = (theme: Theme, scheme: ColorScheme) =>
 		hex: swatch.hex,
 	}));
 
-const ramps = (theme: Theme) => {
-	const generated = buildPalette(theme);
-	return seedNames.map((name) => ({
-		name,
-		// Primary has no hue of its own in the palette: it keeps its seed name.
-		hue: seeds[name].hue as string,
+/** The spacing steps that carry a value, `[["1", 4], ["2", 8], …]`. */
+const spacingEntries = (theme: Theme) =>
+	Object.entries(spacingValues(theme.spacing)).filter(
+		([step]) => step !== "0",
+	);
+
+const ramps = () =>
+	primitives.map(({ hue }) => ({
+		name: hue,
+		hue,
 		steps: paletteSteps.map((step) => ({
 			step,
-			hex: hslaToHex(generated[name][step]),
+			hex: hslaToHex(palette[hue][step]),
 		})),
 	}));
-};
 
 /* ---------- Formats ---------- */
 
 function toJson(theme: Theme, options: ExportOptions): string {
 	const payload: Record<string, unknown> = {
 		name: theme.name,
-		seeds: theme.seeds,
 	};
+	if (Object.keys(theme.overrides).length) payload.overrides = theme.overrides;
 
 	if (options.palette)
 		payload.palette = Object.fromEntries(
-			ramps(theme).map(({ hue, steps }) => [
+			ramps().map(({ hue, steps }) => [
 				hue,
 				Object.fromEntries(steps.map(({ step, hex }) => [step, hex])),
 			]),
@@ -138,6 +144,7 @@ function toJson(theme: Theme, options: ExportOptions): string {
 	if (Object.keys(colors).length) payload.colors = colors;
 
 	if (options.radius) payload.radius = radiusValues(theme.radius);
+	if (options.spacing) payload.spacing = spacingValues(theme.spacing);
 	if (options.typography)
 		payload.fonts = {
 			heading: {
@@ -159,7 +166,7 @@ function toTs(theme: Theme, options: ExportOptions): string {
 
 	if (options.palette) {
 		lines.push("export const palette = {");
-		for (const { hue, steps } of ramps(theme)) {
+		for (const { hue, steps } of ramps()) {
 			lines.push(`\t${hue}: {`);
 			for (const { step, hex } of steps)
 				lines.push(`\t\t${step}: "${hex}",`);
@@ -199,6 +206,17 @@ function toTs(theme: Theme, options: ExportOptions): string {
 		);
 	}
 
+	if (options.spacing)
+		lines.push(
+			"export const spacing = {",
+			"\t0: 0,",
+			...spacingEntries(theme).map(
+				([step, value]) => `\t${step}: ${value},`,
+			),
+			"};",
+			"",
+		);
+
 	if (options.typography)
 		lines.push(
 			"export const fonts = {",
@@ -215,7 +233,7 @@ function toCss(theme: Theme, options: ExportOptions): string {
 	const shared: string[] = [];
 
 	if (options.palette)
-		for (const { name, steps } of ramps(theme))
+		for (const { name, steps } of ramps())
 			for (const { step, hex } of steps)
 				shared.push(`\t--ax-${name}-${step}: ${hex};`);
 
@@ -228,6 +246,10 @@ function toCss(theme: Theme, options: ExportOptions): string {
 			`\t--ax-radius-xl: ${xl}px;`,
 		);
 	}
+
+	if (options.spacing)
+		for (const [step, value] of spacingEntries(theme))
+			shared.push(`\t--ax-space-${step}: ${value}px;`);
 
 	if (options.typography)
 		shared.push(
@@ -265,7 +287,7 @@ function toTailwind(theme: Theme, options: ExportOptions): string {
 	];
 
 	if (options.palette)
-		for (const { name, steps } of ramps(theme))
+		for (const { name, steps } of ramps())
 			for (const { step, hex } of steps)
 				lines.push(`\t--color-${name}-${step}: ${hex};`);
 
@@ -282,6 +304,10 @@ function toTailwind(theme: Theme, options: ExportOptions): string {
 			`\t--radius-xl: ${xl}px;`,
 		);
 	}
+
+	// Tailwind derives every spacing utility from one unit: `p-4` is 4 of them.
+	if (options.spacing)
+		lines.push(`\t--spacing: ${4 * spacingScales[theme.spacing].factor}px;`);
 
 	if (options.typography)
 		lines.push(
@@ -318,7 +344,7 @@ function toNative(theme: Theme, options: ExportOptions): string {
 
 	if (options.palette) {
 		lines.push("\tpalette: {");
-		for (const { name, steps } of ramps(theme)) {
+		for (const { name, steps } of ramps()) {
 			lines.push(`\t\t${name}: {`);
 			for (const { step, hex } of steps)
 				lines.push(`\t\t\t"${step}": "${hex}",`);
@@ -340,6 +366,16 @@ function toNative(theme: Theme, options: ExportOptions): string {
 			"\t},",
 		);
 	}
+
+	if (options.spacing)
+		lines.push(
+			"\tspacing: {",
+			"\t\t0: 0,",
+			...spacingEntries(theme).map(
+				([step, value]) => `\t\t${step}: ${value},`,
+			),
+			"\t},",
+		);
 
 	if (options.typography)
 		lines.push(
@@ -378,18 +414,16 @@ const fontValue = (family: string) =>
 	family === SYSTEM_FONT ? "undefined" : JSON.stringify(family);
 
 function tokensFile(theme: Theme): string {
-	const generated = buildPalette(theme);
+	// The palette ships as is; only the spacing, the radius and the faces change.
 	let code = tokensSource;
 
-	// Each palette seed rewrites its hue; the other hues stay as shipped.
-	for (const name of seedNames) {
-		if (name === "primary") continue;
-		const hue = seeds[name].hue;
-		const steps = paletteSteps
-			.map((step) => `\t\t${step}: "${generated[name][step]}",`)
-			.join("\n");
-		code = replaceBlock(code, `\n\t${hue}: {`, `{\n${steps}\n\t}`);
-	}
+	code = replaceBlock(
+		code,
+		"export const spacing = {",
+		`{\n\t0: 0,\n${spacingEntries(theme)
+			.map(([step, value]) => `\t${step}: ${value},`)
+			.join("\n")}\n}`,
+	);
 
 	const { sm, md, lg, xl } = radiusValues(theme.radius);
 	code = replaceBlock(
@@ -414,19 +448,20 @@ function tokensFile(theme: Theme): string {
 	return `${generatedBy(theme)}\n${note}\n${code}`;
 }
 
-// `gray.600` → `palette.gray[600]`, `primary.500` → `primary[500]`.
+// `gray.600` → `palette.gray[600]`, and a hand-picked hex → the `hsla()`
+// string the token files use.
 const colorExpression = (value: string) => {
+	if (value.startsWith("#")) return JSON.stringify(rgbToHsla(hexToRgb(value)));
 	if (value.startsWith("hsla(")) return JSON.stringify(value);
 	const [hue, step] = value.split(".");
-	return hue === "primary" ? `primary[${step}]` : `palette.${hue}[${step}]`;
+	return `palette.${hue}[${step}]`;
 };
 
 function colorsFile(theme: Theme): string {
-	const generated = buildPalette(theme);
 	const block = (scheme: ColorScheme) => {
 		const lines: string[] = [];
 		let role = "";
-		for (const swatch of buildScheme(generated, scheme)) {
+		for (const swatch of buildScheme(scheme, theme.overrides)) {
 			if (swatch.role !== role) {
 				if (role) lines.push("\t},");
 				lines.push(`\t${swatch.role}: {`);
@@ -440,27 +475,13 @@ function colorsFile(theme: Theme): string {
 
 	const light = block("light");
 	const dark = block("dark");
-	const usesPrimary = /primary\[/.test(light + dark);
-
 	const head = colorsSource.slice(
 		0,
 		colorsSource.indexOf("export const lightColors"),
 	);
-	const primaryRamp = usesPrimary
-		? [
-				`// The primary ramp, generated from ${theme.seeds.primary}.`,
-				"const primary = {",
-				...paletteSteps.map(
-					(step) => `\t${step}: "${generated.primary[step]}",`,
-				),
-				"};",
-				"",
-				"",
-			].join("\n")
-		: "";
 
 	return [
-		`${generatedBy(theme)}\n${head}${primaryRamp}export const lightColors = {`,
+		`${generatedBy(theme)}\n${head}export const lightColors = {`,
 		light,
 		"} satisfies ThemeColors;",
 		"",
@@ -493,6 +514,38 @@ const axiomFiles = (theme: Theme): ExportFile[] => [
 	...componentFiles(theme),
 ];
 
+/* ---------- Agent prompt ---------- */
+
+// A fence longer than any backtick run in the code, so the code can't close it.
+const fence = (code: string) =>
+	"`".repeat(
+		Math.max(3, ...(code.match(/`+/g) ?? []).map((r) => r.length + 1)),
+	);
+
+/**
+ * The Axiom theme files wrapped in instructions for a coding agent. Only what
+ * is specific to this theme: how to use the roles belongs to the Axiom skill.
+ */
+function toAgentPrompt(theme: Theme): string {
+	const files = axiomFiles(theme);
+	return [
+		`# Apply the "${theme.name}" theme`,
+		"",
+		"This Axiom theme was generated with the Axiom theme builder. Apply it to this project:",
+		"",
+		"1. Find the project's Axiom theme folder, the one holding `tokens.ts` and `colors.ts`.",
+		"2. Replace each file below with its content. Paths are relative to that folder's parent.",
+		"3. Leave every other file untouched.",
+		"4. If a comment at the top of `tokens.ts` names fonts to load, load them with expo-font under those names.",
+		"5. Run the type check.",
+		...files.flatMap(({ path, code }) => {
+			const f = fence(code);
+			return ["", `## \`${path}\``, "", `${f}ts`, code.trimEnd(), f];
+		}),
+		"",
+	].join("\n");
+}
+
 const builders: Record<
 	Exclude<ExportFormat, "axiom">,
 	(t: Theme, o: ExportOptions) => string
@@ -502,6 +555,7 @@ const builders: Record<
 	css: toCss,
 	tailwind: toTailwind,
 	native: toNative,
+	agent: toAgentPrompt,
 };
 
 export const exportFilename = (theme: Theme, options: ExportOptions) =>
@@ -524,8 +578,9 @@ export const buildExportFiles = (
 				},
 			];
 
-/** Whether the format reads the Include toggles. The Axiom files are always whole. */
-export const usesIncludes = (format: ExportFormat) => format !== "axiom";
+/** Whether the format reads the Include toggles. The Axiom files, and the agent prompt that carries them, are always whole. */
+export const usesIncludes = (format: ExportFormat) =>
+	format !== "axiom" && format !== "agent";
 
 export function downloadFile(file: ExportFile) {
 	const blob = new Blob([file.code], { type: "text/plain" });

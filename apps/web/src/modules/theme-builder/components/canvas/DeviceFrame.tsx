@@ -1,16 +1,33 @@
 import { observer } from "@legendapp/state/react";
 import { type MouseEvent, type ReactNode, useRef } from "react";
-import { seedForVariable, seeds } from "../../lib/theme";
-import { theme$ } from "../../state/theme";
-import { announce, ui$ } from "../../state/ui";
+import { roleForVariable } from "../../lib/theme";
+import { announce, back, ui$ } from "../../state/ui";
+import { focusScreen } from "./camera";
 import { inspect } from "./inspect";
 
-// The element under the pointer and the seed that colors it, if any.
-function pick(event: MouseEvent<HTMLDivElement>) {
-	const hit = inspect(event.target as Element, event.currentTarget);
-	if (!hit) return null;
-	const seed = seedForVariable(hit.variable, theme$.peek(), ui$.scheme.peek());
-	return seed ? { ...hit, seed } : null;
+const pick = (event: MouseEvent<HTMLDivElement>) =>
+	inspect(event.target as Element, event.currentTarget);
+
+/**
+ * Shows the roles that paint the part in the sidebar, text first. A part drawn
+ * with a raw palette step has no role to change.
+ */
+function focus(variables: (string | undefined)[]) {
+	const paths = [
+		...new Set(
+			variables
+				.filter((variable): variable is string => !!variable)
+				.map(roleForVariable)
+				.filter((path) => path !== undefined),
+		),
+	];
+	if (!paths.length) {
+		announce("This part uses a fixed palette step, not a role.");
+		return;
+	}
+	back();
+	ui$.sections.colors.set(true);
+	ui$.focusedRoles.set({ paths, at: Date.now() });
 }
 
 /**
@@ -49,15 +66,16 @@ export const DeviceFrame = observer(function DeviceFrame({
 					data-device={device}
 					data-grouped={grouped ? "true" : undefined}
 					// The mockups are pictures, not apps: nothing inside is focusable.
-					// Pointing at a part outlines it; clicking it opens its seed in
-					// the sidebar, which is where it is edited from the keyboard.
+					// Pointing at a part outlines it; clicking brings the phone to the
+					// middle of the canvas and opens the part's colors in the sidebar,
+					// which is where they are edited from the keyboard.
 					onMouseOver={(event) => outline(pick(event)?.element ?? null)}
 					onMouseLeave={() => outline(null)}
 					onClick={(event) => {
+						const phone = event.currentTarget.parentElement;
+						if (phone) focusScreen(phone);
 						const hit = pick(event);
-						if (!hit) return;
-						ui$.focusedSeed.set({ name: hit.seed, at: Date.now() });
-						announce(`${seeds[hit.seed].label} — ${hit.variable}`);
+						if (hit) focus([hit.text, hit.background, hit.border]);
 					}}
 				>
 					<div className="ax-status" aria-hidden="true">
@@ -75,13 +93,21 @@ export const DeviceFrame = observer(function DeviceFrame({
 					<div className="ax-home" aria-hidden="true" />
 				</div>
 			</div>
-			{caption && <figcaption className="tb-device__caption">{caption}</figcaption>}
+			{caption && (
+				<figcaption className="tb-device__caption">{caption}</figcaption>
+			)}
 		</figure>
 	);
 });
 
 const StatusIcons = () => (
-	<svg width="44" height="12" viewBox="0 0 44 12" fill="currentColor" aria-hidden="true">
+	<svg
+		width="44"
+		height="12"
+		viewBox="0 0 44 12"
+		fill="currentColor"
+		aria-hidden="true"
+	>
 		<rect x="0" y="7" width="3" height="4" rx="1" />
 		<rect x="4.5" y="5" width="3" height="6" rx="1" />
 		<rect x="9" y="3" width="3" height="8" rx="1" />
