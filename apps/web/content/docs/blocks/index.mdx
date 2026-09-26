@@ -1,13 +1,30 @@
 ---
-title: Introduction
-description: "Complete screens and app sections, ready to adapt."
+title: Blocks
+description: "Complete or near-complete sections of an app, built from primitives and compositions."
 ---
 
-<Callout title="Coming in phase 2">
-	Blocks are planned once the component layers are stable.
-</Callout>
+A block is a section of an app or a whole screen: a settings group, a sign-in form, a paywall. It is built from [primitives](/docs/components#primitives) and [compositions](/docs/compositions), uses realistic content, and is a starting point to adapt to your product like any other copied file.
 
-A block is a large interface or a complete screen built with Axiom components. Blocks aren't frozen designs: they are starting points, meant to be adapted to your product like any other copied file.
+```text
+Primitives  →  Compositions   →  Blocks
+Item        →  Settings Item  →  Settings Section
+```
+
+Blocks sit at the concrete end of the [component hierarchy](/docs/components). A primitive is generic, a composition is one concrete interface, a block puts several of them together into a part of an app.
+
+## Available
+
+<Cards>
+	<Card title="Settings Section" href="/docs/blocks/settings-section">
+		A titled group of Settings Items with a footer note.
+	</Card>
+</Cards>
+
+## Planned
+
+<Callout title="Coming in phase 2">
+	These blocks are planned once the component layers are stable.
+</Callout>
 
 <Cards>
 	<Card title="Authentication" href="/docs/blocks/authentication">

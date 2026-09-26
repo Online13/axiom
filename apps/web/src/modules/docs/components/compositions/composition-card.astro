@@ -1,0 +1,57 @@
+---
+// Link card for a composition: an in-context preview, the name, a short description and the primitives it is built with.
+// Same frame as AtomCard. The preview is drawn at real iOS sizes and shrunk with `zoom`, like PhonePreview.
+// `data-categories` lets CompositionCatalog filter the cards.
+import CompositionPreview from './composition-preview.astro';
+import { compositionHref, primitives, type Composition } from '@docs/data/compositions';
+
+interface Props {
+  composition: Composition;
+}
+
+const { composition } = Astro.props;
+---
+
+<a
+  href={compositionHref(composition.slug)}
+  data-composition-card
+  data-categories={composition.categories.join(' ')}
+  class="group flex flex-col border bg-fd-card text-fd-card-foreground transition-colors hover:border-fd-ring hover:bg-fd-accent/40"
+>
+  <div class="flex h-40 items-center justify-center overflow-hidden border-b bg-fd-muted/60" aria-hidden="true" data-ax-preview data-scheme="light">
+    <div class="ax-screen cmp-screen">
+      <CompositionPreview slug={composition.slug} />
+    </div>
+  </div>
+
+  <div class="flex flex-1 flex-col gap-2 p-3">
+    <div class="flex flex-col gap-1">
+      <span class="text-sm font-medium">{composition.name}</span>
+      <span class="text-xs text-fd-muted-foreground">{composition.description}</span>
+    </div>
+    <ul class="mt-auto flex flex-wrap gap-1" aria-label="Built with">
+      {composition.builtWith.map((name) => (
+        <li class="border px-1.5 py-0.5 font-mono text-[10px] leading-4 text-fd-muted-foreground">{primitives[name].name}</li>
+      ))}
+    </ul>
+  </div>
+</a>
+
+<style>
+  /* A short slice of a phone screen in iOS points, scaled down with `zoom`.
+     The percentage width isn't zoomed, so the slice always spans the panel: about 300 to 400pt wide. */
+  .cmp-screen {
+    flex: none;
+    width: 100%;
+    height: 250px;
+    zoom: 0.6;
+    overflow: hidden;
+    border-radius: 0;
+    background: var(--ax-background-default);
+    color: var(--ax-content-default);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 22px;
+    text-align: left;
+  }
+</style>

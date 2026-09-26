@@ -254,7 +254,7 @@ export async function confirmAliases(
 	const names = Object.keys(aliases) as AliasName[];
 	note(
 		names
-			.map((name) => `${muted(name.padEnd(12))}${aliases[name]}`)
+			.map((name) => `${muted(name.padEnd(14))}${aliases[name]}`)
 			.join("\n"),
 		"Where the files will go",
 	);

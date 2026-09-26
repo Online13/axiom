@@ -1,15 +1,80 @@
 ---
 title: Introduction
-description: "What an Axiom component is, how components are organized with Atomic Design, and why."
+description: "What an Axiom component is, and how primitives, compositions and blocks fit together."
 ---
 
-A component is a piece of UI you can see: a button, a search bar, a keypad, an app bar. It renders something and exposes an API to control it. Like everything in Axiom, it is copied into your project, so the file is yours once it's there.
+A component is a piece of UI you can see: a button, a search bar, a settings row, an app bar. It renders something and exposes an API to control it. Like everything in Axiom, it is copied into your project, so the file is yours once it's there.
 
-Axiom has a lot of components, and they don't all work at the same scale. A button is used on its own. A search bar is built from an input and a button. A scaffold arranges a whole screen. To keep them easy to find and easy to compose, Axiom sorts them into levels borrowed from Atomic Design.
+Components come in three kinds, from the most generic to the most concrete:
 
-<AtomicLevels />
+```text
+Foundations → Primitives → Compositions → Blocks
+```
 
-## Atomic Design
+<ComponentLayers />
+
+| Kind                                   | What it is                                                              | Examples                                            |
+| -------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------- |
+| [Primitives](#how-primitives-are-organized) | Generic building blocks with an API meant to be reused in many screens | Button, Text, Icon, Input, Item, Card, AppBar, Tabs |
+| [Compositions](/docs/compositions)     | Concrete interfaces assembled from primitives, ready to use             | Product Card, Settings Item                         |
+| [Blocks](/docs/blocks)                 | Complete or near-complete sections of an app                            | Settings Section, onboarding, paywall               |
+
+Each kind is built from the ones before it. A primitive uses [foundations](/docs/foundations) (tokens, typography, the theme) and the [headless core](/docs/core). A composition uses primitives. A block uses primitives and compositions.
+
+## Primitives
+
+A primitive doesn't know what your app is about. `Card` is a surface with a header, media and a footer; it has no idea whether it will hold a product, a trip or a post. `Item` is a row with a leading slot, a title and a trailing slot; it can be a message, a contact or a setting.
+
+That generality is the point: one primitive covers many screens, and its props describe layout and states, not content. Primitives are sorted with Atomic Design, see [below](#how-primitives-are-organized).
+
+## Compositions
+
+A composition is a primitive, or a few of them, put to one concrete use. `Product Card` is a `Card` with a product image, a name, a price, a badge and an add-to-cart button. `Settings Item` is an `Item` with an icon, a label, a value and a chevron or a switch.
+
+Compositions are distributed code, not documentation snippets. Each one has its own page with a preview, and you install it like any other component:
+
+```npm
+npx axiom add settings-item
+```
+
+The CLI copies the composition and the primitives it uses. From there you change the file like anything else you own. Browse them in the [composition catalog](/docs/compositions).
+
+### Example or composition?
+
+Primitive pages also show code: "Navigation row", "Summary widget on a dashboard". Those are **examples**. They are not the same thing as compositions.
+
+|                  | Example                                         | Composition                                     |
+| ---------------- | ----------------------------------------------- | ----------------------------------------------- |
+| Purpose          | Shows how to use a primitive's API              | Gives you a finished interface to reuse         |
+| Where it lives   | In the primitive's page, as a snippet           | In the registry, with its own page              |
+| How you get it   | Read it, copy the lines you need                | `npx axiom add <name>`                          |
+| Has its own API  | No, it's a use of the primitive's props         | Yes: typed props, documented in a table         |
+
+When a pattern keeps coming back across apps and deserves its own props, it becomes a composition. Until then, it stays an example.
+
+## Blocks
+
+A block is a section of an app, or a whole screen: a settings group, a paywall, a sign-in form. It is built from primitives and compositions, uses realistic content and is meant to be adapted to your product.
+
+## How the kinds connect
+
+The same primitive can lead to many compositions, and a composition can end up in several blocks. Two chains show the idea:
+
+```text
+Card  →  Product Card   →  product grid (Commerce)
+Item  →  Settings Item  →  Settings Section
+```
+
+- [Card](/docs/atoms/card) → [Product Card](/docs/compositions/product-card) → a product grid in the planned [Commerce](/docs/blocks/commerce) blocks.
+- [Item](/docs/atoms/item) → [Settings Item](/docs/compositions/settings-item) → [Settings Section](/docs/blocks/settings-section).
+
+Each primitive page lists the compositions built with it, and each composition page links back to its primitives and forward to the blocks that use it.
+
+## How primitives are organized
+
+Axiom has a lot of primitives, and they don't all work at the same scale. A button is used on its own. A search bar is built from an input and a button. A scaffold arranges a whole screen. To keep them easy to find, primitives are sorted into levels borrowed from Atomic Design: atoms, molecules, organisms and templates. These levels only organize primitives. They are not the public hierarchy, which stays primitives, compositions and blocks.
+
+### Atomic Design
 
 Atomic Design is a methodology described by Brad Frost in [_Atomic Design_](https://atomicdesign.bradfrost.com/chapter-2/). It borrows its vocabulary from chemistry: atoms combine into molecules, and molecules combine into larger organisms. Applied to interfaces, it describes five stages.
 
@@ -26,42 +91,39 @@ Two points from the book matter for how Axiom uses it:
 - **It isn't a linear process.** You don't design every atom before building a screen. It's a mental model that lets you move between the abstract pieces and the concrete interface they produce.
 - **It isn't rigid dogma.** The names are a tool. Teams are encouraged to adapt the levels and the vocabulary to what they build.
 
-## How Axiom applies it
+### How Axiom applies it
 
-Axiom keeps the idea and adjusts the levels to a component registry for mobile apps.
+Axiom keeps the first four stages to sort its primitives:
 
-| Level                   | In Axiom                                                                                 | Examples                            |
-| ----------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------- |
-| [Atoms](/docs/atoms)         | The smallest units you use directly in a screen, each installed on its own               | Button, Input, Avatar, BottomSheet  |
-| [Molecules](/docs/molecules) | A few atoms forming one coherent function                                                | SearchBar, DatePicker, Attachment   |
-| [Organisms](/docs/organisms) | Components that own a full interaction, with their own layout, states and input handling | Passcode                            |
-| [Templates](/docs/templates) | Structures that frame a screen or a large area of it                                     | Scaffold, AppBar, BottomTabBar      |
-| Blocks                  | Complete screens or large sections, copied and adapted                                   | Onboarding, profile, authentication |
+| Level                        | In Axiom                                                                                 | Examples                           |
+| ---------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------- |
+| [Atoms](/docs/atoms)         | The smallest units you use directly in a screen, each installed on its own               | Button, Input, Avatar, BottomSheet |
+| [Molecules](/docs/molecules) | A few atoms forming one coherent function                                                | SearchBar, DatePicker, Attachment  |
+| [Organisms](/docs/organisms) | Components that own a full interaction, with their own layout, states and input handling | Passcode                           |
+| [Templates](/docs/templates) | Structures that frame a screen or a large area of it                                     | Scaffold, AppBar, BottomTabBar     |
 
 The differences with the book are deliberate:
 
-- **Blocks replace pages.** A page, in Atomic Design, is a template filled with real content. A registry can't ship your content, so the top level is a block: a complete screen with realistic content that you copy and rewrite for your app.
-- **An atom is the smallest piece you can use on its own.** A BottomSheet or a Dialog is more than a single HTML-like element, but in a mobile app you place it directly and nothing smaller is useful by itself. The pieces below that level have no look of their own and live in [core](/docs/core): Slot, Portal, Overlay, Tappable.
-- **Atomic Design only covers what you see.** Interaction logic that several components share, such as pull-to-refresh or long press, lives in [behaviors](/docs/behaviors). Recurring UX problems that combine components and behaviors, such as a search flow or loading states, live in [patterns](/docs/patterns).
+- **There are no pages.** A page, in Atomic Design, is a template filled with real content. A registry can't ship your content. The concrete end of Axiom is covered by compositions and blocks, which use realistic content that you rewrite for your app.
+- **An atom is the smallest piece you can use on its own.** A BottomSheet or a Dialog is more than a single HTML-like element, but in a mobile app you place it directly and nothing smaller is useful by itself. The pieces below that level have no look of their own and live in the [headless core](/docs/core): Slot, Portal, Overlay, Tappable.
+- **Atomic Design only covers what you see.** Interaction logic that several components share, such as pull-to-refresh or long press, lives in [behaviors](/docs/behaviors). Recurring UX problems that combine components and behaviors, such as a search flow or loading states, live in [patterns](/docs/patterns). They are a separate axis, not a level of the component hierarchy.
 
-When a component doesn't fit a level cleanly, it goes where its responsibility is best described. The levels are a guide, not a rule to argue about.
+When a primitive doesn't fit a level cleanly, it goes where its responsibility is best described. The levels are a guide, not a rule to argue about.
 
-## Why Atomic Design
+## Why this structure
 
-**A shared vocabulary.** "Molecule" or "template" tells you the scale of a component before you open it. Contributors and users look in the same place for the same thing.
+**A shared vocabulary.** "Composition" or "block" tells you how concrete a component is before you open it. "Molecule" or "template" tells you the scale of a primitive. Contributors and users look in the same place for the same thing.
 
-**Composition over configuration.** Each level is built from the ones below. When a new need appears, the first answer is to combine existing pieces rather than add props to a large component.
+**Composition over configuration.** When a new need appears, the first answer is to combine existing primitives into a composition rather than add props to a large primitive. `Card` doesn't get a `price` prop; `Product Card` exists instead.
 
-**One-way dependencies.** A higher level may import a lower one, never the reverse. An atom doesn't know about the molecules that use it, so you can change or remove a molecule without breaking an atom.
+**One-way dependencies.** Blocks import compositions and primitives, compositions import primitives, never the reverse. A primitive doesn't know about the compositions that use it, so you can change or remove a composition without breaking a primitive.
 
-**Progressive adoption.** Because dependencies only go down, `npx axiom add search-bar` copies the search bar and the atoms it needs, and nothing else. You can start with one atom and climb as your app grows.
-
-```text
-Foundations → Core → Atoms → Molecules → Organisms → Templates → Blocks
-```
+**Progressive adoption.** Because dependencies only go down, `npx axiom add settings-section` copies the block, the Settings Item composition and the primitives they need, and nothing else. You can start with one primitive and add more concrete pieces as your app grows.
 
 ## Related
 
+- [Compositions](/docs/compositions)
+- [Blocks](/docs/blocks)
 - [Atoms](/docs/atoms)
 - [Foundations](/docs/foundations)
 - [Core](/docs/core)

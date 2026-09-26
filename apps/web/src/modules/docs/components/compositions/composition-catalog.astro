@@ -1,0 +1,92 @@
+---
+// The full composition catalog with category filters.
+// Categories without an entry stay in the bar with a zero count and show an empty state, so the taxonomy is visible.
+// Filtering is a small vanilla script: it toggles `hidden` on the cards from their `data-categories`.
+import CompositionGrid from './composition-grid.astro';
+import { compositionCategories, compositions } from '@docs/data/compositions';
+
+const filters = [
+  { id: 'all', label: 'All', count: compositions.length },
+  ...compositionCategories.map((category) => ({
+    ...category,
+    count: compositions.filter((c) => c.categories.includes(category.id)).length,
+  })),
+];
+---
+
+<div class="not-prose my-6" data-composition-catalog>
+  <div class="flex flex-wrap gap-1.5" role="group" aria-label="Filter by category">
+    {filters.map((filter) => (
+      <button
+        type="button"
+        class="cmp-filter inline-flex items-center gap-1.5 border px-2.5 py-1 text-xs"
+        data-filter={filter.id}
+        data-label={filter.label}
+        aria-pressed={filter.id === 'all' ? 'true' : 'false'}
+      >
+        {filter.label}
+        <span class="tabular-nums opacity-60">{filter.count}</span>
+      </button>
+    ))}
+  </div>
+
+  <CompositionGrid />
+
+  <p class="border border-dashed px-4 py-8 text-center text-sm text-fd-muted-foreground" data-empty hidden>
+    No composition in <span data-empty-label></span> yet.
+  </p>
+</div>
+
+<style>
+  [data-composition-catalog] :global([hidden]) {
+    display: none !important;
+  }
+
+  .cmp-filter[aria-pressed='true'] {
+    background: var(--color-fd-foreground);
+    border-color: var(--color-fd-foreground);
+    color: var(--color-fd-background);
+  }
+
+  .cmp-filter[aria-pressed='false'] {
+    color: var(--color-fd-muted-foreground);
+  }
+
+  .cmp-filter[aria-pressed='false']:hover {
+    color: var(--color-fd-foreground);
+  }
+</style>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-composition-catalog]').forEach((catalog) => {
+      if (catalog.dataset.ready) return;
+      catalog.dataset.ready = 'true';
+
+      const buttons = catalog.querySelectorAll<HTMLButtonElement>('[data-filter]');
+      const cards = catalog.querySelectorAll<HTMLElement>('[data-composition-card]');
+      const grid = catalog.querySelector<HTMLElement>('[data-composition-grid]');
+      const empty = catalog.querySelector<HTMLElement>('[data-empty]');
+      const emptyLabel = catalog.querySelector<HTMLElement>('[data-empty-label]');
+
+      const apply = (filter: string, label: string) => {
+        let visible = 0;
+        cards.forEach((card) => {
+          const match = filter === 'all' || (card.dataset.categories ?? '').split(' ').includes(filter);
+          card.hidden = !match;
+          if (match) visible++;
+        });
+        if (grid) grid.hidden = visible === 0;
+        if (empty) empty.hidden = visible > 0;
+        if (emptyLabel) emptyLabel.textContent = label;
+        buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === filter)));
+      };
+
+      buttons.forEach((button) =>
+        button.addEventListener('click', () => apply(button.dataset.filter ?? 'all', button.dataset.label ?? '')),
+      );
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

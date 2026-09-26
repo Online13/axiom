@@ -1,0 +1,63 @@
+---
+// Small in-context preview of a composition, drawn with the `.ax-*` classes of preview.css at real iOS sizes.
+// It mirrors the registry implementation: ProductCard is an outlined Card, SettingsItem an Item with a muted Icon.
+// CompositionCard shrinks it into its preview panel; it follows the scheme of its `data-ax-preview` parent.
+import Glyph from '@docs/components/preview/glyph.astro';
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+
+const products = [
+  { title: 'Chambray shirt', subtitle: 'Indigo, 3 colors', price: '$48.00', image: 'chambray-shirt', badge: 'New' },
+  { title: 'City daypack', subtitle: 'Navy, 18 L', price: '$72.00', image: 'daypack' },
+];
+---
+
+{slug === 'product-card' && (
+  <div class="ax-row" style={{ gap: '12px', padding: '16px', alignItems: 'stretch' }}>
+    {products.map((product) => (
+      <div class="ax-card ax-grow" data-variant="outlined" style={{ flexBasis: '0px' }}>
+        <div class="ax-media" style={{ height: '104px', position: 'relative' }}>
+          <img src={`/images/products/${product.image}.webp`} alt="" loading="lazy" />
+          {product.badge && (
+            <span class="ax-badge" data-variant="highlight" style={{ position: 'absolute', top: '12px', left: '12px' }}>{product.badge}</span>
+          )}
+        </div>
+        <div class="ax-stack" data-gap="4" style={{ padding: '12px 12px 0' }}>
+          <span class="ax-headline ax-truncate">{product.title}</span>
+          <span class="ax-subhead ax-muted ax-truncate">{product.subtitle}</span>
+          <span class="ax-semibold" style={{ paddingTop: '4px' }}>{product.price}</span>
+        </div>
+        <div style={{ padding: '12px' }}>
+          <span class="ax-btn" data-block>Add to cart</span>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+{slug === 'settings-item' && (
+  <div class="ax-list" data-variant="plain" style={{ marginTop: '12px' }}>
+    <div class="ax-item">
+      <Glyph name="bell" class="ax-muted" />
+      <span class="ax-item-title ax-grow">Notifications</span>
+      <span class="ax-switch" data-checked />
+    </div>
+    <div class="ax-item">
+      <Glyph name="globe" class="ax-muted" />
+      <span class="ax-item-title ax-grow">Language</span>
+      <span class="ax-item-trailing">English<Glyph name="chevron-right" size={18} /></span>
+    </div>
+    <div class="ax-item">
+      <Glyph name="lock" class="ax-muted" />
+      <div class="ax-item-content">
+        <span class="ax-item-title">Privacy</span>
+        <span class="ax-item-desc">Who can see your profile</span>
+      </div>
+      <span class="ax-item-trailing"><Glyph name="chevron-right" size={18} /></span>
+    </div>
+  </div>
+)}

@@ -40,9 +40,15 @@ export type Layer =
 	| "molecules"
 	| "organisms"
 	| "templates"
+	| "compositions"
 	| "blocks";
 
-export type AliasName = "theme" | "core" | "hooks" | "components" | "blocks";
+/**
+ * `components` holds the primitives (typography and the atoms → templates layers, organized with
+ * Atomic Design). `compositions` are ready-made assemblies of primitives; `blocks` are complete sections.
+ */
+export type AliasName =
+	"theme" | "core" | "hooks" | "components" | "compositions" | "blocks";
 
 export type Aliases = Record<AliasName, string>;
 
@@ -51,6 +57,7 @@ export const DEFAULT_ALIASES: Aliases = {
 	core: "@/components/core",
 	hooks: "@/hooks",
 	components: "@/components/ui",
+	compositions: "@/components/compositions",
 	blocks: "@/components/blocks",
 };
 
@@ -72,6 +79,7 @@ export const FOLDERED_LAYERS: ReadonlySet<Layer> = new Set<Layer>([
 	"molecules",
 	"organisms",
 	"templates",
+	"compositions",
 	"blocks",
 ]);
 
@@ -97,6 +105,7 @@ export const ALIAS_OF: Record<Layer, AliasName> = {
 	molecules: "components",
 	organisms: "components",
 	templates: "components",
+	compositions: "compositions",
 	blocks: "blocks",
 };
 

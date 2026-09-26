@@ -21,7 +21,7 @@ Sets up a project for Axiom:
 
 1. Asks for the styling tool: `stylesheet`, `unistyles`, `nativewind` or `uniwind`. Only the ones the registry has a variant for are offered.
 2. Checks that `tsconfig.json` resolves the aliases, and offers to add the missing `paths` entries (see [Aliases](#aliases)).
-3. Copies the foundations (theme, tokens, `light` / `dark`) and the core primitives.
+3. Copies the foundations (theme, tokens, `light` / `dark`) and the headless core.
 4. Installs the styling dependency and what the copied files need.
 5. Writes `axiom.json`, with everything it copied listed in `items`.
 
@@ -38,7 +38,7 @@ Nothing is copied before step 2 passes: a project with half its aliases resolved
 Components are imported through an alias, so `init` resolves each one through the `paths` of your `tsconfig.json` before copying anything. When an alias doesn't resolve, it shows the entry it would add:
 
 ```txt title="Terminal" noCopy
-tsconfig.json doesn't resolve @/theme, @/components/core, @/hooks, @/components/ui, @/components/blocks.
+tsconfig.json doesn't resolve @/theme, @/components/core, @/hooks, @/components/ui, @/components/compositions, @/components/blocks.
 Add "@/*": ["./src/*"] to its "compilerOptions.paths"? [Y]es [n]o
 ```
 

@@ -1,8 +1,8 @@
 {
 	"title": "Blocks",
-	"root": true,
 	"pages": [
-		"index",
+		"settings-section",
+		"---Planned---",
 		"authentication",
 		"onboarding",
 		"monetization",

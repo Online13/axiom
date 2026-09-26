@@ -24,6 +24,7 @@ description: "Every key of axiom.json: styling, icons, navigation, aliases and i
 		"core": "@/components/core",
 		"hooks": "@/hooks",
 		"components": "@/components/ui",
+		"compositions": "@/components/compositions",
 		"blocks": "@/components/blocks"
 	},
 	"items": [
@@ -115,19 +116,21 @@ Changing `navigation` only affects items copied afterwards. Run `add use-overlay
   "core": "@/components/core",
   "hooks": "@/hooks",
   "components": "@/components/ui",
+  "compositions": "@/components/compositions",
   "blocks": "@/components/blocks"
 }
 ```
 
 Each alias is used twice: the CLI copies a layer into the folder the alias points to, and copied files import that layer through the alias.
 
-| Alias        | Layers                                             | Default               |
-| ------------ | -------------------------------------------------- | --------------------- |
-| `theme`      | foundations                                        | `@/theme`             |
-| `core`       | core                                               | `@/components/core`   |
-| `hooks`      | hooks                                              | `@/hooks`             |
-| `components` | typography, atoms, molecules, organisms, templates | `@/components/ui`     |
-| `blocks`     | blocks                                             | `@/components/blocks` |
+| Alias          | Layers                                                                  | Default                     |
+| -------------- | ----------------------------------------------------------------------- | --------------------------- |
+| `theme`        | foundations                                                             | `@/theme`                   |
+| `core`         | headless core                                                           | `@/components/core`         |
+| `hooks`        | hooks                                                                   | `@/hooks`                   |
+| `components`   | primitives (typography, atoms, molecules, organisms, templates)         | `@/components/ui`           |
+| `compositions` | compositions                                                            | `@/components/compositions` |
+| `blocks`       | blocks                                                                  | `@/components/blocks`       |
 
 Every key is optional. A missing key uses its default.
 
@@ -200,7 +203,7 @@ Expo resolves `tsconfig.json` paths at runtime by default. A React Native projec
 
 The Axiom items copied into the project, by name, sorted alphabetically.
 
-- `init` adds the foundations and core primitives it copies.
+- `init` adds the foundations and core pieces it copies.
 - `add` adds the component you asked for and every internal dependency it copied. `add bottom-sheet` also adds `portal` and `overlay`.
 - `fetch` copies every item in the list. Files already in your project are skipped. See [fetch](/docs/cli#fetch).
 

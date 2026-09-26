@@ -9,7 +9,7 @@ description: "What ships first, and what comes after."
 
 The specification is done: every foundation, component, behavior and pattern is written down, with its API, its states and its tokens. Phase 1 turns that into code.
 
-Every component layer of this phase now runs in code: tokens and theme, the four core primitives, Title and Text, the 33 atoms, the three molecules, Passcode and the five templates. All 45 entries with styling variants ship in both `stylesheet` and `unistyles`, with demo screens for each. What is left of the phase is the Tailwind variants, standalone mode and the CI.
+Every primitive of this phase now runs in code, along with tokens, theme and the six core pieces: Title and Text, the 33 atoms, the three molecules, Passcode and the five templates. All 45 entries with styling variants ship in both `stylesheet` and `unistyles`, with demo screens for each. What is left of the phase is the Tailwind variants, standalone mode, the theme builder and the CI. The first compositions and the first block are in progress.
 
 <PhaseChecklist />
 
@@ -27,7 +27,7 @@ Done. The whole system exists on paper first — [foundations](/docs/foundations
 
 ### Standalone mode
 
-Not started, and important enough to land in this phase. Today a component arrives with everything it stands on: ask for Tab and you also get the theme, the tokens and the core primitives it imports. That is the right default for an app built on Axiom, and the wrong one for an app that already has its own design system and wants a single component out of the catalog.
+Not started, and important enough to land in this phase. Today a component arrives with everything it stands on: ask for Tab and you also get the theme, the tokens and the headless core it imports. That is the right default for an app built on Axiom, and the wrong one for an app that already has its own design system and wants a single component out of the catalog.
 
 Standalone mode breaks that chain. `axiom add tab --standalone` writes one self-contained file: token values resolved inline, no `useTheme`, no import outside React Native and the component's own file. Nothing else is added to the project.
 
@@ -40,28 +40,33 @@ It belongs to phase 1 because it is a registry concern before a CLI one. Every e
 | Group                            | Items                                                                                | State   |
 | -------------------------------- | ------------------------------------------------------------------------------------ | ------- |
 | [Foundations](/docs/foundations) | Tokens, ThemeColors, component tokens, Theme, `light` / `dark`, `components(colors, tokens)` | Shipped |
-| [Core](/docs/core)               | Slot, Portal / PortalHost, Overlay, Tappable                                         | Shipped |
+| [Core](/docs/core)               | Slot, Portal / PortalHost, Overlay, OverlayStack, Tappable, Haptics                  | Shipped |
 | [Hooks](/docs/hooks)             | useControllableState, useOverlayBackHandler, useRefreshControl                       | Shipped |
-| Typography                       | [Title](/docs/atoms/title), [Text](/docs/atoms/text)                                 | Shipped |
-| [Atoms](/docs/atoms)             | All 33 atoms                                                                         | Shipped |
-| [Molecules](/docs/molecules)     | SearchBar, Attachment, DatePicker                                                    | Shipped |
-| [Organisms](/docs/organisms)     | Passcode                                                                             | Shipped |
-| [Templates](/docs/templates)     | AppBar, BottomTabBar, Tab, ToolBar, Scaffold                                         | Shipped |
+| Primitives: typography           | [Title](/docs/atoms/title), [Text](/docs/atoms/text)                                 | Shipped |
+| Primitives: [atoms](/docs/atoms) | All 33 atoms                                                                         | Shipped |
+| Primitives: [molecules](/docs/molecules) | SearchBar, Attachment, DatePicker                                            | Shipped |
+| Primitives: [organisms](/docs/organisms) | Passcode                                                                     | Shipped |
+| Primitives: [templates](/docs/templates) | AppBar, BottomTabBar, Tab, ToolBar, Scaffold                                 | Shipped |
+| [Compositions](/docs/compositions) | ProductCard, SettingsItem                                                          | In progress |
+| [Blocks](/docs/blocks)           | [SettingsSection](/docs/blocks/settings-section)                                     | In progress |
 
 `useOverlayBackHandler` was not in the original plan: BottomSheet, Dialog and Menu need to close on a back gesture instead of leaving the screen, so the hook ships in three versions — `react-native`, `expo-router` and `react-navigation` — and `add` picks one from the project's `package.json`.
+
+Two core entries were added along the way. OverlayStack lets BottomSheet, Dialog and Menu know what is open on top of them, so a sheet scales down when another opens over it. Haptics is a single `haptic()` function that switches, pickers and long presses call; it does nothing until the app [connects its own library](/docs/integrations/haptics).
 
 ### Tooling
 
 - `registry.json` — shipped, 55 entries.
-- CLI — `add` and `init` are shipped. `add` resolves internal dependencies, icon source and navigation, and has a `--watch` mode; `init` picks the styling, resolves the aliases against `tsconfig.json`, copies the foundations and core primitives, installs what they need and writes `axiom.json`. `fetch` is still to write.
+- CLI — `add` and `init` are shipped. `add` resolves internal dependencies, icon source and navigation, and has a `--watch` mode; `init` picks the styling, resolves the aliases against `tsconfig.json`, copies the foundations and the headless core, installs what they need and writes `axiom.json`. `fetch` is still to write.
 - Standalone mode — not started. A theme-free form per registry entry and variant, then `add --standalone` to write it.
-- Demo apps — shipped for the `stylesheet` and `unistyles` variants: one screen per documented item, in 9 groups from Foundations to Templates, and a light / dark switch.
+- Demo apps — shipped for the `stylesheet` and `unistyles` variants: one screen per documented item, in 9 groups from Foundations to Templates, and a light / dark switch. The NativeWind and Uniwind apps are scaffolded and fill in with the `tailwind` variant.
+- Theme builder — in progress, dev-only for now: role overrides, presets, app and component previews, Google Fonts, and an export an agent can apply. Public once the export matches what `init` writes.
 - Foundations screen — shipped: colors, typography, spacing, radius, icons, touch targets, states.
 - CI — not started. Typecheck per variant, props parity between variants, lint, tests, builds.
 
 ## Phase 2: blocks
 
-Complete screens built with Axiom components, once the system is stable: [authentication](/docs/blocks/authentication), [onboarding](/docs/blocks/onboarding), [monetization](/docs/blocks/monetization), [profile](/docs/blocks/profile) and [commerce](/docs/blocks/commerce).
+Complete sections of an app, built from primitives and compositions, once the system is stable. [Settings section](/docs/blocks/settings-section) comes first, in phase 1; then [authentication](/docs/blocks/authentication), [onboarding](/docs/blocks/onboarding), [monetization](/docs/blocks/monetization), [profile](/docs/blocks/profile) and [commerce](/docs/blocks/commerce).
 
 ## Later
 

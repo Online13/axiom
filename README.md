@@ -17,10 +17,10 @@ Axiom covers each level of that work:
 Component → Behavior → Pattern → Experience
 ```
 
-- **Components.** Reusable UI pieces, organized with Atomic Design.
+- **Components.** Primitives (generic building blocks, organized with Atomic Design) and compositions (ready-made interfaces assembled from them).
 - **Behaviors.** Interaction logic such as scroll, gestures and loading states.
 - **Patterns.** Components and behaviors combined to solve a recurring mobile UX problem.
-- **Blocks.** Larger compositions that make up a real part of an app.
+- **Blocks.** Complete sections of an app, built from primitives and compositions.
 
 ## Why Axiom
 

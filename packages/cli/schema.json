@@ -45,12 +45,17 @@
 				},
 				"components": {
 					"$ref": "#/definitions/alias",
-					"description": "Typography, atoms, molecules, organisms and templates layers.",
+					"description": "Primitives: typography, atoms, molecules, organisms and templates layers.",
 					"default": "@/components/ui"
+				},
+				"compositions": {
+					"$ref": "#/definitions/alias",
+					"description": "Compositions layer: ready-made assemblies of primitives.",
+					"default": "@/components/compositions"
 				},
 				"blocks": {
 					"$ref": "#/definitions/alias",
-					"description": "Blocks layer.",
+					"description": "Blocks layer: complete sections.",
 					"default": "@/components/blocks"
 				}
 			}

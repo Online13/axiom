@@ -1,0 +1,166 @@
+---
+title: Settings Item
+description: "Settings row with an icon, a label, a value and a chevron or a switch, built from Item."
+---
+
+<PhonePreview>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Settings
+	</div>
+	<div class="ax-list" data-variant="plain">
+		<div class="ax-item">
+			<Glyph name="bell" class="ax-muted" />
+			<span class="ax-item-title ax-grow">Notifications</span>
+			<span class="ax-switch" data-checked />
+		</div>
+		<div class="ax-item">
+			<Glyph name="moon" class="ax-muted" />
+			<div class="ax-item-content">
+				<span class="ax-item-title">Dark mode</span>
+				<span class="ax-item-desc">Follows the system at night</span>
+			</div>
+			<span class="ax-switch" />
+		</div>
+		<div class="ax-item">
+			<Glyph name="globe" class="ax-muted" />
+			<span class="ax-item-title ax-grow">Language</span>
+			<span class="ax-item-trailing">
+				English
+				<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+		<div class="ax-item">
+			<Glyph name="lock" class="ax-muted" />
+			<span class="ax-item-title ax-grow">Privacy</span>
+			<span class="ax-item-trailing">
+				<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+		<div class="ax-item" data-state="disabled">
+			<Glyph name="download" class="ax-disabled" />
+			<span class="ax-item-title ax-grow">Offline downloads</span>
+			<span class="ax-item-trailing">
+				Premium
+				<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add settings-item
+```
+
+Also copies: [`item`](/docs/atoms/item), [`icon`](/docs/atoms/icon), [`switch`](/docs/atoms/switch), [`text`](/docs/atoms/text), the [`use-controllable-state`](/docs/hooks/use-controllable-state) hook and their dependencies. The file lands in `components/compositions/settings-item.tsx`.
+
+Requires the `chevron-right` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need). Settings Item brings no tokens of its own: colors come from [Item](/docs/atoms/item) and [Switch](/docs/atoms/switch).
+
+## Usage
+
+```tsx
+import { SettingsItem } from "@/components/compositions/settings-item";
+
+<SettingsItem
+	icon="bell"
+	title="Notifications"
+	trailing="switch"
+	checked={notifications}
+	onCheckedChange={setNotifications}
+/>
+
+<SettingsItem
+	icon="globe"
+	title="Language"
+	value="English"
+	onPress={() => router.push("/settings/language")}
+/>
+```
+
+Group rows with the [Settings Section](/docs/blocks/settings-section) block, which adds a title, a footer and the separators between rows.
+
+## Props
+
+| Prop              | Type                      | Default     | Description                                                                                                                        |
+| ----------------- | ------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `title`           | `string`                  | —           | Label of the setting.                                                                                                              |
+| `description`     | `string`                  | —           | Second line under the title, up to two lines. Read with the title by screen readers.                                               |
+| `icon`            | `IconName`                | —           | Leading [Icon](/docs/atoms/icon), in the muted color.                                                                              |
+| `value`           | `string`                  | —           | Current value in muted text, before the chevron or the switch: `"English"`, `"On"`.                                                |
+| `trailing`        | `'chevron' \| 'switch'`   | `'chevron'` | `chevron` for a row that opens a screen. `switch` for a setting toggled in place.                                                  |
+| `checked`         | `boolean`                 | —           | State of the switch. Without it, the switch manages its own state.                                                                 |
+| `onCheckedChange` | `(checked: boolean) => void` | —        | Called when the switch changes.                                                                                                    |
+| `onPress`         | `() => void`              | —           | Called when the row is pressed. With `trailing="switch"` and no `onPress`, pressing anywhere on the row toggles the switch, with a light haptic. |
+| `disabled`        | `boolean`                 | `false`     | Blocks presses and uses the disabled color for the icon, the value and the switch.                                                 |
+
+## Accessibility
+
+A switch row is announced as a switch with its checked state: the row carries the role, and the switch inside is hidden from screen readers so it isn't read twice. A chevron row is a regular pressable row.
+
+## Use cases
+
+### Row that opens a screen
+
+The default trailing is a chevron. `value` shows the current choice before it.
+
+<PhonePreview size="sm">
+	<div class="ax-list" data-variant="plain" style={{ marginTop: "12px" }}>
+		<div class="ax-item">
+			<Glyph name="clock" class="ax-muted" />
+			<span class="ax-item-title ax-grow">Quiet hours</span>
+			<span class="ax-item-trailing">
+				22:00 – 07:00
+				<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+		<div class="ax-item">
+			<Glyph name="sun" class="ax-muted" />
+			<span class="ax-item-title ax-grow">Appearance</span>
+			<span class="ax-item-trailing">
+				Automatic
+				<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<SettingsItem
+	icon="clock"
+	title="Quiet hours"
+	value="22:00 – 07:00"
+	onPress={() => router.push("/settings/quiet-hours")}
+/>
+```
+
+### Uncontrolled switch
+
+Leave out `checked` to let the row keep its own state, and listen with `onCheckedChange`.
+
+```tsx
+<SettingsItem
+	icon="mail"
+	title="Weekly summary"
+	description="A recap of your activity every Monday"
+	trailing="switch"
+	onCheckedChange={(on) => api.updatePreferences({ weeklySummary: on })}
+/>
+```
+
+## Built with
+
+- [Item](/docs/atoms/item): the pressable row, its leading, content and trailing slots.
+- [Icon](/docs/atoms/icon): the leading icon and the chevron.
+- [Switch](/docs/atoms/switch): the trailing toggle.
+- [Text](/docs/atoms/text): the value.
+- [useControllableState](/docs/hooks/use-controllable-state): controlled or uncontrolled switch state.
+
+## Used in
+
+- [Settings Section](/docs/blocks/settings-section): rows grouped under a title, with a footer.
+
+## Related
+
+- [Compositions](/docs/compositions)
+- [OptionItem](/docs/atoms/option-item): a row for picking one value in a list.

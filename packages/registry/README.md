@@ -13,13 +13,18 @@ registry/
     └── tailwind/<item>.tsx
 ```
 
-Layers: `foundations`, `core`, `hooks`, `typography`, `atoms`, `molecules`, `organisms`, `templates`, `blocks`.
+Layers, from the bottom up:
+
+- **foundations** (`foundations`, `core`, `hooks`): tokens, theme, and the behavior every component builds on;
+- **primitives** (`typography`, `atoms`, `molecules`, `organisms`, `templates`): the components. Atomic Design organizes them here, in the folders and the `type` of each item; a project imports them all from `@/components/ui`;
+- **compositions** (`compositions`): ready-made assemblies of primitives for a common need, like a product card or a settings row. They reuse the primitives' tokens and bring none of their own;
+- **blocks** (`blocks`): complete sections built from compositions and primitives, like a settings section.
 
 ## Writing code for the registry
 
 Write each file as it will look **in the user's project**, not as it sits here:
 
-- import other items through the default aliases (`@/theme`, `@/components/core`, `@/hooks`, `@/components/ui`, `@/components/blocks`);
+- import other items through the default aliases (`@/theme`, `@/components/core`, `@/hooks`, `@/components/ui`, `@/components/compositions`, `@/components/blocks`);
 - import files of the same item with a relative path to where they are in the registry (`../use-switch`). The CLI turns it into `./use-switch`.
 
 ### Component tokens

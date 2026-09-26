@@ -40,7 +40,7 @@ Then it:
 
 - checks that your `tsconfig.json` resolves the aliases, and offers to add the missing `paths` entries;
 - copies the foundations: theme contracts, default tokens, `light` and `dark` themes;
-- copies the core primitives;
+- copies the headless core;
 - installs the styling dependency when there is one (`react-native-unistyles`, `nativewind` or `uniwind`). This happens once, not for every component.
 
 Pass `--no-install` to print the install command instead of running it.
@@ -56,6 +56,7 @@ Your choices are saved in a config file at the root of the project:
 		"core": "@/components/core",
 		"hooks": "@/hooks",
 		"components": "@/components/ui",
+		"compositions": "@/components/compositions",
 		"blocks": "@/components/blocks"
 	}
 }
@@ -106,7 +107,7 @@ Copy the files for your variant into your project, install the listed packages, 
 	<Card title="Foundations" href="/docs/foundations">
 		Customize the theme and tokens.
 	</Card>
-	<Card title="Atoms" href="/docs/atoms">
+	<Card title="Primitives" href="/docs/components">
 		Browse the components.
 	</Card>
 </Cards>

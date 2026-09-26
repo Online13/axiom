@@ -1,0 +1,28 @@
+---
+title: Compositions
+description: "Concrete interfaces built from primitives, ready to install and change."
+---
+
+A composition is a concrete interface assembled from [primitives](/docs/components#primitives): a product card from `Card`, a settings row from `Item`. Primitives stay generic; a composition commits to one use, with props named after it (`price`, `trailing="switch"`).
+
+Compositions are real components in the registry. Each one has a preview and a typed API, and installs with the CLI along with the primitives it needs:
+
+```npm
+npx axiom add product-card
+```
+
+They are not the snippets you see in primitive pages. Those are examples of an API; a composition is a component you reuse. See [Example or composition?](/docs/components#example-or-composition).
+
+## Catalog
+
+<CompositionCatalog />
+
+## Where compositions fit
+
+```text
+Primitives  →  Compositions   →  Blocks
+Card        →  Product Card   →  product grid (planned)
+Item        →  Settings Item  →  Settings Section
+```
+
+A composition depends on primitives only. [Blocks](/docs/blocks) use compositions and primitives to build a section of an app.

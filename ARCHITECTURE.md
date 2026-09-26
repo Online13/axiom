@@ -7,18 +7,24 @@ Axiom is in early development. This document describes the intended structure of
 ## System overview
 
 ```text
-Foundations → Components → Behaviors → Patterns → Blocks
+Foundations → Primitives → Compositions → Blocks
 ```
 
-| Layer       | Role                                                              |
-| ----------- | ----------------------------------------------------------------- |
-| Foundations | Theme, tokens and shared low-level primitives                     |
-| Components  | Reusable UI pieces, organized with Atomic Design                  |
-| Behaviors   | Reusable interaction logic, independent of a specific look        |
-| Patterns    | Components and behaviors combined to solve a recurring UX problem |
-| Blocks      | Compositions that make up a significant part of a real app        |
+| Layer        | Role                                                                     |
+| ------------ | ------------------------------------------------------------------------ |
+| Foundations  | Theme, tokens and the headless core                                      |
+| Primitives   | Generic, reusable UI building blocks, organized with Atomic Design       |
+| Compositions | Ready-made interfaces assembled from primitives, such as a product card  |
+| Blocks       | Complete or nearly complete sections of an app, such as a settings section |
 
-Atomic Design organizes the UI elements (components and blocks). It doesn't describe behaviors or patterns.
+Behaviors and patterns are a second axis: they describe interaction, not UI elements.
+
+| Layer     | Role                                                                          |
+| --------- | ----------------------------------------------------------------------------- |
+| Behaviors | Reusable interaction logic, independent of a specific look                    |
+| Patterns  | Primitives, compositions and behaviors combined to solve a recurring UX problem |
+
+Atomic Design only organizes the primitives. It doesn't describe compositions, blocks, behaviors or patterns.
 
 The mathematical vocabulary used in Axiom's name and presentation is branding. It doesn't define the technical structure.
 
@@ -30,7 +36,7 @@ Foundations hold everything global that other layers read from:
 - the semantic theme: color roles, with `light` and `dark` themes
 - typography primitives
 - component-level tokens
-- core primitives shared by many components, such as slots, portals, overlays and pressable surfaces
+- the headless core shared by many components, such as slots, portals, overlays and pressable surfaces
 
 Tokens are split into three levels:
 
@@ -40,7 +46,9 @@ raw tokens → semantic tokens → component tokens
 
 Raw tokens are values with no meaning attached. Semantic tokens give them a role, such as a surface or a primary color. Component tokens map those roles to a specific component. A component reads its own tokens, so an app can restyle it without editing every file.
 
-## Atomic Design
+## Primitives
+
+Primitives are the generic building blocks: Button, Text, Input, Item, Card, App Bar, Scaffold. They are reusable, composable and fairly neutral visually. Inside this layer, Atomic Design sorts them by scale:
 
 | Level     | Role                                                                                |
 | --------- | ----------------------------------------------------------------------------------- |
@@ -48,13 +56,12 @@ Raw tokens are values with no meaning attached. Semantic tokens give them a role
 | Molecules | A few atoms forming one coherent UI function, such as a search bar                  |
 | Organisms | Complex components that own a full interaction, such as a passcode entry            |
 | Templates | Structures that organize a screen or a large area, such as an app bar or a scaffold |
-| Blocks    | Complete screens or large sections meant to be adapted, such as an onboarding flow  |
 
 Use this classification as a guide. When an element doesn't fit cleanly, pick the level that best describes its responsibility and explain the choice in the pull request.
 
 ## Components
 
-A component is a reusable UI piece or structure. It renders something and exposes an API to control it.
+A component is a reusable UI piece or structure: a primitive, a composition or a block. It renders something and exposes an API to control it.
 
 A component may include the interaction it needs to be usable, such as press feedback. Interaction logic that several unrelated components could share belongs in a behavior.
 
@@ -71,15 +78,21 @@ Examples of the kind of logic this layer covers:
 
 These are illustrations of the layer, not a list of what's available.
 
+## Compositions
+
+A composition is a concrete interface assembled from primitives: a product card built on Card, a settings item built on Item. It adds no new abstraction of its own. It is a ready-made way to combine existing primitives, distributed like any other item so it can be installed, copied and changed.
+
+A composition is not a documentation example. An example shows how to use an API. A composition is reusable code that Axiom ships.
+
 ## Patterns
 
 A pattern intentionally combines components and behaviors to solve a recurring mobile UX problem. Examples are code verification, swipe actions on a list row, or a selection mode.
 
-A pattern is defined by the problem it solves. A pattern composes existing pieces and doesn't reimplement them. Depending on its size, a pattern can end up shipped as an organism, a template or a block.
+A pattern is defined by the problem it solves. A pattern composes existing pieces and doesn't reimplement them. Depending on its size, a pattern can end up shipped as a primitive, a composition, a block or a behavior.
 
 ## Blocks
 
-Blocks are the highest level. A block is a composition that makes up a meaningful part of a real app: an authentication flow, an onboarding sequence, a profile screen.
+Blocks are the highest level. A block assembles primitives and compositions into a complete or nearly complete section of a real app: a settings section, a checkout summary, a profile header. Each block has one clearly identifiable responsibility.
 
 Blocks are copied into the app and adapted. They use the layers below and add no new primitives of their own.
 
@@ -92,7 +105,9 @@ Blocks
   ↓
 Patterns
   ↓
-Behaviors, Components
+Compositions
+  ↓
+Behaviors, Primitives
   ↓
 Foundations
 ```

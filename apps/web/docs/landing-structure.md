@@ -30,17 +30,19 @@
     → PAS FULL SCREEN
     → ~55–70vh
 
-    “Components are only the beginning.”
+    “From primitives to real interfaces.”
 
-    Primitive
-        ↓
-    Component
-        ↓
-    Behavior
-        ↓
-    Pattern
-        ↓
-    Experience
+    Button ─┐
+    Avatar ─┼──→ Profile Item ───→ Profile Header
+    Item ───┘
+
+    Primitive → Composition → Block
+
+    Une primitive résout un problème local.
+    Une composition assemble des primitives en UI prête à l'emploi.
+    Un block assemble le tout en section complète d'app.
+    Note discrète : behaviors et patterns transforment un block
+    en expérience (axe d'interaction séparé, pas un 4e niveau).
 
     Section de transition conceptuelle.
     Très peu de texte, beaucoup d'espace.
@@ -53,15 +55,16 @@
 
     Foundations
         ↓
-    Atoms
+    Primitives      (Atoms · Molecules · Organisms · Templates)
         ↓
-    Molecules
+    Compositions    (Product Card · Settings Item · Profile Item)
         ↓
-    Organisms
-        ↓
-    Templates
-        ↓
-    Blocks
+    Blocks          (Settings Section · Profile Header · Checkout · Paywall · Login)
+
+    Atomic Design reste l'organisation interne des primitives,
+    affichée discrètement en sous-ligne. Compositions et blocks
+    fournissent des interfaces prêtes, construites sur ces fondations.
+    Liens : /docs/components, /docs/compositions, /docs/blocks.
 
     Ici le système doit avoir assez de place pour devenir
     une vraie composition graphique, pas une rangée de cards.
@@ -150,6 +153,8 @@
     Contributors
     MIT
     Community
+    Arborescence du registry : foundations/ core/ atoms/ molecules/
+    organisms/ templates/ compositions/ blocks/
 
     Peut être beaucoup plus éditorial qu'une grille de statistiques.
 

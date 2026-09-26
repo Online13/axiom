@@ -263,6 +263,15 @@
       ],
       "@/components/ui/scaffold": [
         "./templates/scaffold/stylesheet/scaffold.tsx"
+      ],
+      "@/components/compositions/product-card": [
+        "./compositions/product-card/stylesheet/product-card.tsx"
+      ],
+      "@/components/compositions/settings-item": [
+        "./compositions/settings-item/stylesheet/settings-item.tsx"
+      ],
+      "@/components/blocks/settings-section": [
+        "./blocks/settings-section/stylesheet/settings-section.tsx"
       ]
     }
   },

@@ -14,7 +14,7 @@ Applications in the monorepo. Each folder is a standalone Bun workspace with its
 
 The website serves the presentation page at `/` and the documentation at `/docs`. The documentation covers:
 
-- what Axiom offers: foundations, core, atoms, molecules, organisms, templates, blocks;
+- what Axiom offers: foundations, core, primitives (organized as atoms, molecules, organisms, templates), compositions, blocks;
 - a page for each component, with preview, API and usage;
 - the source code to copy into your project, alongside the `npx axiom add` CLI.
 

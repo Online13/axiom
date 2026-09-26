@@ -1477,6 +1477,78 @@
 					]
 				}
 			}
+		},
+		{
+			"name": "product-card",
+			"type": "compositions",
+			"internalDependencies": [
+				"badge",
+				"button",
+				"card",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/product-card/stylesheet/product-card.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/product-card/unistyles/product-card.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "settings-item",
+			"type": "compositions",
+			"requiredIcons": [
+				"chevron-right"
+			],
+			"internalDependencies": [
+				"icon",
+				"item",
+				"switch",
+				"text",
+				"use-controllable-state"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/settings-item/stylesheet/settings-item.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/settings-item/unistyles/settings-item.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "settings-section",
+			"type": "blocks",
+			"internalDependencies": [
+				"separator",
+				"settings-item",
+				"text",
+				"theme"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"blocks/settings-section/stylesheet/settings-section.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"blocks/settings-section/unistyles/settings-section.tsx"
+					]
+				}
+			}
 		}
 	]
 }

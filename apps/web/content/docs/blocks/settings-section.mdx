@@ -1,0 +1,130 @@
+---
+title: Settings Section
+description: "A titled group of Settings Items with a footer note, the building unit of a settings screen."
+---
+
+<PhonePreview>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Settings
+	</div>
+	<div
+		class="ax-footnote ax-muted ax-semibold"
+		style={{ padding: "8px 16px 8px" }}
+	>
+		Notifications
+	</div>
+	<div class="ax-list" data-variant="plain">
+		<div class="ax-item">
+			<Glyph name="bell" class="ax-muted" />
+			<span class="ax-item-title ax-grow">Push notifications</span>
+			<span class="ax-switch" data-checked />
+		</div>
+		<div class="ax-item">
+			<Glyph name="calendar" class="ax-muted" />
+			<span class="ax-item-title ax-grow">Quiet hours</span>
+			<span class="ax-item-trailing">
+				22:00 – 07:00
+				<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+	</div>
+	<div class="ax-footnote ax-muted" style={{ padding: "8px 16px 0" }}>
+		Quiet hours mute every alert.
+	</div>
+	<div
+		class="ax-footnote ax-muted ax-semibold"
+		style={{ padding: "24px 16px 8px" }}
+	>
+		Account
+	</div>
+	<div class="ax-list" data-variant="plain">
+		<div class="ax-item">
+			<Glyph name="mail" class="ax-muted" />
+			<span class="ax-item-title ax-grow">Email</span>
+			<span class="ax-item-trailing">
+				ada@mail.com
+				<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+		<div class="ax-item">
+			<Glyph name="lock" class="ax-muted" />
+			<span class="ax-item-title ax-grow">Password</span>
+			<span class="ax-item-trailing">
+				<Glyph name="chevron-right" size={18} />
+			</span>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add settings-section
+```
+
+Also copies: the [`settings-item`](/docs/compositions/settings-item) composition, [`separator`](/docs/atoms/separator), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/blocks/settings-section.tsx`.
+
+## Usage
+
+```tsx
+import { SettingsSection } from "@/components/blocks/settings-section";
+import { SettingsItem } from "@/components/compositions/settings-item";
+
+<SettingsSection title="Notifications" footer="Quiet hours mute every alert.">
+	<SettingsItem
+		icon="bell"
+		title="Push notifications"
+		trailing="switch"
+		checked={push}
+		onCheckedChange={setPush}
+	/>
+	<SettingsItem
+		icon="calendar"
+		title="Quiet hours"
+		value="22:00 – 07:00"
+		onPress={() => router.push("/settings/quiet-hours")}
+	/>
+</SettingsSection>;
+```
+
+A settings screen is a [Scaffold](/docs/templates/scaffold) with a scroll view and one Settings Section per group.
+
+## Structure
+
+```text
+SettingsSection
+├── title        Text, footnote, muted, semibold (a header for screen readers)
+├── rows         your SettingsItem children
+│   └── between each pair: Separator, subtle, inset to the rows' margin
+└── footer       Text, footnote, muted
+```
+
+The title and footer are aligned to the screen margin (`metrics.screenMargin`). The rows sit on the screen background, without a card around them.
+
+## Props
+
+| Prop       | Type        | Default | Description                                                                                  |
+| ---------- | ----------- | ------- | -------------------------------------------------------------------------------------------- |
+| `title`    | `string`    | —       | Header above the rows, announced as a header.                                                |
+| `footer`   | `string`    | —       | Note under the rows, to explain a setting.                                                   |
+| `children` | `ReactNode` | —       | `SettingsItem` rows. A hairline separates them; other elements are separated the same way.   |
+
+## Built with
+
+- [Settings Item](/docs/compositions/settings-item): the rows. A composition built on [Item](/docs/atoms/item).
+- [Separator](/docs/atoms/separator): the inset hairlines between rows.
+- [Text](/docs/atoms/text): the title and the footer.
+
+```text
+Item + Icon + Switch + Text  →  Settings Item  →  Settings Section
+         primitives              composition         block
+```
+
+## Used in
+
+The planned [Profile](/docs/blocks/profile) blocks build their settings and account screens from Settings Sections.
+
+## Related
+
+- [Blocks](/docs/blocks)
+- [Compositions](/docs/compositions)

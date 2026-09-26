@@ -307,7 +307,7 @@ export const SCREENS = [
 export type Screen = (typeof SCREENS)[number];
 export type ScreenGroup = Screen["group"];
 
-/** The four tabs of the Components section, mapped from the registry categories. */
+/** The tabs of the Components section: the foundations, then the primitives by Atomic Design level. */
 export const CATEGORIES = [
 	{ value: "foundation", label: "Foundation" },
 	{ value: "atoms", label: "Atoms" },

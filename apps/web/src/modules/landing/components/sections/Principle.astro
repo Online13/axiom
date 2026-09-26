@@ -1,108 +1,141 @@
 ---
 import Principle from '../Principle.astro';
 
-// Each glyph reuses the shapes of the previous level: raw shapes become a
-// button, the button gains a touch, buttons become a list, lists become a screen.
-const steps = [
-	{ name: 'Primitive', note: 'Raw building block' },
-	{ name: 'Component', note: 'Reusable UI unit' },
-	{ name: 'Behavior', note: 'Interaction logic' },
-	{ name: 'Pattern', note: 'Recurring mobile solution' },
-	{ name: 'Experience', note: 'Complete user flow' },
+// One real chain: three primitives converge into a composition, which becomes
+// part of a block. Each stage reuses the shapes of the previous one.
+const primitives = ['Button', 'Avatar', 'Item'];
+const stages = [
+	{ name: 'Primitive', note: 'Solves one local problem' },
+	{ name: 'Composition', note: 'Profile Item, ready-made UI' },
+	{ name: 'Block', note: 'Profile Header, a whole section' },
 ];
 ---
 
 <Principle index="004" class="principle--composition">
-	<Fragment slot="title">Components are<br />only the beginning.</Fragment>
+	<Fragment slot="title">From primitives<br />to real interfaces.</Fragment>
 	<Fragment slot="lede">
-		A component solves a local problem. A system composes components, behavior and patterns into complete
-		mobile experiences.
+		A primitive solves a local problem. Compositions assemble primitives into ready-made UI, and blocks assemble
+		them into whole sections of an app.
 	</Fragment>
 
-	<figure class="composition" aria-label="Primitive, Component, Behavior, Pattern, Experience">
-		<figcaption class="eyebrow composition__caption">Fig. 004 — Levels of composition</figcaption>
+	<figure
+		class="composition"
+		aria-label="Button, Avatar and Item compose a Profile Item, which is part of a Profile Header: primitive, composition, block"
+	>
+		<figcaption class="eyebrow composition__caption">Fig. 004 — Primitive → Composition → Block</figcaption>
 
 		<div class="composition__track">
-			<i class="composition__rail" aria-hidden="true"></i>
-
-			<ol class="composition__steps">
-				{
-					steps.map((step, i) => (
-						<li class:list={['composition__step', { 'is-last': i === steps.length - 1 }]} style={`--i: ${i}`}>
-							<span class="composition__glyph" aria-hidden="true">
-								{i === 0 && (
-									<svg viewBox="0 0 80 80">
-										<rect x="0.5" y="34" width="12" height="12" pathLength="1" />
-										<circle cx="30" cy="40" r="6" pathLength="1" />
-										<line x1="46" y1="40" x2="64" y2="40" pathLength="1" />
+			<div class="composition__stage" style="--i: 0">
+				<span class="composition__glyph composition__glyph--primitives" aria-hidden="true">
+					{
+						primitives.map((name) => (
+							<span class="composition__primitive">
+								<small>{name}</small>
+								{name === 'Button' && (
+									<svg viewBox="0 0 40 16">
+										<rect x="0.5" y="0.5" width="39" height="15" rx="7.5" pathLength="1" />
+										<line x1="13" y1="8" x2="27" y2="8" pathLength="1" />
 									</svg>
 								)}
-								{i === 1 && (
-									<svg viewBox="0 0 80 80">
-										<rect x="0.5" y="28" width="64" height="24" rx="12" pathLength="1" />
-										<circle cx="14" cy="40" r="5" pathLength="1" />
-										<line x1="26" y1="40" x2="50" y2="40" pathLength="1" />
+								{name === 'Avatar' && (
+									<svg viewBox="0 0 16 16">
+										<circle cx="8" cy="8" r="7.5" pathLength="1" />
+										<circle cx="8" cy="6.5" r="2.5" pathLength="1" />
+										<path d="M3.8 13.2a5 4 0 0 1 8.4 0" pathLength="1" />
 									</svg>
 								)}
-								{i === 2 && (
-									<svg viewBox="0 0 80 80">
-										<rect x="0.5" y="20" width="64" height="24" rx="12" pathLength="1" />
-										<circle cx="14" cy="32" r="5" pathLength="1" />
-										<line x1="26" y1="32" x2="50" y2="32" pathLength="1" />
-										<circle cx="48" cy="50" r="11" pathLength="1" class="is-soft" />
-										<circle cx="48" cy="50" r="3" class="is-fill" />
-									</svg>
-								)}
-								{i === 3 && (
-									<svg viewBox="0 0 80 80">
-										<rect x="14.5" y="14" width="64" height="15" rx="4" pathLength="1" />
-										<rect x="0.5" y="32.5" width="64" height="15" rx="4" pathLength="1" />
-										<rect x="68.5" y="32.5" width="10" height="15" rx="3" class="is-fill" />
-										<rect x="14.5" y="51" width="64" height="15" rx="4" pathLength="1" />
-										<line x1="22" y1="21.5" x2="50" y2="21.5" pathLength="1" />
-										<line x1="8" y1="40" x2="36" y2="40" pathLength="1" />
-										<line x1="22" y1="58.5" x2="44" y2="58.5" pathLength="1" />
-									</svg>
-								)}
-								{i === 4 && (
-									<svg viewBox="0 0 44 80">
-										<rect x="0.5" y="0.5" width="43" height="79" rx="7" pathLength="1" />
-										<line x1="17" y1="5" x2="27" y2="5" pathLength="1" />
-										<line x1="6" y1="14" x2="22" y2="14" pathLength="1" />
-										<rect x="6" y="21" width="32" height="9" rx="4.5" pathLength="1" />
-										<rect x="6" y="34" width="32" height="8" rx="2" pathLength="1" />
-										<rect x="6" y="45" width="32" height="8" rx="2" pathLength="1" />
-										<rect x="6" y="56" width="32" height="8" rx="2" pathLength="1" />
-										<line x1="0.5" y1="69" x2="43.5" y2="69" pathLength="1" />
-										<circle cx="11" cy="74" r="1.5" class="is-fill" />
-										<circle cx="22" cy="74" r="1.5" class="is-fill is-soft" />
-										<circle cx="33" cy="74" r="1.5" class="is-fill is-soft" />
+								{name === 'Item' && (
+									<svg viewBox="0 0 40 16">
+										<rect x="0.5" y="0.5" width="39" height="15" rx="3" pathLength="1" />
+										<circle cx="7" cy="8" r="3" pathLength="1" />
+										<line x1="14" y1="8" x2="28" y2="8" pathLength="1" />
+										<path d="M33 5.5 35.5 8 33 10.5" pathLength="1" />
 									</svg>
 								)}
 							</span>
+						))
+					}
+				</span>
+				<span class="composition__text">
+					<span class="composition__index">01</span>
+					<h3 class="composition__name">{stages[0].name}</h3>
+					<span class="composition__note">{stages[0].note}</span>
+				</span>
+			</div>
 
-							<i class="composition__node" aria-hidden="true"></i>
+			<span class="composition__link" style="--i: 1" aria-hidden="true">
+				<svg class="composition__link-h" viewBox="0 0 100 60" preserveAspectRatio="none">
+					<path d="M0 10C50 10 50 30 100 30" pathLength="1" />
+					<path d="M0 30H100" pathLength="1" />
+					<path d="M0 50C50 50 50 30 100 30" pathLength="1" />
+				</svg>
+				<svg class="composition__link-v" viewBox="0 0 10 100" preserveAspectRatio="none">
+					<path d="M5 0V100" pathLength="1" />
+				</svg>
+				<svg class="composition__arrow" viewBox="0 0 6 8">
+					<path d="M0.5 0.5 5 4 0.5 7.5" />
+				</svg>
+			</span>
 
-							<span class="composition__text">
-								<span class="composition__index">0{i + 1}</span>
-								<h3 class="composition__name">{step.name}</h3>
-								<span class="composition__note">{step.note}</span>
-							</span>
-						</li>
-					))
-				}
-			</ol>
+			<div class="composition__stage" style="--i: 2">
+				<span class="composition__glyph" aria-hidden="true">
+					<svg viewBox="0 0 120 40">
+						<rect x="0.5" y="0.5" width="119" height="39" rx="8" pathLength="1" />
+						<circle cx="20" cy="20" r="10" pathLength="1" />
+						<line x1="38" y1="15" x2="72" y2="15" pathLength="1" />
+						<line x1="38" y1="25" x2="58" y2="25" pathLength="1" class="is-soft" />
+						<rect x="84" y="12" width="26" height="16" rx="8" pathLength="1" />
+					</svg>
+				</span>
+				<span class="composition__text">
+					<span class="composition__index">02</span>
+					<h3 class="composition__name">{stages[1].name}</h3>
+					<span class="composition__note">{stages[1].note}</span>
+				</span>
+			</div>
 
-			<div class="composition__scopes" aria-hidden="true">
-				<span class="composition__scope composition__scope--kit"><b>UI kit</b></span>
-				<span class="composition__scope composition__scope--system"><b>Axiom</b></span>
+			<span class="composition__link" style="--i: 3" aria-hidden="true">
+				<svg class="composition__link-h" viewBox="0 0 100 60" preserveAspectRatio="none">
+					<path d="M0 30H100" pathLength="1" />
+				</svg>
+				<svg class="composition__link-v" viewBox="0 0 10 100" preserveAspectRatio="none">
+					<path d="M5 0V100" pathLength="1" />
+				</svg>
+				<svg class="composition__arrow" viewBox="0 0 6 8">
+					<path d="M0.5 0.5 5 4 0.5 7.5" />
+				</svg>
+			</span>
+
+			<div class="composition__stage is-last" style="--i: 4">
+				<span class="composition__glyph" aria-hidden="true">
+					<svg viewBox="0 0 120 96">
+						<rect x="0.5" y="0.5" width="119" height="95" rx="10" pathLength="1" />
+						<circle cx="60" cy="24" r="12" pathLength="1" />
+						<line x1="44" y1="45" x2="76" y2="45" pathLength="1" />
+						<line x1="50" y1="53" x2="70" y2="53" pathLength="1" class="is-soft" />
+						<rect x="8" y="64" width="104" height="24" rx="6" pathLength="1" />
+						<circle cx="19" cy="76" r="5" pathLength="1" />
+						<line x1="29" y1="76" x2="62" y2="76" pathLength="1" />
+						<rect x="86" y="70" width="20" height="12" rx="6" class="is-fill" />
+					</svg>
+				</span>
+				<span class="composition__text">
+					<span class="composition__index">03</span>
+					<h3 class="composition__name">{stages[2].name}</h3>
+					<span class="composition__note">{stages[2].note}</span>
+				</span>
 			</div>
 		</div>
+
+		<p class="composition__hint" style="--i: 5">
+			<i aria-hidden="true"></i>
+			Behaviors and patterns turn blocks into complete experiences.
+		</p>
 	</figure>
 </Principle>
 
 <script>
-	// The rail is drawn once, left to right; each level lights up when the rail reaches it.
+	// The chain builds once, left to right: primitives, then the composition, then the block.
 	const figure = document.querySelector<HTMLElement>('.composition');
 	const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -122,10 +155,9 @@ const steps = [
 
 <style>
 	.composition {
-		--glyph-h: 5rem;
-		--node: 7px;
-		--col-gap: clamp(1rem, 2.2vw, 2.25rem);
-		--step: 0.5s;
+		--glyph-h: 7.5rem;
+		--link: clamp(2rem, 4.5vw, 4rem);
+		--step: 0.45s;
 		--start: 0.15s;
 
 		margin: 0;
@@ -138,52 +170,58 @@ const steps = [
 		font-size: 0.6875rem;
 	}
 
+	/* Stages and links share one row of glyphs; the text sits under each stage. */
 	.composition__track {
-		position: relative;
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) var(--link) minmax(0, 1fr) var(--link) minmax(0, 1fr);
+		align-items: start;
 	}
 
-	.composition__steps {
-		list-style: none;
-		margin: 0;
-		padding: 0;
+	.composition__stage {
 		display: grid;
-		grid-template-columns: repeat(5, minmax(0, 1fr));
-		column-gap: var(--col-gap);
-	}
-
-	.composition__step {
-		display: grid;
-		grid-template-areas: 'glyph' 'node' 'text';
-		grid-template-rows: var(--glyph-h) auto auto;
+		grid-template-rows: var(--glyph-h) auto;
 		row-gap: 1.75rem;
-		align-content: start;
-		align-items: center;
+		min-width: 0;
 	}
 
 	.composition__glyph {
-		grid-area: glyph;
-		display: block;
+		display: flex;
+		align-items: center;
 		height: 100%;
+		min-width: 0;
 		color: var(--muted);
 	}
 
-	.composition__step.is-last .composition__glyph {
+	.composition__stage.is-last .composition__glyph {
 		color: var(--fg);
 	}
 
-	.composition__glyph svg {
+	.composition__glyph svg,
+	.composition__link svg {
 		display: block;
-		height: 100%;
-		width: auto;
 		overflow: visible;
 	}
 
-	.composition__glyph :is(rect, circle, line) {
+	.composition__glyph > svg {
+		width: 100%;
+		height: auto;
+	}
+
+	/* The block is the tallest glyph: fit it to the row, flush left against its link. */
+	.composition__stage.is-last .composition__glyph > svg {
+		width: auto;
+		height: 100%;
+		max-width: 100%;
+	}
+
+	.composition__glyph :is(rect, circle, line, path),
+	.composition__link path {
 		fill: none;
 		stroke: currentColor;
 		stroke-width: 1;
 		vector-effect: non-scaling-stroke;
 		stroke-linecap: round;
+		stroke-linejoin: round;
 		stroke-dasharray: 1;
 		stroke-dashoffset: 0;
 	}
@@ -197,24 +235,61 @@ const steps = [
 		opacity: 0.4;
 	}
 
-	.composition__node {
-		grid-area: node;
-		position: relative;
-		z-index: 1;
-		width: var(--node);
-		height: var(--node);
-		border-radius: 50%;
-		border: 1px solid var(--fg);
-		background: var(--bg);
+	/* Primitives: three rows, each ending where its connector starts. */
+	.composition__glyph--primitives {
+		display: grid;
+		grid-template-rows: repeat(3, 1fr);
 	}
 
-	.composition__step.is-last .composition__node {
-		background: var(--fg);
-		box-shadow: 0 0 0 5px var(--bg), 0 0 0 6px var(--line);
+	.composition__primitive {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 0.75rem;
+	}
+
+	.composition__primitive small {
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
+		color: var(--muted);
+	}
+
+	.composition__primitive svg {
+		height: 1.1rem;
+		width: auto;
+	}
+
+	/* Links: converge on the composition, then carry it into the block. */
+	.composition__link {
+		position: relative;
+		height: var(--glyph-h);
+		color: var(--line);
+	}
+
+	.composition__link .composition__link-h {
+		width: 100%;
+		height: 100%;
+	}
+
+	.composition__link .composition__link-v {
+		display: none;
+	}
+
+	.composition__arrow {
+		position: absolute;
+		top: 50%;
+		right: 0.2rem;
+		width: 0.4rem;
+		height: 0.55rem;
+		transform: translateY(-50%);
+		color: var(--muted);
+	}
+
+	.composition__arrow path {
+		stroke-dasharray: none;
 	}
 
 	.composition__text {
-		grid-area: text;
 		display: flex;
 		flex-direction: column;
 		gap: 0.2rem;
@@ -241,233 +316,120 @@ const steps = [
 		color: var(--muted);
 	}
 
-	/* Rail runs from the first node to the last one: four columns and four gaps. */
-	.composition__rail {
-		position: absolute;
-		top: calc(var(--glyph-h) + 1.75rem + var(--node) / 2);
-		left: calc(var(--node) / 2);
-		width: calc((100% - 4 * var(--col-gap)) / 5 * 4 + 4 * var(--col-gap));
-		height: 1px;
-		background: var(--line);
-	}
-
-	.composition__rail::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: var(--fg);
-		transform-origin: left;
-	}
-
-	/* Scope brackets: where a component library stops, and where Axiom does. */
-	.composition__scopes {
-		display: grid;
-		grid-template-columns: repeat(5, minmax(0, 1fr));
-		column-gap: var(--col-gap);
-		row-gap: 1.25rem;
-		margin-top: 3rem;
-	}
-
-	.composition__scope {
-		position: relative;
-		height: 1px;
-		background: color-mix(in srgb, var(--muted) 45%, transparent);
-		transform-origin: left;
-	}
-
-	.composition__scope::before,
-	.composition__scope::after {
-		content: '';
-		position: absolute;
-		bottom: 0;
-		width: 1px;
-		height: 6px;
-		background: inherit;
-	}
-
-	.composition__scope::before {
-		left: 0;
-	}
-
-	.composition__scope::after {
-		right: 0;
-	}
-
-	.composition__scope b {
-		position: absolute;
-		top: 0.6rem;
-		left: 0;
-		font-family: var(--font-mono);
-		font-size: 0.6875rem;
-		font-weight: 400;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		white-space: nowrap;
+	/* Behaviors and patterns are a separate axis: a quiet note, not a fourth level. */
+	.composition__hint {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		font-size: 0.8125rem;
 		color: var(--muted);
 	}
 
-	.composition__scope--kit {
-		grid-column: 1 / 3;
-	}
-
-	.composition__scope--system {
-		grid-column: 1 / -1;
-		margin-top: 1.25rem;
-		background: var(--muted);
-	}
-
-	.composition__scope--system b {
-		color: var(--fg);
+	.composition__hint i {
+		flex: none;
+		width: 1.5rem;
+		height: 1px;
+		background: color-mix(in srgb, var(--muted) 45%, transparent);
 	}
 
 	/* Motion: idle is the unbuilt state, play builds the chain in order. */
-	.composition[data-state='idle'] .composition__rail::after,
-	.composition[data-state='idle'] .composition__scope {
-		transform: scaleX(0);
-	}
-
-	.composition[data-state='idle'] .composition__glyph :is(rect, circle, line) {
+	.composition[data-state='idle'] :is(.composition__glyph, .composition__link) :is(rect, circle, line, path) {
 		stroke-dashoffset: 1;
 	}
 
-	.composition[data-state='idle'] .composition__glyph .is-fill {
+	.composition[data-state='idle'] .composition__glyph .is-fill,
+	.composition[data-state='idle'] .composition__arrow,
+	.composition[data-state='idle'] .composition__hint {
 		opacity: 0;
 	}
 
-	.composition[data-state='idle'] .composition__node {
-		border-color: var(--line);
-	}
-
-	.composition[data-state='idle'] .composition__step.is-last .composition__node {
-		background: var(--bg);
-	}
-
+	.composition[data-state='idle'] .composition__primitive small,
 	.composition[data-state='idle'] .composition__text {
 		opacity: 0.3;
 	}
 
-	.composition[data-state='play'] .composition__rail::after {
-		transition: transform calc(var(--step) * 4) linear var(--start);
-	}
-
-	.composition[data-state='play'] .composition__step {
+	.composition[data-state='play'] :is(.composition__stage, .composition__link, .composition__hint) {
 		--at: calc(var(--start) + var(--i) * var(--step));
 	}
 
-	.composition[data-state='play'] .composition__glyph :is(rect, circle, line) {
+	.composition[data-state='play'] .composition__glyph :is(rect, circle, line, path) {
 		transition: stroke-dashoffset 0.9s cubic-bezier(0.65, 0, 0.35, 1) var(--at);
+	}
+
+	.composition[data-state='play'] .composition__link path {
+		transition: stroke-dashoffset 0.6s cubic-bezier(0.65, 0, 0.35, 1) var(--at);
+	}
+
+	.composition[data-state='play'] .composition__arrow {
+		transition: opacity 0.3s ease calc(var(--at) + 0.45s);
 	}
 
 	.composition[data-state='play'] .composition__glyph .is-fill {
 		transition: opacity 0.4s ease calc(var(--at) + 0.6s);
 	}
 
-	.composition[data-state='play'] .composition__node {
-		transition:
-			border-color 0.2s ease var(--at),
-			background-color 0.3s ease var(--at);
-	}
-
-	.composition[data-state='play'] .composition__text {
+	.composition[data-state='play'] :is(.composition__primitive small, .composition__text, .composition__hint) {
 		transition: opacity 0.5s ease var(--at);
 	}
 
-	.composition[data-state='play'] .composition__scope--kit {
-		transition: transform calc(var(--step) * 2) cubic-bezier(0.65, 0, 0.35, 1) calc(var(--start) + var(--step));
-	}
-
-	.composition[data-state='play'] .composition__scope--system {
-		transition: transform calc(var(--step) * 4) cubic-bezier(0.65, 0, 0.35, 1) calc(var(--start) + var(--step) * 3);
-	}
-
-	/* Narrow screens: the chain reads top to bottom, scopes run down the right edge. */
+	/* Narrow screens: the chain reads top to bottom, text beside each glyph. */
 	@media (max-width: 700px) {
 		.composition {
-			--glyph-h: 4rem;
-			--row-gap: 1.75rem;
+			--glyph-h: 6.5rem;
+			--glyph-w: 9.5rem;
+			--link: 2.5rem;
 		}
 
 		.composition__track {
-			padding-right: 3.5rem;
-		}
-
-		.composition__steps {
 			grid-template-columns: 1fr;
-			row-gap: var(--row-gap);
 		}
 
-		.composition__step {
-			grid-template-areas: 'node glyph text';
-			grid-template-columns: var(--node) 3.5rem 1fr;
-			grid-template-rows: var(--glyph-h);
-			column-gap: 1.25rem;
+		.composition__stage {
+			grid-template-columns: var(--glyph-w) minmax(0, 1fr);
+			grid-template-rows: auto;
+			column-gap: 1.5rem;
+			align-items: center;
 		}
 
-		.composition__glyph svg {
-			margin-inline: auto;
+		.composition__glyph {
+			height: auto;
 		}
 
-		.composition__rail {
-			top: calc(var(--glyph-h) / 2);
-			left: calc(var(--node) / 2);
-			width: 1px;
-			height: calc(4 * (var(--glyph-h) + var(--row-gap)));
+		.composition__glyph--primitives {
+			height: var(--glyph-h);
 		}
 
-		.composition__rail::after {
-			transform-origin: top;
+		.composition__primitive {
+			justify-content: center;
 		}
 
-		.composition__scopes {
-			position: absolute;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			width: 2.5rem;
-			margin: 0;
+		.composition__stage.is-last .composition__glyph > svg {
+			width: 100%;
+			height: auto;
+		}
+
+		.composition__link {
+			width: var(--glyph-w);
+			height: var(--link);
+			padding-block: 0.4rem;
+		}
+
+		.composition__link .composition__link-h {
+			display: none;
+		}
+
+		.composition__link .composition__link-v {
 			display: block;
-		}
-
-		.composition__scope {
-			position: absolute;
-			top: 0;
-			width: 1px;
-			height: calc(2 * var(--glyph-h) + var(--row-gap));
-			transform-origin: top;
-		}
-
-		.composition__scope--kit {
-			right: 1.75rem;
-		}
-
-		.composition__scope--system {
-			right: 0;
+			width: 100%;
 			height: 100%;
-			margin: 0;
 		}
 
-		.composition__scope::before,
-		.composition__scope::after {
-			left: auto;
-			right: 0;
-			width: 6px;
-			height: 1px;
-		}
-
-		.composition__scope::before {
-			top: 0;
-			bottom: auto;
-		}
-
-		.composition__scope b {
-			top: 0.5rem;
-			left: -0.65rem;
-			writing-mode: vertical-rl;
-		}
-
-		.composition[data-state='idle'] .composition__rail::after,
-		.composition[data-state='idle'] .composition__scope {
-			transform: scaleY(0);
+		.composition__arrow {
+			top: auto;
+			right: auto;
+			bottom: 0.2rem;
+			left: 50%;
+			transform: translateX(-50%) rotate(90deg);
 		}
 	}
 </style>

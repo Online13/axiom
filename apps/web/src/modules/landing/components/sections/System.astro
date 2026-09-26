@@ -2,18 +2,22 @@
 import Title from '../Title.astro';
 import { docs } from '../../lib/links';
 
-// Each layer opens the matching section of the docs.
+// Each layer opens the matching section of the docs. Primitives keep Atomic
+// Design as their internal organization; compositions and blocks sit on top.
 const layers = [
 	{ name: 'Foundations', href: docs('/foundations'), detail: 'Tokens · color · type · spacing · radius' },
-	{ name: 'Atoms', href: docs('/atoms'), detail: 'Button · Switch · Checkbox · Badge · Avatar' },
-	{ name: 'Molecules', href: docs('/molecules'), detail: 'SearchBar · Attachment · DatePicker' },
-	{ name: 'Organisms', href: docs('/organisms'), detail: 'Passcode' },
-	{ name: 'Templates', href: docs('/templates'), detail: 'AppBar · BottomTabBar · ToolBar · Scaffold' },
-	{ name: 'Blocks', href: docs('/blocks'), detail: 'Login · Onboarding · Paywall · Checkout' },
+	{
+		name: 'Primitives',
+		href: docs('/components'),
+		detail: 'Button · Avatar · Item · Card · AppBar · Scaffold',
+		sub: 'Atoms · Molecules · Organisms · Templates',
+	},
+	{ name: 'Compositions', href: docs('/compositions'), detail: 'Product Card · Settings Item · Profile Item' },
+	{ name: 'Blocks', href: docs('/blocks'), detail: 'Settings Section · Profile Header · Checkout · Paywall · Login' },
 ];
 
 const swatches = ['#f5f5f5', '#8a8a8a', '#262626', '#0a0a0a', '#ff5a1f'];
-const blocks = ['Login', 'Onboarding', 'Paywall', 'Profile', 'Checkout'];
+const blocks = ['Settings', 'Profile', 'Checkout', 'Paywall', 'Login'];
 ---
 
 <section class="section section--full system" id="system">
@@ -33,6 +37,7 @@ const blocks = ['Login', 'Onboarding', 'Paywall', 'Profile', 'Checkout'];
 								<a href={layer.href}>{layer.name}</a>
 							</h3>
 							<p>{layer.detail}</p>
+							{layer.sub && <small>{layer.sub}</small>}
 						</div>
 						<div class="system__block" aria-hidden="true">
 							{i === 0 && (
@@ -57,7 +62,6 @@ const blocks = ['Login', 'Onboarding', 'Paywall', 'Profile', 'Checkout'];
 							{i === 1 && (
 								<>
 									<span class="s-btn">Continue</span>
-									<span class="s-btn s-btn--ghost">Cancel</span>
 									<span class="s-switch" />
 									<span class="s-check">
 										<svg viewBox="0 0 24 24">
@@ -66,61 +70,36 @@ const blocks = ['Login', 'Onboarding', 'Paywall', 'Profile', 'Checkout'];
 									</span>
 									<span class="s-badge">New</span>
 									<span class="s-avatar">AC</span>
-								</>
-							)}
-							{i === 2 && (
-								<>
-									<span class="s-search">
-										<svg viewBox="0 0 24 24">
-											<circle cx="11" cy="11" r="6" />
-											<path d="m20 20-4.2-4.2" />
-										</svg>
-										Search components
-									</span>
-									<span class="s-file">
-										<b>PDF</b>
-										invoice-0412.pdf
-									</span>
-									<span class="s-date">
-										<b>12</b> Sep 2026
-									</span>
-								</>
-							)}
-							{i === 3 && (
-								<>
-									<span class="s-dots">
-										{[1, 1, 1, 0].map((on) => (
-											<i class:list={{ on }} />
-										))}
-									</span>
-									<span class="s-keys">
-										{['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Face ID', '0', '⌫'].map((k) => (
-											<i>{k}</i>
-										))}
-									</span>
-								</>
-							)}
-							{i === 4 && (
-								<>
 									<span class="s-appbar">
 										<i>‹</i>
 										<b>Settings</b>
 										<i>⋯</i>
 									</span>
-									<span class="s-scaffold">
-										<i />
-										<i />
-										<i />
+								</>
+							)}
+							{i === 2 && (
+								<>
+									<span class="s-card">
+										<i class="s-card__img" />
+										<span class="s-card__text">
+											<b>Linen shirt</b>
+											<span>$48</span>
+										</span>
+										<span class="s-card__add">Add</span>
 									</span>
-									<span class="s-tabbar">
-										<i class="on" />
-										<i />
-										<i />
-										<i />
+									<span class="s-item">
+										<span class="s-item__icon">
+											<svg viewBox="0 0 24 24">
+												<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+												<path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+											</svg>
+										</span>
+										Notifications
+										<span class="s-switch" />
 									</span>
 								</>
 							)}
-							{i === 5 &&
+							{i === 3 &&
 								blocks.map((b) => (
 									<span class="s-screen">
 										<i />
@@ -189,11 +168,21 @@ const blocks = ['Login', 'Onboarding', 'Paywall', 'Profile', 'Checkout'];
 		font-size: 0.85rem;
 	}
 
+	/* Atomic Design stays the internal organization of primitives. */
+	.system__label small {
+		grid-column: 2;
+		margin-top: 0.3rem;
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
+		letter-spacing: 0.04em;
+		color: color-mix(in srgb, var(--muted) 70%, transparent);
+	}
+
 	/* Each layer grows wider as it builds on the previous one. */
 	.system__block {
 		--accent: #ff5a1f;
 		height: 3.75rem;
-		width: calc(40% + var(--i) * 12%);
+		width: calc(40% + var(--i) * 20%);
 		display: flex;
 		align-items: center;
 		gap: 1rem;
@@ -256,18 +245,13 @@ const blocks = ['Login', 'Onboarding', 'Paywall', 'Profile', 'Checkout'];
 		color: var(--muted);
 	}
 
-	/* Atoms */
+	/* Primitives */
 	.s-btn {
 		padding: 0.5rem 0.9rem;
 		border-radius: 999px;
 		background: var(--accent);
 		color: #fff;
 		font-weight: 600;
-	}
-	.s-btn--ghost {
-		background: none;
-		border: 1px solid var(--line);
-		color: var(--fg);
 	}
 	.s-switch {
 		position: relative;
@@ -314,114 +298,84 @@ const blocks = ['Login', 'Onboarding', 'Paywall', 'Profile', 'Checkout'];
 		color: var(--bg);
 		font-weight: 600;
 	}
-
-	/* Molecules */
-	.s-search,
-	.s-file,
-	.s-date {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.45rem 0.8rem;
-		border: 1px solid var(--line);
-		border-radius: 8px;
-		color: var(--muted);
-	}
-	.s-search {
-		min-width: 13rem;
-	}
-	.s-file b {
-		padding: 0.1rem 0.3rem;
-		border-radius: 4px;
-		background: var(--accent);
-		color: #fff;
-		font-size: 0.65rem;
-	}
-	.s-date b {
-		color: var(--fg);
-		font-size: 1rem;
-	}
-
-	/* Organisms */
-	.s-dots {
-		display: flex;
-		gap: 0.5rem;
-	}
-	.s-dots i {
-		width: 0.7rem;
-		height: 0.7rem;
-		border-radius: 50%;
-		border: 1px solid var(--muted);
-	}
-	.s-dots i.on {
-		border-color: var(--accent);
-		background: var(--accent);
-	}
-	.s-keys {
-		display: flex;
-		gap: 0.35rem;
-	}
-	.s-keys i {
-		display: grid;
-		place-items: center;
-		min-width: 2rem;
-		height: 2rem;
-		padding: 0 0.4rem;
-		border: 1px solid var(--line);
-		border-radius: 50%;
-		font-style: normal;
-		font-family: var(--font-mono);
-	}
-	.s-keys i:nth-child(10) {
-		border-radius: 999px;
-		color: var(--muted);
-	}
-
-	/* Templates */
-	.s-appbar,
-	.s-tabbar {
+	.s-appbar {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
+		min-width: 12rem;
 		padding: 0.45rem 0.8rem;
 		border: 1px solid var(--line);
 		border-radius: 8px;
-	}
-	.s-appbar {
-		min-width: 12rem;
 	}
 	.s-appbar i {
 		font-style: normal;
 		color: var(--muted);
 	}
-	.s-scaffold {
+
+	/* Compositions: primitives assembled into ready-made pieces. */
+	.s-card,
+	.s-item {
+		display: flex;
+		align-items: center;
+		gap: 0.65rem;
+		height: 2.6rem;
+		padding: 0 0.35rem;
+		border: 1px solid var(--line);
+		border-radius: 8px;
+	}
+	.s-card {
+		min-width: 13rem;
+	}
+	.s-card__img {
+		flex: none;
+		width: 1.9rem;
+		height: 1.9rem;
+		border-radius: 5px;
+		background: linear-gradient(135deg, var(--line), color-mix(in srgb, var(--accent) 35%, transparent));
+	}
+	.s-card__text {
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		gap: 0.3rem;
-		min-width: 6rem;
+		line-height: 1.2;
 	}
-	.s-scaffold i {
-		height: 0.3rem;
+	.s-card__text b {
+		font-weight: 500;
+	}
+	.s-card__text span {
+		color: var(--muted);
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+	}
+	.s-card__add {
+		padding: 0.3rem 0.65rem;
 		border-radius: 999px;
-		background: var(--line);
-	}
-	.s-scaffold i:nth-child(2) {
-		width: 70%;
-	}
-	.s-scaffold i:nth-child(3) {
-		width: 45%;
-	}
-	.s-tabbar i {
-		width: 0.9rem;
-		height: 0.9rem;
-		border-radius: 4px;
-		border: 1px solid var(--muted);
-	}
-	.s-tabbar i.on {
-		border-color: var(--accent);
 		background: var(--accent);
+		color: #fff;
+		font-weight: 600;
+	}
+	.s-item {
+		min-width: 14rem;
+		padding-left: 0.5rem;
+		padding-right: 0.6rem;
+	}
+	.s-item__icon {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 1.6rem;
+		height: 1.6rem;
+		border-radius: 6px;
+		background: var(--fg);
+		color: var(--bg);
+	}
+	.s-item__icon svg {
+		width: 0.85rem;
+		height: 0.85rem;
+	}
+	.s-item .s-switch {
+		margin-left: auto;
 	}
 
 	/* Blocks */

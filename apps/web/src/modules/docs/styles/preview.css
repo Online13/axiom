@@ -98,6 +98,20 @@
 .ax-row[data-align="start"] {
 	align-items: flex-start;
 }
+/* Horizontal ScrollView: children keep their own width and the row scrolls. */
+.ax-row[data-scroll] {
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scroll-padding-inline: calc(16 * var(--ax-space));
+	scrollbar-width: none;
+}
+.ax-row[data-scroll]::-webkit-scrollbar {
+	display: none;
+}
+.ax-row[data-scroll] > * {
+	flex: none;
+	scroll-snap-align: start;
+}
 
 .ax-grow {
 	flex: 1;
@@ -1345,6 +1359,12 @@
 	height: 140px;
 	background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
 	color: rgb(255 255 255 / 0.9);
+}
+
+.ax-media > img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 .ax-media[data-tone="2"] {

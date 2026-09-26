@@ -16,7 +16,7 @@ const LEVELS: { icon: IconName; title: string; description: string }[] = [
 		icon: "file",
 		title: "Components",
 		description:
-			"Atoms, molecules, organisms and templates, owned by your app once installed.",
+			"Primitives, compositions and blocks, owned by your app once installed.",
 	},
 	{
 		icon: "refresh",
