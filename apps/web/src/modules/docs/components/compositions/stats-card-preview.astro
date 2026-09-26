@@ -1,0 +1,31 @@
+---
+// A Stats Card drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors registry/compositions/stats-card.
+import Glyph from '@docs/components/preview/glyph.astro';
+
+interface Props {
+  label: string;
+  value: string;
+  icon?: 'wallet' | 'bolt' | 'flame' | 'user' | 'cart' | 'clock' | 'heart';
+  change?: string;
+  tone?: 'success' | 'error' | 'neutral';
+  caption?: string;
+}
+
+const { label, value, icon, change, tone = 'neutral', caption } = Astro.props;
+---
+
+<div class="ax-card" data-variant="filled" style={{ alignSelf: 'stretch', padding: '16px', gap: '8px' }}>
+  <span class="ax-row ax-muted" style={{ gap: '8px' }}>
+    {icon && <Glyph name={icon} size={18} />}
+    <span class="ax-footnote ax-truncate">{label}</span>
+  </span>
+  <span class="ax-title2 ax-truncate">{value}</span>
+  {(change || caption) && (
+    <span class="ax-row" style={{ gap: '8px' }}>
+      {change && (
+        <span class="ax-badge" data-variant={tone === 'neutral' ? undefined : tone} style={{ height: '18px', padding: '0 6px', fontSize: '11px' }}>{change}</span>
+      )}
+      {caption && <span class="ax-caption ax-muted ax-truncate">{caption}</span>}
+    </span>
+  )}
+</div>

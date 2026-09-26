@@ -1,0 +1,97 @@
+---
+title: Track Item
+description: "Artwork, title, artist, duration and a more button, with a now-playing state."
+---
+
+<PhonePreview>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Liked songs
+	</div>
+	<TrackItemPreview
+		tracks={[
+			{ title: "Midnight City", artist: "M83", duration: "4:03", tone: 2, playing: true },
+			{ title: "Blue Monday", artist: "New Order", duration: "7:29", tone: 4 },
+			{ title: "Nightcall", artist: "Kavinsky", duration: "4:18", tone: 5, explicit: true },
+			{ title: "Genesis", artist: "Justice", duration: "3:54", tone: 3 },
+		]}
+	/>
+	<div class="ax-headline" style={{ padding: "20px 16px 4px" }}>
+		Album
+	</div>
+	<TrackItemPreview
+		tracks={[
+			{ title: "Intro", artist: "The xx", duration: "2:07", index: 1 },
+			{ title: "Crystalised", artist: "The xx", duration: "3:21", index: 2, playing: true },
+		]}
+	/>
+</PhonePreview>
+
+The first track is playing: its title turns to the link color. In an album, rows show their position instead of the artwork.
+
+## Installation
+
+```npm
+npx axiom add track-item
+```
+
+Also copies: [`item`](/docs/atoms/item), [`badge`](/docs/atoms/badge), [`icon-button`](/docs/atoms/icon-button), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/track-item.tsx`. It brings no tokens of its own.
+
+Requires the `more` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+
+## Usage
+
+```tsx
+import { TrackItem } from "@/components/compositions/track-item";
+
+<TrackItem
+	title={track.title}
+	artist={track.artist}
+	artwork={{ uri: track.coverUrl }}
+	duration={track.durationSeconds}
+	explicit={track.explicit}
+	playing={track.id === player.currentId}
+	onPress={() => player.play(track.id)}
+	onMore={() => openTrackMenu(track)}
+/>;
+```
+
+`duration` is in seconds and shown as `3:45`, or `1:02:05` past an hour. The same formatter is exported as `formatDuration` for a player's elapsed time.
+
+In an album, leave `artwork` out and pass `index`: the row starts with the track number.
+
+## Props
+
+| Prop          | Type                  | Default  | Description                                                                          |
+| ------------- | --------------------- | -------- | ------------------------------------------------------------------------------------ |
+| `title`       | `string`              | —        | Name of the track, one line.                                                         |
+| `artist`      | `string`              | —        | Under the title, muted.                                                              |
+| `artwork`     | `ImageSourcePropType` | —        | Square cover art, 48pt, with the `sm` radius.                                        |
+| `index`       | `number`              | —        | Track number, shown when there is no artwork.                                        |
+| `duration`    | `number`              | —        | Length in seconds, at the end of the row in tabular figures.                         |
+| `explicit`    | `boolean`             | `false`  | Adds an "E" [Badge](/docs/atoms/badge) before the artist.                            |
+| `playing`     | `boolean`             | `false`  | The track now playing: title and index in the link color, announced as selected.   |
+| `onPress`     | `() => void`          | —        | Plays the track.                                                                     |
+| `onLongPress` | `() => void`          | —        | Usually opens the same menu as the more button.                                      |
+| `onMore`      | `() => void`          | —        | Shows a ghost "more" [IconButton](/docs/atoms/icon-button) at the end of the row.    |
+| `moreLabel`   | `string`              | `"More"` | Label of the more button, read with the title: "More, Blue Monday".                  |
+| `disabled`    | `boolean`             | `false`  | A track that can't be played: disabled colors, no press.                             |
+
+## Accessibility
+
+The row reads as one element: "Midnight City, M83, 4:03, Now playing". The playing row is announced as selected. The more button stays a separate element, labelled with the track title.
+
+## Built with
+
+- [Item](/docs/atoms/item): the pressable row and its slots.
+- [Badge](/docs/atoms/badge): the explicit marker.
+- [IconButton](/docs/atoms/icon-button): the more button.
+- [Text](/docs/atoms/text): title, artist, index and duration.
+
+## Used in
+
+No block uses Track Item yet.
+
+## Related
+
+- [Search Result Item](/docs/compositions/search-result-item)
+- [Compositions](/docs/compositions)

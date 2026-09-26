@@ -98,56 +98,6 @@ Group rows with the [Settings Section](/docs/blocks/settings-section) block, whi
 
 A switch row is announced as a switch with its checked state: the row carries the role, and the switch inside is hidden from screen readers so it isn't read twice. A chevron row is a regular pressable row.
 
-## Use cases
-
-### Row that opens a screen
-
-The default trailing is a chevron. `value` shows the current choice before it.
-
-<PhonePreview size="sm">
-	<div class="ax-list" data-variant="plain" style={{ marginTop: "12px" }}>
-		<div class="ax-item">
-			<Glyph name="clock" class="ax-muted" />
-			<span class="ax-item-title ax-grow">Quiet hours</span>
-			<span class="ax-item-trailing">
-				22:00 – 07:00
-				<Glyph name="chevron-right" size={18} />
-			</span>
-		</div>
-		<div class="ax-item">
-			<Glyph name="sun" class="ax-muted" />
-			<span class="ax-item-title ax-grow">Appearance</span>
-			<span class="ax-item-trailing">
-				Automatic
-				<Glyph name="chevron-right" size={18} />
-			</span>
-		</div>
-	</div>
-</PhonePreview>
-
-```tsx
-<SettingsItem
-	icon="clock"
-	title="Quiet hours"
-	value="22:00 – 07:00"
-	onPress={() => router.push("/settings/quiet-hours")}
-/>
-```
-
-### Uncontrolled switch
-
-Leave out `checked` to let the row keep its own state, and listen with `onCheckedChange`.
-
-```tsx
-<SettingsItem
-	icon="mail"
-	title="Weekly summary"
-	description="A recap of your activity every Monday"
-	trailing="switch"
-	onCheckedChange={(on) => api.updatePreferences({ weeklySummary: on })}
-/>
-```
-
 ## Built with
 
 - [Item](/docs/atoms/item): the pressable row, its leading, content and trailing slots.

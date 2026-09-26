@@ -1,0 +1,39 @@
+---
+// Photo dots of a card preview: white on the photo, the first one active.
+// `inline` puts them in the flow (overlay cards); otherwise they sit at the bottom of the photo.
+interface Props {
+  count: number;
+  inline?: boolean;
+}
+
+const { count, inline = false } = Astro.props;
+---
+
+<span class:list={['dots', { pinned: !inline }]} aria-hidden="true">
+  {Array.from({ length: count }, (_, index) => <span data-active={index === 0 ? '' : undefined} />)}
+</span>
+
+<style>
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .pinned {
+    position: absolute;
+    right: 0;
+    bottom: 4px;
+    left: 0;
+  }
+  .dots > span {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background: rgb(255 255 255 / 0.5);
+  }
+  .dots > span[data-active] {
+    width: 14px;
+    background: #fff;
+  }
+</style>

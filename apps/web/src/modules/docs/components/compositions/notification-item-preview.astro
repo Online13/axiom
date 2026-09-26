@@ -1,0 +1,68 @@
+---
+// Notification Item rows drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors registry/compositions/notification-item.
+// A row has an actor photo (`photo`) or a system `icon` on a tinted tile.
+import Glyph from '@docs/components/preview/glyph.astro';
+
+interface Notification {
+  actor?: string;
+  message: string;
+  time: string;
+  photo?: 1 | 2 | 3 | 4 | 5;
+  icon?: 'bell' | 'lock' | 'cart' | 'calendar' | 'star' | 'download';
+  unread?: boolean;
+  action?: string;
+}
+
+interface Props {
+  notifications: Notification[];
+}
+
+const { notifications } = Astro.props;
+---
+
+<div class="ax-list" data-variant="plain">
+  {notifications.map((notification) => (
+    <div class="ax-item" style={{ alignItems: 'flex-start', paddingTop: '12px', paddingBottom: '12px' }}>
+      {notification.icon ? (
+        <span class="tile">
+          <Glyph name={notification.icon} size={20} />
+        </span>
+      ) : (
+        <span class="ax-avatar" data-photo={notification.photo} />
+      )}
+      <div class="ax-item-content" style={{ gap: '4px' }}>
+        <span class="ax-subhead clamp">
+          {notification.actor && <span class="ax-semibold">{notification.actor} </span>}
+          {notification.message}
+        </span>
+        <span class={`ax-footnote ${notification.unread ? 'ax-link' : 'ax-muted'}`}>{notification.time}</span>
+        {notification.action && (
+          <span style={{ paddingTop: '4px' }}>
+            <span class="ax-btn" data-size="sm" data-variant="outline">{notification.action}</span>
+          </span>
+        )}
+      </div>
+      {notification.unread && <span class="ax-badge" data-kind="dot" style={{ marginTop: '8px' }} />}
+    </div>
+  ))}
+</div>
+
+<style>
+  .tile {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: var(--ax-background-subtle);
+    color: var(--ax-content-default);
+  }
+  .clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

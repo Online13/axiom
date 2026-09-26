@@ -1,0 +1,74 @@
+---
+// Conversation Item rows drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors registry/compositions/conversation-item.
+// `photo` picks a gradient stand-in of `.ax-avatar[data-photo]`; without it, the avatar shows the initials on a hue from the name.
+interface Conversation {
+  name: string;
+  preview: string;
+  time: string;
+  photo?: 1 | 2 | 3 | 4 | 5;
+  unread?: number;
+  muted?: boolean;
+  online?: boolean;
+}
+
+interface Props {
+  conversations: Conversation[];
+}
+
+const { conversations } = Astro.props;
+
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word, index, words) => (index === 0 || index === words.length - 1 ? word[0] : ''))
+    .join('')
+    .toUpperCase();
+// Stands in for `colorFromName`: a stable hue from the name.
+const hue = (name: string) => [...name].reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) | 0, 0) % 360;
+---
+
+<div class="ax-list" data-variant="plain">
+  {conversations.map((conversation) => {
+    const unread = (conversation.unread ?? 0) > 0;
+    return (
+      <div class="ax-item" data-size="lg">
+        <span
+          class="ax-avatar"
+          data-size="lg"
+          data-photo={conversation.photo}
+          style={conversation.photo ? undefined : { background: `hsl(${hue(conversation.name)} 55% 55%)`, color: '#fff' }}
+        >
+          {initials(conversation.name)}
+          {conversation.online && <span class="ax-avatar-status" style={{ width: '14px', height: '14px' }} />}
+        </span>
+        <div class="ax-item-content" style={{ gap: '4px' }}>
+          <div class="ax-row" style={{ gap: '8px' }}>
+            <span class={`ax-grow ax-truncate ${unread ? 'ax-semibold' : 'medium'}`}>{conversation.name}</span>
+            <span class={`ax-footnote ${unread && !conversation.muted ? 'ax-link' : 'ax-muted'}`}>{conversation.time}</span>
+          </div>
+          <div class="ax-row" style={{ gap: '8px' }}>
+            <span class={`ax-subhead ax-grow clamp ${unread ? '' : 'ax-muted'}`}>{conversation.preview}</span>
+            {unread && (
+              <span class="ax-badge" data-kind={conversation.muted ? undefined : 'count'} style={conversation.muted ? { height: '20px', padding: '0 6px' } : undefined}>
+                {conversation.unread}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  })}
+</div>
+
+<style>
+  .medium {
+    font-weight: 500;
+  }
+  .clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

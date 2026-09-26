@@ -1,0 +1,112 @@
+---
+title: Event Card
+description: "Event photo with a date tile, time and place, who's going and a ticket button."
+---
+
+<PhonePreview tall>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		This week
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<EventCardPreview
+			image="concert"
+			title="Night Owls live"
+			month="Oct"
+			day="12"
+			details={[
+				{ icon: "clock", label: "Sat · 8:00 PM" },
+				{ icon: "pin", label: "Brooklyn Steel, New York" },
+			]}
+			attendees={[1, 2, 5]}
+			going={124}
+			action="Get tickets"
+		/>
+		<EventCardPreview
+			image="conference"
+			title="Design Systems Summit"
+			month="Oct"
+			day="16"
+			details={[
+				{ icon: "clock", label: "Wed · 9:30 AM" },
+				{ icon: "pin", label: "Pier 27, San Francisco" },
+			]}
+			attendees={[3, 4]}
+			going={2}
+			action="RSVP"
+		/>
+	</div>
+</PhonePreview>
+
+Event Card is designed for a vertical feed: each card takes the full width of the list, one event per row. There is no width to set.
+
+## Installation
+
+```npm
+npx axiom add event-card
+```
+
+Also copies: [`card`](/docs/atoms/card), [`avatar`](/docs/atoms/avatar), [`icon`](/docs/atoms/icon), [`button`](/docs/atoms/button), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/event-card.tsx`. It brings no tokens of its own.
+
+The detail icons come from your [icon registry](/docs/atoms/icon). Add the ones you use to `icons.tsx`, for example with `expo-symbols`:
+
+```tsx title="components/ui/icons.tsx"
+time: symbol("clock", "schedule"),
+location: symbol("mappin.and.ellipse", "location_on"),
+```
+
+## Usage
+
+```tsx
+import { EventCard } from "@/components/compositions/event-card";
+
+<EventCard
+	title="Night Owls live"
+	image={{ uri: event.photo }}
+	date={new Date(event.startsAt)}
+	details={[
+		{ icon: "time", label: "Sat · 8:00 PM" },
+		{ icon: "location", label: "Brooklyn Steel, New York" },
+	]}
+	attendees={event.friendsGoing}
+	attendeeCount={event.goingCount}
+	onAction={() => router.push(`/events/${event.id}/tickets`)}
+	onPress={() => router.push(`/events/${event.id}`)}
+/>;
+```
+
+The date tile formats `date` in the device's locale: "OCT" and "12" on the photo, and the full date, "Sunday, October 12", for screen readers. The `details` are yours to format.
+
+## Props
+
+| Prop            | Type                   | Default         | Description                                                                                        |
+| --------------- | ---------------------- | --------------- | -------------------------------------------------------------------------------------------------- |
+| `title`         | `string`               | —               | Name of the event, up to two lines.                                                                |
+| `image`         | `ImageSourcePropType`  | —               | The photo, in 16:9 at the top of the card.                                                         |
+| `date`          | `Date`                 | —               | Shown as a month and day tile on the photo.                                                        |
+| `details`       | `EventDetail[]`        | —               | `{ icon?, label }`: time, place. One muted line each, under the title.                             |
+| `attendees`     | `EventAttendee[]`      | —               | `{ name, avatar? }`. The first three show as overlapping [Avatars](/docs/atoms/avatar).             |
+| `attendeeCount` | `number`               | `attendees.length` | The total in "**124** going", often larger than the avatars shown.                              |
+| `attendeeLabel` | `string`               | `"going"`       | The word after the count.                                                                          |
+| `actionLabel`   | `string`               | `"Get tickets"` | Label of the action button.                                                                        |
+| `onAction`      | `() => void`           | —               | Shows the small button, next to the attendees. Without it, there is no button.                     |
+| `onPress`       | `() => void`           | —               | Makes the whole card pressable, to open the event. The button keeps its own press.                 |
+| `style`         | `StyleProp<ViewStyle>` | —               | Extra styles for the card container, for example a margin.                                         |
+
+## Built with
+
+- [Card](/docs/atoms/card): the elevated surface, its media, header and footer.
+- [Title](/docs/atoms/title): the event name and the day of the date tile.
+- [Text](/docs/atoms/text): the month, the details and the count.
+- [Icon](/docs/atoms/icon): the detail icons, from your registry.
+- [Avatar](/docs/atoms/avatar): `Avatar.Group`, the people going.
+- [Button](/docs/atoms/button): the small action.
+
+## Used in
+
+No block uses Event Card yet.
+
+## Related
+
+- [Profile Card](/docs/compositions/profile-card)
+- [Article Card](/docs/compositions/article-card)
+- [Compositions](/docs/compositions)

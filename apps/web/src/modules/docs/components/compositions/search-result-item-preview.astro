@@ -1,0 +1,84 @@
+---
+// Search Result Item rows drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors registry/compositions/search-result-item.
+// The first match of `query` in the title is bold. A row has a `tone` thumbnail, round with `circle`, or an `icon` tile.
+import Glyph from '@docs/components/preview/glyph.astro';
+
+interface Result {
+  title: string;
+  subtitle?: string;
+  meta?: string;
+  tone?: 1 | 2 | 3 | 4 | 5 | 6;
+  circle?: boolean;
+  icon?: 'clock' | 'search' | 'settings' | 'file' | 'music' | 'pin';
+  action?: 'plus' | 'share';
+}
+
+interface Props {
+  query?: string;
+  results: Result[];
+}
+
+const { query, results } = Astro.props;
+
+const split = (text: string) => {
+  const start = query ? text.toLowerCase().indexOf(query.toLowerCase()) : -1;
+  if (!query || start < 0) return null;
+  return [text.slice(0, start), text.slice(start, start + query.length), text.slice(start + query.length)];
+};
+---
+
+<div class="ax-list" data-variant="plain">
+  {results.map((result) => {
+    const parts = split(result.title);
+    return (
+      <div class="ax-item" data-size={result.meta ? 'lg' : undefined}>
+        {result.tone ? (
+          <span class="ax-media thumb" data-tone={result.tone === 1 ? undefined : result.tone} style={result.circle ? { borderRadius: '999px' } : undefined} />
+        ) : result.icon ? (
+          <span class="thumb tile ax-muted">
+            <Glyph name={result.icon} size={20} />
+          </span>
+        ) : null}
+        <div class="ax-item-content">
+          <span class="ax-item-title">
+            {parts ? (
+              <>
+                {parts[0]}
+                <b>{parts[1]}</b>
+                {parts[2]}
+              </>
+            ) : (
+              result.title
+            )}
+          </span>
+          {result.subtitle && <span class="ax-item-desc">{result.subtitle}</span>}
+          {result.meta && <span class="ax-caption ax-subtle ax-truncate">{result.meta}</span>}
+        </div>
+        <span class="ax-item-trailing">
+          {result.action ? (
+            <span class="ax-icon-btn" data-size="sm" data-variant="tinted">
+              <Glyph name={result.action} size={18} />
+            </span>
+          ) : (
+            <Glyph name="chevron-right" size={18} />
+          )}
+        </span>
+      </div>
+    );
+  })}
+</div>
+
+<style>
+  .thumb {
+    width: 44px;
+    height: 44px;
+    flex: none;
+    border-radius: 8px;
+  }
+  .tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ax-background-subtle);
+  }
+</style>

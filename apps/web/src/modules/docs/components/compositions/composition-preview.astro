@@ -1,8 +1,22 @@
 ---
 // Small in-context preview of a composition, drawn with the `.ax-*` classes of preview.css at real iOS sizes.
-// It mirrors the registry implementation: ProductCard is an outlined Card, SettingsItem an Item with a muted Icon.
+// It mirrors the registry implementation: ProductCard is an outlined Card, SettingsItem an Item with a muted Icon,
+// Listing Card shows its stacked and overlay layouts side by side.
 // CompositionCard shrinks it into its preview panel; it follows the scheme of its `data-ax-preview` parent.
 import Glyph from '@docs/components/preview/glyph.astro';
+import ListingCardPreview from './listing-card-preview.astro';
+import RecipeCardPreview from './recipe-card-preview.astro';
+import ProfileCardPreview from './profile-card-preview.astro';
+import ArticleCardPreview from './article-card-preview.astro';
+import EventCardPreview from './event-card-preview.astro';
+import TrackItemPreview from './track-item-preview.astro';
+import ConversationItemPreview from './conversation-item-preview.astro';
+import NotificationItemPreview from './notification-item-preview.astro';
+import SearchResultItemPreview from './search-result-item-preview.astro';
+import OfferCardPreview from './offer-card-preview.astro';
+import PricingCardPreview from './pricing-card-preview.astro';
+import StatsCardPreview from './stats-card-preview.astro';
+import AppBarPreview from './app-bar-preview.astro';
 
 interface Props {
   slug: string;
@@ -61,3 +75,197 @@ const products = [
     </div>
   </div>
 )}
+
+{slug === 'listing-card' && (
+  <div class="ax-row" style={{ gap: '12px', padding: '16px', alignItems: 'flex-start' }}>
+    <ListingCardPreview
+      variant="default"
+      image="sunny-loft"
+      title="Sunny loft"
+      price="$3,679"
+      priceUnit="/mo"
+      subtitle="Quiet, bright, near the park"
+      badge="Guest favorite"
+      width={200}
+    />
+    <ListingCardPreview
+      variant="overlay"
+      image="red-cabin"
+      title="Red cabin"
+      price="$200k"
+      subtitle="Highland Ave."
+      width={160}
+    />
+  </div>
+)}
+
+{slug === 'recipe-card' && (
+  <div class="ax-stack" style={{ padding: '16px' }}>
+    <RecipeCardPreview
+      image="red-curry"
+      title="Thai red curry"
+      description="Coconut, lemongrass and fresh basil."
+      badge="Spicy"
+      stats={[
+        { icon: 'clock', value: '20', label: 'mins' },
+        { icon: 'users', value: '4', label: 'servings' },
+        { icon: 'flame', value: 'Medium' },
+      ]}
+    />
+  </div>
+)}
+
+{slug === 'profile-card' && (
+  <div class="ax-stack" style={{ padding: '16px' }}>
+    <ProfileCardPreview
+      name="Lena Moreau"
+      handle="@lena.m"
+      photo={3}
+      stats={[
+        { value: '248', label: 'Posts' },
+        { value: '12.4k', label: 'Followers' },
+        { value: '310', label: 'Following' },
+      ]}
+    />
+  </div>
+)}
+
+{slug === 'article-card' && (
+  <div class="ax-stack" style={{ padding: '16px' }}>
+    <ArticleCardPreview
+      image="skyline"
+      category="Cities"
+      title="Why new towers are getting thinner"
+      author={{ name: 'Sam Okafor', photo: 4 }}
+      meta="Sep 24 · 6 min read"
+    />
+  </div>
+)}
+
+{slug === 'event-card' && (
+  <div class="ax-stack" style={{ padding: '16px' }}>
+    <EventCardPreview
+      image="concert"
+      title="Night Owls live"
+      month="Oct"
+      day="12"
+      details={[{ icon: 'pin', label: 'Brooklyn Steel, New York' }]}
+      attendees={[1, 2, 5]}
+      going={124}
+      action="Get tickets"
+    />
+  </div>
+)}
+
+{slug === 'track-item' && (
+  <div style={{ paddingTop: '8px' }}>
+    <TrackItemPreview
+      tracks={[
+        { title: 'Midnight City', artist: 'M83', duration: '4:03', tone: 2, playing: true },
+        { title: 'Blue Monday', artist: 'New Order', duration: '7:29', tone: 4 },
+        { title: 'Nightcall', artist: 'Kavinsky', duration: '4:18', tone: 5, explicit: true },
+      ]}
+    />
+  </div>
+)}
+
+{slug === 'conversation-item' && (
+  <div style={{ paddingTop: '4px' }}>
+    <ConversationItemPreview
+      conversations={[
+        { name: 'Lena Moreau', photo: 3, preview: 'See you at 8, I booked the table', time: '9:41', unread: 2, online: true },
+        { name: 'Design team', preview: 'Sam: the new icons are in Figma', time: 'Yesterday' },
+        { name: 'Sam Okafor', photo: 4, preview: 'Thanks!', time: 'Mon' },
+      ]}
+    />
+  </div>
+)}
+
+{slug === 'notification-item' && (
+  <NotificationItemPreview
+    notifications={[
+      { actor: 'Lena Moreau', photo: 3, message: 'started following you.', time: '2m', unread: true, action: 'Follow back' },
+      { icon: 'cart', message: 'Your order #10482 has shipped.', time: '1h' },
+    ]}
+  />
+)}
+
+{slug === 'search-result-item' && (
+  <div style={{ paddingTop: '8px' }}>
+    <SearchResultItemPreview
+      query="night"
+      results={[
+        { title: 'Nightcall', subtitle: 'Kavinsky', tone: 5, action: 'plus' },
+        { title: 'Night Owls', subtitle: 'Artist', tone: 3, circle: true },
+        { title: 'Night mode', subtitle: 'Settings › Display', icon: 'settings' },
+      ]}
+    />
+  </div>
+)}
+
+
+
+
+{slug === 'offer-card' && (
+  <div class="ax-stack" style={{ padding: '16px' }}>
+    <OfferCardPreview
+      title="Sapphire Travel card"
+      benefit="5% back on travel"
+      badge="Limited offer"
+      fee="$0 the first year"
+    />
+  </div>
+)}
+
+{slug === 'pricing-card' && (
+  <div class="ax-stack" style={{ padding: '16px' }}>
+    <PricingCardPreview
+      name="Pro"
+      price="$12"
+      period="/month"
+      badge="Most popular"
+      featured
+      features={['Unlimited projects', 'Priority support']}
+      action="Start free trial"
+    />
+  </div>
+)}
+
+{slug === 'stats-card' && (
+  <div class="ax-row" style={{ gap: '12px', padding: '16px', alignItems: 'stretch' }}>
+    <div class="ax-grow" style={{ flexBasis: '0px', display: 'flex' }}>
+      <StatsCardPreview label="Revenue" value="$12,480" icon="wallet" change="+12.4%" tone="success" />
+    </div>
+    <div class="ax-grow" style={{ flexBasis: '0px', display: 'flex' }}>
+      <StatsCardPreview label="Spending" value="$3,210" icon="cart" change="+8%" tone="error" />
+    </div>
+  </div>
+)}
+
+
+{slug === 'search-app-bar' && (
+  <div style={{ paddingTop: '12px' }}>
+    <AppBarPreview variant="search" query="running shoes" actions={[{ icon: 'sliders', badge: 2 }]} />
+    <SearchResultItemPreview
+      query="running"
+      results={[
+        { title: 'Trail running shoes', subtitle: '$129', tone: 4 },
+        { title: 'Running socks, 3 pack', subtitle: '$18', tone: 3 },
+      ]}
+    />
+  </div>
+)}
+
+{slug === 'profile-app-bar' && (
+  <div style={{ paddingTop: '12px' }}>
+    <AppBarPreview
+      variant="profile"
+      name="Lena Moreau"
+      greeting="Good morning"
+      photo={3}
+      actions={[{ icon: 'bell', badge: 3 }, { icon: 'menu' }]}
+    />
+  </div>
+)}
+
+

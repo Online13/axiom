@@ -1,0 +1,94 @@
+---
+title: Notification Item
+description: "Avatar or icon, a message after the actor's name, time, unread dot and an optional button."
+---
+
+<PhonePreview>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Activity
+	</div>
+	<NotificationItemPreview
+		notifications={[
+			{ actor: "Lena Moreau", photo: 3, message: "started following you.", time: "2m", unread: true, action: "Follow back" },
+			{ actor: "Sam Okafor", photo: 4, message: "commented on your photo: “That light is unreal.”", time: "1h", unread: true },
+			{ icon: "cart", message: "Your order #10482 has shipped. It arrives tomorrow.", time: "3h" },
+			{ icon: "lock", message: "New sign-in on a Mac in Lyon, France.", time: "Yesterday" },
+		]}
+	/>
+</PhonePreview>
+
+A notification from a person shows their avatar and starts with their name in bold. A system notification shows an icon on a tinted tile. Unread rows end with a dot.
+
+## Installation
+
+```npm
+npx axiom add notification-item
+```
+
+Also copies: [`item`](/docs/atoms/item), [`avatar`](/docs/atoms/avatar), [`icon`](/docs/atoms/icon), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/notification-item.tsx`. It brings no tokens of its own.
+
+## Usage
+
+```tsx
+import { NotificationItem } from "@/components/compositions/notification-item";
+
+// From a person
+<NotificationItem
+	actor={event.user.name}
+	avatar={{ uri: event.user.avatarUrl }}
+	message="started following you."
+	time="2m"
+	unread={!event.readAt}
+	actionLabel="Follow back"
+	onAction={() => follow(event.user.id)}
+	onPress={() => router.push(`/users/${event.user.id}`)}
+/>
+
+// From the app
+<NotificationItem
+	icon="shipping"
+	message="Your order #10482 has shipped."
+	time="3h"
+	onPress={() => router.push("/orders/10482")}
+/>
+```
+
+`icon` takes a name from your [icon registry](/docs/atoms/icon): add `shipping`, `security`… to `icons.tsx` first.
+
+## Props
+
+| Prop          | Type                  | Default | Description                                                                                  |
+| ------------- | --------------------- | ------- | -------------------------------------------------------------------------------------------- |
+| `actor`       | `string`              | —       | Who the notification is about, in bold before the message. Gives the avatar its initials.   |
+| `message`     | `string`              | —       | The rest of the sentence, up to three lines with the actor.                                  |
+| `time`        | `string`              | —       | Already formatted: `"2m"`, `"Yesterday"`. In the link color while unread.                    |
+| `avatar`      | `ImageSourcePropType` | —       | The actor's photo, in an `md` [Avatar](/docs/atoms/avatar).                                  |
+| `icon`        | `IconName`            | —       | Replaces the avatar with the icon on a round tile, when there is no `avatar`.                |
+| `unread`      | `boolean`             | `false` | Adds a dot at the end of the row.                                                            |
+| `actionLabel` | `string`              | —       | Label of the button under the message.                                                       |
+| `onAction`    | `() => void`          | —       | Shows the outlined `sm` button, with `actionLabel`.                                          |
+| `onPress`     | `() => void`          | —       | Opens what the notification is about.                                                        |
+| `onLongPress` | `() => void`          | —       | Usually opens a menu: mark as read, turn off this kind.                                      |
+
+## Accessibility
+
+The row reads as one element and starts with its state: "Unread, Lena Moreau started following you., 2m". The button stays a separate element, labelled with the actor: "Follow back, Lena Moreau".
+
+## Built with
+
+- [Item](/docs/atoms/item): the row, aligned to the top so long messages wrap under the avatar.
+- [Avatar](/docs/atoms/avatar): the actor's photo or initials.
+- [Icon](/docs/atoms/icon): the system icon.
+- [Badge](/docs/atoms/badge): the unread dot.
+- [Button](/docs/atoms/button): the action.
+- [Text](/docs/atoms/text): the message and the time.
+
+## Used in
+
+No block uses Notification Item yet.
+
+## Related
+
+- [Conversation Item](/docs/compositions/conversation-item)
+- [Empty](/docs/atoms/empty): for an empty activity feed.
+- [Compositions](/docs/compositions)

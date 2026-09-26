@@ -1,0 +1,15 @@
+---
+// Content shown only while its variant is selected in the VariantTabs of the same `group`.
+interface Props {
+  group: string;
+  value: string;
+  /** The panels of the default variant, visible before any pill is pressed. */
+  active?: boolean;
+}
+
+const { group, value, active = false } = Astro.props;
+---
+
+<div data-variant-panel={group} data-value={value} data-active={active ? '' : undefined}>
+  <slot />
+</div>

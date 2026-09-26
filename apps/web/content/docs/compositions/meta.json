@@ -1,4 +1,4 @@
 {
 	"title": "Compositions",
-	"pages": ["product-card", "settings-item"]
+	"pages": ["product-card", "listing-card", "recipe-card", "article-card", "event-card", "profile-card", "settings-item", "track-item", "conversation-item", "notification-item", "search-result-item", "offer-card", "pricing-card", "stats-card", "search-app-bar", "profile-app-bar"]
 }

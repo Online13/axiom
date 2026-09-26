@@ -1,0 +1,91 @@
+---
+title: Profile App Bar
+description: "Avatar, greeting and name, with notification and menu buttons."
+---
+
+<PhonePreview>
+	<AppBarPreview
+		variant="profile"
+		name="Lena Moreau"
+		greeting="Good morning"
+		photo={3}
+		actions={[{ icon: "bell", badge: 3 }, { icon: "menu" }]}
+	/>
+	<div class="ax-stack" data-gap="16" style={{ padding: "16px" }}>
+		<div class="ax-row" style={{ gap: "12px", alignItems: "stretch" }}>
+			<div class="ax-grow" style={{ flexBasis: "0px", display: "flex" }}>
+				<StatsCardPreview label="Balance" value="$4,820" icon="wallet" change="+2.1%" tone="success" />
+			</div>
+			<div class="ax-grow" style={{ flexBasis: "0px", display: "flex" }}>
+				<StatsCardPreview label="Spent" value="$612" icon="cart" change="−4%" tone="success" />
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+The home of an app: who's signed in on the left, notifications and menu on the right. The notifications button carries a counter.
+
+## Installation
+
+```npm
+npx axiom add profile-app-bar
+```
+
+Also copies: [`app-bar`](/docs/templates/app-bar), [`avatar`](/docs/atoms/avatar), [`icon-button`](/docs/atoms/icon-button), [`badge`](/docs/atoms/badge), [`tappable`](/docs/core/tappable), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/profile-app-bar.tsx`. It brings no tokens of its own.
+
+## Usage
+
+```tsx
+import { ProfileAppBar } from "@/components/compositions/profile-app-bar";
+
+<ProfileAppBar
+	name={user.firstName}
+	avatar={{ uri: user.avatarUrl }}
+	greeting={greetingFor(new Date())}
+	onProfilePress={() => router.push("/account")}
+	actions={[
+		{ icon: "notification", label: "Notifications", badge: unreadCount, onPress: () => router.push("/notifications") },
+		{ icon: "menu", label: "Menu", onPress: openMenu },
+	]}
+/>;
+```
+
+`icon` takes a name from your [icon registry](/docs/atoms/icon): add `notification` and `menu` to `icons.tsx` first. The greeting is yours to compute, in the user's language: the bar only shows it.
+
+## Props
+
+| Prop             | Type                   | Default     | Description                                                                              |
+| ---------------- | ---------------------- | ----------- | ---------------------------------------------------------------------------------------- |
+| `name`           | `string`               | —           | The signed-in user. Gives the avatar its initials when there is no photo.                |
+| `avatar`         | `ImageSourcePropType`  | —           | The photo, in an `sm` [Avatar](/docs/atoms/avatar).                                      |
+| `greeting`       | `string`               | —           | Small line above the name: `"Good morning"`.                                             |
+| `onProfilePress` | `() => void`           | —           | Makes the avatar and the name one pressable, to open the profile or an account switcher. |
+| `profileLabel`   | `string`               | `"Profile"` | Read before the name when pressable: "Profile, Lena Moreau".                             |
+| `actions`        | `AppBarAction[]`       | —           | Up to two buttons at the end: `{ icon, label, onPress, badge? }`.                        |
+| `bordered`       | `boolean`              | `false`     | Hairline under the bar.                                                                  |
+| `safeArea`       | `boolean`              | `true`      | Adds the top safe-area inset. `false` inside [Scaffold](/docs/templates/scaffold).       |
+| `style`          | `StyleProp<ViewStyle>` | —           | Styles for the bar.                                                                      |
+
+An action's `badge` is a number for a counter, or `true` for a dot.
+
+## Accessibility
+
+The avatar, the greeting and the name are one element. Pressable, it's a button: "Profile, Lena Moreau". Otherwise it reads "Good morning, Lena Moreau". An action with a counter reads it after its label: "Notifications, 3".
+
+## Built with
+
+- [AppBar](/docs/templates/app-bar): the bar, its safe area and its slots.
+- [Avatar](/docs/atoms/avatar): the photo or the initials.
+- [Title](/docs/atoms/title) and [Text](/docs/atoms/text): the name and the greeting.
+- [Tappable](/docs/core/tappable): the pressable identity.
+- [IconButton](/docs/atoms/icon-button) and [Badge](/docs/atoms/badge): the actions and their counters.
+
+## Used in
+
+No block uses Profile App Bar yet.
+
+## Related
+
+- [Search App Bar](/docs/compositions/search-app-bar)
+- [Stats Card](/docs/compositions/stats-card): the cards under the bar in the preview.
+- [Compositions](/docs/compositions)

@@ -117,7 +117,7 @@ const session: Line[] = [
 				<span>agent session</span>
 				<span class="session__tag">preview</span>
 			</div>
-			<ol class="session__lines">
+			<ol class="session__lines" aria-live="off">
 				{
 					session.map((line) => (
 						<li
@@ -138,6 +138,10 @@ const session: Line[] = [
 						</li>
 					))
 				}
+				<li class="session__line session__input" aria-hidden="true">
+					<span class="session__mark">$</span>
+					<span class="session__text"><span data-typed></span><span class="session__cursor"></span></span>
+				</li>
 			</ol>
 		</div>
 	</div>
@@ -150,19 +154,87 @@ const session: Line[] = [
 		const buttons = [
 			...root.querySelectorAll<HTMLButtonElement>(".agents__step"),
 		];
-		const session = root.querySelector<HTMLElement>(".session");
+		const session = root.querySelector<HTMLElement>(".session")!;
+		const lines = [...session.querySelectorAll<HTMLElement>(".session__line[data-step]")];
+		const typed = session.querySelector<HTMLElement>("[data-typed]")!;
+		const animated = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-		function select(button: HTMLButtonElement) {
-			buttons.forEach((item) =>
-				item.setAttribute("aria-pressed", String(item === button)),
+		function select(index: number) {
+			buttons.forEach((item, i) =>
+				item.setAttribute("aria-pressed", String(i === index)),
 			);
-			if (session && button.dataset.step) {
-				session.dataset.active = button.dataset.step;
+			session.dataset.active = buttons[index].dataset.step;
+		}
+
+		// A scripted terminal: each command is typed on the input line, its output prints
+		// underneath and older lines scroll off the top. At the end it types `clear` and loops.
+		// Every run carries a token; starting a new run (a click) makes the old one bail out.
+		let token = 0;
+		let onScreen = false;
+		let wake: (() => void) | null = null;
+
+		new IntersectionObserver(([entry]) => {
+			onScreen = entry.isIntersecting;
+			if (onScreen) wake?.();
+		}).observe(session);
+
+		async function sleep(ms: number, id: number) {
+			await new Promise((resolve) => setTimeout(resolve, ms));
+			if (!onScreen) await new Promise<void>((resolve) => (wake = resolve));
+			if (id !== token) throw new Error("cancelled");
+		}
+
+		async function type(text: string, id: number) {
+			typed.textContent = "";
+			for (const char of text) {
+				await sleep(28 + Math.random() * 45, id);
+				typed.textContent += char;
+			}
+			await sleep(320, id);
+			typed.textContent = "";
+		}
+
+		const show = (line: HTMLElement) => line.setAttribute("data-shown", "");
+		const clear = () => lines.forEach((line) => line.removeAttribute("data-shown"));
+
+		async function play(from: number, id: number) {
+			for (;;) {
+				clear();
+				await sleep(400, id);
+				lines.filter((line) => line.dataset.step === "prompt").forEach(show);
+				await sleep(700, id);
+
+				for (let i = from; i < buttons.length; i++) {
+					select(i);
+					for (const line of lines.filter((l) => l.dataset.step === buttons[i].dataset.step)) {
+						if (line.classList.contains("is-cmd")) {
+							await type(line.querySelector(".session__text")!.textContent ?? "", id);
+						} else {
+							await sleep(260 + Math.random() * 220, id);
+						}
+						show(line);
+					}
+					await sleep(1600, id);
+				}
+
+				await type("clear", id);
+				from = 0;
 			}
 		}
 
+		function start(from: number) {
+			const id = ++token;
+			typed.textContent = "";
+			play(from, id).catch(() => {});
+		}
+
+		if (animated) {
+			session.dataset.live = "";
+			start(0);
+		}
+
 		buttons.forEach((button, index) => {
-			button.addEventListener("click", () => select(button));
+			button.addEventListener("click", () => (animated ? start(index) : select(index)));
 			button.addEventListener("keydown", (event) => {
 				const offset = {
 					ArrowDown: 1,
@@ -172,9 +244,10 @@ const session: Line[] = [
 				}[event.key];
 				if (!offset) return;
 				event.preventDefault();
-				const next = buttons[(index + offset + buttons.length) % buttons.length];
-				select(next);
-				next.focus();
+				const next = (index + offset + buttons.length) % buttons.length;
+				if (animated) start(next);
+				else select(next);
+				buttons[next].focus();
 			});
 		});
 	}
@@ -339,6 +412,61 @@ const session: Line[] = [
 
 	.session__line.is-cmd {
 		margin-top: 0.75rem;
+	}
+
+	/* Live terminal: fixed height, lines stack from the bottom and push older ones off the top. */
+	.session__input {
+		display: none;
+	}
+
+	.session[data-live] .session__lines {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		height: 21rem;
+		overflow: hidden;
+	}
+
+	.session[data-live] .session__line:not([data-shown], .session__input) {
+		display: none;
+	}
+
+	.session[data-live] .session__line[data-shown] {
+		animation: session-print 0.18s ease-out;
+	}
+
+	.session[data-live] .session__input {
+		display: grid;
+		grid-template-columns: 1.5rem 1fr;
+		margin-top: 0.75rem;
+		color: var(--fg);
+	}
+
+	.session__input .session__mark {
+		color: var(--muted);
+	}
+
+	.session__cursor {
+		display: inline-block;
+		width: 0.5em;
+		height: 1.1em;
+		margin-left: 1px;
+		vertical-align: -0.2em;
+		background: #ff5a1f;
+		animation: session-blink 1s steps(1) infinite;
+	}
+
+	@keyframes session-print {
+		from {
+			opacity: 0;
+			transform: translateY(0.4rem);
+		}
+	}
+
+	@keyframes session-blink {
+		50% {
+			opacity: 0;
+		}
 	}
 
 	.session__line.is-prompt {

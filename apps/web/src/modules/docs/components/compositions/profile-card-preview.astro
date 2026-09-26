@@ -1,0 +1,82 @@
+---
+// A Profile Card drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors registry/compositions/profile-card.
+// `photo` picks one of the gradient stand-ins of `.ax-avatar[data-photo]`; without it, the avatar shows the initials.
+interface Props {
+  name: string;
+  handle?: string;
+  photo?: 1 | 2 | 3 | 4 | 5;
+  bio?: string;
+  stats?: { value: string; label: string }[];
+  following?: boolean;
+  follow?: boolean;
+  message?: boolean;
+}
+
+const { name, handle, photo, bio, stats = [], following = false, follow = true, message = true } = Astro.props;
+const initials = name
+  .split(/\s+/)
+  .filter(Boolean)
+  .map((word, index, words) => (index === 0 || index === words.length - 1 ? word[0] : ''))
+  .join('')
+  .toUpperCase();
+// Stands in for `colorFromName`: a stable hue from the name.
+const hue = [...name].reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) | 0, 0) % 360;
+---
+
+<div class="ax-card" style={{ alignSelf: 'stretch' }}>
+  <div class="ax-stack" style={{ gap: '12px', alignItems: 'center', padding: '16px 16px 0', textAlign: 'center' }}>
+    <span class="ax-avatar" data-size="xl" data-photo={photo} style={photo ? undefined : { background: `hsl(${hue} 55% 55%)`, color: '#fff' }}>
+      {initials}
+    </span>
+    <div class="ax-stack" data-gap="4" style={{ alignItems: 'center', minWidth: 0 }}>
+      <span class="ax-title3 ax-truncate">{name}</span>
+      {handle && <span class="ax-subhead ax-muted">{handle}</span>}
+    </div>
+    {bio && <span class="ax-subhead clamp">{bio}</span>}
+  </div>
+  {
+    stats.length > 0 && (
+      <div class="ax-row" style={{ padding: '16px 16px 0' }}>
+        {stats.map((stat, index) => (
+          <>
+            {index > 0 && <span class="ax-separator" data-orientation="vertical" data-variant="subtle" />}
+            <div class="ax-stack ax-grow" data-gap="4" style={{ alignItems: 'center', flexBasis: '0px' }}>
+              <span class="ax-headline">{stat.value}</span>
+              <span class="ax-caption ax-muted">{stat.label}</span>
+            </div>
+          </>
+        ))}
+      </div>
+    )
+  }
+  {
+    (follow || message) && (
+      <div class="ax-row" style={{ gap: '8px', padding: '16px 16px 0' }}>
+        {follow && (
+          <div class="ax-grow" style={{ flexBasis: '0px' }}>
+            <span class="ax-btn" data-block data-variant={following ? 'outline' : undefined}>
+              {following ? 'Following' : 'Follow'}
+            </span>
+          </div>
+        )}
+        {message && (
+          <div class="ax-grow" style={{ flexBasis: '0px' }}>
+            <span class="ax-btn" data-block data-variant="outline">
+              Message
+            </span>
+          </div>
+        )}
+      </div>
+    )
+  }
+  <div style={{ height: '16px' }}></div>
+</div>
+
+<style>
+  .clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

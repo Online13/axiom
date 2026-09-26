@@ -1,0 +1,46 @@
+---
+// One spec of a Recipe or Listing Card preview: icon, value in semibold, label muted.
+// `onMedia` draws it white, for the overlay cards.
+import Glyph from '@docs/components/preview/glyph.astro';
+
+export type SpecData = {
+  icon: 'bed' | 'bath' | 'area' | 'door' | 'clock' | 'users' | 'flame';
+  value: string;
+  label?: string;
+};
+
+interface Props {
+  spec: SpecData;
+  onMedia?: boolean;
+}
+
+const { spec, onMedia = false } = Astro.props;
+---
+
+<span class:list={['spec ax-row ax-footnote', { 'on-media': onMedia }]}>
+  <Glyph name={spec.icon} size={16} />
+  <span class="ax-truncate">
+    <span class="value">{spec.value}</span>
+    {spec.label && ` ${spec.label}`}
+  </span>
+</span>
+
+<style>
+  .spec {
+    gap: 4px;
+    align-items: center;
+    min-width: 0;
+    color: var(--ax-content-muted);
+    font-weight: 400;
+  }
+  .value {
+    color: var(--ax-content-default);
+    font-weight: 600;
+  }
+  .on-media {
+    color: rgb(255 255 255 / 0.75);
+  }
+  .on-media .value {
+    color: #fff;
+  }
+</style>

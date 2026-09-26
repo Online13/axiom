@@ -1,0 +1,100 @@
+---
+title: Offer Card
+description: "Card art, a badge, the main benefit, short highlights, the fee and an apply button."
+---
+
+<PhonePreview tall>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		For you
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<OfferCardPreview
+			title="Sapphire Travel card"
+			benefit="5% back on travel"
+			badge="Limited offer"
+			highlights={["60,000 bonus points after $4,000 spent", "No foreign transaction fees", "Airport lounge access"]}
+			fee="$0 the first year"
+		/>
+		<OfferCardPreview
+			title="Everyday Cash card"
+			benefit="2% back on everything"
+			art="sunset"
+			highlights={["No annual fee", "0% intro APR for 15 months"]}
+			fee="$0"
+			action="See details"
+		/>
+	</div>
+</PhonePreview>
+
+The card art keeps the proportions of a real bank card, so any issuer's artwork fits without cropping.
+
+## Installation
+
+```npm
+npx axiom add offer-card
+```
+
+Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/offer-card.tsx`. It brings no tokens of its own.
+
+Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+
+## Usage
+
+```tsx
+import { OfferCard } from "@/components/compositions/offer-card";
+
+<OfferCard
+	title="Sapphire Travel card"
+	benefit="5% back on travel"
+	image={require("@/assets/cards/sapphire.png")}
+	badge="Limited offer"
+	highlights={[
+		"60,000 bonus points after $4,000 spent",
+		"No foreign transaction fees",
+	]}
+	fee="$0 the first year"
+	onAction={() => router.push("/apply/sapphire")}
+	onPress={() => router.push("/offers/sapphire")}
+/>;
+```
+
+Keep the benefit short: it's the one line people compare between offers. Details and legal text belong on the screen `onPress` opens.
+
+## Props
+
+| Prop          | Type                   | Default        | Description                                                                              |
+| ------------- | ---------------------- | -------------- | ---------------------------------------------------------------------------------------- |
+| `title`       | `string`               | —              | Name of the product, muted, above the benefit.                                           |
+| `benefit`     | `string`               | —              | The main benefit, in large type, up to two lines.                                        |
+| `image`       | `ImageSourcePropType`  | —              | The card art or the offer visual, 96pt wide at the ratio of a bank card (85.6 × 54 mm).  |
+| `badge`       | `string`               | —              | A highlight [Badge](/docs/atoms/badge) above the title: `"Limited offer"`.               |
+| `highlights`  | `string[]`             | —              | Selling points, each after a green check. Three read well.                               |
+| `fee`         | `string`               | —              | The cost, in the footer.                                                                 |
+| `feeLabel`    | `string`               | `"Annual fee"` | Above the fee.                                                                           |
+| `actionLabel` | `string`               | `"Apply now"`  | Label of the button.                                                                     |
+| `onAction`    | `() => void`           | —              | Shows the `sm` button at the end of the footer.                                          |
+| `onPress`     | `() => void`           | —              | Makes the whole card pressable. The button keeps its own press.                          |
+| `style`       | `StyleProp<ViewStyle>` | —              | Extra styles for the card, for example a margin.                                         |
+
+## Accessibility
+
+A pressable card reads as "Sapphire Travel card, 5% back on travel". The fee and its label are read together, and the button is labelled with the product: "Apply now, Sapphire Travel card".
+
+## Built with
+
+- [Card](/docs/atoms/card): the elevated surface, its header, content and footer.
+- [Badge](/docs/atoms/badge): the offer tag.
+- [Title](/docs/atoms/title): the benefit.
+- [Text](/docs/atoms/text): the title, highlights and fee.
+- [Icon](/docs/atoms/icon): the checks.
+- [Button](/docs/atoms/button): the apply button.
+
+## Used in
+
+No block uses Offer Card yet.
+
+## Related
+
+- [Pricing Card](/docs/compositions/pricing-card)
+- [Product Card](/docs/compositions/product-card)
+- [Compositions](/docs/compositions)

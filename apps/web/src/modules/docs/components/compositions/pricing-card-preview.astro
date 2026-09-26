@@ -1,0 +1,55 @@
+---
+// A Pricing Card drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors registry/compositions/pricing-card.
+// `featured` draws the 2pt primary border and the solid button; `current` the disabled "Current plan" button.
+import Glyph from '@docs/components/preview/glyph.astro';
+
+interface Props {
+  name: string;
+  price: string;
+  period?: string;
+  description?: string;
+  features?: string[];
+  badge?: string;
+  featured?: boolean;
+  current?: boolean;
+  action?: string;
+}
+
+const { name, price, period, description, features = [], badge, featured = false, current = false, action = 'Choose plan' } = Astro.props;
+---
+
+<div class="ax-card" data-variant="outlined" style={{ alignSelf: 'stretch', ...(featured ? { boxShadow: 'inset 0 0 0 2px var(--ax-primary-default)' } : {}) }}>
+  <div class="ax-stack" data-gap="8" style={{ padding: '16px 16px 0' }}>
+    <div class="ax-row" style={{ gap: '8px' }}>
+      <span class="ax-headline ax-grow">{name}</span>
+      {badge && (
+        <span class="ax-badge" data-variant={featured ? 'highlight' : undefined} style={{ height: '18px', padding: '0 6px', fontSize: '11px' }}>{badge}</span>
+      )}
+    </div>
+    <div class="ax-row" style={{ gap: '4px', alignItems: 'baseline' }}>
+      <span class="ax-title1">{price}</span>
+      {period && <span class="ax-subhead ax-muted">{period}</span>}
+    </div>
+    {description && <span class="ax-subhead ax-muted">{description}</span>}
+  </div>
+  {features.length > 0 && (
+    <div class="ax-stack" data-gap="8" style={{ padding: '16px 16px 0' }}>
+      {features.map((feature) => (
+        <span class="ax-row" style={{ gap: '8px' }}>
+          <span class={featured ? '' : 'ax-muted'}><Glyph name="check" size={18} /></span>
+          <span class="ax-subhead">{feature}</span>
+        </span>
+      ))}
+    </div>
+  )}
+  <div style={{ padding: '16px' }}>
+    <span
+      class="ax-btn"
+      data-block
+      data-variant={featured && !current ? undefined : 'outline'}
+      data-state={current ? 'disabled' : undefined}
+    >
+      {current ? 'Current plan' : action}
+    </span>
+  </div>
+</div>

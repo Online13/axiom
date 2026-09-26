@@ -6,6 +6,8 @@ import CodeBlockTabs from "@docs/components/code-block-tabs/code-block-tabs.astr
 import CodeBlockTabsList from "@docs/components/code-block-tabs/code-block-tabs-list.astro";
 import CodeBlockTabsTrigger from "@docs/components/code-block-tabs/code-block-tabs-trigger.astro";
 import CodeBlockTab from "@docs/components/code-block-tabs/code-block-tab.astro";
+import VariantTabs from "@docs/components/variant-tabs/variant-tabs.astro";
+import VariantPanel from "@docs/components/variant-tabs/variant-panel.astro";
 import PaletteGrid from "@docs/components/tokens/palette-grid.astro";
 import SpacingScale from "@docs/components/tokens/spacing-scale.astro";
 import RadiusScale from "@docs/components/tokens/radius-scale.astro";
@@ -86,6 +88,19 @@ import AxiomBanner from "@docs/components/intro/axiom-banner.astro";
 import ComponentLayers from "@docs/components/intro/component-layers.astro";
 import CompositionCatalog from "@docs/components/compositions/composition-catalog.astro";
 import CompositionGrid from "@docs/components/compositions/composition-grid.astro";
+import ListingCardPreview from "@docs/components/compositions/listing-card-preview.astro";
+import RecipeCardPreview from "@docs/components/compositions/recipe-card-preview.astro";
+import ProfileCardPreview from "@docs/components/compositions/profile-card-preview.astro";
+import ArticleCardPreview from "@docs/components/compositions/article-card-preview.astro";
+import EventCardPreview from "@docs/components/compositions/event-card-preview.astro";
+import TrackItemPreview from "@docs/components/compositions/track-item-preview.astro";
+import ConversationItemPreview from "@docs/components/compositions/conversation-item-preview.astro";
+import NotificationItemPreview from "@docs/components/compositions/notification-item-preview.astro";
+import SearchResultItemPreview from "@docs/components/compositions/search-result-item-preview.astro";
+import OfferCardPreview from "@docs/components/compositions/offer-card-preview.astro";
+import PricingCardPreview from "@docs/components/compositions/pricing-card-preview.astro";
+import StatsCardPreview from "@docs/components/compositions/stats-card-preview.astro";
+import AppBarPreview from "@docs/components/compositions/app-bar-preview.astro";
 import ShowcaseGrid from "@docs/components/showcase/showcase-grid.astro";
 import ShowcaseCard from "@docs/components/showcase/showcase-card.astro";
 import ShowcaseScreens from "@docs/components/showcase/showcase-screens.astro";
@@ -161,6 +176,8 @@ const publicPathname = Astro.url.pathname;
 					CodeBlockTabsList,
 					CodeBlockTabsTrigger,
 					CodeBlockTab,
+					VariantTabs,
+					VariantPanel,
 					PaletteGrid,
 					SpacingScale,
 					RadiusScale,
@@ -240,6 +257,19 @@ const publicPathname = Astro.url.pathname;
 					ComponentLayers,
 					CompositionCatalog,
 					CompositionGrid,
+					ListingCardPreview,
+					RecipeCardPreview,
+					ProfileCardPreview,
+					ArticleCardPreview,
+					EventCardPreview,
+					TrackItemPreview,
+					ConversationItemPreview,
+					NotificationItemPreview,
+					SearchResultItemPreview,
+					OfferCardPreview,
+					PricingCardPreview,
+					StatsCardPreview,
+					AppBarPreview,
 					PhaseTimeline,
 					PhaseChecklist,
 					ShowcaseGrid,

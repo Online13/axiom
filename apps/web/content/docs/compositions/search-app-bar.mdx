@@ -1,0 +1,94 @@
+---
+title: Search App Bar
+description: "Back or close, a search field in the bar and up to two actions."
+---
+
+<PhonePreview>
+	<AppBarPreview variant="search" query="running shoes" actions={[{ icon: "sliders", badge: 2 }]} />
+	<SearchResultItemPreview
+		query="running"
+		results={[
+			{ title: "Trail running shoes", subtitle: "$129 · 4 colors", tone: 4 },
+			{ title: "Running socks, 3 pack", subtitle: "$18", tone: 3 },
+			{ title: "Running belt", subtitle: "$24", tone: 2 },
+			{ title: "running shoes women", subtitle: "Recent search", icon: "clock" },
+		]}
+	/>
+</PhonePreview>
+
+The field takes the place of the title, between the back button and the actions. The filters button carries a counter of active filters.
+
+## Installation
+
+```npm
+npx axiom add search-app-bar
+```
+
+Also copies: [`app-bar`](/docs/templates/app-bar), [`search-bar`](/docs/molecules/search-bar), [`icon-button`](/docs/atoms/icon-button), [`badge`](/docs/atoms/badge) and their dependencies. The file lands in `components/compositions/search-app-bar.tsx`. It brings no tokens of its own: colors come from [AppBar](/docs/templates/app-bar) and [SearchBar](/docs/molecules/search-bar).
+
+Requires the `arrow-left` and `close` icons in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+
+## Usage
+
+A search screen opened from a search button: the field has the focus as soon as the screen appears.
+
+```tsx
+import { SearchAppBar } from "@/components/compositions/search-app-bar";
+
+const [query, setQuery] = useState("");
+
+<SearchAppBar
+	value={query}
+	onChangeText={setQuery}
+	onSubmit={runSearch}
+	placeholder="Search products"
+	autoFocus
+	loading={isFetching}
+	onNavigate={router.back}
+	actions={[
+		{ icon: "filter", label: "Filters", badge: activeFilters.length, onPress: openFilters },
+	]}
+/>;
+```
+
+Opened as a modal, pass `navigation="close"`. With [Scaffold](/docs/templates/scaffold), which already pads the status bar, pass `safeArea={false}`.
+
+Every [SearchBar](/docs/molecules/search-bar) prop goes through to the field, except the cancel button: the navigation button takes its place. Use [AppBar with `AppBar.Search`](/docs/templates/app-bar) instead for a large title with a search field under it.
+
+## Props
+
+| Prop              | Type                    | Default                  | Description                                                                     |
+| ----------------- | ----------------------- | ------------------------ | ------------------------------------------------------------------------------- |
+| `navigation`      | `'back' \| 'close'`     | `'back'`                 | An arrow, or a cross for a search opened as a modal.                            |
+| `onNavigate`      | `() => void`            | —                        | Shows the navigation button.                                                    |
+| `navigationLabel` | `string`                | `"Back"` or `"Close"`    | Label of the navigation button.                                                 |
+| `actions`         | `AppBarAction[]`        | —                        | Up to two buttons after the field: `{ icon, label, onPress, badge? }`.          |
+| `bordered`        | `boolean`               | `true`                   | Hairline under the bar.                                                         |
+| `safeArea`        | `boolean`               | `true`                   | Adds the top safe-area inset.                                                   |
+| `barStyle`        | `StyleProp<ViewStyle>`  | —                        | Styles for the bar.                                                             |
+| `variant`         | `'filled' \| 'outline'` | `'filled'`               | Look of the field.                                                              |
+| …                 | `SearchBarProps`        | —                        | `value`, `onChangeText`, `onSubmit`, `placeholder`, `loading`, `clearable`, `autoFocus`… |
+
+An action's `badge` is a number for a counter, or `true` for a dot.
+
+## Accessibility
+
+The field is a search field with its placeholder as a label, from [SearchBar](/docs/molecules/search-bar). An action with a counter reads it after its label: "Filters, 2".
+
+## Built with
+
+- [AppBar](/docs/templates/app-bar): the bar, its safe area, its background and its slots.
+- [SearchBar](/docs/molecules/search-bar): the 36pt field, its clear button and spinner.
+- [IconButton](/docs/atoms/icon-button): navigation and actions.
+- [Badge](/docs/atoms/badge): the counter or dot on an action.
+
+## Used in
+
+No block uses Search App Bar yet.
+
+## Related
+
+- [Search Result Item](/docs/compositions/search-result-item): the rows under the bar.
+- [Search experience](/docs/patterns/search-experience): recent searches, suggestions and results.
+- [Profile App Bar](/docs/compositions/profile-app-bar)
+- [Compositions](/docs/compositions)

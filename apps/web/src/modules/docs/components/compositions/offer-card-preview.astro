@@ -1,0 +1,94 @@
+---
+// An Offer Card drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors registry/compositions/offer-card.
+// The card art is drawn in CSS: a bank-card shape in one of the `art` gradients, with a chip and the last digits.
+import Glyph from '@docs/components/preview/glyph.astro';
+
+interface Props {
+  title: string;
+  benefit: string;
+  art?: 'midnight' | 'sunset' | 'sage';
+  badge?: string;
+  highlights?: string[];
+  fee?: string;
+  feeLabel?: string;
+  action?: string;
+}
+
+const { title, benefit, art = 'midnight', badge, highlights = [], fee, feeLabel = 'Annual fee', action = 'Apply now' } = Astro.props;
+---
+
+<div class="ax-card" style={{ alignSelf: 'stretch' }}>
+  <div class="ax-row" style={{ gap: '16px', padding: '16px 16px 0' }}>
+    <span class="art" data-art={art}>
+      <span class="chip" />
+      <span class="digits">•••• 4821</span>
+    </span>
+    <div class="ax-stack ax-grow" data-gap="4" style={{ minWidth: 0 }}>
+      {badge && (
+        <span>
+          <span class="ax-badge" data-variant="highlight" style={{ height: '18px', padding: '0 6px', fontSize: '11px' }}>{badge}</span>
+        </span>
+      )}
+      <span class="ax-subhead ax-muted ax-truncate">{title}</span>
+      <span class="ax-title3">{benefit}</span>
+    </div>
+  </div>
+  {highlights.length > 0 && (
+    <div class="ax-stack" data-gap="8" style={{ padding: '16px 16px 0' }}>
+      {highlights.map((highlight) => (
+        <span class="ax-row" style={{ gap: '8px' }}>
+          <span class="ax-success"><Glyph name="check" size={18} /></span>
+          <span class="ax-subhead">{highlight}</span>
+        </span>
+      ))}
+    </div>
+  )}
+  <div class="ax-row" style={{ gap: '12px', padding: '16px' }}>
+    <div class="ax-stack ax-grow">
+      {fee && (
+        <>
+          <span class="ax-caption ax-muted">{feeLabel}</span>
+          <span class="ax-semibold">{fee}</span>
+        </>
+      )}
+    </div>
+    <span class="ax-btn" data-size="sm">{action}</span>
+  </div>
+</div>
+
+<style>
+  .art {
+    position: relative;
+    flex: none;
+    width: 96px;
+    aspect-ratio: 85.6 / 53.98;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgb(0 0 0 / 0.18);
+  }
+  .art[data-art='midnight'] {
+    background: linear-gradient(135deg, #1e293b, #475569 60%, #0f172a);
+  }
+  .art[data-art='sunset'] {
+    background: linear-gradient(135deg, #f97316, #db2777);
+  }
+  .art[data-art='sage'] {
+    background: linear-gradient(135deg, #4d7c0f, #a3e635);
+  }
+  .chip {
+    position: absolute;
+    top: 18px;
+    left: 10px;
+    width: 14px;
+    height: 11px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, #fde68a, #d97706);
+  }
+  .digits {
+    position: absolute;
+    right: 8px;
+    bottom: 6px;
+    color: rgb(255 255 255 / 0.85);
+    font-size: 8px;
+    letter-spacing: 0.5px;
+  }
+</style>

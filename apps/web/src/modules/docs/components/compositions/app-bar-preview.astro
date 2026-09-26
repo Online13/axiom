@@ -1,0 +1,61 @@
+---
+// The two app bar compositions drawn with the `.ax-*` classes of preview.css, at real iOS sizes.
+// `search` mirrors registry/compositions/search-app-bar: navigation, a filled 36pt search field, up to two actions.
+// `profile` mirrors registry/compositions/profile-app-bar: avatar, greeting and name, up to two actions with badges.
+import Glyph from '@docs/components/preview/glyph.astro';
+
+type Action = { icon: 'bell' | 'menu' | 'sliders' | 'filter' | 'more' | 'camera' | 'mic' | 'cart'; badge?: number | true };
+
+interface Props {
+  variant: 'search' | 'profile';
+  navigation?: 'back' | 'close';
+  query?: string;
+  placeholder?: string;
+  name?: string;
+  greeting?: string;
+  photo?: 1 | 2 | 3 | 4 | 5;
+  actions?: Action[];
+  bordered?: boolean;
+}
+
+const { variant, navigation = 'back', query, placeholder = 'Search', name = '', greeting, photo, actions = [], bordered = variant === 'search' } = Astro.props;
+---
+
+<div class="ax-appbar" data-border={bordered ? '' : undefined} style={{ gap: '4px' }}>
+  {variant === 'search' ? (
+    <>
+      <span class="ax-icon-btn">
+        <Glyph name={navigation === 'back' ? 'chevron-left' : 'close'} />
+      </span>
+      <div class="ax-searchbar">
+        <Glyph name="search" size={18} />
+        {query ? <span class="ax-value">{query}</span> : <span>{placeholder}</span>}
+        {query && (
+          <span class="ax-search-clear" style={{ marginLeft: 'auto' }}>
+            <Glyph name="close" size={12} strokeWidth={3} />
+          </span>
+        )}
+      </div>
+    </>
+  ) : (
+    <div class="ax-row ax-grow" style={{ gap: '8px', paddingLeft: '8px', minWidth: 0 }}>
+      <span class="ax-avatar" data-size="sm" data-photo={photo} />
+      <div class="ax-stack" style={{ minWidth: 0 }}>
+        {greeting && <span class="ax-caption ax-muted ax-truncate">{greeting}</span>}
+        <span class="ax-headline ax-truncate">{name}</span>
+      </div>
+    </div>
+  )}
+  {actions.map((action) => (
+    <span class="ax-anchor">
+      <span class="ax-icon-btn">
+        <Glyph name={action.icon} />
+      </span>
+      {action.badge === true ? (
+        <span class="ax-badge" data-kind="dot" style={{ top: '8px', right: '8px' }} />
+      ) : action.badge ? (
+        <span class="ax-badge" data-kind="count" style={{ top: '4px', right: '2px' }}>{action.badge}</span>
+      ) : null}
+    </span>
+  ))}
+</div>

@@ -1,0 +1,55 @@
+---
+// An Article Card drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors registry/compositions/article-card.
+// It always takes the full width of its list: the card is designed for a vertical feed.
+interface Props {
+  image: string;
+  title: string;
+  category?: string;
+  excerpt?: string;
+  author?: { name: string; photo?: 1 | 2 | 3 | 4 | 5 };
+  meta?: string;
+}
+
+const { image, title, category, excerpt, author, meta } = Astro.props;
+---
+
+<div class="ax-card" style={{ alignSelf: 'stretch' }}>
+  <div class="ax-media" style={{ height: 'auto', aspectRatio: '16 / 9' }}>
+    <img src={`/images/articles/${image}.webp`} alt="" loading="lazy" />
+  </div>
+  <div class="ax-stack" data-gap="8" style={{ padding: '16px 16px 0' }}>
+    {category && <span class="ax-caption ax-link category">{category}</span>}
+    <span class="ax-title3 clamp">{title}</span>
+    {excerpt && <span class="ax-subhead ax-muted clamp">{excerpt}</span>}
+  </div>
+  {
+    (author || meta) && (
+      <div class="ax-row" data-gap="12" style={{ padding: '16px 16px 0', alignItems: 'center' }}>
+        {author && (
+          <span class="ax-avatar" data-size="sm" data-photo={author.photo}>
+            {author.name[0]}
+          </span>
+        )}
+        <div class="ax-stack ax-grow" style={{ minWidth: 0 }}>
+          {author && <span class="ax-footnote ax-semibold ax-truncate">{author.name}</span>}
+          {meta && <span class="ax-caption ax-muted ax-truncate">{meta}</span>}
+        </div>
+      </div>
+    )
+  }
+  <div style={{ height: '16px' }}></div>
+</div>
+
+<style>
+  .category {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

@@ -1,0 +1,86 @@
+---
+// An Event Card drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors registry/compositions/event-card.
+// It always takes the full width of its list: the card is designed for a vertical feed.
+import Glyph from '@docs/components/preview/glyph.astro';
+
+interface Props {
+  image: string;
+  title: string;
+  month: string;
+  day: string;
+  details?: { icon: 'clock' | 'pin' | 'calendar'; label: string }[];
+  /** Gradient stand-ins of `.ax-avatar[data-photo]`, three at most. */
+  attendees?: (1 | 2 | 3 | 4 | 5)[];
+  going?: number;
+  action?: string;
+}
+
+const { image, title, month, day, details = [], attendees = [], going = 0, action } = Astro.props;
+---
+
+<div class="ax-card" style={{ alignSelf: 'stretch' }}>
+  <div class="ax-media" style={{ height: 'auto', aspectRatio: '16 / 9', position: 'relative' }}>
+    <img src={`/images/events/${image}.webp`} alt="" loading="lazy" />
+    <span class="date">
+      <span class="ax-caption ax-link month">{month}</span>
+      <span class="ax-title3">{day}</span>
+    </span>
+  </div>
+  <div class="ax-stack" data-gap="8" style={{ padding: '16px 16px 0' }}>
+    <span class="ax-title3 clamp">{title}</span>
+    {details.map((detail) => (
+      <span class="ax-row ax-subhead ax-muted" style={{ gap: '8px', alignItems: 'center', minWidth: 0 }}>
+        <Glyph name={detail.icon} size={18} />
+        <span class="ax-truncate">{detail.label}</span>
+      </span>
+    ))}
+  </div>
+  {
+    (going > 0 || action) && (
+      <div class="ax-row" data-gap="12" style={{ padding: '16px 16px 0', alignItems: 'center' }}>
+        <div class="ax-row ax-grow" style={{ gap: '8px', alignItems: 'center', minWidth: 0 }}>
+          {attendees.length > 0 && (
+            <span class="ax-avatar-group">
+              {attendees.slice(0, 3).map((photo) => (
+                <span class="ax-avatar" data-size="sm" data-photo={photo} />
+              ))}
+            </span>
+          )}
+          {going > 0 && (
+            <span class="ax-footnote ax-muted ax-truncate" style={{ fontWeight: 400 }}>
+              <span class="ax-semibold" style={{ color: 'var(--ax-content-default)' }}>{going}</span> going
+            </span>
+          )}
+        </div>
+        {action && <span class="ax-btn" data-size="sm">{action}</span>}
+      </div>
+    )
+  }
+  <div style={{ height: '16px' }}></div>
+</div>
+
+<style>
+  .date {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 50px;
+    padding: 4px 8px;
+    border-radius: var(--ax-radius-md);
+    background: var(--ax-background-elevated);
+    color: var(--ax-content-default);
+  }
+  .month {
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

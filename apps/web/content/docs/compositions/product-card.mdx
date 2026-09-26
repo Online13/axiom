@@ -3,6 +3,16 @@ title: Product Card
 description: "Product image, name, price, an optional badge and an add-to-cart button, built from Card."
 ---
 
+<VariantTabs
+	group="product-card"
+	items={[
+		{ value: "default", label: "Default" },
+		{ value: "spotlight", label: "Spotlight" },
+	]}
+/>
+
+<VariantPanel group="product-card" value="default" active>
+
 <PhonePreview tall>
 	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
 		New in
@@ -97,7 +107,81 @@ description: "Product image, name, price, an optional badge and an add-to-cart b
 	</div>
 </PhonePreview>
 
+</VariantPanel>
+
+<VariantPanel group="product-card" value="spotlight">
+
+<PhonePreview tall>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Featured
+	</div>
+	<div class="ax-row" style={{ gap: "12px", padding: "4px 16px 0", alignItems: "stretch" }}>
+		<div class="ax-card ax-grow" data-variant="filled" style={{ flexBasis: "0px" }}>
+			<div style={{ height: "130px", padding: "16px 16px 0", position: "relative" }}>
+				<img src="/images/products/steel-bottle-cutout.webp" alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+				<span
+					class="ax-badge"
+					data-variant="highlight"
+					style={{ position: "absolute", top: "12px", left: "12px" }}
+				>
+					-20%
+				</span>
+			</div>
+			<div class="ax-stack" data-gap="4" style={{ padding: "16px" }}>
+				<span class="ax-title3">$25.60</span>
+				<span class="ax-truncate" style={{ fontWeight: 500 }}>Steel bottle</span>
+				<span class="ax-subhead ax-muted ax-truncate">Sage, 500 ml</span>
+			</div>
+		</div>
+		<div class="ax-card ax-grow" data-variant="filled" style={{ flexBasis: "0px" }}>
+			<div style={{ height: "130px", padding: "16px 16px 0", position: "relative" }}>
+				<img src="/images/products/daypack-cutout.webp" alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+			</div>
+			<div class="ax-stack" data-gap="4" style={{ padding: "16px" }}>
+				<span class="ax-title3">$72.00</span>
+				<span class="ax-truncate" style={{ fontWeight: 500 }}>City daypack</span>
+				<span class="ax-subhead ax-muted ax-truncate">Navy, 18 L</span>
+			</div>
+		</div>
+	</div>
+	<div class="ax-row" style={{ gap: "12px", padding: "12px 16px 16px", alignItems: "stretch" }}>
+		<div class="ax-card ax-grow" data-variant="filled" style={{ flexBasis: "0px" }}>
+			<div style={{ height: "130px", padding: "16px 16px 0", position: "relative" }}>
+				<img src="/images/products/black-tee-cutout.webp" alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+				<span
+					class="ax-badge"
+					data-variant="highlight"
+					style={{ position: "absolute", top: "12px", left: "12px" }}
+				>
+					New
+				</span>
+			</div>
+			<div class="ax-stack" data-gap="4" style={{ padding: "16px" }}>
+				<span class="ax-title3">$29.00</span>
+				<span class="ax-truncate" style={{ fontWeight: 500 }}>Everyday tee</span>
+				<span class="ax-subhead ax-muted ax-truncate">Black, S to XL</span>
+			</div>
+		</div>
+		<div class="ax-card ax-grow" data-variant="filled" style={{ flexBasis: "0px" }}>
+			<div style={{ height: "130px", padding: "16px 16px 0", position: "relative" }}>
+				<img src="/images/products/chambray-shirt-cutout.webp" alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+			</div>
+			<div class="ax-stack" data-gap="4" style={{ padding: "16px" }}>
+				<span class="ax-title3">$48.00</span>
+				<span class="ax-truncate" style={{ fontWeight: 500 }}>Chambray shirt</span>
+				<span class="ax-subhead ax-muted ax-truncate">Indigo, 3 colors</span>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+</VariantPanel>
+
+The two variants are separate components with their own code: install the one you need. **Default** is an outlined card with the image edge to edge and the price under the name. **Spotlight** is a filled card where a cut-out product floats on the card's background, price first.
+
 ## Installation
+
+<VariantPanel group="product-card" value="default" active>
 
 ```npm
 npx axiom add product-card
@@ -105,9 +189,25 @@ npx axiom add product-card
 
 Also copies: [`card`](/docs/atoms/card), [`text`](/docs/atoms/text), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button) and their dependencies. The file lands in `components/compositions/product-card.tsx`.
 
-Product Card brings no tokens of its own: it uses the `outlined` variant of [Card](/docs/atoms/card) (`filled` for `spotlight`), the `highlight` variant of [Badge](/docs/atoms/badge) and the default [Button](/docs/atoms/button).
+Product Card brings no tokens of its own: it uses the `outlined` variant of [Card](/docs/atoms/card), the `highlight` variant of [Badge](/docs/atoms/badge) and the default [Button](/docs/atoms/button).
+
+</VariantPanel>
+
+<VariantPanel group="product-card" value="spotlight">
+
+```npm
+npx axiom add product-card-spotlight
+```
+
+Also copies: [`card`](/docs/atoms/card), [`text`](/docs/atoms/text), [`title`](/docs/atoms/title), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button) and their dependencies. The file lands in `components/compositions/product-card-spotlight.tsx`.
+
+It brings no tokens of its own: it uses the `filled` variant of [Card](/docs/atoms/card), the `headingSm` variant of [Title](/docs/atoms/title) for the price, the `highlight` variant of [Badge](/docs/atoms/badge) and the default [Button](/docs/atoms/button).
+
+</VariantPanel>
 
 ## Usage
+
+<VariantPanel group="product-card" value="default" active>
 
 ```tsx
 import { Image } from "react-native";
@@ -124,13 +224,42 @@ import { ProductCard } from "@/components/compositions/product-card";
 />;
 ```
 
+</VariantPanel>
+
+<VariantPanel group="product-card" value="spotlight">
+
+```tsx
+import { Image } from "react-native";
+import { ProductCardSpotlight } from "@/components/compositions/product-card-spotlight";
+
+<ProductCardSpotlight
+	title="Steel bottle"
+	subtitle="Sage, 500 ml"
+	price="$25.60"
+	badge="-20%"
+	media={
+		<Image
+			source={{ uri: product.cutout }}
+			resizeMode="contain"
+			style={{ aspectRatio: 1 }}
+		/>
+	}
+	onPress={() => router.push(`/products/${product.id}`)}
+/>;
+```
+
+Use cut-out images (transparent background) with `resizeMode="contain"`: a photo with its own background would fill the inset and lose the effect.
+
+</VariantPanel>
+
 `price` is a string: format it yourself, currency included, so the card doesn't decide how your app shows money.
 
 ## Props
 
+<VariantPanel group="product-card" value="default" active>
+
 | Prop          | Type                   | Default         | Description                                                                                                          |
 | ------------- | ---------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `variant`     | `"default" \| "spotlight"` | `"default"` | `default`: outlined card, edge-to-edge media, price under the title. `spotlight`: filled card, the product sits on the card's background, price first. |
 | `title`       | `string`               | —               | Product name, shown as the card title.                                                                               |
 | `price`       | `string`               | —               | Already formatted, currency included: `"$24.00"`. Shown in semibold under the title.                                 |
 | `subtitle`    | `string`               | —               | Secondary line under the title: a color, a size, a brand.                                                            |
@@ -141,185 +270,31 @@ import { ProductCard } from "@/components/compositions/product-card";
 | `onPress`     | `() => void`           | —               | Makes the whole card pressable, to open the product. The button keeps its own press. The card is read as "title, price". |
 | `style`       | `StyleProp<ViewStyle>` | —               | Extra styles for the card container, for example a width in a grid.                                                  |
 
-## Use cases
+</VariantPanel>
 
-### Horizontal rail
+<VariantPanel group="product-card" value="spotlight">
 
-The preview at the top: a horizontal `FlatList` of fixed-width cards, as in a "New in" section. Give each card a `width` through `style` and its image a matching `aspectRatio`.
+| Prop          | Type                   | Default         | Description                                                                                                          |
+| ------------- | ---------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `title`       | `string`               | —               | Product name, on one line under the price.                                                                           |
+| `price`       | `string`               | —               | Already formatted, currency included: `"$24.00"`. Shown first, as a `headingSm` [Title](/docs/atoms/title).          |
+| `subtitle`    | `string`               | —               | Secondary line under the name: a color, a size.                                                                      |
+| `badge`       | `string`               | —               | Short label in a `highlight` [Badge](/docs/atoms/badge), on the product: `"New"`, `"-20%"`.                          |
+| `media`       | `ReactNode`            | —               | Required. A cut-out `Image` with `resizeMode="contain"`, inset from the card's edges. Give it a size or an `aspectRatio`. |
+| `actionLabel` | `string`               | `"Add to cart"` | Label of the action button.                                                                                          |
+| `onAction`    | `() => void`           | —               | Shows the full-width action button and handles its press. Without it, there is no button.                            |
+| `onPress`     | `() => void`           | —               | Makes the whole card pressable, to open the product. The button keeps its own press. The card is read as "title, price". |
+| `style`       | `StyleProp<ViewStyle>` | —               | Extra styles for the card container, for example a width in a grid.                                                  |
 
-```tsx
-<FlatList
-	horizontal
-	data={products}
-	showsHorizontalScrollIndicator={false}
-	snapToInterval={252}
-	decelerationRate="fast"
-	contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}
-	renderItem={({ item }) => (
-		<ProductCard
-			title={item.name}
-			subtitle={item.variant}
-			price={item.price}
-			badge={item.badge}
-			media={<Image source={item.image} style={{ aspectRatio: 1 }} />}
-			onAction={() => cart.add(item.id)}
-			style={{ width: 240 }}
-		/>
-	)}
-/>
-```
-
-### Browse-only grid
-
-Without `onAction`, the card has no button: pressing it opens the product. Useful for catalogs where buying happens on the product screen.
-
-<PhonePreview size="sm">
-	<div
-		class="ax-row"
-		style={{ gap: "12px", padding: "12px 16px", alignItems: "stretch" }}
-	>
-		<div class="ax-card ax-grow" data-variant="outlined" style={{ flexBasis: "0px" }}>
-			<div class="ax-media" style={{ height: "130px" }}>
-				<img src="/images/products/black-tee.webp" alt="" loading="lazy" />
-			</div>
-			<div class="ax-stack" data-gap="4" style={{ padding: "12px" }}>
-				<span class="ax-headline ax-truncate">Everyday tee</span>
-				<span class="ax-semibold">$29.00</span>
-			</div>
-		</div>
-		<div class="ax-card ax-grow" data-variant="outlined" style={{ flexBasis: "0px" }}>
-			<div class="ax-media" style={{ height: "130px" }}>
-				<img src="/images/products/daypack.webp" alt="" loading="lazy" />
-			</div>
-			<div class="ax-stack" data-gap="4" style={{ padding: "12px" }}>
-				<span class="ax-headline ax-truncate">City daypack</span>
-				<span class="ax-semibold">$72.00</span>
-			</div>
-		</div>
-	</div>
-</PhonePreview>
-
-```tsx
-<FlatList
-	data={products}
-	numColumns={2}
-	columnWrapperStyle={{ gap: 12 }}
-	renderItem={({ item }) => (
-		<ProductCard
-			title={item.name}
-			price={item.price}
-			media={<Image source={item.image} style={{ aspectRatio: 1 }} />}
-			onPress={() => open(item.id)}
-			style={{ flex: 1 }}
-		/>
-	)}
-/>
-```
-
-### Spotlight
-
-`variant="spotlight"` puts the product first: a filled card, no image frame, the price above the name. Use cut-out images (transparent background) with `resizeMode="contain"` so the product floats on the card's background.
-
-<PhonePreview size="sm">
-	<div
-		class="ax-row"
-		style={{ gap: "12px", padding: "12px 16px", alignItems: "stretch" }}
-	>
-		<div class="ax-card ax-grow" data-variant="filled" style={{ flexBasis: "0px" }}>
-			<div style={{ height: "130px", padding: "16px 16px 0" }}>
-				<img src="/images/products/steel-bottle-cutout.webp" alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-			</div>
-			<div class="ax-stack" data-gap="4" style={{ padding: "16px" }}>
-				<span class="ax-title3">$25.60</span>
-				<span class="ax-truncate" style={{ fontWeight: 500 }}>Steel bottle</span>
-				<span class="ax-subhead ax-muted ax-truncate">500 ml</span>
-			</div>
-		</div>
-		<div class="ax-card ax-grow" data-variant="filled" style={{ flexBasis: "0px" }}>
-			<div style={{ height: "130px", padding: "16px 16px 0" }}>
-				<img src="/images/products/daypack-cutout.webp" alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-			</div>
-			<div class="ax-stack" data-gap="4" style={{ padding: "16px" }}>
-				<span class="ax-title3">$72.00</span>
-				<span class="ax-truncate" style={{ fontWeight: 500 }}>City daypack</span>
-				<span class="ax-subhead ax-muted ax-truncate">18 L</span>
-			</div>
-		</div>
-	</div>
-</PhonePreview>
-
-```tsx
-<FlatList
-	data={products}
-	numColumns={2}
-	columnWrapperStyle={{ gap: 12 }}
-	renderItem={({ item }) => (
-		<ProductCard
-			variant="spotlight"
-			title={item.name}
-			subtitle={item.size}
-			price={item.price}
-			media={
-				<Image
-					source={item.cutout}
-					resizeMode="contain"
-					style={{ aspectRatio: 1 }}
-				/>
-			}
-			onPress={() => open(item.id)}
-			style={{ flex: 1 }}
-		/>
-	)}
-/>
-```
-
-### Without media
-
-For digital goods or text-only listings, leave out `media`. The badge moves above the title.
-
-<PhonePreview size="sm" grouped>
-	<div class="ax-body">
-		<div class="ax-card" data-variant="outlined">
-			<div class="ax-stack" data-gap="4" style={{ padding: "16px 16px 0" }}>
-				<span
-					class="ax-badge"
-					data-variant="highlight"
-					style={{ alignSelf: "flex-start", marginBottom: "4px" }}
-				>
-					Best value
-				</span>
-				<span class="ax-headline">Annual plan</span>
-				<span class="ax-subhead ax-muted">All features, billed once a year</span>
-				<span class="ax-semibold" style={{ paddingTop: "4px" }}>
-					$59.99 / year
-				</span>
-			</div>
-			<div style={{ padding: "16px" }}>
-				<span class="ax-btn" data-block>
-					Subscribe
-				</span>
-			</div>
-		</div>
-	</div>
-</PhonePreview>
-
-```tsx
-<ProductCard
-	title="Annual plan"
-	subtitle="All features, billed once a year"
-	price="$59.99 / year"
-	badge="Best value"
-	actionLabel="Subscribe"
-	onAction={subscribe}
-/>
-```
+</VariantPanel>
 
 ## Built with
 
-- [Card](/docs/atoms/card): the outlined surface, its header, title and description.
+- [Card](/docs/atoms/card): the surface (`outlined`, `filled` for Spotlight), its header, title and description.
 - [Badge](/docs/atoms/badge): the `highlight` label.
 - [Button](/docs/atoms/button): the full-width action.
-- [Text](/docs/atoms/text): the price.
+- [Text](/docs/atoms/text): the price, and the name in Spotlight.
+- [Title](/docs/atoms/title): the price in Spotlight.
 
 ## Used in
 
@@ -327,5 +302,7 @@ No block uses Product Card yet. It is meant for the product grids of the planned
 
 ## Related
 
+- [Listing Card](/docs/compositions/listing-card)
+- [Recipe Card](/docs/compositions/recipe-card)
 - [Compositions](/docs/compositions)
 - [Settings Item](/docs/compositions/settings-item)

@@ -1,0 +1,67 @@
+---
+// Track Item rows drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors registry/compositions/track-item.
+// `tone` picks one of the `.ax-media` gradients as a stand-in for the cover art; without it, the row shows `index`.
+import Glyph from '@docs/components/preview/glyph.astro';
+
+interface Track {
+  title: string;
+  artist: string;
+  duration: string;
+  tone?: 1 | 2 | 3 | 4 | 5 | 6;
+  index?: number;
+  explicit?: boolean;
+  playing?: boolean;
+}
+
+interface Props {
+  tracks: Track[];
+}
+
+const { tracks } = Astro.props;
+---
+
+<div class="ax-list" data-variant="plain">
+  {tracks.map((track) => (
+    <div class="ax-item">
+      {track.tone ? (
+        <span class="ax-media art" data-tone={track.tone === 1 ? undefined : track.tone}>
+          <Glyph name="music" size={20} />
+        </span>
+      ) : track.index !== undefined ? (
+        <span class={`index ${track.playing ? 'ax-link ax-semibold' : 'ax-muted'}`}>{track.index}</span>
+      ) : null}
+      <div class="ax-item-content">
+        <span class={`ax-item-title ${track.playing ? 'ax-link ax-semibold' : ''}`}>{track.title}</span>
+        <span class="ax-row" style={{ gap: '4px' }}>
+          {track.explicit && <span class="ax-badge explicit">E</span>}
+          <span class="ax-item-desc ax-truncate">{track.artist}</span>
+        </span>
+      </div>
+      <span class="ax-item-trailing">
+        <span class="ax-footnote ax-muted digits">{track.duration}</span>
+        <Glyph name="more" size={20} />
+      </span>
+    </div>
+  ))}
+</div>
+
+<style>
+  .art {
+    width: 48px;
+    height: 48px;
+    flex: none;
+    border-radius: 8px;
+  }
+  .index {
+    min-width: 24px;
+    font-variant-numeric: tabular-nums;
+  }
+  .digits {
+    font-variant-numeric: tabular-nums;
+  }
+  .explicit {
+    height: 18px;
+    padding: 0 6px;
+    font-size: 11px;
+  }
+</style>

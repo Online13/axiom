@@ -1,0 +1,98 @@
+---
+title: Search Result Item
+description: "Image or icon, title with the match in bold, subtitle, metadata and an action."
+---
+
+<PhonePreview>
+	<div style={{ padding: "8px 16px 8px" }}>
+		<div class="ax-searchbar">
+			<Glyph name="search" size={18} />
+			<span class="ax-value">night</span>
+		</div>
+	</div>
+	<SearchResultItemPreview
+		query="night"
+		results={[
+			{ title: "Nightcall", subtitle: "Song · Kavinsky", tone: 5, action: "plus" },
+			{ title: "Night Owls", subtitle: "Artist", meta: "1.2M monthly listeners", tone: 3, circle: true },
+			{ title: "Late Night Tales", subtitle: "Playlist", meta: "42 songs · 2 h 51 min", tone: 2 },
+			{ title: "Night mode", subtitle: "Settings › Display", icon: "settings" },
+			{ title: "night drive", subtitle: "Recent search", icon: "clock" },
+		]}
+	/>
+</PhonePreview>
+
+The first match of the query in each title is bold. A row with an action ends with a tinted button; the others end with a chevron.
+
+## Installation
+
+```npm
+npx axiom add search-result-item
+```
+
+Also copies: [`item`](/docs/atoms/item), [`icon`](/docs/atoms/icon), [`icon-button`](/docs/atoms/icon-button), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/search-result-item.tsx`. It brings no tokens of its own.
+
+Requires the `chevron-right` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+
+## Usage
+
+```tsx
+import { SearchResultItem } from "@/components/compositions/search-result-item";
+
+<FlatList
+	data={results}
+	keyExtractor={(result) => result.id}
+	keyboardShouldPersistTaps="handled"
+	renderItem={({ item }) => (
+		<SearchResultItem
+			title={item.title}
+			query={query}
+			subtitle={item.kind}
+			meta={item.meta}
+			image={item.imageUrl ? { uri: item.imageUrl } : undefined}
+			imageShape={item.kind === "Artist" ? "circle" : "square"}
+			action={{ icon: "add", label: "Add to library", onPress: () => save(item.id) }}
+			onPress={() => open(item)}
+		/>
+	)}
+/>;
+```
+
+The match is case-insensitive and only the first one is bold. The split is exported as `splitMatch(text, query)` if you need it elsewhere, for a subtitle for example.
+
+## Props
+
+| Prop         | Type                     | Default    | Description                                                                               |
+| ------------ | ------------------------ | ---------- | ----------------------------------------------------------------------------------------- |
+| `title`      | `string`                 | —          | One line.                                                                                 |
+| `query`      | `string`                 | —          | What the user typed. Its first match in the title is bold.                                |
+| `subtitle`   | `string`                 | —          | Second line, muted.                                                                       |
+| `meta`       | `string`                 | —          | Third line in caption size: `"Playlist · 42 songs"`. Makes the row 64pt tall.             |
+| `image`      | `ImageSourcePropType`    | —          | A 44pt thumbnail.                                                                         |
+| `imageShape` | `'square' \| 'circle'`   | `'square'` | `circle` for people and artists.                                                          |
+| `icon`       | `IconName`               | —          | On a subtle tile, when there is no image: a page, a setting, a recent search.             |
+| `action`     | `SearchResultAction`     | —          | `{ icon, label, onPress }`: a tinted [IconButton](/docs/atoms/icon-button) at the end.    |
+| `onPress`    | `() => void`             | —          | Opens the result. Without `action`, adds a chevron.                                       |
+| `disabled`   | `boolean`                | `false`    | Disabled colors, no press.                                                                |
+
+## Accessibility
+
+The row reads as one element: "Late Night Tales, Playlist, 42 songs · 2 h 51 min". The bold match is visual only. The action is a separate element, labelled with the title: "Add to library, Nightcall".
+
+## Built with
+
+- [Item](/docs/atoms/item): the row and its slots.
+- [Icon](/docs/atoms/icon): the tile icon and the chevron.
+- [IconButton](/docs/atoms/icon-button): the action.
+- [Text](/docs/atoms/text): the title with its bold match, subtitle and metadata.
+
+## Used in
+
+No block uses Search Result Item yet.
+
+## Related
+
+- [Search App Bar](/docs/compositions/search-app-bar): the field above the results.
+- [Empty](/docs/atoms/empty): for a search with no results.
+- [SearchBar](/docs/molecules/search-bar)
+- [Compositions](/docs/compositions)

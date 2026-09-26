@@ -267,8 +267,65 @@
       "@/components/compositions/product-card": [
         "./compositions/product-card/stylesheet/product-card.tsx"
       ],
+      "@/components/compositions/product-card-spotlight": [
+        "./compositions/product-card-spotlight/stylesheet/product-card-spotlight.tsx"
+      ],
+      "@/components/compositions/recipe-card": [
+        "./compositions/recipe-card/stylesheet/recipe-card.tsx"
+      ],
+      "@/components/compositions/listing-card": [
+        "./compositions/listing-card/stylesheet/listing-card.tsx"
+      ],
+      "@/components/compositions/listing-card-detailed": [
+        "./compositions/listing-card-detailed/stylesheet/listing-card-detailed.tsx"
+      ],
+      "@/components/compositions/listing-card-overlay": [
+        "./compositions/listing-card-overlay/stylesheet/listing-card-overlay.tsx"
+      ],
+      "@/components/compositions/listing-card-overlay-detailed": [
+        "./compositions/listing-card-overlay-detailed/stylesheet/listing-card-overlay-detailed.tsx"
+      ],
+      "@/components/compositions/listing-card-booking": [
+        "./compositions/listing-card-booking/stylesheet/listing-card-booking.tsx"
+      ],
+      "@/components/compositions/profile-card": [
+        "./compositions/profile-card/stylesheet/profile-card.tsx"
+      ],
+      "@/components/compositions/article-card": [
+        "./compositions/article-card/stylesheet/article-card.tsx"
+      ],
+      "@/components/compositions/event-card": [
+        "./compositions/event-card/stylesheet/event-card.tsx"
+      ],
       "@/components/compositions/settings-item": [
         "./compositions/settings-item/stylesheet/settings-item.tsx"
+      ],
+      "@/components/compositions/track-item": [
+        "./compositions/track-item/stylesheet/track-item.tsx"
+      ],
+      "@/components/compositions/conversation-item": [
+        "./compositions/conversation-item/stylesheet/conversation-item.tsx"
+      ],
+      "@/components/compositions/notification-item": [
+        "./compositions/notification-item/stylesheet/notification-item.tsx"
+      ],
+      "@/components/compositions/offer-card": [
+        "./compositions/offer-card/stylesheet/offer-card.tsx"
+      ],
+      "@/components/compositions/pricing-card": [
+        "./compositions/pricing-card/stylesheet/pricing-card.tsx"
+      ],
+      "@/components/compositions/stats-card": [
+        "./compositions/stats-card/stylesheet/stats-card.tsx"
+      ],
+      "@/components/compositions/search-result-item": [
+        "./compositions/search-result-item/stylesheet/search-result-item.tsx"
+      ],
+      "@/components/compositions/search-app-bar": [
+        "./compositions/search-app-bar/stylesheet/search-app-bar.tsx"
+      ],
+      "@/components/compositions/profile-app-bar": [
+        "./compositions/profile-app-bar/stylesheet/profile-app-bar.tsx"
       ],
       "@/components/blocks/settings-section": [
         "./blocks/settings-section/stylesheet/settings-section.tsx"

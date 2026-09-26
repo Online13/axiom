@@ -1,0 +1,82 @@
+---
+title: Conversation Item
+description: "Avatar, name, last message, time and an unread counter."
+---
+
+<PhonePreview>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Messages
+	</div>
+	<ConversationItemPreview
+		conversations={[
+			{ name: "Lena Moreau", photo: 3, preview: "See you at 8, I booked the table by the window", time: "9:41", unread: 2, online: true },
+			{ name: "Design team", preview: "Sam: the new icons are in Figma, have a look before the review", time: "9:12", unread: 14, muted: true },
+			{ name: "Sam Okafor", photo: 4, preview: "Thanks for the files!", time: "Yesterday" },
+			{ name: "Ada Park", preview: "Call me back when you can", time: "Mon" },
+		]}
+	/>
+</PhonePreview>
+
+Unread conversations have a bold name, a time in the link color and a counter. A muted one keeps its counter gray. Without a photo, the avatar shows the initials on a hue taken from the name.
+
+## Installation
+
+```npm
+npx axiom add conversation-item
+```
+
+Also copies: [`item`](/docs/atoms/item), [`avatar`](/docs/atoms/avatar), [`badge`](/docs/atoms/badge), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/conversation-item.tsx`. It brings no tokens of its own.
+
+## Usage
+
+```tsx
+import { ConversationItem } from "@/components/compositions/conversation-item";
+
+<ConversationItem
+	name={chat.title}
+	avatar={chat.avatarUrl ? { uri: chat.avatarUrl } : undefined}
+	status={chat.online ? "online" : undefined}
+	preview={chat.lastMessage.text}
+	time={formatRelative(chat.lastMessage.sentAt)}
+	unreadCount={chat.unreadCount}
+	muted={chat.muted}
+	onPress={() => router.push(`/chats/${chat.id}`)}
+	onLongPress={() => openChatMenu(chat)}
+/>;
+```
+
+The row doesn't format the time: pass `"9:41"` for today, `"Yesterday"`, then a weekday or a date, like Messages.
+
+## Props
+
+| Prop          | Type                  | Default | Description                                                                                   |
+| ------------- | --------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| `name`        | `string`              | —       | A person or a group. Gives the avatar its initials and hue when there is no photo.            |
+| `avatar`      | `ImageSourcePropType` | —       | The photo, in an `lg` [Avatar](/docs/atoms/avatar).                                           |
+| `status`      | `AvatarStatus`        | —       | Presence dot on the avatar: `online`, `away`, `busy`, `offline`.                               |
+| `preview`     | `string`              | —       | The last message, up to two lines.                                                            |
+| `time`        | `string`              | —       | Already formatted, at the end of the first line.                                              |
+| `unreadCount` | `number`              | `0`     | Above 0: bold name, time in the link color and a counter, capped at `99+`.                    |
+| `muted`       | `boolean`             | `false` | The counter turns to a neutral badge and the time stays muted.                                |
+| `onPress`     | `() => void`          | —       | Opens the conversation.                                                                       |
+| `onLongPress` | `() => void`          | —       | Usually opens a menu: pin, mute, delete.                                                      |
+
+## Accessibility
+
+The row reads as one element: "Lena Moreau, 2 unread messages, See you at 8, 9:41". The counter and the presence dot are not read on their own.
+
+## Built with
+
+- [Item](/docs/atoms/item): the 64pt row and its slots.
+- [Avatar](/docs/atoms/avatar): the photo, the initials and the presence dot.
+- [Badge](/docs/atoms/badge): the unread counter.
+- [Text](/docs/atoms/text): name, time and preview.
+
+## Used in
+
+No block uses Conversation Item yet.
+
+## Related
+
+- [Notification Item](/docs/compositions/notification-item)
+- [Compositions](/docs/compositions)

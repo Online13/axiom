@@ -1,0 +1,70 @@
+---
+// Pills that switch between the variants of a component whose variants are separate code
+// (Product Card: `product-card` and `product-card-spotlight`). Every VariantPanel of the same
+// `group` on the page follows the selected pill: preview, installation, usage, props, use cases.
+interface Props {
+  group: string;
+  items: { value: string; label: string }[];
+  /** Defaults to the first item. Must match the panels marked `active`. */
+  defaultValue?: string;
+}
+
+const { group, items, defaultValue = items[0]?.value } = Astro.props;
+---
+
+<div class="not-prose my-4 flex flex-wrap gap-2" role="tablist" aria-label="Variant" data-variant-tabs={group}>
+  {
+    items.map((item) => (
+      <button
+        type="button"
+        role="tab"
+        data-value={item.value}
+        aria-selected={String(item.value === defaultValue)}
+        data-selected={item.value === defaultValue ? '' : undefined}
+        class="rounded-full border px-3.5 py-1 text-sm font-medium text-fd-muted-foreground transition-colors hover:text-fd-accent-foreground data-selected:border-fd-primary data-selected:bg-fd-primary data-selected:text-fd-primary-foreground"
+      >
+        {item.label}
+      </button>
+    ))
+  }
+</div>
+
+<style is:global>
+  [data-variant-panel]:not([data-active]) {
+    display: none;
+  }
+</style>
+
+<script>
+  function select(group: string, value: string) {
+    for (const panel of document.querySelectorAll<HTMLElement>(`[data-variant-panel="${group}"]`)) {
+      if (panel.dataset.value === value) panel.dataset.active = '';
+      else delete panel.dataset.active;
+    }
+    for (const trigger of document.querySelectorAll<HTMLElement>(`[data-variant-tabs="${group}"] [role="tab"]`)) {
+      const active = trigger.dataset.value === value;
+      trigger.setAttribute('aria-selected', String(active));
+      if (active) trigger.dataset.selected = '';
+      else delete trigger.dataset.selected;
+    }
+  }
+
+  // A link to a heading of another variant (the table of contents lists them all) switches to it.
+  function revealHash() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const panel = id ? document.getElementById(id)?.closest<HTMLElement>('[data-variant-panel]') : null;
+    if (!panel || panel.dataset.active !== undefined) return;
+    select(panel.dataset.variantPanel!, panel.dataset.value!);
+    document.getElementById(id)?.scrollIntoView();
+  }
+
+  document.addEventListener('click', (event) => {
+    const trigger = (event.target as Element).closest<HTMLElement>('[data-variant-tabs] [role="tab"]');
+    const group = trigger?.closest<HTMLElement>('[data-variant-tabs]')?.dataset.variantTabs;
+    if (group && trigger?.dataset.value) select(group, trigger.dataset.value);
+  });
+
+  window.addEventListener('hashchange', revealHash);
+  revealHash();
+  document.addEventListener('astro:page-load', revealHash);
+</script>

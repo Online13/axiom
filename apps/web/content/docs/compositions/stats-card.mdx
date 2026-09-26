@@ -1,0 +1,102 @@
+---
+title: Stats Card
+description: "A metric, its label and icon, and its change against the last period."
+---
+
+<PhonePreview>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		This week
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<div class="ax-row" style={{ gap: "12px", alignItems: "stretch" }}>
+			<div class="ax-grow" style={{ flexBasis: "0px", display: "flex" }}>
+				<StatsCardPreview label="Revenue" value="$12,480" icon="wallet" change="+12.4%" tone="success" caption="vs last week" />
+			</div>
+			<div class="ax-grow" style={{ flexBasis: "0px", display: "flex" }}>
+				<StatsCardPreview label="Spending" value="$3,210" icon="cart" change="+8%" tone="error" caption="vs last week" />
+			</div>
+		</div>
+		<div class="ax-row" style={{ gap: "12px", alignItems: "stretch" }}>
+			<div class="ax-grow" style={{ flexBasis: "0px", display: "flex" }}>
+				<StatsCardPreview label="Steps" value="8,204" icon="flame" change="−3%" tone="error" />
+			</div>
+			<div class="ax-grow" style={{ flexBasis: "0px", display: "flex" }}>
+				<StatsCardPreview label="Sessions" value="1,032" icon="user" change="0%" caption="Same as last week" />
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+Spending went up, and that's bad news: it's red. The color follows whether the change is good, not only its direction.
+
+## Installation
+
+```npm
+npx axiom add stats-card
+```
+
+Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/stats-card.tsx`. It brings no tokens of its own.
+
+## Usage
+
+```tsx
+import { StatsCard } from "@/components/compositions/stats-card";
+
+<View style={{ flexDirection: "row", gap: 12 }}>
+	<StatsCard
+		label="Revenue"
+		value="$12,480"
+		icon="wallet"
+		change="+12.4%"
+		trend="up"
+		caption="vs last week"
+		style={{ flex: 1 }}
+	/>
+	<StatsCard
+		label="Spending"
+		value="$3,210"
+		icon="cart"
+		change="+8%"
+		trend="up"
+		positive={false}
+		style={{ flex: 1 }}
+	/>
+</View>;
+```
+
+Values come formatted: the card never rounds or localizes a number.
+
+## Props
+
+| Prop       | Type                           | Default           | Description                                                                                    |
+| ---------- | ------------------------------ | ----------------- | ---------------------------------------------------------------------------------------------- |
+| `label`    | `string`                       | —                 | What is measured, muted, above the value.                                                      |
+| `value`    | `string`                       | —                 | Already formatted, in large type. Shrinks to fit one line.                                     |
+| `icon`     | `IconName`                     | —                 | Before the label.                                                                              |
+| `change`   | `string`                       | —                 | Change against the previous period, in a [Badge](/docs/atoms/badge): `"+12.4%"`.               |
+| `trend`    | `'up' \| 'down' \| 'flat'`     | `'flat'`          | Direction of the change. `flat` keeps the badge neutral.                                       |
+| `positive` | `boolean`                      | `trend !== 'down'` | Whether the change is good news: green if so, red if not. Pass `false` for spending or latency going up. |
+| `caption`  | `string`                       | —                 | After the change: `"vs last week"`.                                                            |
+| `variant`  | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/atoms/card) variant.                                                          |
+| `onPress`  | `() => void`                   | —                 | Makes the card pressable, to open the detail.                                                  |
+| `style`    | `StyleProp<ViewStyle>`         | —                 | Extra styles, usually `flex: 1` in a row of cards.                                             |
+
+## Accessibility
+
+The card reads as one sentence: "Revenue: $12,480, +12.4%, vs last week".
+
+## Built with
+
+- [Card](/docs/atoms/card): the filled surface.
+- [Title](/docs/atoms/title): the value.
+- [Badge](/docs/atoms/badge): the change, in success, error or neutral.
+- [Icon](/docs/atoms/icon) and [Text](/docs/atoms/text): the label and the caption.
+
+## Used in
+
+No block uses Stats Card yet.
+
+## Related
+
+- [Profile Card](/docs/compositions/profile-card): stats inside a profile.
+- [Compositions](/docs/compositions)

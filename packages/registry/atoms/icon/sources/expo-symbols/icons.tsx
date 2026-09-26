@@ -51,6 +51,7 @@ export const icons = {
 	image: symbol("photo", "image"),
 	info: symbol("info.circle", "info"),
 	minus: symbol("minus", "remove"),
+	more: symbol("ellipsis", "more_horiz"),
 	refresh: symbol("arrow.clockwise", "refresh"),
 	search: symbol("magnifyingglass", "search"),
 	settings: symbol("gearshape", "settings"),

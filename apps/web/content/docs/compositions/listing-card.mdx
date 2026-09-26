@@ -1,0 +1,529 @@
+---
+title: Listing Card
+description: "A home or a stay: photos, price, address and specs, stacked under the photo or over it."
+---
+
+<VariantTabs
+	group="listing-card"
+	items={[
+		{ value: "default", label: "Default" },
+		{ value: "detailed", label: "Detailed" },
+		{ value: "overlay", label: "Overlay" },
+		{ value: "overlay-detailed", label: "Overlay detailed" },
+		{ value: "booking", label: "Booking" },
+	]}
+/>
+
+<VariantPanel group="listing-card" value="default" active>
+
+<PhonePreview tall>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Stays
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<ListingCardPreview
+			variant="default"
+			image="sunny-loft"
+			title="Sunny loft"
+			price="$3,679"
+			priceUnit="/mo"
+			subtitle="Quiet, bright, near the park"
+			badge="Guest favorite"
+			photos={4}
+			specs={[
+				{ icon: "bed", value: "2", label: "Beds" },
+				{ icon: "bath", value: "2", label: "Baths" },
+				{ icon: "area", value: "1,150", label: "sqft" },
+			]}
+		/>
+		<ListingCardPreview
+			variant="default"
+			image="pool-villa"
+			title="Pool villa"
+			price="$6,200"
+			priceUnit="/mo"
+			subtitle="Garden, pool, 10 min from the beach"
+			specs={[
+				{ icon: "bed", value: "4", label: "Beds" },
+				{ icon: "bath", value: "3", label: "Baths" },
+				{ icon: "area", value: "2,400", label: "sqft" },
+			]}
+		/>
+	</div>
+</PhonePreview>
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="detailed">
+
+<PhonePreview tall>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		For sale
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<ListingCardPreview
+			variant="detailed"
+			image="pool-villa"
+			price="$250,000"
+			priceLabel="List price"
+			title="Guillaume Briard"
+			subtitle="18 Harbor Rd, Seaview"
+			badge="Prime pick"
+			photos={5}
+			specs={[
+				{ icon: "area", value: "29 m²", label: "Living" },
+				{ icon: "door", value: "2", label: "Rooms" },
+			]}
+			agent="Waleed Sabir"
+			meta="2 days ago"
+			action="View details"
+		/>
+		<ListingCardPreview
+			variant="detailed"
+			image="sunny-loft"
+			price="$410,000"
+			priceLabel="List price"
+			title="Maison Lumière"
+			subtitle="7 Park Ln, Riverside"
+			photos={3}
+			specs={[
+				{ icon: "area", value: "64 m²", label: "Living" },
+				{ icon: "door", value: "3", label: "Rooms" },
+			]}
+			agent="Ana Ruiz"
+			meta="5 days ago"
+			action="View details"
+		/>
+	</div>
+</PhonePreview>
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="overlay">
+
+<PhonePreview tall>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		New listings
+	</div>
+	<div class="ax-row" data-scroll style={{ gap: "12px", padding: "4px 16px 24px", alignItems: "flex-start" }}>
+		<ListingCardPreview
+			variant="overlay"
+			image="red-cabin"
+			title="Highland hut"
+			price="$200k"
+			subtitle="254 Highland Ave, Lochside"
+			badge="Newly listed"
+			photos={4}
+			width={260}
+			specs={[
+				{ icon: "bed", value: "2", label: "Beds" },
+				{ icon: "bath", value: "1", label: "Bath" },
+				{ icon: "area", value: "1,150", label: "sqft" },
+			]}
+		/>
+		<ListingCardPreview
+			variant="overlay"
+			image="white-villa"
+			title="White villa"
+			price="$1.2M"
+			subtitle="3 Cliff Rd, Seaview"
+			width={260}
+			specs={[
+				{ icon: "bed", value: "5", label: "Beds" },
+				{ icon: "bath", value: "4", label: "Baths" },
+				{ icon: "area", value: "3,800", label: "sqft" },
+			]}
+		/>
+	</div>
+</PhonePreview>
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="overlay-detailed">
+
+<PhonePreview tall>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		For sale
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<ListingCardPreview
+			variant="overlay-detailed"
+			image="white-villa"
+			price="$250,000"
+			priceLabel="List price"
+			title="Guillaume Briard"
+			subtitle="3 Cliff Rd, Seaview"
+			badge="Prime pick"
+			specs={[
+				{ icon: "area", value: "29 m²", label: "Living" },
+				{ icon: "door", value: "2", label: "Rooms" },
+			]}
+			agent="Waleed Sabir"
+			meta="2 days ago"
+		/>
+		<ListingCardPreview
+			variant="overlay-detailed"
+			image="red-cabin"
+			price="$185,000"
+			priceLabel="List price"
+			title="Iona Campbell"
+			subtitle="254 Highland Ave, Lochside"
+			specs={[
+				{ icon: "area", value: "48 m²", label: "Living" },
+				{ icon: "door", value: "2", label: "Rooms" },
+			]}
+			agent="Ana Ruiz"
+			meta="5 days ago"
+		/>
+	</div>
+</PhonePreview>
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="booking">
+
+<PhonePreview tall>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Weekend escapes
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<ListingCardPreview
+			variant="booking"
+			image="alpine-lodge"
+			title="The Hill Guest House"
+			subtitle="58 Hullbrook Rd, Alpendorf"
+			price="$620"
+			photos={4}
+			specs={[
+				{ icon: "bed", value: "2", label: "Beds" },
+				{ icon: "bath", value: "1", label: "Bath" },
+				{ icon: "area", value: "1,160", label: "sqft" },
+			]}
+			action="Reserve now"
+		/>
+		<ListingCardPreview
+			variant="booking"
+			image="red-cabin"
+			title="Lochside Cabin"
+			subtitle="254 Highland Ave, Lochside"
+			price="$240"
+			specs={[
+				{ icon: "bed", value: "1", label: "Bed" },
+				{ icon: "bath", value: "1", label: "Bath" },
+				{ icon: "area", value: "640", label: "sqft" },
+			]}
+			action="Reserve now"
+		/>
+	</div>
+</PhonePreview>
+
+</VariantPanel>
+
+Each variant is its own component with its own code: install the one you need. **Default** and **Detailed** put the photos above the card's surface. **Overlay**, **Overlay detailed** and **Booking** cover the whole card with the photos and draw the text over a dark gradient, so it reads the same in light and dark mode.
+
+With several photos, every variant swipes through them with a [Carousel](/docs/atoms/carousel) and shows white dots on the photo.
+
+## Installation
+
+<VariantPanel group="listing-card" value="default" active>
+
+```npm
+npx axiom add listing-card
+```
+
+The file lands in `components/compositions/listing-card.tsx`.
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="detailed">
+
+```npm
+npx axiom add listing-card-detailed
+```
+
+The file lands in `components/compositions/listing-card-detailed.tsx`. Also copies [`avatar`](/docs/atoms/avatar) and [`button`](/docs/atoms/button).
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="overlay">
+
+```npm
+npx axiom add listing-card-overlay
+```
+
+The file lands in `components/compositions/listing-card-overlay.tsx`.
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="overlay-detailed">
+
+```npm
+npx axiom add listing-card-overlay-detailed
+```
+
+The file lands in `components/compositions/listing-card-overlay-detailed.tsx`. Also copies [`avatar`](/docs/atoms/avatar).
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="booking">
+
+```npm
+npx axiom add listing-card-booking
+```
+
+The file lands in `components/compositions/listing-card-booking.tsx`. Also copies [`button`](/docs/atoms/button).
+
+</VariantPanel>
+
+Every variant also copies [`card`](/docs/atoms/card), [`carousel`](/docs/atoms/carousel), [`badge`](/docs/atoms/badge), [`separator`](/docs/atoms/separator), [`icon`](/docs/atoms/icon), [`text`](/docs/atoms/text), [`title`](/docs/atoms/title) and their dependencies. None brings tokens of its own.
+
+The spec icons come from your [icon registry](/docs/atoms/icon). Add the ones you use to `icons.tsx`, for example with `expo-symbols`:
+
+```tsx title="components/ui/icons.tsx"
+bed: symbol("bed.double", "bed"),
+bath: symbol("bathtub", "bathtub"),
+area: symbol("square.dashed", "square_foot"),
+rooms: symbol("door.left.hand.closed", "door_front"),
+```
+
+## Usage
+
+<VariantPanel group="listing-card" value="default" active>
+
+```tsx
+import { ListingCard } from "@/components/compositions/listing-card";
+
+<ListingCard
+	title="Sunny loft"
+	subtitle="Quiet, bright, near the park"
+	price="$3,679"
+	priceUnit="/mo"
+	badge="Guest favorite"
+	images={listing.photos}
+	specs={[
+		{ icon: "bed", value: "2", label: "Beds" },
+		{ icon: "bath", value: "2", label: "Baths" },
+		{ icon: "area", value: "1,150", label: "sqft" },
+	]}
+	onPress={() => router.push(`/stays/${listing.id}`)}
+/>;
+```
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="detailed">
+
+```tsx
+import { ListingCardDetailed } from "@/components/compositions/listing-card-detailed";
+
+<ListingCardDetailed
+	price="$250,000"
+	priceLabel="List price"
+	title="Guillaume Briard"
+	subtitle="18 Harbor Rd, Seaview"
+	badge="Prime pick"
+	images={listing.photos}
+	specs={[
+		{ icon: "area", value: "29 m²", label: "Living" },
+		{ icon: "rooms", value: "2", label: "Rooms" },
+	]}
+	agent={{ name: "Waleed Sabir", avatar: agent.photo }}
+	meta="2 days ago"
+	onAction={() => router.push(`/homes/${listing.id}`)}
+/>;
+```
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="overlay">
+
+```tsx
+import { ListingCardOverlay } from "@/components/compositions/listing-card-overlay";
+
+<ListingCardOverlay
+	title="Highland hut"
+	subtitle="254 Highland Ave, Lochside"
+	price="$200k"
+	badge="Newly listed"
+	images={listing.photos}
+	specs={[
+		{ icon: "bed", value: "2", label: "Beds" },
+		{ icon: "bath", value: "1", label: "Bath" },
+		{ icon: "area", value: "1,150", label: "sqft" },
+	]}
+	onPress={() => router.push(`/homes/${listing.id}`)}
+	style={{ width: 260 }}
+/>;
+```
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="overlay-detailed">
+
+```tsx
+import { ListingCardOverlayDetailed } from "@/components/compositions/listing-card-overlay-detailed";
+
+<ListingCardOverlayDetailed
+	price="$250,000"
+	priceLabel="List price"
+	title="Guillaume Briard"
+	subtitle="3 Cliff Rd, Seaview"
+	badge="Prime pick"
+	images={listing.photos}
+	specs={[
+		{ icon: "area", value: "29 m²", label: "Living" },
+		{ icon: "rooms", value: "2", label: "Rooms" },
+	]}
+	agent={{ name: "Waleed Sabir", avatar: agent.photo }}
+	meta="2 days ago"
+	onPress={() => router.push(`/homes/${listing.id}`)}
+/>;
+```
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="booking">
+
+```tsx
+import { ListingCardBooking } from "@/components/compositions/listing-card-booking";
+
+<ListingCardBooking
+	title="The Hill Guest House"
+	subtitle="58 Hullbrook Rd, Alpendorf"
+	price="$620"
+	priceUnit="/night"
+	images={stay.photos}
+	specs={[
+		{ icon: "bed", value: "2", label: "Beds" },
+		{ icon: "bath", value: "1", label: "Bath" },
+		{ icon: "area", value: "1,160", label: "sqft" },
+	]}
+	onAction={() => router.push(`/stays/${stay.id}/book`)}
+	onPress={() => router.push(`/stays/${stay.id}`)}
+/>;
+```
+
+</VariantPanel>
+
+`price` is a string: format it yourself, currency included, so the card doesn't decide how your app shows money. `images` takes one photo or several; with one, there is no carousel and no dots.
+
+## Props
+
+<VariantPanel group="listing-card" value="default" active>
+
+| Prop          | Type                    | Default | Description                                                                                           |
+| ------------- | ----------------------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| `title`       | `string`                | —       | Name of the place, on one line next to the price.                                                     |
+| `price`       | `string`                | —       | Already formatted, currency included: `"$3,679"`.                                                     |
+| `priceUnit`   | `string`                | —       | Shown small after the price: `"/mo"`, `"/night"`.                                                     |
+| `subtitle`    | `string`                | —       | One line under the title: a tagline, an area.                                                         |
+| `images`      | `ImageSourcePropType[]` | —       | One photo, or several to swipe through.                                                               |
+| `aspectRatio` | `number`                | `4 / 3` | Of the photos.                                                                                        |
+| `badge`       | `string`                | —       | Short label in a `highlight` [Badge](/docs/atoms/badge), on the photo.                                |
+| `specs`       | `ListingSpec[]`         | —       | `{ icon?, value, label? }`: beds, baths, area. Shown as "**2** Beds", separated by lines. Three fit.   |
+| `onPress`     | `() => void`            | —       | Makes the whole card pressable. The card is read as "title, price".                                   |
+| `style`       | `StyleProp<ViewStyle>`  | —       | Extra styles for the card container, for example a width in a rail.                                   |
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="detailed">
+
+| Prop          | Type                    | Default          | Description                                                                                 |
+| ------------- | ----------------------- | ---------------- | ------------------------------------------------------------------------------------------- |
+| `price`       | `string`                | —                | Already formatted, currency included. Shown first, as a `headingSm` [Title](/docs/atoms/title). |
+| `priceLabel`  | `string`                | —                | Shown small after the price: `"List price"`.                                                |
+| `title`       | `string`                | —                | The seller or the building, in semibold.                                                    |
+| `subtitle`    | `string`                | —                | Usually the address, after the title on the same line.                                      |
+| `images`      | `ImageSourcePropType[]` | —                | One photo, or several to swipe through.                                                     |
+| `aspectRatio` | `number`                | `4 / 3`          | Of the photos.                                                                              |
+| `badge`       | `string`                | —                | Short label in a `highlight` [Badge](/docs/atoms/badge), on the photo.                      |
+| `specs`       | `ListingSpec[]`         | —                | `{ icon?, value, label? }`, between two lines.                                              |
+| `agent`       | `{ name, avatar? }`     | —                | Who posted the listing: an [Avatar](/docs/atoms/avatar) and "By name".                      |
+| `meta`        | `string`                | —                | At the end of the agent line: `"2 days ago"`.                                               |
+| `actionLabel` | `string`                | `"View details"` | Label of the action button.                                                                 |
+| `onAction`    | `() => void`            | —                | Shows the full-width button. Without it, there is no button.                                |
+| `onPress`     | `() => void`            | —                | Makes the whole card pressable. The button keeps its own press.                             |
+| `style`       | `StyleProp<ViewStyle>`  | —                | Extra styles for the card container.                                                        |
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="overlay">
+
+| Prop          | Type                    | Default | Description                                                                                 |
+| ------------- | ----------------------- | ------- | ------------------------------------------------------------------------------------------- |
+| `title`       | `string`                | —       | Name of the place, on one line next to the price.                                           |
+| `price`       | `string`                | —       | Already formatted, currency included: `"$200k"`.                                            |
+| `subtitle`    | `string`                | —       | One line under the title: the address.                                                      |
+| `images`      | `ImageSourcePropType[]` | —       | One photo, or several to swipe through. They cover the whole card.                          |
+| `aspectRatio` | `number`                | `3 / 4` | Of the whole card. Portrait by default.                                                     |
+| `badge`       | `string`                | —       | Short label in a `highlight` [Badge](/docs/atoms/badge), top left.                          |
+| `specs`       | `ListingSpec[]`         | —       | `{ icon?, value, label? }`, under a line, in white.                                         |
+| `onPress`     | `() => void`            | —       | Makes the whole card pressable. Swipes still go to the photos.                              |
+| `style`       | `StyleProp<ViewStyle>`  | —       | Extra styles for the card container, for example a width in a rail.                         |
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="overlay-detailed">
+
+| Prop          | Type                    | Default | Description                                                                         |
+| ------------- | ----------------------- | ------- | ----------------------------------------------------------------------------------- |
+| `price`       | `string`                | —       | Already formatted, currency included. Shown first, as a heading.                    |
+| `priceLabel`  | `string`                | —       | Shown small after the price: `"List price"`.                                        |
+| `title`       | `string`                | —       | The seller or the building, in semibold.                                            |
+| `subtitle`    | `string`                | —       | Usually the address, under the title, on up to two lines.                           |
+| `images`      | `ImageSourcePropType[]` | —       | One photo, or several to swipe through. They cover the whole card.                  |
+| `aspectRatio` | `number`                | `3 / 4` | Of the whole card.                                                                  |
+| `badge`       | `string`                | —       | Short label in a `highlight` [Badge](/docs/atoms/badge), top left.                  |
+| `specs`       | `ListingSpec[]`         | —       | `{ icon?, value, label? }`, stacked next to the title: value above, label below. Two fit. |
+| `agent`       | `{ name, avatar? }`     | —       | Who posted the listing, under a line.                                               |
+| `meta`        | `string`                | —       | After the agent: `"2 days ago"`.                                                    |
+| `onPress`     | `() => void`            | —       | Makes the whole card pressable.                                                     |
+| `style`       | `StyleProp<ViewStyle>`  | —       | Extra styles for the card container.                                                |
+
+</VariantPanel>
+
+<VariantPanel group="listing-card" value="booking">
+
+| Prop          | Type                    | Default         | Description                                                                          |
+| ------------- | ----------------------- | --------------- | ------------------------------------------------------------------------------------ |
+| `title`       | `string`                | —               | Name of the place.                                                                   |
+| `subtitle`    | `string`                | —               | One line under the title: the address.                                               |
+| `price`       | `string`                | —               | Already formatted, currency included. Shown in a translucent pill next to the button. |
+| `priceUnit`   | `string`                | —               | Shown small after the price: `"/night"`.                                             |
+| `images`      | `ImageSourcePropType[]` | —               | One photo, or several to swipe through. They cover the whole card.                   |
+| `aspectRatio` | `number`                | `3 / 4`         | Of the whole card.                                                                   |
+| `badge`       | `string`                | —               | Short label in a `highlight` [Badge](/docs/atoms/badge), top left.                   |
+| `specs`       | `ListingSpec[]`         | —               | `{ icon?, value, label? }`, in white.                                                |
+| `actionLabel` | `string`                | `"Reserve now"` | Label of the white button. It is read as "label, title".                             |
+| `onAction`    | `() => void`            | —               | Required: the booking action.                                                        |
+| `onPress`     | `() => void`            | —               | Makes the whole card pressable, to open the place. The button keeps its own press.   |
+| `style`       | `StyleProp<ViewStyle>`  | —               | Extra styles for the card container.                                                 |
+
+</VariantPanel>
+
+## Accessibility
+
+- A pressable card is read as one element: "title, price" (the Detailed variants: "price, title").
+- With several photos, the dots are read as "Photo 1 of 4" and the carousel is labelled "Photos".
+- The overlay variants draw white text on a dark gradient in both color schemes: the photo stays the same in dark mode, so the text does too. Pick photos without large white areas at the bottom.
+
+## Built with
+
+- [Card](/docs/atoms/card): the elevated surface and, for the stacked variants, its header.
+- [Carousel](/docs/atoms/carousel): the swipeable photos.
+- [Badge](/docs/atoms/badge): the `highlight` label on the photo.
+- [Separator](/docs/atoms/separator): the lines around and between the specs.
+- [Icon](/docs/atoms/icon): the spec icons, from your registry.
+- [Title](/docs/atoms/title) and [Text](/docs/atoms/text): name, price, address.
+- [Avatar](/docs/atoms/avatar): the agent, in the Detailed variants.
+- [Button](/docs/atoms/button): the action, in Detailed and Booking.
+
+## Used in
+
+No block uses Listing Card yet.
+
+## Related
+
+- [Product Card](/docs/compositions/product-card)
+- [Recipe Card](/docs/compositions/recipe-card)
+- [Compositions](/docs/compositions)

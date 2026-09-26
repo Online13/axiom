@@ -1,0 +1,267 @@
+---
+// One Listing Card drawn with the `.ax-*` classes of preview.css, at real iOS sizes.
+// It mirrors the five registry components, one per `variant`: the stacked ones (`default`, `detailed`)
+// put the photo above a card surface; the overlay ones cover the card with the photo and a dark scrim.
+import Glyph from '@docs/components/preview/glyph.astro';
+import Dots from './photo-dots.astro';
+import Spec from './spec-item.astro';
+
+import type { SpecData } from './spec-item.astro';
+
+interface Props {
+  variant: 'default' | 'detailed' | 'overlay' | 'overlay-detailed' | 'booking';
+  image: string;
+  title: string;
+  price: string;
+  priceUnit?: string;
+  priceLabel?: string;
+  subtitle?: string;
+  badge?: string;
+  specs?: SpecData[];
+  /** Number of photos: more than one shows the dots. */
+  photos?: number;
+  agent?: string;
+  meta?: string;
+  action?: string;
+  /** In points. Without it, the card takes the full width of its list. */
+  width?: number;
+}
+
+const {
+  variant,
+  image,
+  title,
+  price,
+  priceUnit,
+  priceLabel,
+  subtitle,
+  badge,
+  specs = [],
+  photos = 1,
+  agent,
+  meta,
+  action,
+  width,
+} = Astro.props;
+const overlay = variant !== 'default' && variant !== 'detailed';
+const src = `/images/listings/${image}.webp`;
+const size = width ? { width: `${width}px` } : { alignSelf: 'stretch' };
+---
+
+{
+  !overlay && (
+    <div class="ax-card listing" style={size}>
+      <div class="ax-media" style={{ height: 'auto', aspectRatio: '4 / 3', position: 'relative' }}>
+        <img src={src} alt="" loading="lazy" />
+        {badge && (
+          <span class="ax-badge" data-variant="highlight" style={{ position: 'absolute', top: '12px', left: '12px' }}>
+            {badge}
+          </span>
+        )}
+        {photos > 1 && <Dots count={photos} />}
+      </div>
+      {variant === 'default' ? (
+        <div class="ax-stack" data-gap="4" style={{ padding: '16px 16px 0' }}>
+          <div class="ax-row" style={{ gap: '8px', alignItems: 'baseline' }}>
+            <span class="ax-headline ax-truncate ax-grow">{title}</span>
+            <span class="ax-semibold">
+              {price}
+              {priceUnit && <span class="ax-caption ax-muted">{priceUnit}</span>}
+            </span>
+          </div>
+          {subtitle && <span class="ax-subhead ax-muted ax-truncate">{subtitle}</span>}
+        </div>
+      ) : (
+        <div class="ax-stack" data-gap="4" style={{ padding: '16px 16px 0' }}>
+          <div class="ax-row" style={{ gap: '4px', alignItems: 'center' }}>
+            <span class="ax-title3">{price}</span>
+            {priceLabel && <span class="ax-caption ax-muted">{priceLabel}</span>}
+          </div>
+          <span class="ax-footnote ax-muted ax-truncate" style={{ fontWeight: 400 }}>
+            <span class="ax-semibold" style={{ color: 'var(--ax-content-default)' }}>{title}</span>
+            {subtitle && ` · ${subtitle}`}
+          </span>
+        </div>
+      )}
+      {specs.length > 0 && (
+        <div class="ax-stack" data-gap="12" style={{ padding: '12px 16px 0' }}>
+          <span class="ax-separator" data-variant="subtle" />
+          <div class="ax-row" style={{ gap: variant === 'default' ? '12px' : '16px', justifyContent: variant === 'default' ? 'space-between' : 'flex-start' }}>
+            {specs.map((spec, index) => (
+              <>
+                {index > 0 && <span class="ax-separator" data-orientation="vertical" data-variant="subtle" />}
+                <Spec spec={spec} />
+              </>
+            ))}
+          </div>
+          {variant === 'detailed' && <span class="ax-separator" data-variant="subtle" />}
+        </div>
+      )}
+      {variant === 'detailed' && (agent || meta) && (
+        <div class="ax-row" style={{ gap: '8px', alignItems: 'center', padding: '12px 16px 0' }}>
+          {agent && <span class="ax-avatar" data-size="xs" data-photo="1" />}
+          {agent && (
+            <span class="ax-footnote ax-muted ax-grow ax-truncate" style={{ fontWeight: 400 }}>
+              By <span class="ax-semibold" style={{ color: 'var(--ax-content-default)' }}>{agent}</span>
+            </span>
+          )}
+          {meta && <span class="ax-caption ax-muted">{meta}</span>}
+        </div>
+      )}
+      {action && (
+        <div style={{ padding: '16px 16px 0' }}>
+          <span class="ax-btn" data-block>{action}</span>
+        </div>
+      )}
+      <div style={{ height: '16px' }} />
+    </div>
+  )
+}
+
+{
+  overlay && (
+    <div class="ax-card listing overlay" style={{ ...size, aspectRatio: '3 / 4' }}>
+      <img class="photo" src={src} alt="" loading="lazy" />
+      <div class="scrim" />
+      <div class="content">
+        {badge ? (
+          <span class="ax-badge" data-variant="highlight" style={{ alignSelf: 'flex-start' }}>
+            {badge}
+          </span>
+        ) : (
+          <span />
+        )}
+        <div class="ax-stack" data-gap="4">
+          {photos > 1 && <Dots count={photos} inline />}
+          {variant === 'overlay' && (
+            <>
+              <div class="ax-row" style={{ gap: '8px', alignItems: 'center' }}>
+                <span class="ax-title3 ax-truncate ax-grow">{title}</span>
+                <span class="ax-title3">{price}</span>
+              </div>
+              {subtitle && <span class="ax-subhead on-muted ax-truncate">{subtitle}</span>}
+            </>
+          )}
+          {variant === 'overlay-detailed' && (
+            <>
+              <div class="ax-row" style={{ gap: '4px', alignItems: 'center' }}>
+                <span class="ax-title3">{price}</span>
+                {priceLabel && <span class="ax-caption on-muted">{priceLabel}</span>}
+              </div>
+              <div class="ax-row" style={{ gap: '12px', alignItems: 'center' }}>
+                <div class="ax-stack ax-grow" style={{ minWidth: 0 }}>
+                  <span class="ax-footnote ax-semibold ax-truncate">{title}</span>
+                  {subtitle && <span class="ax-caption on-muted">{subtitle}</span>}
+                </div>
+                {specs.map((spec) => (
+                  <div class="ax-stack" style={{ alignItems: 'center' }}>
+                    <span class="ax-row ax-footnote ax-semibold" style={{ gap: '4px', alignItems: 'center' }}>
+                      <Glyph name={spec.icon} size={16} />
+                      {spec.value}
+                    </span>
+                    <span class="ax-caption on-muted">{spec.label}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+          {variant === 'booking' && (
+            <>
+              <span class="ax-title3 ax-truncate">{title}</span>
+              {subtitle && <span class="ax-subhead on-muted ax-truncate">{subtitle}</span>}
+            </>
+          )}
+          {variant !== 'overlay-detailed' && specs.length > 0 && (
+            <div class="ax-stack" data-gap="12" style={{ marginTop: '8px' }}>
+              {variant === 'overlay' && <span class="ax-separator line" />}
+              <div class="ax-row" style={{ gap: '12px', justifyContent: 'space-between' }}>
+                {specs.map((spec, index) => (
+                  <>
+                    {index > 0 && <span class="ax-separator line" data-orientation="vertical" />}
+                    <Spec spec={spec} onMedia />
+                  </>
+                ))}
+              </div>
+            </div>
+          )}
+          {variant === 'overlay-detailed' && (agent || meta) && (
+            <div class="ax-stack" data-gap="12" style={{ marginTop: '8px' }}>
+              <span class="ax-separator line" />
+              <div class="ax-row" style={{ gap: '8px', alignItems: 'center' }}>
+                {agent && <span class="ax-avatar" data-size="xs" data-photo="1" />}
+                {agent && (
+                  <span class="ax-caption on-muted">
+                    By <span class="ax-semibold on-media">{agent}</span>
+                  </span>
+                )}
+                {meta && <span class="ax-caption on-muted">{meta}</span>}
+              </div>
+            </div>
+          )}
+          {variant === 'booking' && (
+            <div class="ax-row" style={{ gap: '8px', alignItems: 'center', marginTop: '16px' }}>
+              <span class="pill ax-semibold">
+                {price}
+                {priceUnit && <span class="ax-caption on-muted">{priceUnit}</span>}
+              </span>
+              <span class="ax-btn ax-grow reserve">{action}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .listing {
+    flex: none;
+  }
+  .overlay {
+    position: relative;
+    color: #fff;
+  }
+  .overlay .photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .overlay .scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgb(0 0 0 / 0.25), rgb(0 0 0 / 0) 30%, rgb(0 0 0 / 0) 40%, rgb(0 0 0 / 0.85));
+  }
+  .overlay .content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px;
+  }
+  .on-muted {
+    color: rgb(255 255 255 / 0.75);
+  }
+  .on-media {
+    color: #fff;
+  }
+  .line {
+    background: rgb(255 255 255 / 0.25);
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    height: var(--ax-control-md);
+    padding: 0 16px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.2);
+    font-size: 17px;
+  }
+  .reserve {
+    border-radius: 999px;
+    background: #fff;
+    color: #000;
+  }
+</style>

@@ -1486,8 +1486,7 @@
 				"button",
 				"card",
 				"text",
-				"theme",
-				"title"
+				"theme"
 			],
 			"variants": {
 				"stylesheet": {
@@ -1498,6 +1497,263 @@
 				"unistyles": {
 					"files": [
 						"compositions/product-card/unistyles/product-card.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "product-card-spotlight",
+			"type": "compositions",
+			"internalDependencies": [
+				"badge",
+				"button",
+				"card",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/product-card-spotlight/stylesheet/product-card-spotlight.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/product-card-spotlight/unistyles/product-card-spotlight.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "recipe-card",
+			"type": "compositions",
+			"internalDependencies": [
+				"badge",
+				"button",
+				"card",
+				"chip",
+				"icon",
+				"separator",
+				"text",
+				"theme"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/recipe-card/stylesheet/recipe-card.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/recipe-card/unistyles/recipe-card.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "listing-card",
+			"type": "compositions",
+			"internalDependencies": [
+				"badge",
+				"card",
+				"carousel",
+				"icon",
+				"separator",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/listing-card/stylesheet/listing-card.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/listing-card/unistyles/listing-card.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "listing-card-detailed",
+			"type": "compositions",
+			"internalDependencies": [
+				"avatar",
+				"badge",
+				"button",
+				"card",
+				"carousel",
+				"icon",
+				"separator",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/listing-card-detailed/stylesheet/listing-card-detailed.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/listing-card-detailed/unistyles/listing-card-detailed.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "listing-card-overlay",
+			"type": "compositions",
+			"internalDependencies": [
+				"badge",
+				"card",
+				"carousel",
+				"icon",
+				"separator",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/listing-card-overlay/stylesheet/listing-card-overlay.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/listing-card-overlay/unistyles/listing-card-overlay.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "listing-card-overlay-detailed",
+			"type": "compositions",
+			"internalDependencies": [
+				"avatar",
+				"badge",
+				"card",
+				"carousel",
+				"icon",
+				"separator",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/listing-card-overlay-detailed/stylesheet/listing-card-overlay-detailed.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/listing-card-overlay-detailed/unistyles/listing-card-overlay-detailed.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "listing-card-booking",
+			"type": "compositions",
+			"internalDependencies": [
+				"badge",
+				"button",
+				"card",
+				"carousel",
+				"icon",
+				"separator",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/listing-card-booking/stylesheet/listing-card-booking.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/listing-card-booking/unistyles/listing-card-booking.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "profile-card",
+			"type": "compositions",
+			"internalDependencies": [
+				"avatar",
+				"button",
+				"card",
+				"separator",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/profile-card/stylesheet/profile-card.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/profile-card/unistyles/profile-card.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "article-card",
+			"type": "compositions",
+			"internalDependencies": [
+				"avatar",
+				"card",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/article-card/stylesheet/article-card.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/article-card/unistyles/article-card.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "event-card",
+			"type": "compositions",
+			"internalDependencies": [
+				"avatar",
+				"button",
+				"card",
+				"icon",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/event-card/stylesheet/event-card.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/event-card/unistyles/event-card.tsx"
 					]
 				}
 			}
@@ -1524,6 +1780,239 @@
 				"unistyles": {
 					"files": [
 						"compositions/settings-item/unistyles/settings-item.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "track-item",
+			"type": "compositions",
+			"requiredIcons": [
+				"more"
+			],
+			"internalDependencies": [
+				"badge",
+				"icon-button",
+				"item",
+				"text",
+				"theme"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/track-item/stylesheet/track-item.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/track-item/unistyles/track-item.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "conversation-item",
+			"type": "compositions",
+			"internalDependencies": [
+				"avatar",
+				"badge",
+				"item",
+				"text",
+				"theme"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/conversation-item/stylesheet/conversation-item.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/conversation-item/unistyles/conversation-item.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "notification-item",
+			"type": "compositions",
+			"internalDependencies": [
+				"avatar",
+				"badge",
+				"button",
+				"icon",
+				"item",
+				"text",
+				"theme"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/notification-item/stylesheet/notification-item.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/notification-item/unistyles/notification-item.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "offer-card",
+			"type": "compositions",
+			"requiredIcons": [
+				"check"
+			],
+			"internalDependencies": [
+				"badge",
+				"button",
+				"card",
+				"icon",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/offer-card/stylesheet/offer-card.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/offer-card/unistyles/offer-card.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "pricing-card",
+			"type": "compositions",
+			"requiredIcons": [
+				"check"
+			],
+			"internalDependencies": [
+				"badge",
+				"button",
+				"card",
+				"icon",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/pricing-card/stylesheet/pricing-card.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/pricing-card/unistyles/pricing-card.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "stats-card",
+			"type": "compositions",
+			"internalDependencies": [
+				"badge",
+				"card",
+				"icon",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/stats-card/stylesheet/stats-card.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/stats-card/unistyles/stats-card.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "search-result-item",
+			"type": "compositions",
+			"requiredIcons": [
+				"chevron-right"
+			],
+			"internalDependencies": [
+				"icon",
+				"icon-button",
+				"item",
+				"text",
+				"theme"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/search-result-item/stylesheet/search-result-item.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/search-result-item/unistyles/search-result-item.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "search-app-bar",
+			"type": "compositions",
+			"requiredIcons": [
+				"arrow-left",
+				"close"
+			],
+			"internalDependencies": [
+				"app-bar",
+				"badge",
+				"icon-button",
+				"search-bar",
+				"theme"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/search-app-bar/stylesheet/search-app-bar.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/search-app-bar/unistyles/search-app-bar.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "profile-app-bar",
+			"type": "compositions",
+			"internalDependencies": [
+				"app-bar",
+				"avatar",
+				"badge",
+				"icon-button",
+				"tappable",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/profile-app-bar/stylesheet/profile-app-bar.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/profile-app-bar/unistyles/profile-app-bar.tsx"
 					]
 				}
 			}

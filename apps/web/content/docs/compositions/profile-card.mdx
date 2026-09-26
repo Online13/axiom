@@ -1,0 +1,108 @@
+---
+title: Profile Card
+description: "Avatar, name, short bio, stats and follow and message buttons."
+---
+
+<PhonePreview tall>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Suggested
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<ProfileCardPreview
+			name="Lena Moreau"
+			handle="@lena.m"
+			photo={3}
+			bio="Product designer in Lyon. Sketching interfaces, shooting film, drinking too much coffee."
+			stats={[
+				{ value: "248", label: "Posts" },
+				{ value: "12.4k", label: "Followers" },
+				{ value: "310", label: "Following" },
+			]}
+		/>
+		<ProfileCardPreview
+			name="Sam Okafor"
+			handle="@samok"
+			stats={[
+				{ value: "86", label: "Posts" },
+				{ value: "1,204", label: "Followers" },
+				{ value: "97", label: "Following" },
+			]}
+			following
+		/>
+	</div>
+</PhonePreview>
+
+The second card has no photo: the avatar falls back to the initials, on a hue taken from the name. Its follow button is in the "Following" state.
+
+## Installation
+
+```npm
+npx axiom add profile-card
+```
+
+Also copies: [`card`](/docs/atoms/card), [`avatar`](/docs/atoms/avatar), [`separator`](/docs/atoms/separator), [`button`](/docs/atoms/button), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/profile-card.tsx`. It brings no tokens of its own.
+
+## Usage
+
+The card doesn't keep the follow state. Hold it in the screen and flip `following` in `onFollow`:
+
+```tsx
+import { useState } from "react";
+
+import { ProfileCard } from "@/components/compositions/profile-card";
+
+const [following, setFollowing] = useState(user.isFollowed);
+
+<ProfileCard
+	name={user.name}
+	handle={`@${user.username}`}
+	avatar={{ uri: user.avatarUrl }}
+	bio={user.bio}
+	stats={[
+		{ value: "248", label: "Posts" },
+		{ value: "12.4k", label: "Followers" },
+		{ value: "310", label: "Following" },
+	]}
+	following={following}
+	onFollow={() => setFollowing((value) => !value)}
+	onMessage={() => router.push(`/messages/${user.id}`)}
+	onPress={() => router.push(`/users/${user.id}`)}
+/>;
+```
+
+## Props
+
+| Prop             | Type                   | Default       | Description                                                                                         |
+| ---------------- | ---------------------- | ------------- | --------------------------------------------------------------------------------------------------- |
+| `name`           | `string`               | —             | Shown as the title. Gives the avatar its initials and hue when there is no photo.                   |
+| `handle`         | `string`               | —             | Under the name, muted: `"@lena.m"`.                                                                  |
+| `avatar`         | `ImageSourcePropType`  | —             | The photo, in an `xl` [Avatar](/docs/atoms/avatar). The initials show while it loads or if it fails. |
+| `bio`            | `string`               | —             | Centered, up to three lines.                                                                        |
+| `stats`          | `ProfileStat[]`        | —             | `{ value, label }`, already formatted: `"12.4k"`. Between lines, each read as "12.4k Followers". Three fit. |
+| `following`      | `boolean`              | `false`       | Swaps the follow button to its outlined "Following" state.                                          |
+| `followLabel`    | `string`               | `"Follow"`    | Label of the follow button.                                                                         |
+| `followingLabel` | `string`               | `"Following"` | Label of the follow button when `following`.                                                        |
+| `onFollow`       | `() => void`           | —             | Shows the follow button. Without it, there is none.                                                 |
+| `messageLabel`   | `string`               | `"Message"`   | Label of the message button.                                                                        |
+| `onMessage`      | `() => void`           | —             | Shows the outlined message button, next to the follow button.                                        |
+| `onPress`        | `() => void`           | —             | Makes the whole card pressable, to open the profile. The buttons keep their own press.              |
+| `style`          | `StyleProp<ViewStyle>` | —             | Extra styles for the card container, for example a margin.                                          |
+
+## Built with
+
+- [Card](/docs/atoms/card): the elevated surface and its header.
+- [Avatar](/docs/atoms/avatar): the photo, or the initials on a hue from the name.
+- [Title](/docs/atoms/title): the name and the stat values.
+- [Text](/docs/atoms/text): the handle, the bio and the stat labels.
+- [Separator](/docs/atoms/separator): the lines between the stats.
+- [Button](/docs/atoms/button): follow in `solid`, or `outline` once followed, and message in `outline`.
+
+## Used in
+
+No block uses Profile Card yet.
+
+## Related
+
+- [Event Card](/docs/compositions/event-card)
+- [Article Card](/docs/compositions/article-card)
+- [Compositions](/docs/compositions)

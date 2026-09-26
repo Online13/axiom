@@ -1,0 +1,85 @@
+---
+title: Article Card
+description: "Cover image, category, headline, excerpt, author and reading time."
+---
+
+<PhonePreview tall>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Today
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<ArticleCardPreview
+			image="skyline"
+			category="Cities"
+			title="Why new towers are getting thinner, and taller"
+			excerpt="Cheaper steel and stricter zoning push developers up instead of out. What it changes for the street below."
+			author={{ name: "Sam Okafor", photo: 4 }}
+			meta="Sep 24 · 6 min read"
+		/>
+		<ArticleCardPreview
+			image="mountains"
+			category="Travel"
+			title="Above the clouds: a week on the Haute Route"
+			author={{ name: "Lena Moreau", photo: 3 }}
+			meta="Sep 21 · 9 min read"
+		/>
+	</div>
+</PhonePreview>
+
+Article Card is designed for a vertical feed: each card takes the full width of the list, one article per row. There is no width to set.
+
+## Installation
+
+```npm
+npx axiom add article-card
+```
+
+Also copies: [`card`](/docs/atoms/card), [`avatar`](/docs/atoms/avatar), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/article-card.tsx`. It brings no tokens of its own.
+
+## Usage
+
+```tsx
+import { ArticleCard } from "@/components/compositions/article-card";
+
+<ArticleCard
+	title={article.title}
+	image={{ uri: article.cover }}
+	category="Cities"
+	excerpt={article.summary}
+	author={{ name: article.author.name, avatar: { uri: article.author.photo } }}
+	meta={`${formatDate(article.publishedAt)} · ${article.readingTime} min read`}
+	onPress={() => router.push(`/articles/${article.slug}`)}
+/>;
+```
+
+`meta` is one line of text: the card doesn't format dates or reading times, so it follows your app's locale.
+
+## Props
+
+| Prop       | Type                   | Default | Description                                                                                     |
+| ---------- | ---------------------- | ------- | ----------------------------------------------------------------------------------------------- |
+| `title`    | `string`               | —       | The headline, up to three lines.                                                                |
+| `image`    | `ImageSourcePropType`  | —       | The cover, in 16:9 at the top of the card.                                                      |
+| `category` | `string`               | —       | Above the headline, in capitals and in the `link` color: `"Design"`, `"World"`.                 |
+| `excerpt`  | `string`               | —       | Up to two lines under the headline.                                                             |
+| `author`   | `ArticleAuthor`        | —       | `{ name, avatar? }`. A small [Avatar](/docs/atoms/avatar) and the name, in the byline.           |
+| `meta`     | `string`               | —       | Already formatted, under the author: `"Sep 24 · 6 min read"`.                                   |
+| `onPress`  | `() => void`           | —       | Makes the whole card pressable, to open the article. Its label reads the category, headline and author. |
+| `style`    | `StyleProp<ViewStyle>` | —       | Extra styles for the card container, for example a margin.                                      |
+
+## Built with
+
+- [Card](/docs/atoms/card): the elevated surface, its media and header.
+- [Title](/docs/atoms/title): the headline.
+- [Text](/docs/atoms/text): the category, the excerpt and the byline.
+- [Avatar](/docs/atoms/avatar): the author, or their initials.
+
+## Used in
+
+No block uses Article Card yet.
+
+## Related
+
+- [Recipe Card](/docs/compositions/recipe-card)
+- [Event Card](/docs/compositions/event-card)
+- [Compositions](/docs/compositions)

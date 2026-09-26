@@ -1,0 +1,102 @@
+---
+title: Pricing Card
+description: "Plan name, price and period, features, and a button, with featured and current states."
+---
+
+<PhonePreview tall grouped>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Plans
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<PricingCardPreview
+			name="Free"
+			price="$0"
+			description="For trying things out."
+			features={["3 projects", "Community support"]}
+			current
+		/>
+		<PricingCardPreview
+			name="Pro"
+			price="$12"
+			period="/month"
+			description="For people who ship every week."
+			badge="Most popular"
+			featured
+			features={["Unlimited projects", "Priority support", "Custom domains"]}
+			action="Start free trial"
+		/>
+	</div>
+</PhonePreview>
+
+The featured plan has a 2pt border in the primary color and the only solid button. The current plan's button is disabled.
+
+## Installation
+
+```npm
+npx axiom add pricing-card
+```
+
+Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/pricing-card.tsx`. It brings no tokens of its own.
+
+Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+
+## Usage
+
+```tsx
+import { PricingCard } from "@/components/compositions/pricing-card";
+
+{plans.map((plan) => (
+	<PricingCard
+		key={plan.id}
+		name={plan.name}
+		price={formatPrice(plan.price)}
+		period={plan.price > 0 ? "/month" : undefined}
+		description={plan.tagline}
+		features={plan.features}
+		badge={plan.id === "pro" ? "Most popular" : undefined}
+		featured={plan.id === "pro"}
+		current={plan.id === subscription.planId}
+		onAction={() => purchase(plan.id)}
+	/>
+))}
+```
+
+Feature one plan at most: the border and the solid button only work as a signal when they're alone.
+
+## Props
+
+| Prop           | Type                   | Default          | Description                                                                          |
+| -------------- | ---------------------- | ---------------- | ------------------------------------------------------------------------------------ |
+| `name`         | `string`               | —                | Name of the plan.                                                                    |
+| `price`        | `string`               | —                | Already formatted, in large type: `"$12"`.                                           |
+| `period`       | `string`               | —                | After the price, muted: `"/month"`.                                                  |
+| `description`  | `string`               | —                | Who the plan is for, under the price.                                                |
+| `features`     | `string[]`             | —                | Short features, each after a check.                                                  |
+| `badge`        | `string`               | —                | Tag next to the name. Highlight color on the featured plan, neutral otherwise.       |
+| `featured`     | `boolean`              | `false`          | Primary border and solid button.                                                     |
+| `current`      | `boolean`              | `false`          | The user's plan: the button is disabled and reads `currentLabel`.                    |
+| `actionLabel`  | `string`               | `"Choose plan"`  | Label of the button.                                                                 |
+| `currentLabel` | `string`               | `"Current plan"` | Label of the button on the current plan.                                             |
+| `onAction`     | `() => void`           | —                | Shows the full-width button.                                                         |
+| `style`        | `StyleProp<ViewStyle>` | —                | Extra styles for the card.                                                           |
+
+## Accessibility
+
+The price and its period are read together: "$12 /month". The button is labelled with the plan: "Start free trial, Pro", or "Current plan, Free" while disabled.
+
+## Built with
+
+- [Card](/docs/atoms/card): the outlined surface.
+- [Title](/docs/atoms/title): the name and the price.
+- [Badge](/docs/atoms/badge): the plan tag.
+- [Icon](/docs/atoms/icon) and [Text](/docs/atoms/text): the features.
+- [Button](/docs/atoms/button): solid on the featured plan, outlined on the others.
+
+## Used in
+
+No block uses Pricing Card yet.
+
+## Related
+
+- [Offer Card](/docs/compositions/offer-card)
+- [Compositions](/docs/compositions)

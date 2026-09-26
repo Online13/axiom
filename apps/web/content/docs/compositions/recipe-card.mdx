@@ -1,0 +1,112 @@
+---
+title: Recipe Card
+description: "Recipe photo, name, time, servings and difficulty, ingredient chips and a cook button."
+---
+
+<PhonePreview tall>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Tonight
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<RecipeCardPreview
+			image="red-curry"
+			title="Thai red curry"
+			description="A fragrant, spicy curry with coconut milk, lemongrass and fresh Thai basil."
+			badge="Spicy choice"
+			stats={[
+				{ icon: "clock", value: "20", label: "mins" },
+				{ icon: "users", value: "4", label: "servings" },
+				{ icon: "flame", value: "Medium" },
+			]}
+			ingredients={["Coconut milk", "Basil", "Lemongrass", "Chicken", "Red curry paste", "Lime", "Fish sauce", "Shallots", "Garlic", "Rice"]}
+			action="Start cooking"
+		/>
+		<RecipeCardPreview
+			image="red-curry"
+			title="Weeknight red curry"
+			description="The same curry with pantry staples, ready in half the time."
+			stats={[
+				{ icon: "clock", value: "12", label: "mins" },
+				{ icon: "users", value: "2", label: "servings" },
+				{ icon: "flame", value: "Easy" },
+			]}
+			ingredients={["Coconut milk", "Curry paste", "Rice", "Frozen peas"]}
+			action="Start cooking"
+		/>
+	</div>
+</PhonePreview>
+
+Recipe Card is designed for a vertical feed: each card takes the full width of the list, one recipe per row. There is no width to set.
+
+## Installation
+
+```npm
+npx axiom add recipe-card
+```
+
+Also copies: [`card`](/docs/atoms/card), [`chip`](/docs/atoms/chip), [`badge`](/docs/atoms/badge), [`separator`](/docs/atoms/separator), [`icon`](/docs/atoms/icon), [`text`](/docs/atoms/text), [`button`](/docs/atoms/button) and their dependencies. The file lands in `components/compositions/recipe-card.tsx`. It brings no tokens of its own.
+
+The stat icons come from your [icon registry](/docs/atoms/icon). Add the ones you use to `icons.tsx`, for example with `expo-symbols`:
+
+```tsx title="components/ui/icons.tsx"
+timer: symbol("clock", "schedule"),
+servings: symbol("person.2", "group"),
+difficulty: symbol("flame", "local_fire_department"),
+```
+
+## Usage
+
+```tsx
+import { RecipeCard } from "@/components/compositions/recipe-card";
+
+<RecipeCard
+	title="Thai red curry"
+	description="A fragrant, spicy curry with coconut milk, lemongrass and fresh Thai basil."
+	image={{ uri: recipe.photo }}
+	badge="Spicy choice"
+	stats={[
+		{ icon: "timer", value: "20", label: "mins" },
+		{ icon: "servings", value: "4", label: "servings" },
+		{ icon: "difficulty", value: "Medium" },
+	]}
+	ingredients={recipe.ingredients}
+	onPress={() => router.push(`/recipes/${recipe.id}`)}
+	onAction={() => router.push(`/recipes/${recipe.id}/cook`)}
+/>;
+```
+
+## Props
+
+| Prop             | Type                   | Default           | Description                                                                                    |
+| ---------------- | ---------------------- | ----------------- | ---------------------------------------------------------------------------------------------- |
+| `title`          | `string`               | —                 | Name of the recipe, shown as the card title.                                                   |
+| `description`    | `string`               | —                 | Up to two lines under the title.                                                               |
+| `image`          | `ImageSourcePropType`  | —                 | The dish, in 4:3 at the top of the card.                                                       |
+| `badge`          | `string`               | —                 | Short label in a `highlight` [Badge](/docs/atoms/badge), on the photo: `"Spicy"`, `"Quick"`.   |
+| `stats`          | `RecipeStat[]`         | —                 | `{ icon?, value, label? }`: time, servings, difficulty. Shown as "**20** mins", between lines. Three fit. |
+| `ingredients`    | `string[]`             | —                 | Shown as filled [Chips](/docs/atoms/chip).                                                     |
+| `maxIngredients` | `number`               | `2`               | Chips shown before the rest are counted in a "+n" chip, read as "n more ingredients".          |
+| `actionLabel`    | `string`               | `"Start cooking"` | Label of the action button.                                                                    |
+| `onAction`       | `() => void`           | —                 | Shows the full-width button. Without it, there is no button.                                   |
+| `onPress`        | `() => void`           | —                 | Makes the whole card pressable, to open the recipe. The button keeps its own press.            |
+| `style`          | `StyleProp<ViewStyle>` | —                 | Extra styles for the card container, for example a margin.                                     |
+
+## Built with
+
+- [Card](/docs/atoms/card): the elevated surface, its media, header and title.
+- [Chip](/docs/atoms/chip): the ingredients, `filled` and `sm`.
+- [Badge](/docs/atoms/badge): the `highlight` label.
+- [Separator](/docs/atoms/separator): the lines around and between the stats.
+- [Icon](/docs/atoms/icon): the stat icons, from your registry.
+- [Button](/docs/atoms/button): the full-width action.
+- [Text](/docs/atoms/text): the description and the stats.
+
+## Used in
+
+No block uses Recipe Card yet.
+
+## Related
+
+- [Product Card](/docs/compositions/product-card)
+- [Listing Card](/docs/compositions/listing-card)
+- [Compositions](/docs/compositions)

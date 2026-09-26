@@ -267,8 +267,65 @@
       "@/components/compositions/product-card": [
         "./compositions/product-card/unistyles/product-card.tsx"
       ],
+      "@/components/compositions/product-card-spotlight": [
+        "./compositions/product-card-spotlight/unistyles/product-card-spotlight.tsx"
+      ],
+      "@/components/compositions/recipe-card": [
+        "./compositions/recipe-card/unistyles/recipe-card.tsx"
+      ],
+      "@/components/compositions/listing-card": [
+        "./compositions/listing-card/unistyles/listing-card.tsx"
+      ],
+      "@/components/compositions/listing-card-detailed": [
+        "./compositions/listing-card-detailed/unistyles/listing-card-detailed.tsx"
+      ],
+      "@/components/compositions/listing-card-overlay": [
+        "./compositions/listing-card-overlay/unistyles/listing-card-overlay.tsx"
+      ],
+      "@/components/compositions/listing-card-overlay-detailed": [
+        "./compositions/listing-card-overlay-detailed/unistyles/listing-card-overlay-detailed.tsx"
+      ],
+      "@/components/compositions/listing-card-booking": [
+        "./compositions/listing-card-booking/unistyles/listing-card-booking.tsx"
+      ],
+      "@/components/compositions/profile-card": [
+        "./compositions/profile-card/unistyles/profile-card.tsx"
+      ],
+      "@/components/compositions/article-card": [
+        "./compositions/article-card/unistyles/article-card.tsx"
+      ],
+      "@/components/compositions/event-card": [
+        "./compositions/event-card/unistyles/event-card.tsx"
+      ],
       "@/components/compositions/settings-item": [
         "./compositions/settings-item/unistyles/settings-item.tsx"
+      ],
+      "@/components/compositions/track-item": [
+        "./compositions/track-item/unistyles/track-item.tsx"
+      ],
+      "@/components/compositions/conversation-item": [
+        "./compositions/conversation-item/unistyles/conversation-item.tsx"
+      ],
+      "@/components/compositions/notification-item": [
+        "./compositions/notification-item/unistyles/notification-item.tsx"
+      ],
+      "@/components/compositions/offer-card": [
+        "./compositions/offer-card/unistyles/offer-card.tsx"
+      ],
+      "@/components/compositions/pricing-card": [
+        "./compositions/pricing-card/unistyles/pricing-card.tsx"
+      ],
+      "@/components/compositions/stats-card": [
+        "./compositions/stats-card/unistyles/stats-card.tsx"
+      ],
+      "@/components/compositions/search-result-item": [
+        "./compositions/search-result-item/unistyles/search-result-item.tsx"
+      ],
+      "@/components/compositions/search-app-bar": [
+        "./compositions/search-app-bar/unistyles/search-app-bar.tsx"
+      ],
+      "@/components/compositions/profile-app-bar": [
+        "./compositions/profile-app-bar/unistyles/profile-app-bar.tsx"
       ],
       "@/components/blocks/settings-section": [
         "./blocks/settings-section/unistyles/settings-section.tsx"
