@@ -3,11 +3,10 @@ import { Logo } from '../../../brand/Logo';
 import { docs, githubUrl } from '../../lib/links';
 import Button from '../Button.astro';
 
-// The theme builder route only exists in dev, so the link goes with it.
 const links = [
 	{ label: 'Docs', href: docs() },
 	{ label: 'Registry', href: '#registry' },
-	...(import.meta.env.DEV ? [{ label: 'Theme builder', href: '/theme-builder' }] : []),
+	{ label: 'Theme builder', href: '/theme-builder' },
 ];
 ---
 

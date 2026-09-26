@@ -60,7 +60,7 @@ Two core entries were added along the way. OverlayStack lets BottomSheet, Dialog
 - CLI — `add` and `init` are shipped. `add` resolves internal dependencies, icon source and navigation, and has a `--watch` mode; `init` picks the styling, resolves the aliases against `tsconfig.json`, copies the foundations and the headless core, installs what they need and writes `axiom.json`. `fetch` is still to write.
 - Standalone mode — not started. A theme-free form per registry entry and variant, then `add --standalone` to write it.
 - Demo apps — shipped for the `stylesheet` and `unistyles` variants: one screen per documented item, in 9 groups from Foundations to Templates, and a light / dark switch. The NativeWind and Uniwind apps are scaffolded and fill in with the `tailwind` variant.
-- Theme builder — in progress, dev-only for now: role overrides, presets, app and component previews, Google Fonts, and an export an agent can apply. Public once the export matches what `init` writes.
+- Theme builder — public at `/theme-builder`: role overrides, presets, app and component previews, Google Fonts, and an export an agent can apply.
 - Foundations screen — shipped: colors, typography, spacing, radius, icons, touch targets, states.
 - CI — not started. Typecheck per variant, props parity between variants, lint, tests, builds.
 
