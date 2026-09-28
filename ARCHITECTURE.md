@@ -125,7 +125,7 @@ The registry is the manifest of everything Axiom can add to a project. For each 
 
 With this graph, a project can take one item and get exactly what that item needs.
 
-The registry lives in `packages/registry`. Its manifest, `registry.json`, lists 55 items. All 45 entries with styling variants provide both `stylesheet` and `unistyles` implementations.
+The registry lives in `packages/registry`. Its manifest, `registry.json`, lists 77 items. All 67 entries with styling variants provide both `stylesheet` and `unistyles` implementations.
 
 ## CLI
 

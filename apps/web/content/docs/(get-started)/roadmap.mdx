@@ -9,7 +9,7 @@ description: "What ships first, and what comes after."
 
 The specification is done: every foundation, component, behavior and pattern is written down, with its API, its states and its tokens. Phase 1 turns that into code.
 
-Every primitive of this phase now runs in code, along with tokens, theme and the six core pieces: Title and Text, the 33 atoms, the three molecules, Passcode and the five templates. All 45 entries with styling variants ship in both `stylesheet` and `unistyles`, with demo screens for each. What is left of the phase is the Tailwind variants, standalone mode, the theme builder and the CI. The first compositions and the first block are in progress.
+Every primitive of this phase now runs in code, along with tokens, theme and the six core pieces: Title and Text, the 33 atoms, the three molecules, Passcode and the five templates. All 67 entries with styling variants ship in both `stylesheet` and `unistyles`. The first 21 compositions and the first block are in, and the theme builder is public. What is left of the phase is the Tailwind variants, standalone mode, `axiom fetch` and the CI.
 
 <PhaseChecklist />
 
@@ -22,7 +22,7 @@ Done. The whole system exists on paper first — [foundations](/docs/foundations
 ### Styling variants
 
 1. `stylesheet` for every item in this phase, with the behavior / style split in place. Shipped.
-2. `unistyles` for all 45 entries with styling variants, with matching APIs and a complete demo app. Shipped.
+2. `unistyles` for all 67 entries with styling variants, compositions and block included, with matching APIs and a demo app. Shipped.
 3. `tailwind` (NativeWind / Uniwind), once the split is proven on the first two.
 
 ### Standalone mode
@@ -47,7 +47,7 @@ It belongs to phase 1 because it is a registry concern before a CLI one. Every e
 | Primitives: [molecules](/docs/molecules) | SearchBar, Attachment, DatePicker                                            | Shipped |
 | Primitives: [organisms](/docs/organisms) | Passcode                                                                     | Shipped |
 | Primitives: [templates](/docs/templates) | AppBar, BottomTabBar, Tab, ToolBar, Scaffold                                 | Shipped |
-| [Compositions](/docs/compositions) | ProductCard, ListingCard, RecipeCard, SettingsItem                                 | In progress |
+| [Compositions](/docs/compositions) | 21 entries: cards (product, listing, recipe, article, event, profile, offer, pricing, stats), items (settings, track, conversation, notification, search result), app bars (search, profile) | In progress |
 | [Blocks](/docs/blocks)           | [SettingsSection](/docs/blocks/settings-section)                                     | In progress |
 
 `useOverlayBackHandler` was not in the original plan: BottomSheet, Dialog and Menu need to close on a back gesture instead of leaving the screen, so the hook ships in three versions — `react-native`, `expo-router` and `react-navigation` — and `add` picks one from the project's `package.json`.
@@ -56,13 +56,13 @@ Two core entries were added along the way. OverlayStack lets BottomSheet, Dialog
 
 ### Tooling
 
-- `registry.json` — shipped, 55 entries.
+- `registry.json` — shipped, 77 entries, compositions and block included.
 - CLI — `add` and `init` are shipped. `add` resolves internal dependencies, icon source and navigation, and has a `--watch` mode; `init` picks the styling, resolves the aliases against `tsconfig.json`, copies the foundations and the headless core, installs what they need and writes `axiom.json`. `fetch` is still to write.
 - Standalone mode — not started. A theme-free form per registry entry and variant, then `add --standalone` to write it.
-- Demo apps — shipped for the `stylesheet` and `unistyles` variants: one screen per documented item, in 9 groups from Foundations to Templates, and a light / dark switch. The NativeWind and Uniwind apps are scaffolded and fill in with the `tailwind` variant.
+- Demo apps — shipped for the `stylesheet` and `unistyles` variants: one screen per primitive, in 9 groups from Foundations to Templates, and a light / dark switch. Compositions are previewed on this site, not in the demo apps yet. The NativeWind and Uniwind apps are scaffolded and fill in with the `tailwind` variant.
 - Theme builder — public at `/theme-builder`: role overrides, presets, app and component previews, Google Fonts, and an export an agent can apply.
 - Foundations screen — shipped: colors, typography, spacing, radius, icons, touch targets, states.
-- CI — not started. Typecheck per variant, props parity between variants, lint, tests, builds.
+- CI — not started. Typecheck per variant, props parity between variants, lint, tests, builds. The only workflow today streams an iOS simulator preview.
 
 ## Phase 2: blocks
 
