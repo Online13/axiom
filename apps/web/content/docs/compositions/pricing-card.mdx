@@ -3,6 +3,20 @@ title: Pricing Card
 description: "Plan name, price and period, features, and a button, with featured and current states."
 ---
 
+<VariantTabs
+	group="pricing-card"
+	items={[
+		{ value: "default", label: "Default" },
+		{ value: "compact", label: "Compact" },
+		{ value: "toggle", label: "Toggle" },
+		{ value: "hero", label: "Hero" },
+		{ value: "horizontal", label: "Horizontal" },
+		{ value: "tile", label: "Tile" },
+	]}
+/>
+
+<VariantPanel group="pricing-card" value="default" active>
+
 <PhonePreview tall grouped>
 	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
 		Plans
@@ -30,7 +44,128 @@ description: "Plan name, price and period, features, and a button, with featured
 
 The featured plan has a 2pt border in the primary color and the only solid button. The current plan's button is disabled.
 
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="compact">
+
+<PhonePreview grouped>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Choose a plan
+	</div>
+	<div class="ax-stack" data-gap="8" style={{ padding: "4px 16px 24px" }}>
+		<PricingCardPreview variant="compact" name="Yearly" price="$99" period="/year" description="$8.25 a month" badge="Save 30%" selected />
+		<PricingCardPreview variant="compact" name="Monthly" price="$12" period="/month" description="Cancel anytime" />
+	</div>
+</PhonePreview>
+
+One plan per row, picked with a radio. It fits where a full card is too tall: a bottom sheet, a checkout step, a settings screen.
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="toggle">
+
+<PhonePreview tall grouped>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Plans
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<PricingCardPreview
+			variant="toggle"
+			name="Pro"
+			price="$9.60"
+			original="$12"
+			discount="-20%"
+			caption="$115 billed yearly"
+			description="For people who ship every week."
+			badge="Most popular"
+			featured
+			yearly
+			features={["Unlimited projects", "Priority support"]}
+		/>
+	</div>
+</PhonePreview>
+
+A segmented control switches the price between monthly and yearly billing. On yearly, the monthly price is struck through next to the discount.
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="hero">
+
+<PhonePreview tall grouped>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Plans
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<PricingCardPreview
+			variant="hero"
+			name="Pro"
+			price="$12"
+			period="/month"
+			description="For people who ship every week."
+			badge="Most popular"
+			features={["Unlimited projects", "Version history", "Priority support"]}
+			action="Start free trial"
+		/>
+		<PricingCardPreview
+			name="Team"
+			price="$32"
+			period="/month"
+			description="Shared workspaces and roles."
+			features={["Everything in Pro", "Up to 10 members"]}
+		/>
+	</div>
+</PhonePreview>
+
+The plan you push sits on the primary color, with the text and the button inverted. The other plans stay as outlined Default cards.
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="horizontal">
+
+<PhonePreview grouped>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Plans
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<PricingCardPreview
+			variant="horizontal"
+			name="Pro"
+			price="$12"
+			period="/month"
+			description="For people who ship every week."
+			badge="Popular"
+			featured
+			features={["Unlimited projects", "Priority support"]}
+		/>
+		<PricingCardPreview variant="horizontal" name="Free" price="$0" features={["3 projects"]} current />
+	</div>
+</PhonePreview>
+
+The plan on the left, the price and the button on the right. Made for tablets and landscape, where a stacked card wastes the width.
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="tile">
+
+<PhonePreview grouped>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Go Premium
+	</div>
+	<div class="ax-row" style={{ gap: "12px", padding: "4px 0 24px 16px", overflow: "hidden", alignItems: "stretch" }}>
+		<PricingCardPreview variant="tile" name="Yearly" price="$3.33" period="/month" description="$39.99 billed yearly" caption="7-day free trial" badge="Save 60%" width={168} selected />
+		<PricingCardPreview variant="tile" name="Monthly" price="$7.99" period="/month" description="Cancel anytime" width={168} />
+	</div>
+</PhonePreview>
+
+Large paywall tiles, App Store style, side by side in a horizontal rail. The whole tile is the radio.
+
+</VariantPanel>
+
+The variants are separate components with their own code: install the one you need.
+
 ## Installation
+
+<VariantPanel group="pricing-card" value="default" active>
 
 ```npm
 npx axiom add pricing-card
@@ -40,7 +175,67 @@ Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`button`
 
 Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
 
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="compact">
+
+```npm
+npx axiom add pricing-card-compact
+```
+
+Also copies: [`radio`](/docs/atoms/radio), [`badge`](/docs/atoms/badge), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/pricing-card-compact.tsx`. It brings no tokens of its own.
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="toggle">
+
+```npm
+npx axiom add pricing-card-toggle
+```
+
+Also copies: [`card`](/docs/atoms/card), [`segmented-control`](/docs/atoms/segmented-control), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/pricing-card-toggle.tsx`. It brings no tokens of its own.
+
+Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="hero">
+
+```npm
+npx axiom add pricing-card-hero
+```
+
+Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/pricing-card-hero.tsx`. It brings no tokens of its own: the surface is `primary.default` and the text `primary.on`.
+
+Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="horizontal">
+
+```npm
+npx axiom add pricing-card-horizontal
+```
+
+Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/pricing-card-horizontal.tsx`. It brings no tokens of its own.
+
+Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="tile">
+
+```npm
+npx axiom add pricing-card-tile
+```
+
+Also copies: [`radio`](/docs/atoms/radio), [`badge`](/docs/atoms/badge), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/pricing-card-tile.tsx`. It brings no tokens of its own.
+
+</VariantPanel>
+
 ## Usage
+
+<VariantPanel group="pricing-card" value="default" active>
 
 ```tsx
 import { PricingCard } from "@/components/compositions/pricing-card";
@@ -63,7 +258,127 @@ import { PricingCard } from "@/components/compositions/pricing-card";
 
 Feature one plan at most: the border and the solid button only work as a signal when they're alone.
 
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="compact">
+
+```tsx
+import { PricingCardCompact } from "@/components/compositions/pricing-card-compact";
+import { RadioGroup } from "@/components/ui/radio";
+
+<RadioGroup value={plan} onValueChange={setPlan} gap={2} accessibilityLabel="Plan">
+	<PricingCardCompact value="yearly" name="Yearly" price="$99" period="/year" description="$8.25 a month" badge="Save 30%" />
+	<PricingCardCompact value="monthly" name="Monthly" price="$12" period="/month" description="Cancel anytime" />
+</RadioGroup>;
+```
+
+Each row is a [Radio](/docs/atoms/radio): it must sit inside a `RadioGroup`, which holds the selected plan. Put the purchase button under the group.
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="toggle">
+
+```tsx
+import { PricingCardToggle, type Billing } from "@/components/compositions/pricing-card-toggle";
+
+const [billing, setBilling] = useState<Billing>("yearly");
+
+<PricingCardToggle
+	name="Pro"
+	monthlyPrice="$12"
+	yearlyPrice="$9.60"
+	discount="-20%"
+	yearlyCaption="$115 billed yearly"
+	features={["Unlimited projects", "Priority support"]}
+	featured
+	billing={billing}
+	onBillingChange={setBilling}
+	onAction={(choice) => purchase("pro", choice)}
+/>;
+```
+
+Both prices are for the same period (`/month`), so the struck price compares like with like. With several cards, pass the same `billing` to all of them: switching one switches the others.
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="hero">
+
+```tsx
+import { PricingCard } from "@/components/compositions/pricing-card";
+import { PricingCardHero } from "@/components/compositions/pricing-card-hero";
+
+<PricingCardHero
+	name="Pro"
+	price="$12"
+	period="/month"
+	badge="Most popular"
+	features={["Unlimited projects", "Priority support"]}
+	actionLabel="Start free trial"
+	onAction={() => purchase("pro")}
+/>
+<PricingCard name="Team" price="$32" period="/month" onAction={() => purchase("team")} />;
+```
+
+Use it once per screen. Two hero cards cancel each other out.
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="horizontal">
+
+```tsx
+import { PricingCardHorizontal } from "@/components/compositions/pricing-card-horizontal";
+
+<PricingCardHorizontal
+	name="Pro"
+	price="$12"
+	period="/month"
+	description="For people who ship every week."
+	features={["Unlimited projects", "Priority support"]}
+	featured
+	current={subscription.planId === "pro"}
+	onAction={() => purchase("pro")}
+/>;
+```
+
+The features wrap on several columns. On a phone in portrait, switch to the default card: below about 400pt, the plan column gets too narrow.
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="tile">
+
+```tsx
+import { ScrollView } from "react-native";
+import { PricingCardTile } from "@/components/compositions/pricing-card-tile";
+import { RadioGroup } from "@/components/ui/radio";
+
+<RadioGroup value={plan} onValueChange={setPlan} accessibilityLabel="Plan">
+	<ScrollView
+		horizontal
+		showsHorizontalScrollIndicator={false}
+		contentContainerStyle={{ gap: 12, paddingHorizontal: 16, paddingEnd: 16 + width / 2 }}
+	>
+		<PricingCardTile
+			value="yearly"
+			name="Yearly"
+			price="$3.33"
+			period="/month"
+			description="$39.99 billed yearly"
+			trial="7-day free trial"
+			badge="Save 60%"
+			style={{ width: 168 }}
+		/>
+		<PricingCardTile value="monthly" name="Monthly" price="$7.99" period="/month" style={{ width: 168 }} />
+	</ScrollView>
+</RadioGroup>;
+```
+
+Give each tile a width. Tiles side by side share the height of the tallest one. Leave room after the last tile (half the screen width) so the rail never stops on a wall.
+
+</VariantPanel>
+
 ## Props
+
+<VariantPanel group="pricing-card" value="default" active>
 
 | Prop           | Type                   | Default          | Description                                                                          |
 | -------------- | ---------------------- | ---------------- | ------------------------------------------------------------------------------------ |
@@ -80,17 +395,114 @@ Feature one plan at most: the border and the solid button only work as a signal 
 | `onAction`     | `() => void`           | —                | Shows the full-width button.                                                         |
 | `style`        | `StyleProp<ViewStyle>` | —                | Extra styles for the card.                                                           |
 
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="compact">
+
+| Prop          | Type                   | Default | Description                                                          |
+| ------------- | ---------------------- | ------- | -------------------------------------------------------------------- |
+| `value`       | `string`               | —       | Given to the `RadioGroup` when this plan is picked.                  |
+| `name`        | `string`               | —       | Name of the plan.                                                    |
+| `price`       | `string`               | —       | Already formatted, on the right: `"$99"`.                            |
+| `period`      | `string`               | —       | Under the price: `"/year"`.                                          |
+| `description` | `string`               | —       | Under the name: `"$8.25 a month"`.                                   |
+| `badge`       | `string`               | —       | Highlight tag next to the name: `"Save 30%"`.                        |
+| `disabled`    | `boolean`              | `false` | Dims the row and ignores presses.                                    |
+| `style`       | `StyleProp<ViewStyle>` | —       | Extra styles for the row.                                            |
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="toggle">
+
+| Prop              | Type                                | Default         | Description                                                                 |
+| ----------------- | ----------------------------------- | --------------- | --------------------------------------------------------------------------- |
+| `name`            | `string`                            | —               | Name of the plan.                                                           |
+| `monthlyPrice`    | `string`                            | —               | Already formatted: `"$12"`. Struck through when yearly is shown.            |
+| `yearlyPrice`     | `string`                            | —               | Same period, billed yearly: `"$9.60"`.                                      |
+| `period`          | `string`                            | `"/month"`      | After both prices.                                                          |
+| `discount`        | `string`                            | —               | Success badge next to the yearly price: `"-20%"`.                           |
+| `yearlyCaption`   | `string`                            | —               | Under the yearly price: `"$115 billed yearly"`.                             |
+| `description`     | `string`                            | —               | Who the plan is for.                                                        |
+| `features`        | `string[]`                          | —               | Short features, each after a check.                                         |
+| `badge`           | `string`                            | —               | Tag next to the name.                                                       |
+| `featured`        | `boolean`                           | `false`         | Primary border and solid button.                                            |
+| `billing`         | `'monthly' \| 'yearly'`             | —               | Controlled billing, to share one choice across several cards.               |
+| `defaultBilling`  | `'monthly' \| 'yearly'`             | `'monthly'`     | Starting billing when uncontrolled.                                         |
+| `onBillingChange` | `(billing: Billing) => void`        | —               | Called when the segmented control changes.                                  |
+| `monthlyLabel`    | `string`                            | `"Monthly"`     | Label of the first segment.                                                 |
+| `yearlyLabel`     | `string`                            | `"Yearly"`      | Label of the second segment.                                                |
+| `actionLabel`     | `string`                            | `"Choose plan"` | Label of the button.                                                        |
+| `onAction`        | `(billing: Billing) => void`        | —               | Shows the full-width button. Receives the billing shown when pressed.       |
+| `style`           | `StyleProp<ViewStyle>`              | —               | Extra styles for the card.                                                  |
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="hero">
+
+| Prop          | Type                   | Default         | Description                                                     |
+| ------------- | ---------------------- | --------------- | --------------------------------------------------------------- |
+| `name`        | `string`               | —               | Name of the plan.                                               |
+| `price`       | `string`               | —               | Already formatted, in display type: `"$12"`.                    |
+| `period`      | `string`               | —               | After the price.                                                |
+| `description` | `string`               | —               | Who the plan is for.                                            |
+| `features`    | `string[]`             | —               | Short features, each after a check.                             |
+| `badge`       | `string`               | —               | Highlight tag next to the name.                                 |
+| `actionLabel` | `string`               | `"Choose plan"` | Label of the button.                                            |
+| `onAction`    | `() => void`           | —               | Shows the full-width inverted button.                           |
+| `style`       | `StyleProp<ViewStyle>` | —               | Extra styles for the card.                                      |
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="horizontal">
+
+| Prop           | Type                   | Default          | Description                                                        |
+| -------------- | ---------------------- | ---------------- | ------------------------------------------------------------------ |
+| `name`         | `string`               | —                | Name of the plan.                                                  |
+| `price`        | `string`               | —                | Already formatted, on the right.                                   |
+| `period`       | `string`               | —                | Under the price.                                                   |
+| `description`  | `string`               | —                | Who the plan is for.                                               |
+| `features`     | `string[]`             | —                | Short features, wrapping on several columns.                       |
+| `badge`        | `string`               | —                | Tag next to the name.                                              |
+| `featured`     | `boolean`              | `false`          | Primary border and solid button.                                   |
+| `current`      | `boolean`              | `false`          | The user's plan: the button is disabled and reads `currentLabel`.  |
+| `actionLabel`  | `string`               | `"Choose plan"`  | Label of the button.                                               |
+| `currentLabel` | `string`               | `"Current plan"` | Label of the button on the current plan.                           |
+| `onAction`     | `() => void`           | —                | Shows the button under the price.                                  |
+| `style`        | `StyleProp<ViewStyle>` | —                | Extra styles for the card.                                         |
+
+</VariantPanel>
+
+<VariantPanel group="pricing-card" value="tile">
+
+| Prop          | Type                   | Default | Description                                                          |
+| ------------- | ---------------------- | ------- | -------------------------------------------------------------------- |
+| `value`       | `string`               | —       | Given to the `RadioGroup` when this plan is picked.                  |
+| `name`        | `string`               | —       | Name of the plan.                                                    |
+| `price`       | `string`               | —       | Already formatted, in large type: `"$3.33"`.                         |
+| `period`      | `string`               | —       | After the price: `"/month"`.                                         |
+| `description` | `string`               | —       | Under the price, muted: `"$39.99 billed yearly"`.                    |
+| `trial`       | `string`               | —       | Last line, semibold: `"7-day free trial"`.                           |
+| `badge`       | `string`               | —       | Highlight tag above the name: `"Save 60%"`.                          |
+| `disabled`    | `boolean`              | `false` | Dims the tile and ignores presses.                                   |
+| `style`       | `StyleProp<ViewStyle>` | —       | Give it a width.                                                     |
+
+</VariantPanel>
+
 ## Accessibility
 
-The price and its period are read together: "$12 /month". The button is labelled with the plan: "Start free trial, Pro", or "Current plan, Free" while disabled.
+The price and its period are read together: "$12 /month". Buttons are labelled with the plan: "Start free trial, Pro", or "Current plan, Free" while disabled.
+
+Compact and Tile are radios in a `radiogroup`: each is read as one item with its state, "Yearly, $99 /year, $8.25 a month, Save 30%, selected". On Toggle, the yearly price is read with what it replaces: "$9.60 /month, instead of $12, -20%".
 
 ## Built with
 
-- [Card](/docs/atoms/card): the outlined surface.
+- [Card](/docs/atoms/card): the outlined surface, filled with the primary color on Hero.
 - [Title](/docs/atoms/title): the name and the price.
-- [Badge](/docs/atoms/badge): the plan tag.
+- [Badge](/docs/atoms/badge): the plan tag and the discount.
 - [Icon](/docs/atoms/icon) and [Text](/docs/atoms/text): the features.
-- [Button](/docs/atoms/button): solid on the featured plan, outlined on the others.
+- [Button](/docs/atoms/button): solid on the featured plan, outlined on the others, inverted on Hero.
+- [Radio](/docs/atoms/radio): the selection of Compact and Tile.
+- [Segmented Control](/docs/atoms/segmented-control): the billing switch of Toggle.
 
 ## Used in
 

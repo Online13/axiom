@@ -31,10 +31,10 @@ const products = [
 ---
 
 {slug === 'product-card' && (
-  <div class="ax-row" style={{ gap: '12px', padding: '16px', alignItems: 'stretch' }}>
+  <div class="ax-row" style={{ gap: '12px', padding: '16px', alignItems: 'flex-start' }}>
     {products.map((product) => (
-      <div class="ax-card ax-grow" data-variant="outlined" style={{ flexBasis: '0px' }}>
-        <div class="ax-media" style={{ height: '104px', position: 'relative' }}>
+      <div class="ax-card ax-grow" data-variant="outlined" style={{ flexBasis: '0px', aspectRatio: '3 / 4' }}>
+        <div class="ax-media" style={{ flex: '1', minHeight: '0px', height: 'auto', position: 'relative' }}>
           <img src={`/images/products/${product.image}.webp`} alt="" loading="lazy" />
           {product.badge && (
             <span class="ax-badge" data-variant="highlight" style={{ position: 'absolute', top: '12px', left: '12px' }}>{product.badge}</span>

@@ -1,9 +1,13 @@
 ---
-// A Pricing Card drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors registry/compositions/pricing-card.
-// `featured` draws the 2pt primary border and the solid button; `current` the disabled "Current plan" button.
+// A Pricing Card drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors the
+// registry components, one per `variant`: `default` (pricing-card), `compact`, `toggle`, `horizontal`,
+// `hero` and `tile` (pricing-card-<variant>).
+// `featured` draws the 2pt primary border and the solid button; `current` the disabled "Current plan" button;
+// `selected` checks the radio of `compact` and `tile`.
 import Glyph from '@docs/components/preview/glyph.astro';
 
 interface Props {
+  variant?: 'default' | 'compact' | 'toggle' | 'horizontal' | 'hero' | 'tile';
   name: string;
   price: string;
   period?: string;
@@ -12,44 +16,217 @@ interface Props {
   badge?: string;
   featured?: boolean;
   current?: boolean;
+  selected?: boolean;
   action?: string;
+  /** `toggle`: the yearly segment is selected, `original` is struck and `discount` shown. */
+  yearly?: boolean;
+  original?: string;
+  discount?: string;
+  /** `toggle`: under the yearly price. `tile`: the trial line. */
+  caption?: string;
+  /** In points. Without it, the card takes the full width of its list. */
+  width?: number;
 }
 
-const { name, price, period, description, features = [], badge, featured = false, current = false, action = 'Choose plan' } = Astro.props;
+const {
+  variant = 'default',
+  name,
+  price,
+  period,
+  description,
+  features = [],
+  badge,
+  featured = false,
+  current = false,
+  selected = false,
+  action = 'Choose plan',
+  yearly = false,
+  original,
+  discount,
+  caption,
+  width,
+} = Astro.props;
+
+const smallBadge = { height: '18px', padding: '0 6px', fontSize: '11px' };
+const featuredBorder = featured ? { boxShadow: 'inset 0 0 0 2px var(--ax-primary-default)' } : {};
+const selectable = {
+  alignSelf: 'stretch',
+  boxShadow: selected ? 'inset 0 0 0 2px var(--ax-primary-default)' : 'inset 0 0 0 1px var(--ax-border-default)',
+  background: 'var(--ax-background-default)',
+  borderRadius: 'var(--ax-radius-lg)',
+  ...(width ? { width: `${width}px`, flex: 'none' } : {}),
+};
 ---
 
-<div class="ax-card" data-variant="outlined" style={{ alignSelf: 'stretch', ...(featured ? { boxShadow: 'inset 0 0 0 2px var(--ax-primary-default)' } : {}) }}>
-  <div class="ax-stack" data-gap="8" style={{ padding: '16px 16px 0' }}>
-    <div class="ax-row" style={{ gap: '8px' }}>
-      <span class="ax-headline ax-grow">{name}</span>
-      {badge && (
-        <span class="ax-badge" data-variant={featured ? 'highlight' : undefined} style={{ height: '18px', padding: '0 6px', fontSize: '11px' }}>{badge}</span>
-      )}
-    </div>
-    <div class="ax-row" style={{ gap: '4px', alignItems: 'baseline' }}>
-      <span class="ax-title1">{price}</span>
-      {period && <span class="ax-subhead ax-muted">{period}</span>}
-    </div>
-    {description && <span class="ax-subhead ax-muted">{description}</span>}
-  </div>
-  {features.length > 0 && (
+{variant === 'default' && (
+  <div class="ax-card" data-variant="outlined" style={{ alignSelf: 'stretch', ...featuredBorder }}>
     <div class="ax-stack" data-gap="8" style={{ padding: '16px 16px 0' }}>
-      {features.map((feature) => (
-        <span class="ax-row" style={{ gap: '8px' }}>
-          <span class={featured ? '' : 'ax-muted'}><Glyph name="check" size={18} /></span>
-          <span class="ax-subhead">{feature}</span>
-        </span>
-      ))}
+      <div class="ax-row" style={{ gap: '8px' }}>
+        <span class="ax-headline ax-grow">{name}</span>
+        {badge && <span class="ax-badge" data-variant={featured ? 'highlight' : undefined} style={smallBadge}>{badge}</span>}
+      </div>
+      <div class="ax-row" style={{ gap: '4px', alignItems: 'baseline' }}>
+        <span class="ax-title1">{price}</span>
+        {period && <span class="ax-subhead ax-muted">{period}</span>}
+      </div>
+      {description && <span class="ax-subhead ax-muted">{description}</span>}
     </div>
-  )}
-  <div style={{ padding: '16px' }}>
-    <span
-      class="ax-btn"
-      data-block
-      data-variant={featured && !current ? undefined : 'outline'}
-      data-state={current ? 'disabled' : undefined}
-    >
-      {current ? 'Current plan' : action}
+    {features.length > 0 && (
+      <div class="ax-stack" data-gap="8" style={{ padding: '16px 16px 0' }}>
+        {features.map((feature) => (
+          <span class="ax-row" style={{ gap: '8px' }}>
+            <span class={featured ? '' : 'ax-muted'}><Glyph name="check" size={18} /></span>
+            <span class="ax-subhead">{feature}</span>
+          </span>
+        ))}
+      </div>
+    )}
+    <div style={{ padding: '16px' }}>
+      <span class="ax-btn" data-block data-variant={featured && !current ? undefined : 'outline'} data-state={current ? 'disabled' : undefined}>
+        {current ? 'Current plan' : action}
+      </span>
+    </div>
+  </div>
+)}
+
+{variant === 'compact' && (
+  <div class="ax-row" style={{ ...selectable, gap: '12px', padding: '16px' }}>
+    <span class="ax-radio" data-checked={selected ? '' : undefined}></span>
+    <span class="ax-stack ax-grow" data-gap="4">
+      <span class="ax-row" style={{ gap: '8px' }}>
+        <span class="ax-headline ax-truncate">{name}</span>
+        {badge && <span class="ax-badge" data-variant="highlight" style={smallBadge}>{badge}</span>}
+      </span>
+      {description && <span class="ax-footnote ax-muted">{description}</span>}
+    </span>
+    <span class="ax-stack" style={{ alignItems: 'flex-end' }}>
+      <span class="ax-headline">{price}</span>
+      {period && <span class="ax-footnote ax-muted">{period}</span>}
     </span>
   </div>
-</div>
+)}
+
+{variant === 'toggle' && (
+  <div class="ax-card" data-variant="outlined" style={{ alignSelf: 'stretch', ...featuredBorder }}>
+    <div class="ax-stack" data-gap="12" style={{ padding: '16px 16px 0' }}>
+      <div class="ax-segmented">
+        <span data-active={yearly ? undefined : ''}>Monthly</span>
+        <span data-active={yearly ? '' : undefined}>Yearly</span>
+      </div>
+      <div class="ax-stack" data-gap="8">
+        <div class="ax-row" style={{ gap: '8px' }}>
+          <span class="ax-headline ax-grow">{name}</span>
+          {badge && <span class="ax-badge" data-variant={featured ? 'highlight' : undefined} style={smallBadge}>{badge}</span>}
+        </div>
+        <div class="ax-row" style={{ gap: '8px', alignItems: 'baseline', flexWrap: 'wrap' }}>
+          <span class="ax-row" style={{ gap: '4px', alignItems: 'baseline' }}>
+            <span class="ax-title1">{price}</span>
+            <span class="ax-subhead ax-muted">{period ?? '/month'}</span>
+          </span>
+          {yearly && original && <span class="ax-subhead ax-subtle" style={{ textDecoration: 'line-through' }}>{original}</span>}
+          {yearly && discount && <span class="ax-badge" data-variant="success" style={{ ...smallBadge, alignSelf: 'center' }}>{discount}</span>}
+        </div>
+        {yearly && caption && <span class="ax-footnote ax-muted">{caption}</span>}
+        {description && <span class="ax-subhead ax-muted">{description}</span>}
+      </div>
+    </div>
+    {features.length > 0 && (
+      <div class="ax-stack" data-gap="8" style={{ padding: '16px 16px 0' }}>
+        {features.map((feature) => (
+          <span class="ax-row" style={{ gap: '8px' }}>
+            <span class={featured ? '' : 'ax-muted'}><Glyph name="check" size={18} /></span>
+            <span class="ax-subhead">{feature}</span>
+          </span>
+        ))}
+      </div>
+    )}
+    <div style={{ padding: '16px' }}>
+      <span class="ax-btn" data-block data-variant={featured ? undefined : 'outline'}>{action}</span>
+    </div>
+  </div>
+)}
+
+{variant === 'horizontal' && (
+  <div class="ax-card" data-variant="outlined" style={{ alignSelf: 'stretch', flexDirection: 'row', gap: '20px', padding: '20px', ...featuredBorder }}>
+    <div class="ax-stack ax-grow" data-gap="12">
+      <div class="ax-stack" data-gap="4">
+        <div class="ax-row" style={{ gap: '8px' }}>
+          <span class="ax-headline ax-truncate">{name}</span>
+          {badge && <span class="ax-badge" data-variant={featured ? 'highlight' : undefined} style={smallBadge}>{badge}</span>}
+        </div>
+        {description && <span class="ax-subhead ax-muted">{description}</span>}
+      </div>
+      {features.length > 0 && (
+        <div class="ax-row" style={{ flexWrap: 'wrap', columnGap: '16px', rowGap: '8px' }}>
+          {features.map((feature) => (
+            <span class="ax-row" style={{ gap: '8px' }}>
+              <span class={featured ? '' : 'ax-muted'}><Glyph name="check" size={18} /></span>
+              <span class="ax-subhead">{feature}</span>
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+    <div class="ax-stack" style={{ alignItems: 'flex-end', justifyContent: 'space-between', gap: '12px', paddingLeft: '20px', borderLeft: '0.5px solid var(--ax-border-default)' }}>
+      <span class="ax-stack" style={{ alignItems: 'flex-end' }}>
+        <span class="ax-title1">{price}</span>
+        {period && <span class="ax-footnote ax-muted">{period}</span>}
+      </span>
+      <span class="ax-btn" data-variant={featured && !current ? undefined : 'outline'} data-state={current ? 'disabled' : undefined}>
+        {current ? 'Current plan' : action}
+      </span>
+    </div>
+  </div>
+)}
+
+{variant === 'hero' && (
+  <div class="ax-card" data-variant="filled" style={{ alignSelf: 'stretch', background: 'var(--ax-primary-default)', color: 'var(--ax-primary-on)' }}>
+    <div class="ax-stack" data-gap="8" style={{ padding: '16px 16px 0' }}>
+      <div class="ax-row" style={{ gap: '8px' }}>
+        <span class="ax-headline ax-grow">{name}</span>
+        {badge && <span class="ax-badge" data-variant="highlight" style={smallBadge}>{badge}</span>}
+      </div>
+      <div class="ax-row" style={{ gap: '4px', alignItems: 'baseline' }}>
+        <span class="ax-large-title">{price}</span>
+        {period && <span class="ax-subhead" style={{ opacity: 0.72 }}>{period}</span>}
+      </div>
+      {description && <span class="ax-subhead" style={{ opacity: 0.72 }}>{description}</span>}
+    </div>
+    {features.length > 0 && (
+      <div class="ax-stack" data-gap="8" style={{ padding: '16px 16px 0' }}>
+        {features.map((feature) => (
+          <span class="ax-row" style={{ gap: '8px' }}>
+            <Glyph name="check" size={18} />
+            <span class="ax-subhead">{feature}</span>
+          </span>
+        ))}
+      </div>
+    )}
+    <div style={{ padding: '16px' }}>
+      <span class="ax-btn" data-block style={{ background: 'var(--ax-primary-on)', color: 'var(--ax-primary-default)' }}>{action}</span>
+    </div>
+  </div>
+)}
+
+{variant === 'tile' && (
+  <div class="ax-stack" data-gap="12" style={{ ...selectable, padding: '16px', minHeight: '180px' }}>
+    <div class="ax-row" style={{ gap: '8px', alignItems: 'flex-start' }}>
+      <span class="ax-stack ax-grow" data-gap="8" style={{ alignItems: 'flex-start' }}>
+        {badge && <span class="ax-badge" data-variant="highlight" style={smallBadge}>{badge}</span>}
+        <span class="ax-body ax-semibold ax-truncate">{name}</span>
+      </span>
+      <span class="ax-radio" data-checked={selected ? '' : undefined}></span>
+    </div>
+    <span class="ax-grow"></span>
+    <span class="ax-stack" data-gap="4">
+      <span class="ax-row" style={{ gap: '4px', alignItems: 'baseline' }}>
+        <span class="ax-title1">{price}</span>
+        {period && <span class="ax-subhead ax-muted">{period}</span>}
+      </span>
+      {description && <span class="ax-footnote ax-muted">{description}</span>}
+    </span>
+    {caption && (
+      <span class="ax-footnote ax-semibold" style={{ paddingTop: '12px', borderTop: '0.5px solid var(--ax-border-default)' }}>{caption}</span>
+    )}
+  </div>
+)}

@@ -20,10 +20,10 @@ description: "Product image, name, price, an optional badge and an add-to-cart b
 	<div
 		class="ax-row"
 		data-scroll
-		style={{ gap: "12px", padding: "4px 16px 16px", alignItems: "stretch" }}
+		style={{ gap: "12px", padding: "4px 16px 16px", alignItems: "flex-start" }}
 	>
-		<div class="ax-card" data-variant="outlined" style={{ width: "240px" }}>
-			<div class="ax-media" style={{ height: "240px", position: "relative" }}>
+		<div class="ax-card" data-variant="outlined" style={{ width: "240px", aspectRatio: "3 / 4" }}>
+			<div class="ax-media" style={{ flex: "1", minHeight: "0px", height: "auto", position: "relative" }}>
 				<img src="/images/products/chambray-shirt.webp" alt="" loading="lazy" />
 				<span
 					class="ax-badge"
@@ -46,8 +46,8 @@ description: "Product image, name, price, an optional badge and an add-to-cart b
 				</span>
 			</div>
 		</div>
-		<div class="ax-card" data-variant="outlined" style={{ width: "240px" }}>
-			<div class="ax-media" style={{ height: "240px", position: "relative" }}>
+		<div class="ax-card" data-variant="outlined" style={{ width: "240px", aspectRatio: "3 / 4" }}>
+			<div class="ax-media" style={{ flex: "1", minHeight: "0px", height: "auto", position: "relative" }}>
 				<img src="/images/products/daypack.webp" alt="" loading="lazy" />
 			</div>
 			<div class="ax-stack" data-gap="4" style={{ padding: "12px 12px 0" }}>
@@ -63,8 +63,8 @@ description: "Product image, name, price, an optional badge and an add-to-cart b
 				</span>
 			</div>
 		</div>
-		<div class="ax-card" data-variant="outlined" style={{ width: "240px" }}>
-			<div class="ax-media" style={{ height: "240px", position: "relative" }}>
+		<div class="ax-card" data-variant="outlined" style={{ width: "240px", aspectRatio: "3 / 4" }}>
+			<div class="ax-media" style={{ flex: "1", minHeight: "0px", height: "auto", position: "relative" }}>
 				<img src="/images/products/steel-bottle.webp" alt="" loading="lazy" />
 				<span
 					class="ax-badge"
@@ -87,8 +87,8 @@ description: "Product image, name, price, an optional badge and an add-to-cart b
 				</span>
 			</div>
 		</div>
-		<div class="ax-card" data-variant="outlined" style={{ width: "240px" }}>
-			<div class="ax-media" style={{ height: "240px", position: "relative" }}>
+		<div class="ax-card" data-variant="outlined" style={{ width: "240px", aspectRatio: "3 / 4" }}>
+			<div class="ax-media" style={{ flex: "1", minHeight: "0px", height: "auto", position: "relative" }}>
 				<img src="/images/products/smart-watch.webp" alt="" loading="lazy" />
 			</div>
 			<div class="ax-stack" data-gap="4" style={{ padding: "12px 12px 0" }}>
@@ -218,7 +218,8 @@ import { ProductCard } from "@/components/compositions/product-card";
 	subtitle="Indigo, 3 colors"
 	price="$48.00"
 	badge="New"
-	media={<Image source={{ uri: product.image }} style={{ aspectRatio: 1 }} />}
+	media={<Image source={{ uri: product.image }} style={{ width: "100%", flex: 1 }} />}
+	style={{ width: 240 }}
 	onPress={() => router.push(`/products/${product.id}`)}
 	onAction={() => cart.add(product.id)}
 />;
@@ -241,7 +242,7 @@ import { ProductCardSpotlight } from "@/components/compositions/product-card-spo
 		<Image
 			source={{ uri: product.cutout }}
 			resizeMode="contain"
-			style={{ aspectRatio: 1 }}
+			style={{ width: "100%", height: "100%" }}
 		/>
 	}
 	onPress={() => router.push(`/products/${product.id}`)}
@@ -264,7 +265,7 @@ Use cut-out images (transparent background) with `resizeMode="contain"`: a photo
 | `price`       | `string`               | —               | Already formatted, currency included: `"$24.00"`. Shown in semibold under the title.                                 |
 | `subtitle`    | `string`               | —               | Secondary line under the title: a color, a size, a brand.                                                            |
 | `badge`       | `string`               | —               | Short label in a `highlight` [Badge](/docs/atoms/badge): `"New"`, `"-20%"`. Sits on the media, or above the title without media. |
-| `media`       | `ReactNode`            | —               | Usually an `Image`. It fills the card's width; give it a size or an `aspectRatio`.                                   |
+| `media`       | `ReactNode`            | —               | Usually an `Image` with `width: "100%"` and `flex: 1`. With media the card is 3:4: the text keeps its height, the image fills the rest. |
 | `actionLabel` | `string`               | `"Add to cart"` | Label of the action button.                                                                                          |
 | `onAction`    | `() => void`           | —               | Shows the full-width action button and handles its press. Without it, there is no button.                            |
 | `onPress`     | `() => void`           | —               | Makes the whole card pressable, to open the product. The button keeps its own press. The card is read as "title, price". |
@@ -280,7 +281,7 @@ Use cut-out images (transparent background) with `resizeMode="contain"`: a photo
 | `price`       | `string`               | —               | Already formatted, currency included: `"$24.00"`. Shown first, as a `headingSm` [Title](/docs/atoms/title).          |
 | `subtitle`    | `string`               | —               | Secondary line under the name: a color, a size.                                                                      |
 | `badge`       | `string`               | —               | Short label in a `highlight` [Badge](/docs/atoms/badge), on the product: `"New"`, `"-20%"`.                          |
-| `media`       | `ReactNode`            | —               | Required. A cut-out `Image` with `resizeMode="contain"`, inset from the card's edges. Give it a size or an `aspectRatio`. |
+| `media`       | `ReactNode`            | —               | Required. A cut-out `Image` with `resizeMode="contain"`, inset from the card's edges, in a square. Style it `width: "100%"` and `height: "100%"`. |
 | `actionLabel` | `string`               | `"Add to cart"` | Label of the action button.                                                                                          |
 | `onAction`    | `() => void`           | —               | Shows the full-width action button and handles its press. Without it, there is no button.                            |
 | `onPress`     | `() => void`           | —               | Makes the whole card pressable, to open the product. The button keeps its own press. The card is read as "title, price". |

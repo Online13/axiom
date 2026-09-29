@@ -9,7 +9,7 @@ description: "What ships first, and what comes after."
 
 The specification is done: every foundation, component, behavior and pattern is written down, with its API, its states and its tokens. Phase 1 turns that into code.
 
-Every primitive of this phase now runs in code, along with tokens, theme and the six core pieces: Title and Text, the 33 atoms, the three molecules, Passcode and the five templates. All 67 entries with styling variants ship in both `stylesheet` and `unistyles`. The first 21 compositions and the first block are in, and the theme builder is public. What is left of the phase is the Tailwind variants, standalone mode, `axiom fetch` and the CI.
+Every primitive of this phase now runs in code, along with tokens, theme and the six core pieces: Title and Text, the 33 atoms, the three molecules, Passcode and the five templates. All 67 entries with styling variants ship in both `stylesheet` and `unistyles`. The first 21 compositions and the first block are in, the theme builder is public, and `add --standalone` writes any entry as one theme-free file. What is left of the phase is the Tailwind variants, `axiom fetch` and the CI.
 
 <PhaseChecklist />
 
@@ -27,13 +27,13 @@ Done. The whole system exists on paper first — [foundations](/docs/foundations
 
 ### Standalone mode
 
-Not started, and important enough to land in this phase. Today a component arrives with everything it stands on: ask for Tab and you also get the theme, the tokens and the headless core it imports. That is the right default for an app built on Axiom, and the wrong one for an app that already has its own design system and wants a single component out of the catalog.
+Shipped for `stylesheet` and `unistyles`. By default a component arrives with everything it stands on: ask for Tab and you also get the theme, the tokens and the headless core it imports. That is the right default for an app built on Axiom, and the wrong one for an app that already has its own design system and wants a single component out of the catalog.
 
-Standalone mode breaks that chain. `axiom add tab --standalone` writes one self-contained file: token values resolved inline, no `useTheme`, no import outside React Native and the component's own file. Nothing else is added to the project.
+`axiom add tab --standalone` breaks that chain. It writes one self-contained file: token values resolved inline, no `useTheme`, no import outside React, React Native and the npm packages the component uses. Nothing else is added to the project. See [the CLI](/docs/cli#standalone).
 
 The trade is explicit. A standalone component no longer follows a theme, so light / dark and any restyling are the user's job, in a file that is already theirs to edit. What Axiom still guarantees is the behavior: the touch targets, the gestures, the states, the safe areas.
 
-It belongs to phase 1 because it is a registry concern before a CLI one. Every entry needs to describe the theme-free form of its component, per styling variant, and that shape is much cheaper to settle now than to retrofit across `unistyles` and `tailwind` once they exist.
+The theme-free form isn't written by hand. The CLI derives it from the registry: it inlines the items the component depends on, replaces each read of the theme with the light theme's values, and keeps the registry's types for the token groups and component tokens. The registry typechecks the standalone form of every entry in both variants, so a new entry gets one for free. Entries that render through a portal (Dialog, Menu, Bottom Sheet, Toast, Snackbar) are refused for now: a portal needs a host at the root of the app.
 
 ### Components
 
@@ -58,7 +58,7 @@ Two core entries were added along the way. OverlayStack lets BottomSheet, Dialog
 
 - `registry.json` — shipped, 77 entries, compositions and block included.
 - CLI — `add` and `init` are shipped. `add` resolves internal dependencies, icon source and navigation, and has a `--watch` mode; `init` picks the styling, resolves the aliases against `tsconfig.json`, copies the foundations and the headless core, installs what they need and writes `axiom.json`. `fetch` is still to write.
-- Standalone mode — not started. A theme-free form per registry entry and variant, then `add --standalone` to write it.
+- Standalone mode — shipped: `add --standalone` for 67 entries in both variants, typechecked on their own. Portal-based entries come later.
 - Demo apps — shipped for the `stylesheet` and `unistyles` variants: one screen per primitive, in 9 groups from Foundations to Templates, and a light / dark switch. Compositions are previewed on this site, not in the demo apps yet. The NativeWind and Uniwind apps are scaffolded and fill in with the `tailwind` variant.
 - Theme builder — public at `/theme-builder`: role overrides, presets, app and component previews, Google Fonts, and an export an agent can apply.
 - Foundations screen — shipped: colors, typography, spacing, radius, icons, touch targets, states.

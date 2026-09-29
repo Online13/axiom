@@ -1,31 +1,134 @@
 ---
-// A Stats Card drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors registry/compositions/stats-card.
+// A Stats Card drawn with the `.ax-*` classes of preview.css, at real iOS sizes. Mirrors the registry
+// components, one per `variant`: `default` (stats-card), `sparkline`, `progress`, `inline` and `ring`
+// (stats-card-<variant>).
 import Glyph from '@docs/components/preview/glyph.astro';
 
 interface Props {
+  variant?: 'default' | 'sparkline' | 'progress' | 'inline' | 'ring';
   label: string;
   value: string;
-  icon?: 'wallet' | 'bolt' | 'flame' | 'user' | 'cart' | 'clock' | 'heart';
+  icon?: 'wallet' | 'bolt' | 'flame' | 'user' | 'users' | 'cart' | 'clock' | 'heart';
   change?: string;
   tone?: 'success' | 'error' | 'neutral';
   caption?: string;
+  /** `sparkline`: the values, oldest first. */
+  data?: number[];
+  /** `progress`: after the value, "/ 10,000". */
+  goal?: string;
+  /** `progress` and `ring`: share of the goal, from 0 to 1. */
+  progress?: number;
+  /** The Card variant. Defaults to `filled`. */
+  card?: 'filled' | 'outlined';
 }
 
-const { label, value, icon, change, tone = 'neutral', caption } = Astro.props;
+const { variant = 'default', label, value, icon, change, tone = 'neutral', caption, data = [], goal, progress = 0, card = 'filled' } = Astro.props;
+
+const smallBadge = { height: '18px', padding: '0 6px', fontSize: '11px' };
+const lineColor = tone === 'success' ? 'var(--ax-feedback-success)' : tone === 'error' ? 'var(--ax-feedback-error)' : 'var(--ax-primary-default)';
+
+// Sparkline in a 100 x 40 box, drawn with a non-scaling stroke so it stretches to the card width.
+const min = Math.min(...data);
+const range = Math.max(...data) - min || 1;
+const line = data.map((point, index) => `${index === 0 ? 'M' : 'L'}${((index / (data.length - 1)) * 100).toFixed(2)},${(1 + (1 - (point - min) / range) * 38).toFixed(2)}`).join(' ');
+
+const ratio = Math.min(Math.max(progress, 0), 1);
+const percent = Math.round(Math.max(progress, 0) * 100);
+const reached = progress >= 1;
+const fill = reached ? 'var(--ax-feedback-success)' : 'var(--ax-primary-default)';
+const ring = { size: 64, stroke: 7 };
+const radius = (ring.size - ring.stroke) / 2;
+const circumference = 2 * Math.PI * radius;
 ---
 
-<div class="ax-card" data-variant="filled" style={{ alignSelf: 'stretch', padding: '16px', gap: '8px' }}>
-  <span class="ax-row ax-muted" style={{ gap: '8px' }}>
-    {icon && <Glyph name={icon} size={18} />}
-    <span class="ax-footnote ax-truncate">{label}</span>
-  </span>
-  <span class="ax-title2 ax-truncate">{value}</span>
-  {(change || caption) && (
+{(variant === 'default' || variant === 'sparkline') && (
+  <div class="ax-card" data-variant={card} style={{ alignSelf: 'stretch', flex: 1, padding: '16px', gap: '8px' }}>
+    <span class="ax-row ax-muted" style={{ gap: '8px' }}>
+      {icon && <Glyph name={icon} size={18} />}
+      <span class="ax-footnote ax-truncate">{label}</span>
+    </span>
+    {variant === 'default' ? (
+      <span class="ax-title2 ax-truncate">{value}</span>
+    ) : (
+      <span class="ax-row" style={{ gap: '8px' }}>
+        <span class="ax-title2 ax-truncate">{value}</span>
+        {change && <span class="ax-badge" data-variant={tone === 'neutral' ? undefined : tone} style={smallBadge}>{change}</span>}
+      </span>
+    )}
+    {variant === 'sparkline' && data.length > 1 && (
+      <svg viewBox="0 0 100 40" preserveAspectRatio="none" width="100%" height="40" style={{ marginTop: '4px', overflow: 'visible' }} aria-hidden="true">
+        <path d={`${line} L100,40 L0,40 Z`} fill={lineColor} fill-opacity="0.12" />
+        <path d={line} fill="none" stroke={lineColor} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+      </svg>
+    )}
+    {variant === 'default' && (change || caption) && (
+      <span class="ax-row" style={{ gap: '8px' }}>
+        {change && <span class="ax-badge" data-variant={tone === 'neutral' ? undefined : tone} style={smallBadge}>{change}</span>}
+        {caption && <span class="ax-caption ax-muted ax-truncate">{caption}</span>}
+      </span>
+    )}
+    {variant === 'sparkline' && caption && <span class="ax-caption ax-muted ax-truncate">{caption}</span>}
+  </div>
+)}
+
+{variant === 'progress' && (
+  <div class="ax-card" data-variant={card} style={{ alignSelf: 'stretch', padding: '16px', gap: '8px' }}>
+    <span class="ax-row ax-muted" style={{ gap: '8px' }}>
+      {icon && <Glyph name={icon} size={18} />}
+      <span class="ax-footnote ax-truncate">{label}</span>
+    </span>
+    <span class="ax-row" style={{ gap: '4px', alignItems: 'baseline' }}>
+      <span class="ax-title2">{value}</span>
+      {goal && <span class="ax-subhead ax-muted ax-truncate">{goal}</span>}
+    </span>
+    <span style={{ display: 'block', height: '8px', borderRadius: '4px', overflow: 'hidden', background: 'var(--ax-border-default)' }}>
+      <span style={{ display: 'block', height: '100%', width: `${ratio * 100}%`, borderRadius: '4px', background: fill }}></span>
+    </span>
     <span class="ax-row" style={{ gap: '8px' }}>
-      {change && (
-        <span class="ax-badge" data-variant={tone === 'neutral' ? undefined : tone} style={{ height: '18px', padding: '0 6px', fontSize: '11px' }}>{change}</span>
-      )}
+      <span class="ax-caption ax-semibold" style={reached ? { color: 'var(--ax-feedback-success)' } : undefined}>{percent}%</span>
+      {caption && <span class="ax-caption ax-muted ax-truncate ax-grow" style={{ textAlign: 'right' }}>{caption}</span>}
+    </span>
+  </div>
+)}
+
+{variant === 'inline' && (
+  <div class="ax-card ax-row" data-variant={card} style={{ alignSelf: 'stretch', flexDirection: 'row', padding: '12px', gap: '12px' }}>
+    {icon && (
+      <span class="ax-center" style={{ width: '32px', height: '32px', flex: 'none', borderRadius: 'var(--ax-radius-sm)', background: card === 'filled' ? 'var(--ax-background-default)' : 'var(--ax-background-subtle)' }}>
+        <Glyph name={icon} size={18} />
+      </span>
+    )}
+    <span class="ax-subhead ax-muted ax-truncate ax-grow">{label}</span>
+    <span class="ax-headline">{value}</span>
+    {change && <span class="ax-badge" data-variant={tone === 'neutral' ? undefined : tone} style={smallBadge}>{change}</span>}
+  </div>
+)}
+
+{variant === 'ring' && (
+  <div class="ax-card ax-row" data-variant={card} style={{ alignSelf: 'stretch', flexDirection: 'row', padding: '16px', gap: '16px' }}>
+    <span style={{ position: 'relative', width: `${ring.size}px`, height: `${ring.size}px`, flex: 'none' }}>
+      <svg width={ring.size} height={ring.size} style={{ transform: 'rotate(-90deg)' }} aria-hidden="true">
+        <circle cx={ring.size / 2} cy={ring.size / 2} r={radius} fill="none" stroke="var(--ax-border-default)" stroke-width={ring.stroke} />
+        {ratio > 0 && (
+          <circle
+            cx={ring.size / 2}
+            cy={ring.size / 2}
+            r={radius}
+            fill="none"
+            stroke={fill}
+            stroke-width={ring.stroke}
+            stroke-linecap="round"
+            stroke-dasharray={`${circumference} ${circumference}`}
+            stroke-dashoffset={circumference * (1 - ratio)}
+          />
+        )}
+      </svg>
+      <span class="ax-center ax-caption ax-semibold" style={{ position: 'absolute', inset: 0 }}>{percent}%</span>
+    </span>
+    <span class="ax-stack ax-grow" data-gap="4" style={{ minWidth: 0 }}>
+      <span class="ax-footnote ax-muted ax-truncate">{label}</span>
+      <span class="ax-title2 ax-truncate">{value}</span>
       {caption && <span class="ax-caption ax-muted ax-truncate">{caption}</span>}
     </span>
-  )}
-</div>
+  </div>
+)}

@@ -97,10 +97,10 @@ export const compositions: Composition[] = [
 		slug: "listing-card",
 		name: "Listing Card",
 		component: "ListingCard",
-		description: "A home or a stay: photos, price, address and specs, stacked or over the photo.",
+		description: "A home or a stay: photo, price, address and specs, stacked or over the photo.",
 		categories: ["card", "commerce"],
 		base: "card",
-		builtWith: ["card", "carousel", "badge", "separator", "icon", "text", "title", "avatar", "button"],
+		builtWith: ["card", "badge", "separator", "icon", "text", "title", "avatar", "button"],
 		usedIn: [],
 	},
 	{

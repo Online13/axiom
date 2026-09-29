@@ -3,7 +3,6 @@
 // It mirrors the five registry components, one per `variant`: the stacked ones (`default`, `detailed`)
 // put the photo above a card surface; the overlay ones cover the card with the photo and a dark scrim.
 import Glyph from '@docs/components/preview/glyph.astro';
-import Dots from './photo-dots.astro';
 import Spec from './spec-item.astro';
 
 import type { SpecData } from './spec-item.astro';
@@ -18,8 +17,6 @@ interface Props {
   subtitle?: string;
   badge?: string;
   specs?: SpecData[];
-  /** Number of photos: more than one shows the dots. */
-  photos?: number;
   agent?: string;
   meta?: string;
   action?: string;
@@ -37,7 +34,6 @@ const {
   subtitle,
   badge,
   specs = [],
-  photos = 1,
   agent,
   meta,
   action,
@@ -58,7 +54,6 @@ const size = width ? { width: `${width}px` } : { alignSelf: 'stretch' };
             {badge}
           </span>
         )}
-        {photos > 1 && <Dots count={photos} />}
       </div>
       {variant === 'default' ? (
         <div class="ax-stack" data-gap="4" style={{ padding: '16px 16px 0' }}>
@@ -132,7 +127,6 @@ const size = width ? { width: `${width}px` } : { alignSelf: 'stretch' };
           <span />
         )}
         <div class="ax-stack" data-gap="4">
-          {photos > 1 && <Dots count={photos} inline />}
           {variant === 'overlay' && (
             <>
               <div class="ax-row" style={{ gap: '8px', alignItems: 'center' }}>

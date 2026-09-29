@@ -1,6 +1,6 @@
 ---
 title: Listing Card
-description: "A home or a stay: photos, price, address and specs, stacked under the photo or over it."
+description: "A home or a stay: photo, price, address and specs, stacked under the photo or over it."
 ---
 
 <VariantTabs
@@ -29,7 +29,6 @@ description: "A home or a stay: photos, price, address and specs, stacked under 
 			priceUnit="/mo"
 			subtitle="Quiet, bright, near the park"
 			badge="Guest favorite"
-			photos={4}
 			specs={[
 				{ icon: "bed", value: "2", label: "Beds" },
 				{ icon: "bath", value: "2", label: "Baths" },
@@ -69,7 +68,6 @@ description: "A home or a stay: photos, price, address and specs, stacked under 
 			title="Guillaume Briard"
 			subtitle="18 Harbor Rd, Seaview"
 			badge="Prime pick"
-			photos={5}
 			specs={[
 				{ icon: "area", value: "29 m²", label: "Living" },
 				{ icon: "door", value: "2", label: "Rooms" },
@@ -85,7 +83,6 @@ description: "A home or a stay: photos, price, address and specs, stacked under 
 			priceLabel="List price"
 			title="Maison Lumière"
 			subtitle="7 Park Ln, Riverside"
-			photos={3}
 			specs={[
 				{ icon: "area", value: "64 m²", label: "Living" },
 				{ icon: "door", value: "3", label: "Rooms" },
@@ -113,7 +110,6 @@ description: "A home or a stay: photos, price, address and specs, stacked under 
 			price="$200k"
 			subtitle="254 Highland Ave, Lochside"
 			badge="Newly listed"
-			photos={4}
 			width={260}
 			specs={[
 				{ icon: "bed", value: "2", label: "Beds" },
@@ -193,7 +189,6 @@ description: "A home or a stay: photos, price, address and specs, stacked under 
 			title="The Hill Guest House"
 			subtitle="58 Hullbrook Rd, Alpendorf"
 			price="$620"
-			photos={4}
 			specs={[
 				{ icon: "bed", value: "2", label: "Beds" },
 				{ icon: "bath", value: "1", label: "Bath" },
@@ -219,9 +214,9 @@ description: "A home or a stay: photos, price, address and specs, stacked under 
 
 </VariantPanel>
 
-Each variant is its own component with its own code: install the one you need. **Default** and **Detailed** put the photos above the card's surface. **Overlay**, **Overlay detailed** and **Booking** cover the whole card with the photos and draw the text over a dark gradient, so it reads the same in light and dark mode.
+Each variant is its own component with its own code: install the one you need. **Default** and **Detailed** put the photo above the card's surface. **Overlay**, **Overlay detailed** and **Booking** cover the whole card with the photo and draw the text over a dark gradient, so it reads the same in light and dark mode.
 
-With several photos, every variant swipes through them with a [Carousel](/docs/atoms/carousel) and shows white dots on the photo.
+Each variant shows one photo: the whole card is pressable, so it never swipes. Put the gallery on the listing's screen.
 
 ## Installation
 
@@ -275,7 +270,7 @@ The file lands in `components/compositions/listing-card-booking.tsx`. Also copie
 
 </VariantPanel>
 
-Every variant also copies [`card`](/docs/atoms/card), [`carousel`](/docs/atoms/carousel), [`badge`](/docs/atoms/badge), [`separator`](/docs/atoms/separator), [`icon`](/docs/atoms/icon), [`text`](/docs/atoms/text), [`title`](/docs/atoms/title) and their dependencies. None brings tokens of its own.
+Every variant also copies [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`separator`](/docs/atoms/separator), [`icon`](/docs/atoms/icon), [`text`](/docs/atoms/text), [`title`](/docs/atoms/title) and their dependencies. None brings tokens of its own.
 
 The spec icons come from your [icon registry](/docs/atoms/icon). Add the ones you use to `icons.tsx`, for example with `expo-symbols`:
 
@@ -299,7 +294,7 @@ import { ListingCard } from "@/components/compositions/listing-card";
 	price="$3,679"
 	priceUnit="/mo"
 	badge="Guest favorite"
-	images={listing.photos}
+	image={listing.photo}
 	specs={[
 		{ icon: "bed", value: "2", label: "Beds" },
 		{ icon: "bath", value: "2", label: "Baths" },
@@ -322,7 +317,7 @@ import { ListingCardDetailed } from "@/components/compositions/listing-card-deta
 	title="Guillaume Briard"
 	subtitle="18 Harbor Rd, Seaview"
 	badge="Prime pick"
-	images={listing.photos}
+	image={listing.photo}
 	specs={[
 		{ icon: "area", value: "29 m²", label: "Living" },
 		{ icon: "rooms", value: "2", label: "Rooms" },
@@ -345,7 +340,7 @@ import { ListingCardOverlay } from "@/components/compositions/listing-card-overl
 	subtitle="254 Highland Ave, Lochside"
 	price="$200k"
 	badge="Newly listed"
-	images={listing.photos}
+	image={listing.photo}
 	specs={[
 		{ icon: "bed", value: "2", label: "Beds" },
 		{ icon: "bath", value: "1", label: "Bath" },
@@ -369,7 +364,7 @@ import { ListingCardOverlayDetailed } from "@/components/compositions/listing-ca
 	title="Guillaume Briard"
 	subtitle="3 Cliff Rd, Seaview"
 	badge="Prime pick"
-	images={listing.photos}
+	image={listing.photo}
 	specs={[
 		{ icon: "area", value: "29 m²", label: "Living" },
 		{ icon: "rooms", value: "2", label: "Rooms" },
@@ -392,7 +387,7 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 	subtitle="58 Hullbrook Rd, Alpendorf"
 	price="$620"
 	priceUnit="/night"
-	images={stay.photos}
+	image={stay.photo}
 	specs={[
 		{ icon: "bed", value: "2", label: "Beds" },
 		{ icon: "bath", value: "1", label: "Bath" },
@@ -405,7 +400,7 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 
 </VariantPanel>
 
-`price` is a string: format it yourself, currency included, so the card doesn't decide how your app shows money. `images` takes one photo or several; with one, there is no carousel and no dots.
+`price` is a string: format it yourself, currency included, so the card doesn't decide how your app shows money.
 
 ## Props
 
@@ -417,8 +412,8 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 | `price`       | `string`                | —       | Already formatted, currency included: `"$3,679"`.                                                     |
 | `priceUnit`   | `string`                | —       | Shown small after the price: `"/mo"`, `"/night"`.                                                     |
 | `subtitle`    | `string`                | —       | One line under the title: a tagline, an area.                                                         |
-| `images`      | `ImageSourcePropType[]` | —       | One photo, or several to swipe through.                                                               |
-| `aspectRatio` | `number`                | `4 / 3` | Of the photos.                                                                                        |
+| `image`       | `ImageSourcePropType`   | —       | The photo.                                                                                            |
+| `aspectRatio` | `number`                | `4 / 3` | Of the photo.                                                                                         |
 | `badge`       | `string`                | —       | Short label in a `highlight` [Badge](/docs/atoms/badge), on the photo.                                |
 | `specs`       | `ListingSpec[]`         | —       | `{ icon?, value, label? }`: beds, baths, area. Shown as "**2** Beds", separated by lines. Three fit.   |
 | `onPress`     | `() => void`            | —       | Makes the whole card pressable. The card is read as "title, price".                                   |
@@ -434,8 +429,8 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 | `priceLabel`  | `string`                | —                | Shown small after the price: `"List price"`.                                                |
 | `title`       | `string`                | —                | The seller or the building, in semibold.                                                    |
 | `subtitle`    | `string`                | —                | Usually the address, after the title on the same line.                                      |
-| `images`      | `ImageSourcePropType[]` | —                | One photo, or several to swipe through.                                                     |
-| `aspectRatio` | `number`                | `4 / 3`          | Of the photos.                                                                              |
+| `image`       | `ImageSourcePropType`   | —                | The photo.                                                                                  |
+| `aspectRatio` | `number`                | `4 / 3`          | Of the photo.                                                                               |
 | `badge`       | `string`                | —                | Short label in a `highlight` [Badge](/docs/atoms/badge), on the photo.                      |
 | `specs`       | `ListingSpec[]`         | —                | `{ icon?, value, label? }`, between two lines.                                              |
 | `agent`       | `{ name, avatar? }`     | —                | Who posted the listing: an [Avatar](/docs/atoms/avatar) and "By name".                      |
@@ -454,11 +449,11 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 | `title`       | `string`                | —       | Name of the place, on one line next to the price.                                           |
 | `price`       | `string`                | —       | Already formatted, currency included: `"$200k"`.                                            |
 | `subtitle`    | `string`                | —       | One line under the title: the address.                                                      |
-| `images`      | `ImageSourcePropType[]` | —       | One photo, or several to swipe through. They cover the whole card.                          |
+| `image`       | `ImageSourcePropType`   | —       | Covers the whole card.                                                                      |
 | `aspectRatio` | `number`                | `3 / 4` | Of the whole card. Portrait by default.                                                     |
 | `badge`       | `string`                | —       | Short label in a `highlight` [Badge](/docs/atoms/badge), top left.                          |
 | `specs`       | `ListingSpec[]`         | —       | `{ icon?, value, label? }`, under a line, in white.                                         |
-| `onPress`     | `() => void`            | —       | Makes the whole card pressable. Swipes still go to the photos.                              |
+| `onPress`     | `() => void`            | —       | Makes the whole card pressable.                                                             |
 | `style`       | `StyleProp<ViewStyle>`  | —       | Extra styles for the card container, for example a width in a rail.                         |
 
 </VariantPanel>
@@ -471,7 +466,7 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 | `priceLabel`  | `string`                | —       | Shown small after the price: `"List price"`.                                        |
 | `title`       | `string`                | —       | The seller or the building, in semibold.                                            |
 | `subtitle`    | `string`                | —       | Usually the address, under the title, on up to two lines.                           |
-| `images`      | `ImageSourcePropType[]` | —       | One photo, or several to swipe through. They cover the whole card.                  |
+| `image`       | `ImageSourcePropType`   | —       | Covers the whole card.                                                              |
 | `aspectRatio` | `number`                | `3 / 4` | Of the whole card.                                                                  |
 | `badge`       | `string`                | —       | Short label in a `highlight` [Badge](/docs/atoms/badge), top left.                  |
 | `specs`       | `ListingSpec[]`         | —       | `{ icon?, value, label? }`, stacked next to the title: value above, label below. Two fit. |
@@ -490,7 +485,7 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 | `subtitle`    | `string`                | —               | One line under the title: the address.                                               |
 | `price`       | `string`                | —               | Already formatted, currency included. Shown in a translucent pill next to the button. |
 | `priceUnit`   | `string`                | —               | Shown small after the price: `"/night"`.                                             |
-| `images`      | `ImageSourcePropType[]` | —               | One photo, or several to swipe through. They cover the whole card.                   |
+| `image`       | `ImageSourcePropType`   | —               | Covers the whole card.                                                               |
 | `aspectRatio` | `number`                | `3 / 4`         | Of the whole card.                                                                   |
 | `badge`       | `string`                | —               | Short label in a `highlight` [Badge](/docs/atoms/badge), top left.                   |
 | `specs`       | `ListingSpec[]`         | —               | `{ icon?, value, label? }`, in white.                                                |
@@ -504,13 +499,11 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 ## Accessibility
 
 - A pressable card is read as one element: "title, price" (the Detailed variants: "price, title").
-- With several photos, the dots are read as "Photo 1 of 4" and the carousel is labelled "Photos".
 - The overlay variants draw white text on a dark gradient in both color schemes: the photo stays the same in dark mode, so the text does too. Pick photos without large white areas at the bottom.
 
 ## Built with
 
 - [Card](/docs/atoms/card): the elevated surface and, for the stacked variants, its header.
-- [Carousel](/docs/atoms/carousel): the swipeable photos.
 - [Badge](/docs/atoms/badge): the `highlight` label on the photo.
 - [Separator](/docs/atoms/separator): the lines around and between the specs.
 - [Icon](/docs/atoms/icon): the spec icons, from your registry.

@@ -3,6 +3,19 @@ title: Stats Card
 description: "A metric, its label and icon, and its change against the last period."
 ---
 
+<VariantTabs
+	group="stats-card"
+	items={[
+		{ value: "default", label: "Default" },
+		{ value: "sparkline", label: "Sparkline" },
+		{ value: "progress", label: "Progress" },
+		{ value: "inline", label: "Inline" },
+		{ value: "ring", label: "Ring" },
+	]}
+/>
+
+<VariantPanel group="stats-card" value="default" active>
+
 <PhonePreview>
 	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
 		This week
@@ -29,7 +42,84 @@ description: "A metric, its label and icon, and its change against the last peri
 
 Spending went up, and that's bad news: it's red. The color follows whether the change is good, not only its direction.
 
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="sparkline">
+
+<PhonePreview>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		This week
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<div class="ax-row" style={{ gap: "12px", alignItems: "stretch" }}>
+			<div class="ax-grow" style={{ flexBasis: "0px", display: "flex", minWidth: 0 }}>
+				<StatsCardPreview variant="sparkline" label="Revenue" value="$12,480" icon="wallet" change="+12%" tone="success" caption="Last 7 days" data={[8.2, 9.1, 8.7, 10.4, 9.8, 11.6, 12.5]} />
+			</div>
+			<div class="ax-grow" style={{ flexBasis: "0px", display: "flex", minWidth: 0 }}>
+				<StatsCardPreview variant="sparkline" label="Visitors" value="8,204" icon="users" change="-3%" tone="error" caption="Last 7 days" data={[9.4, 9.9, 9.1, 8.8, 9.2, 8.5, 8.2]} />
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+The recent values as a line under the value. The line takes the color of the change: green, red, or the primary color when the trend is flat.
+
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="progress">
+
+<PhonePreview>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Goals
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<StatsCardPreview variant="progress" label="Steps" value="8,204" goal="/ 10,000" progress={0.82} icon="flame" caption="1,796 to go" />
+		<StatsCardPreview variant="progress" label="Savings" value="$5,400" goal="/ $5,000" progress={1.08} caption="Goal reached" card="outlined" />
+	</div>
+</PhonePreview>
+
+How far the value is from a goal. Past the goal, the bar stays full and turns green.
+
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="inline">
+
+<PhonePreview>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Today
+	</div>
+	<div class="ax-stack" data-gap="8" style={{ padding: "4px 16px 24px" }}>
+		<StatsCardPreview variant="inline" label="Revenue" value="$12,480" icon="wallet" change="+12.4%" tone="success" />
+		<StatsCardPreview variant="inline" label="Visitors" value="8,204" icon="users" change="-3%" tone="error" />
+		<StatsCardPreview variant="inline" label="Orders" value="412" icon="cart" change="0%" />
+	</div>
+</PhonePreview>
+
+Icon, label, value and change on one line. For a stack of metrics, or a dashboard that shows many at once.
+
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="ring">
+
+<PhonePreview>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Activity
+	</div>
+	<div class="ax-stack" data-gap="16" style={{ padding: "4px 16px 24px" }}>
+		<StatsCardPreview variant="ring" label="Move" value="420 kcal" progress={0.7} caption="of 600 kcal" />
+		<StatsCardPreview variant="ring" label="Stand" value="12 h" progress={1} caption="Goal reached" />
+	</div>
+</PhonePreview>
+
+A ring for the share of a goal, the percentage in its middle. Past the goal, the ring turns green.
+
+</VariantPanel>
+
+The variants are separate components with their own code: install the one you need.
+
 ## Installation
+
+<VariantPanel group="stats-card" value="default" active>
 
 ```npm
 npx axiom add stats-card
@@ -37,7 +127,55 @@ npx axiom add stats-card
 
 Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/stats-card.tsx`. It brings no tokens of its own.
 
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="sparkline">
+
+```npm
+npx axiom add stats-card-sparkline
+```
+
+Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/stats-card-sparkline.tsx`. It brings no tokens of its own.
+
+Needs [`react-native-svg`](https://github.com/software-mansion/react-native-svg), a native module: rebuild your development build after installing it.
+
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="progress">
+
+```npm
+npx axiom add stats-card-progress
+```
+
+Also copies: [`card`](/docs/atoms/card), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/stats-card-progress.tsx`. It brings no tokens of its own.
+
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="inline">
+
+```npm
+npx axiom add stats-card-inline
+```
+
+Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/stats-card-inline.tsx`. It brings no tokens of its own.
+
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="ring">
+
+```npm
+npx axiom add stats-card-ring
+```
+
+Also copies: [`card`](/docs/atoms/card), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/stats-card-ring.tsx`. It brings no tokens of its own.
+
+Needs [`react-native-svg`](https://github.com/software-mansion/react-native-svg), a native module: rebuild your development build after installing it.
+
+</VariantPanel>
+
 ## Usage
+
+<VariantPanel group="stats-card" value="default" active>
 
 ```tsx
 import { StatsCard } from "@/components/compositions/stats-card";
@@ -64,9 +202,81 @@ import { StatsCard } from "@/components/compositions/stats-card";
 </View>;
 ```
 
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="sparkline">
+
+```tsx
+import { StatsCardSparkline } from "@/components/compositions/stats-card-sparkline";
+
+<StatsCardSparkline
+	label="Revenue"
+	value="$12,480"
+	icon="wallet"
+	data={last7Days.map((day) => day.revenue)}
+	change="+12.4%"
+	trend="up"
+	caption="Last 7 days"
+	style={{ flex: 1 }}
+/>;
+```
+
+`data` is scaled between its own minimum and maximum: the line shows the shape of the series, not its distance from zero. Two points at least; a dozen reads best at this size.
+
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="progress">
+
+```tsx
+import { StatsCardProgress } from "@/components/compositions/stats-card-progress";
+
+<StatsCardProgress
+	label="Steps"
+	value={formatNumber(steps)}
+	goal={`/ ${formatNumber(goal)}`}
+	progress={steps / goal}
+	icon="flame"
+	caption={`${formatNumber(goal - steps)} to go`}
+/>;
+```
+
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="inline">
+
+```tsx
+import { StatsCardInline } from "@/components/compositions/stats-card-inline";
+
+<View style={{ gap: 8 }}>
+	<StatsCardInline label="Revenue" value="$12,480" icon="wallet" change="+12.4%" trend="up" onPress={openRevenue} />
+	<StatsCardInline label="Refunds" value="$212" icon="cart" change="+4%" trend="up" positive={false} />
+</View>;
+```
+
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="ring">
+
+```tsx
+import { StatsCardRing } from "@/components/compositions/stats-card-ring";
+
+<StatsCardRing
+	label="Move"
+	value="420 kcal"
+	progress={420 / 600}
+	caption="of 600 kcal"
+/>;
+```
+
+Pass `ringLabel` to replace the percentage in the ring, with something short: `"3/5"`.
+
+</VariantPanel>
+
 Values come formatted: the card never rounds or localizes a number.
 
 ## Props
+
+<VariantPanel group="stats-card" value="default" active>
 
 | Prop       | Type                           | Default           | Description                                                                                    |
 | ---------- | ------------------------------ | ----------------- | ---------------------------------------------------------------------------------------------- |
@@ -81,9 +291,78 @@ Values come formatted: the card never rounds or localizes a number.
 | `onPress`  | `() => void`                   | —                 | Makes the card pressable, to open the detail.                                                  |
 | `style`    | `StyleProp<ViewStyle>`         | —                 | Extra styles, usually `flex: 1` in a row of cards.                                             |
 
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="sparkline">
+
+| Prop       | Type                           | Default           | Description                                                                  |
+| ---------- | ------------------------------ | ----------------- | ---------------------------------------------------------------------------- |
+| `label`    | `string`                       | —                 | What is measured, muted, above the value.                                    |
+| `value`    | `string`                       | —                 | Already formatted, in large type.                                            |
+| `data`     | `number[]`                     | —                 | The recent values, oldest first. Drawn as a 40pt line across the card.       |
+| `icon`     | `IconName`                     | —                 | Before the label.                                                            |
+| `change`   | `string`                       | —                 | In a [Badge](/docs/atoms/badge) next to the value.                           |
+| `trend`    | `'up' \| 'down' \| 'flat'`     | `'flat'`          | Colors the badge and the line.                                               |
+| `positive` | `boolean`                      | `trend !== 'down'` | Whether the change is good news.                                            |
+| `caption`  | `string`                       | —                 | Under the line: `"Last 7 days"`.                                             |
+| `variant`  | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/atoms/card) variant.                                        |
+| `onPress`  | `() => void`                   | —                 | Makes the card pressable.                                                    |
+| `style`    | `StyleProp<ViewStyle>`         | —                 | Extra styles, usually `flex: 1`.                                             |
+
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="progress">
+
+| Prop       | Type                           | Default    | Description                                                                   |
+| ---------- | ------------------------------ | ---------- | ----------------------------------------------------------------------------- |
+| `label`    | `string`                       | —          | What is measured.                                                             |
+| `value`    | `string`                       | —          | Already formatted.                                                            |
+| `goal`     | `string`                       | —          | The target, muted after the value: `"/ 10,000"`.                              |
+| `progress` | `number`                       | —          | Share of the goal, from 0 to 1. Above 1, the bar stays full and turns green.  |
+| `icon`     | `IconName`                     | —          | Before the label.                                                             |
+| `caption`  | `string`                       | —          | Under the bar, on the right: `"1,796 to go"`. The percentage is on the left.  |
+| `variant`  | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/atoms/card) variant.                              |
+| `onPress`  | `() => void`                   | —          | Makes the card pressable.                                                     |
+| `style`    | `StyleProp<ViewStyle>`         | —          | Extra styles for the card.                                                    |
+
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="inline">
+
+| Prop       | Type                           | Default           | Description                                                        |
+| ---------- | ------------------------------ | ----------------- | ------------------------------------------------------------------ |
+| `label`    | `string`                       | —                 | What is measured, muted, after the icon.                           |
+| `value`    | `string`                       | —                 | Already formatted, on the right.                                   |
+| `icon`     | `IconName`                     | —                 | In a 32pt tile at the start of the row.                            |
+| `change`   | `string`                       | —                 | In a [Badge](/docs/atoms/badge) after the value.                   |
+| `trend`    | `'up' \| 'down' \| 'flat'`     | `'flat'`          | Colors the badge.                                                  |
+| `positive` | `boolean`                      | `trend !== 'down'` | Whether the change is good news.                                  |
+| `variant`  | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/atoms/card) variant.                             |
+| `onPress`  | `() => void`                   | —                 | Makes the row pressable.                                           |
+| `style`    | `StyleProp<ViewStyle>`         | —                 | Extra styles for the card.                                         |
+
+</VariantPanel>
+
+<VariantPanel group="stats-card" value="ring">
+
+| Prop        | Type                           | Default          | Description                                                                  |
+| ----------- | ------------------------------ | ---------------- | ---------------------------------------------------------------------------- |
+| `label`     | `string`                       | —                | What is measured.                                                            |
+| `value`     | `string`                       | —                | Already formatted, next to the ring.                                         |
+| `progress`  | `number`                       | —                | Share of the goal, from 0 to 1. Above 1, the ring stays full and turns green. |
+| `caption`   | `string`                       | —                | Under the value: `"of 600 kcal"`.                                            |
+| `ringLabel` | `string`                       | the percentage   | Inside the 64pt ring.                                                        |
+| `variant`   | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/atoms/card) variant.                                    |
+| `onPress`   | `() => void`                   | —                | Makes the card pressable.                                                    |
+| `style`     | `StyleProp<ViewStyle>`         | —                | Extra styles for the card.                                                   |
+
+</VariantPanel>
+
 ## Accessibility
 
-The card reads as one sentence: "Revenue: $12,480, +12.4%, vs last week".
+The card reads as one sentence: "Revenue: $12,480, +12.4%, vs last week". The sparkline is hidden from screen readers: the value and the change already say what it shows.
+
+Progress and Ring are progress bars: they announce their percentage along with the label, "Steps: 8,204, / 10,000, 82%, 1,796 to go".
 
 ## Built with
 
@@ -91,6 +370,7 @@ The card reads as one sentence: "Revenue: $12,480, +12.4%, vs last week".
 - [Title](/docs/atoms/title): the value.
 - [Badge](/docs/atoms/badge): the change, in success, error or neutral.
 - [Icon](/docs/atoms/icon) and [Text](/docs/atoms/text): the label and the caption.
+- `react-native-svg`: the line of Sparkline and the arc of Ring.
 
 ## Used in
 
