@@ -914,6 +914,10 @@
 	background: transparent;
 }
 
+.ax-list[data-variant="filled"] {
+	background: var(--ax-background-subtle);
+}
+
 .ax-list[data-variant="outlined"] {
 	box-shadow: inset 0 0 0 1px var(--ax-border-default);
 	background: var(--ax-background-default);
@@ -1046,6 +1050,10 @@
 .ax-tile[data-color="subtle"] {
 	background: var(--ax-background-subtle);
 	color: var(--ax-content-default);
+}
+/* On a filled list the subtle tile would vanish into the group: step it up. */
+.ax-list[data-variant="filled"] .ax-tile[data-color="subtle"] {
+	background: var(--ax-background-elevated);
 }
 
 .ax-check {
@@ -1608,12 +1616,13 @@
 	flex: none;
 	height: 14px;
 	border-radius: var(--ax-radius-sm);
-	/* Same tokens as the component: `border.subtle` fill, `border.default` highlight. */
+	/* Same tokens as the component: `content.default` at 8%, 16% for the highlight —
+	   see-through, so it sits on any surface. */
 	background: linear-gradient(
 		90deg,
-		var(--ax-border-subtle) 25%,
-		var(--ax-border-default) 50%,
-		var(--ax-border-subtle) 75%
+		color-mix(in srgb, var(--ax-content-default) 8%, transparent) 25%,
+		color-mix(in srgb, var(--ax-content-default) 16%, transparent) 50%,
+		color-mix(in srgb, var(--ax-content-default) 8%, transparent) 75%
 	);
 	background-size: 300% 100%;
 	animation: ax-shimmer 1.4s ease-in-out infinite;

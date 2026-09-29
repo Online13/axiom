@@ -786,7 +786,8 @@ export const componentTokens = {
 	},
 	skeleton: {
 		default: {
-			default: { background: "border.subtle", highlight: "border.default" },
+			// `content.default` at 8% and 16%: see the registry's skeleton tokens.
+			default: { background: "content.default", highlight: "content.default" },
 		},
 	},
 	alert: {
