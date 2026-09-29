@@ -30,3 +30,37 @@ import Bento from '@landing/components/sections/bento/Bento.astro';
 	</main>
 	<Footer />
 </Base>
+
+<script>
+	// Fades each section below the hero in the first time it scrolls into view.
+	if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		const sections = document.querySelectorAll<HTMLElement>('main > section:not(.hero)');
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					entry.target.setAttribute('data-reveal', 'shown');
+					observer.unobserve(entry.target);
+				}
+			},
+			{ rootMargin: '0px 0px -10% 0px' },
+		);
+		for (const section of sections) {
+			section.setAttribute('data-reveal', 'hidden');
+			observer.observe(section);
+		}
+	}
+</script>
+
+<style is:global>
+	[data-reveal] {
+		transition:
+			opacity 0.8s ease,
+			translate 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	[data-reveal='hidden'] {
+		opacity: 0;
+		translate: 0 24px;
+	}
+</style>

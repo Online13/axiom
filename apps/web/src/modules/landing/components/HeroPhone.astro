@@ -2,7 +2,7 @@
 // Pure SVG hero visual: an iOS device running an Axiom screen, with floating
 // callouts naming the primitive behind each part of the UI.
 
-type Side = 'left' | 'right';
+type Side = "left" | "right";
 interface Legend {
 	name: string;
 	desc: [string, string];
@@ -14,26 +14,95 @@ interface Legend {
 }
 
 const legends: Legend[] = [
-	{ name: 'AppBar', desc: ['Navigation,', 'title, actions'], x: 241, y: 158, side: 'left', area: [238, 142, 284, 32, 10] },
-	{ name: 'Item', desc: ['Composable', 'list item'], x: 248, y: 298, side: 'left', area: [248, 276, 264, 44, 14] },
-	{ name: 'Button', desc: ['Variants,', 'states, loading'], x: 248, y: 702, side: 'left', area: [243, 675, 274, 54, 16] },
-	{ name: 'Scaffold', desc: ['Full-screen', 'layout system'], x: 540, y: 124, side: 'right', area: [234, 104, 292, 652, 40] },
-	{ name: 'Theme', desc: ['Light, dark,', 'custom tokens'], x: 512, y: 226, side: 'right', area: [248, 196, 264, 60, 14] },
-	{ name: 'Switch', desc: ['Cross-platform', 'behavior'], x: 508, y: 342, side: 'right', area: [466, 327, 46, 30, 15] },
-	{ name: 'Tappable', desc: ['44pt target,', 'gesture handling'], x: 512, y: 508, side: 'right', area: [248, 486, 264, 44, 14] },
+	{
+		name: "AppBar",
+		desc: ["Navigation,", "title, actions"],
+		x: 241,
+		y: 158,
+		side: "left",
+		area: [238, 142, 284, 32, 10],
+	},
+	{
+		name: "Item",
+		desc: ["Composable", "list item"],
+		x: 248,
+		y: 298,
+		side: "left",
+		area: [248, 276, 264, 44, 14],
+	},
+	{
+		name: "Button",
+		desc: ["Variants,", "states, loading"],
+		x: 248,
+		y: 702,
+		side: "left",
+		area: [243, 675, 274, 54, 16],
+	},
+	{
+		name: "Scaffold",
+		desc: ["Full-screen", "layout system"],
+		x: 540,
+		y: 124,
+		side: "right",
+		area: [234, 104, 292, 652, 40],
+	},
+	{
+		name: "Switch",
+		desc: ["Cross-platform", "behavior"],
+		x: 508,
+		y: 342,
+		side: "right",
+		area: [466, 327, 46, 30, 15],
+	},
+	{
+		name: "Tappable",
+		desc: ["44pt target,", "gesture handling"],
+		x: 512,
+		y: 508,
+		side: "right",
+		area: [248, 486, 264, 44, 14],
+	},
 ];
 
 const LEFT_END = 172;
 const RIGHT_END = 588;
 
-const rows1 = [
-	{ label: 'Profile', icon: 'user', cy: 298 },
-	{ label: 'Notifications', icon: 'bell', cy: 342, toggle: true },
-	{ label: 'Appearance', icon: 'theme', cy: 386, value: 'System' },
+interface Row {
+	label: string;
+	icon: "user" | "bell" | "theme" | "lock" | "data";
+	cy: number;
+	toggle: boolean;
+	value?: string;
+	pressed: boolean;
+}
+
+const rows1: Row[] = [
+	{ label: "Profile", icon: "user", cy: 298, toggle: false, pressed: false },
+	{
+		label: "Notifications",
+		icon: "bell",
+		cy: 342,
+		toggle: true,
+		pressed: false,
+	},
+	{
+		label: "Appearance",
+		icon: "theme",
+		cy: 386,
+		value: "System",
+		toggle: false,
+		pressed: false,
+	},
 ];
-const rows2 = [
-	{ label: 'Privacy', icon: 'lock', cy: 464 },
-	{ label: 'Data & Storage', icon: 'data', cy: 508, pressed: true },
+const rows2: Row[] = [
+	{ label: "Privacy", icon: "lock", cy: 464, toggle: true, pressed: false },
+	{
+		label: "Data & Storage",
+		icon: "data",
+		cy: 508,
+		toggle: false,
+		pressed: true,
+	},
 ];
 ---
 
@@ -41,99 +110,132 @@ const rows2 = [
 	class="hero-phone"
 	viewBox="40 86 690 690"
 	role="img"
-	aria-label="An iOS account screen built with Axiom, annotated with the components it uses: AppBar, Item, Button, Scaffold, Theme, Switch and Tappable."
+	aria-label="An iOS account screen built with Axiom, annotated with the components it uses: AppBar, Item, Button, Scaffold, Switch and Tappable."
 >
 	<defs>
 		<clipPath id="hp-screen">
-			<rect x="232" y="102" width="296" height="656" rx="42" />
+			<rect x="232" y="102" width="296" height="656" rx="42"></rect>
 		</clipPath>
 		<linearGradient id="hp-frame" x1="0" y1="0" x2="1" y2="1">
-			<stop offset="0" stop-color="#2e2e2e" />
-			<stop offset="0.5" stop-color="#151515" />
-			<stop offset="1" stop-color="#262626" />
+			<stop offset="0" stop-color="#2e2e2e"></stop>
+			<stop offset="0.5" stop-color="#151515"></stop>
+			<stop offset="1" stop-color="#262626"></stop>
 		</linearGradient>
 	</defs>
 
 	<!-- Device -->
 	<g class="hero-phone__device" aria-hidden="true">
-		<rect x="216" y="210" width="4" height="34" rx="2" fill="#2a2a2a" />
-		<rect x="216" y="262" width="4" height="56" rx="2" fill="#2a2a2a" />
-		<rect x="216" y="328" width="4" height="56" rx="2" fill="#2a2a2a" />
-		<rect x="540" y="280" width="4" height="86" rx="2" fill="#2a2a2a" />
-		<rect x="220" y="90" width="320" height="680" rx="54" fill="url(#hp-frame)" stroke="#3a3a3a" />
+		<rect x="216" y="210" width="4" height="34" rx="2" fill="#2a2a2a"></rect>
+		<rect x="216" y="262" width="4" height="56" rx="2" fill="#2a2a2a"></rect>
+		<rect x="216" y="328" width="4" height="56" rx="2" fill="#2a2a2a"></rect>
+		<rect x="540" y="280" width="4" height="86" rx="2" fill="#2a2a2a"></rect>
+		<rect
+			x="220"
+			y="90"
+			width="320"
+			height="680"
+			rx="54"
+			fill="url(#hp-frame)"
+			stroke="#3a3a3a"></rect>
 
 		<g clip-path="url(#hp-screen)">
-			<rect x="232" y="102" width="296" height="656" fill="#f4f4f2" />
+			<rect x="232" y="102" width="296" height="656" fill="#f4f4f2"></rect>
 
 			<!-- Status bar -->
 			<text x="266" y="129" class="t t--status">9:41</text>
-			<rect x="332" y="112" width="96" height="28" rx="14" fill="#0a0a0a" />
+			<rect x="332" y="112" width="96" height="28" rx="14" fill="#0a0a0a"
+			></rect>
 			<g fill="#111">
-				<rect x="462" y="125" width="3" height="4" rx="0.8" />
-				<rect x="467" y="123" width="3" height="6" rx="0.8" />
-				<rect x="472" y="121" width="3" height="8" rx="0.8" />
+				<rect x="462" y="125" width="3" height="4" rx="0.8"></rect>
+				<rect x="467" y="123" width="3" height="6" rx="0.8"></rect>
+				<rect x="472" y="121" width="3" height="8" rx="0.8"></rect>
 			</g>
-			<rect x="481" y="120.5" width="20" height="9.5" rx="2.6" fill="none" stroke="#111" stroke-opacity="0.4" />
-			<rect x="483" y="122.5" width="14" height="5.5" rx="1.4" fill="#111" />
+			<rect
+				x="481"
+				y="120.5"
+				width="20"
+				height="9.5"
+				rx="2.6"
+				fill="none"
+				stroke="#111"
+				stroke-opacity="0.4"></rect>
+			<rect x="483" y="122.5" width="14" height="5.5" rx="1.4" fill="#111"
+			></rect>
 
 			<!-- AppBar -->
-			<path d="M258 151 L251 158 L258 165" class="ico" stroke-width="1.8" />
-			<text x="380" y="163" text-anchor="middle" class="t t--title">Account</text>
+			<path d="M258 151 L251 158 L258 165" class="ico" stroke-width="1.8"
+			></path>
+			<text x="380" y="163" text-anchor="middle" class="t t--title"
+				>Account</text
+			>
 			<g fill="#111">
-				<circle cx="506" cy="152" r="1.5" />
-				<circle cx="506" cy="158" r="1.5" />
-				<circle cx="506" cy="164" r="1.5" />
+				<circle cx="506" cy="152" r="1.5"></circle>
+				<circle cx="506" cy="158" r="1.5"></circle>
+				<circle cx="506" cy="164" r="1.5"></circle>
 			</g>
 
 			<!-- Profile -->
-			<rect x="248" y="196" width="264" height="60" rx="14" fill="#fff" />
-			<circle cx="276" cy="226" r="18" fill="#111" />
+			<rect x="248" y="196" width="264" height="60" rx="14" fill="#fff"
+			></rect>
+			<circle cx="276" cy="226" r="18" fill="#111"></circle>
 			<text x="276" y="231" text-anchor="middle" class="t t--avatar">A</text>
 			<text x="304" y="222" class="t t--name">Alex Chen</text>
 			<text x="304" y="238" class="t t--sub">alex@axiom.dev</text>
-			<path d="M497 221 L502 226 L497 231" class="ico ico--muted" />
+			<path d="M497 221 L502 226 L497 231" class="ico ico--muted"></path>
 
 			<!-- Groups -->
 			<text x="256" y="268" class="t t--section">PREFERENCES</text>
-			<rect x="248" y="276" width="264" height="132" rx="14" fill="#fff" />
+			<rect x="248" y="276" width="264" height="132" rx="14" fill="#fff"
+			></rect>
 			<text x="256" y="434" class="t t--section">SECURITY</text>
-			<rect x="248" y="442" width="264" height="88" rx="14" fill="#fff" />
+			<rect x="248" y="442" width="264" height="88" rx="14" fill="#fff"
+			></rect>
 
 			{
 				[...rows1, ...rows2].map((row, i, all) => (
 					<g>
 						{row.pressed && (
 							<>
-								<path d="M248 486 H512 V516 A14 14 0 0 1 498 530 H262 A14 14 0 0 1 248 516 Z" fill="#ececea" />
-								<rect x="244" y="482" width="272" height="52" rx="16" class="target" />
+								<path
+									d="M248 486 H512 V516 A14 14 0 0 1 498 530 H262 A14 14 0 0 1 248 516 Z"
+									fill="#ececea"
+								/>
+								<rect
+									x="244"
+									y="482"
+									width="272"
+									height="52"
+									rx="16"
+									class="target"
+								/>
 							</>
 						)}
 						<g transform={`translate(272 ${row.cy})`} class="ico">
-							{row.icon === 'user' && (
+							{row.icon === "user" && (
 								<>
 									<circle cx="0" cy="-3" r="3.2" />
 									<path d="M-5.5 6 C-5 1.5 5 1.5 5.5 6" />
 								</>
 							)}
-							{row.icon === 'bell' && (
+							{row.icon === "bell" && (
 								<>
 									<path d="M-5 3.5 V-1 A5 5 0 0 1 5 -1 V3.5 L6 5 H-6 Z" />
 									<path d="M-1.6 7 H1.6" />
 								</>
 							)}
-							{row.icon === 'theme' && (
+							{row.icon === "theme" && (
 								<>
 									<circle cx="0" cy="0" r="6" />
 									<path d="M0 -6 A6 6 0 0 1 0 6 Z" fill="#111" />
 								</>
 							)}
-							{row.icon === 'lock' && (
+							{row.icon === "lock" && (
 								<>
 									<rect x="-5.5" y="-1" width="11" height="8" rx="2" />
 									<path d="M-3 -1 V-3.5 A3 3 0 0 1 3 -3.5 V-1" />
 								</>
 							)}
-							{row.icon === 'data' && (
+							{row.icon === "data" && (
 								<>
 									<ellipse cx="0" cy="-4" rx="5.5" ry="2.2" />
 									<path d="M-5.5 -4 V4.5 C-5.5 7.4 5.5 7.4 5.5 4.5 V-4" />
@@ -146,63 +248,129 @@ const rows2 = [
 						</text>
 						{row.toggle ? (
 							<>
-								<rect x="470" y={row.cy - 11} width="38" height="22" rx="11" class="accent-fill" />
+								<rect
+									x="470"
+									y={row.cy - 11}
+									width="38"
+									height="22"
+									rx="11"
+									class="accent-fill"
+								/>
 								<circle cx="497" cy={row.cy} r="9" fill="#fff" />
 							</>
 						) : (
-							<path d={`M497 ${row.cy - 5} L502 ${row.cy} L497 ${row.cy + 5}`} class="ico ico--muted" />
+							<path
+								d={`M497 ${row.cy - 5} L502 ${row.cy} L497 ${row.cy + 5}`}
+								class="ico ico--muted"
+							/>
 						)}
 						{row.value && (
-							<text x="488" y={row.cy + 4} text-anchor="end" class="t t--sub">
+							<text
+								x="488"
+								y={row.cy + 4}
+								text-anchor="end"
+								class="t t--sub"
+							>
 								{row.value}
 							</text>
 						)}
 						{all[i + 1] && all[i + 1].cy - row.cy === 44 && (
-							<line x1="294" y1={row.cy + 22} x2="512" y2={row.cy + 22} stroke="#ececea" />
+							<line
+								x1="294"
+								y1={row.cy + 22}
+								x2="512"
+								y2={row.cy + 22}
+								stroke="#ececea"
+							/>
 						)}
 					</g>
 				))
 			}
 
 			<!-- Storage -->
-			<rect x="248" y="550" width="264" height="74" rx="14" fill="#fff" />
+			<rect x="248" y="550" width="264" height="74" rx="14" fill="#fff"
+			></rect>
 			<text x="264" y="576" class="t t--row">Storage</text>
-			<text x="496" y="576" text-anchor="end" class="t t--sub">2.4 of 5 GB</text>
-			<rect x="264" y="592" width="232" height="6" rx="3" fill="#ececea" />
-			<rect x="264" y="592" width="112" height="6" rx="3" fill="#111" />
+			<text x="496" y="576" text-anchor="end" class="t t--sub"
+				>2.4 of 5 GB</text
+			>
+			<rect x="264" y="592" width="232" height="6" rx="3" fill="#ececea"
+			></rect>
+			<rect x="264" y="592" width="112" height="6" rx="3" fill="#111"></rect>
 			<text x="264" y="614" class="t t--hint">Synced 2 min ago</text>
 
 			<!-- Button -->
-			<rect x="248" y="680" width="264" height="44" rx="12" class="accent-fill" />
-			<text x="380" y="706.5" text-anchor="middle" class="t t--button">Sign out</text>
+			<rect
+				x="248"
+				y="680"
+				width="264"
+				height="44"
+				rx="12"
+				class="accent-fill"></rect>
+			<text x="380" y="706.5" text-anchor="middle" class="t t--button"
+				>Sign out</text
+			>
 
-			<rect x="325" y="744" width="110" height="4" rx="2" fill="#111" />
+			<rect x="325" y="744" width="110" height="4" rx="2" fill="#111"></rect>
 		</g>
 	</g>
 
 	<!-- Callouts -->
 	{
 		legends.map((l, i) => {
-			const end = l.side === 'left' ? LEFT_END : RIGHT_END;
-			const tx = l.side === 'left' ? end - 12 : end + 12;
-			const anchor = l.side === 'left' ? 'end' : 'start';
+			const end = l.side === "left" ? LEFT_END : RIGHT_END;
+			const tx = l.side === "left" ? end - 12 : end + 12;
+			const anchor = l.side === "left" ? "end" : "start";
 			const [ax, ay, aw, ah, ar] = l.area;
-			const hitX = l.side === 'left' ? 40 : l.x;
-			const hitW = l.side === 'left' ? l.x - 40 : 730 - l.x;
+			const hitX = l.side === "left" ? 40 : l.x;
+			const hitW = l.side === "left" ? l.x - 40 : 730 - l.x;
 			return (
-				<g class="legend" style={`--i:${i}`} tabindex="0" aria-label={`${l.name}: ${l.desc.join(' ')}`}>
-					<rect x={ax} y={ay} width={aw} height={ah} rx={ar} class="legend__area" />
-					<rect x={hitX} y={l.y - 20} width={hitW} height={64} class="legend__hit" />
+				<g
+					class="legend"
+					style={`--i:${i}`}
+					tabindex="0"
+					aria-label={`${l.name}: ${l.desc.join(" ")}`}
+				>
+					<rect
+						x={ax}
+						y={ay}
+						width={aw}
+						height={ah}
+						rx={ar}
+						class="legend__area"
+					/>
+					<rect
+						x={hitX}
+						y={l.y - 20}
+						width={hitW}
+						height={64}
+						class="legend__hit"
+					/>
 					<line x1={l.x} y1={l.y} x2={end} y2={l.y} class="legend__line" />
 					<circle cx={end} cy={l.y} r="2" class="legend__tick" />
 					<g class="legend__label">
-						<text x={tx} y={l.y + 4} text-anchor={anchor} class="legend__name">
+						<text
+							x={tx}
+							y={l.y + 4}
+							text-anchor={anchor}
+							class="legend__name"
+						>
 							{l.name}
 						</text>
-						<text x={tx} y={l.y + 22} text-anchor={anchor} class="legend__desc">
+						<text
+							x={tx}
+							y={l.y + 22}
+							text-anchor={anchor}
+							class="legend__desc"
+						>
 							{l.desc[0]}
 						</text>
-						<text x={tx} y={l.y + 36} text-anchor={anchor} class="legend__desc">
+						<text
+							x={tx}
+							y={l.y + 36}
+							text-anchor={anchor}
+							class="legend__desc"
+						>
 							{l.desc[1]}
 						</text>
 					</g>
@@ -216,7 +384,7 @@ const rows2 = [
 
 <style>
 	.hero-phone {
-		--accent: #ff5a1f;
+		--accent: #61dafb;
 		display: block;
 		width: 100%;
 		height: 100%;
@@ -265,7 +433,7 @@ const rows2 = [
 	.t--button {
 		font-size: 13px;
 		font-weight: 600;
-		fill: #fff;
+		fill: #000000;
 	}
 
 	.ico {
@@ -334,7 +502,13 @@ const rows2 = [
 	}
 	.hero-phone:has(.legend:is(:hover, :focus-visible))
 		.legend:not(:hover, :focus-visible)
-		:is(.legend__line, .legend__tick, .legend__label, .legend__dot, .legend__halo) {
+		:is(
+			.legend__line,
+			.legend__tick,
+			.legend__label,
+			.legend__dot,
+			.legend__halo
+		) {
 		opacity: 0.3;
 	}
 

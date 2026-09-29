@@ -24,7 +24,6 @@ const links = [
 					</svg>
 					<span class="nav__label">GitHub</span>
 				</Button>
-				<Button href={docs()} class="nav__btn">Get started</Button>
 			</div>
 		</div>
 	</div>
@@ -79,14 +78,6 @@ const links = [
 		gap: 0.5rem;
 		padding: 0.6rem 1.1rem;
 		font-size: 0.875rem;
-	}
-
-	.nav__btn:not(.btn--ghost) {
-		border: 1px solid var(--fg);
-	}
-
-	.nav__btn:not(.btn--ghost):is(:hover, :focus-visible) {
-		border-color: var(--btn-hover-bg);
 	}
 
 	.nav__btn svg {

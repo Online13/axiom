@@ -14,7 +14,7 @@
 	/* The worktable under the screens: a step lighter than the floating panel,
 	   so the panel reads as a separate sheet on top of it. */
 	--canvas: #1c1c1c;
-	--accent: #ff5a1f;
+	--accent: #61dafb;
 	--hover: #1a1a1a;
 	--pass: #6ee7a0;
 	--pass-line: #2f6b3f;
@@ -279,7 +279,7 @@ input[type="color"] {
 .tb-btn:hover {
 	border-color: var(--accent);
 	background: var(--accent);
-	color: #fff;
+	color: #0a0a0a;
 }
 
 .tb-btn--ghost {

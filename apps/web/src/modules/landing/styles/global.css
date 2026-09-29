@@ -8,8 +8,8 @@
 	--surface-raised: #161616;
 	--card: #0d0d0d;
 	--grid: #ffffff04;
-	--accent: #ff5a1f;
-	--accent-text: #ff875d;
+	--accent: #61dafb;
+	--accent-text: #61dafb;
 	color-scheme: dark;
 
 	--nav-h: 80px;
@@ -34,7 +34,7 @@
 	--surface-raised: #ebebeb;
 	--card: #ffffff;
 	--grid: #00000006;
-	--accent-text: #c2410c;
+	--accent-text: #087ea4;
 	color-scheme: light;
 }
 
@@ -111,7 +111,7 @@ p {
 	font-size: 0.75rem;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
-	color: var(--muted);
+	color: var(--accent-text);
 }
 
 .section .eyebrow + .title {
@@ -136,7 +136,7 @@ p {
 
 .btn {
 	--btn-hover-bg: var(--accent);
-	--btn-hover-fg: #fff;
+	--btn-hover-fg: #0a0a0a;
 
 	position: relative;
 	display: inline-flex;

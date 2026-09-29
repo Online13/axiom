@@ -1,6 +1,6 @@
 ---
 // One looping interaction per scene of the Mobile section. Rendered inside
-// <Phone>; the orange circles show where the finger is.
+// <Phone>; the accent circles show where the finger is.
 interface Props {
 	kind: 'Press' | 'Drag' | 'Swipe' | 'Keyboard' | 'Gestures';
 }
@@ -155,7 +155,7 @@ const keys = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
 
 <style>
 	.ix {
-		--accent: #ff5a1f;
+		--accent: #61dafb;
 		position: relative;
 		flex: 1;
 		min-height: 0;
@@ -224,7 +224,7 @@ const keys = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
 		padding: 1em;
 		border-radius: 1em;
 		background: var(--accent);
-		color: #fff;
+		color: #0a0a0a;
 		font-weight: 600;
 	}
 	.ix--press .press__btn {
@@ -403,7 +403,7 @@ const keys = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
 		align-self: flex-end;
 		border-radius: 1.1em 1.1em 0.3em 1.1em;
 		background: var(--accent);
-		color: #fff;
+		color: #0a0a0a;
 	}
 	.composer {
 		display: flex;
@@ -436,7 +436,7 @@ const keys = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
 		height: 2.2em;
 		border-radius: 50%;
 		background: var(--accent);
-		color: #fff;
+		color: #0a0a0a;
 		font-weight: 700;
 	}
 	.kb {
@@ -484,7 +484,7 @@ const keys = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
 	.photo__img {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(160deg, #ffb38f, var(--accent) 45%, #3b1a0c);
+		background: linear-gradient(160deg, #b3ecfd, var(--accent) 45%, #0b2e38);
 		animation: zoom 3.4s ease-in-out infinite;
 	}
 	.photo__img i {
