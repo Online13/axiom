@@ -427,6 +427,12 @@ const controlOf: Record<ControlShape, string> = { square: "3px", rounded: "6px",
 		font-size: 0.95em;
 	}
 
+	/* The builder at a real screen's scale: its chrome drawn smaller, the way it
+	   reads in a browser, rather than blown up to the section's width. */
+	.tbd__app {
+		zoom: 0.78;
+	}
+
 	.tbd [aria-pressed] {
 		transition:
 			background-color var(--ease),
@@ -573,7 +579,7 @@ const controlOf: Record<ControlShape, string> = { square: "3px", rounded: "6px",
 	/* ---------- Canvas ---------- */
 	.tbd__main {
 		position: relative;
-		height: 34rem;
+		height: 42rem;
 	}
 
 	/* The worktable grid: a major line every four cells. */
@@ -600,7 +606,7 @@ const controlOf: Record<ControlShape, string> = { square: "3px", rounded: "6px",
 	/* The screens, clear of the floating panel. */
 	.tbd__devices {
 		position: absolute;
-		inset: 3.25rem 1rem 1rem calc(var(--panel-w, 15rem) + 1.75rem);
+		inset: 4rem 2rem 2rem calc(var(--panel-w, 15rem) + 2.75rem);
 		display: flex;
 		align-items: center;
 		justify-content: center;
