@@ -263,6 +263,7 @@
 				"atoms/icon-button/icon-button-tokens.ts"
 			],
 			"internalDependencies": [
+				"badge",
 				"icon",
 				"tappable",
 				"theme"

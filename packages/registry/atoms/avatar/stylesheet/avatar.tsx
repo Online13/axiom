@@ -146,7 +146,7 @@ function AvatarRoot({
 					source={source}
 					onLoad={() => setLoaded(true)}
 					onError={() => setFailed(true)}
-					style={[StyleSheet.absoluteFill, { borderRadius: radius }]}
+					style={[styles.image, { borderRadius: radius }]}
 				/>
 			) : null}
 		</View>
@@ -271,6 +271,12 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		overflow: "hidden",
+	},
+	// A bundled image defaults to its file's pixel size: without a size, it overflows the frame.
+	image: {
+		...StyleSheet.absoluteFill,
+		width: "100%",
+		height: "100%",
 	},
 	status: {
 		position: "absolute",

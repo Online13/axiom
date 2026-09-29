@@ -80,7 +80,8 @@ export function Carousel<T>({
 		active,
 		itemWidth: width,
 		interval,
-		snapToInterval,
+		snapToOffsets,
+		endPadding,
 		onLayout,
 		onMomentumScrollEnd,
 		onTouchStart,
@@ -106,8 +107,9 @@ export function Carousel<T>({
 				data={data as unknown[]}
 				horizontal
 				showsHorizontalScrollIndicator={false}
-				decelerationRate={snapToInterval ? "fast" : "normal"}
-				snapToInterval={snapToInterval}
+				decelerationRate={snapToOffsets ? "fast" : "normal"}
+				snapToOffsets={snapToOffsets}
+				snapToEnd={false}
 				disableIntervalMomentum={snap === "item"}
 				windowSize={windowSize}
 				initialNumToRender={3}
@@ -119,7 +121,8 @@ export function Carousel<T>({
 				onTouchCancel={onTouchEnd}
 				accessibilityLabel={accessibilityLabel}
 				contentContainerStyle={{
-					paddingHorizontal: inset,
+					paddingStart: inset,
+					paddingEnd: endPadding,
 					gap: tokens.spacing[gap],
 				}}
 				getItemLayout={(_, i) => ({

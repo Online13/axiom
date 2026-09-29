@@ -106,7 +106,7 @@ function CardMedia({
 		<View style={[{ aspectRatio }, style]}>
 			<Image
 				source={source}
-				style={StyleSheet.absoluteFill}
+				style={styles.mediaImage}
 				resizeMode="cover"
 			/>
 			{children ? (
@@ -188,6 +188,12 @@ const styles = StyleSheet.create({
 	},
 	disabled: {
 		opacity: 0.5,
+	},
+	// A bundled image defaults to its file's pixel size: without a size, it overflows the frame.
+	mediaImage: {
+		...StyleSheet.absoluteFill,
+		width: "100%",
+		height: "100%",
 	},
 	mediaOverlay: {
 		...StyleSheet.absoluteFill,

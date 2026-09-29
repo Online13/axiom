@@ -162,7 +162,12 @@ const styles = StyleSheet.create((theme) => ({
 		};
 	},
 	media: (aspectRatio: number) => ({ aspectRatio }),
-	mediaImage: StyleSheet.absoluteFillObject,
+	// A bundled image defaults to its file's pixel size: without a size, it overflows the frame.
+	mediaImage: {
+		...StyleSheet.absoluteFillObject,
+		width: "100%",
+		height: "100%",
+	},
 	mediaOverlay: {
 		...StyleSheet.absoluteFillObject,
 		alignItems: "flex-start",

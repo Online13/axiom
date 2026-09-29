@@ -139,15 +139,25 @@ export function useCarousel({
 		setViewport((previous) => (previous === width ? previous : width));
 	};
 
-	const snapToInterval =
-		snap === "item"
-			? interval
-			: snap === "page"
-				? Math.max(
-						interval,
-						Math.floor((viewport - inset) / interval) * interval,
-					)
-				: undefined;
+	// One stop per item (or page), and the last item always gets its own: with the
+	// trailing space below, the end of the content is never a stop.
+	const step =
+		snap === "page"
+			? Math.max(interval, Math.floor((viewport - inset) / interval) * interval)
+			: interval;
+	const lastOffset = Math.max(0, count - 1) * interval;
+	const snapToOffsets =
+		snap === "none"
+			? undefined
+			: [
+					...Array.from(
+						{ length: Math.ceil(lastOffset / step) },
+						(_, i) => i * step,
+					),
+					lastOffset,
+				];
+	// Room past the last item, so a swipe there doesn't hit a wall.
+	const endPadding = inset + viewport / 2;
 
 	return {
 		listRef,
@@ -156,7 +166,8 @@ export function useCarousel({
 		active,
 		itemWidth,
 		interval,
-		snapToInterval,
+		snapToOffsets,
+		endPadding,
 		onLayout,
 		onMomentumScrollEnd,
 		onTouchStart: () => setTouching(true),

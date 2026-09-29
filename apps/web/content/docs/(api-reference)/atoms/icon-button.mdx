@@ -68,7 +68,7 @@ description: "A button made of a single icon, with a guaranteed minimum touch ta
 npx axiom add icon-button
 ```
 
-Also copies: [`tappable`](/docs/core/tappable), [`icon`](/docs/atoms/icon).
+Also copies: [`tappable`](/docs/core/tappable), [`icon`](/docs/atoms/icon), [`badge`](/docs/atoms/badge).
 
 ## Usage
 
@@ -93,6 +93,7 @@ import { IconButton } from "@/components/ui/icon-button";
 | `haptic`             | `HapticKind \| false`                         | —                | Haptic played when the finger touches. Off unless you pass a kind.                                                                          |
 | `selected`           | `boolean`                                     | `false`          | Marks a toggle button as on (like, bookmark). Sets `accessibilityState.selected`.                                                           |
 | `color`              | `IconColor`                                   | from the variant | Overrides the icon color of the variant with a theme color: `default`, `muted`, `link`, `error`… Ignored while disabled.                    |
+| `badge`              | `number \| boolean`                           | —                | A number shows a counter, `true` a dot. Pinned to the icon, not the button's corner. A counter is added to the accessibility label.       |
 | `style`              | `StyleProp<ViewStyle>`                        | —                | Extra styles for the pressable container.                                                                                                   |
 
 Colors come from `iconButton.<variant>.{default,pressed,selected,disabled}.{background,foreground,border}` in the [component tokens](/docs/foundations/component-tokens).

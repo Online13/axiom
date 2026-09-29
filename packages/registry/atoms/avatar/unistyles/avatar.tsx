@@ -239,8 +239,11 @@ const styles = StyleSheet.create((theme) => ({
 			fontWeight: FONT_WEIGHT.semibold,
 		};
 	},
+	// A bundled image defaults to its file's pixel size: without a size, it overflows the frame.
 	image: (size: AvatarSize, shape: AvatarShape) => ({
 		...StyleSheet.absoluteFillObject,
+		width: "100%",
+		height: "100%",
 		borderRadius:
 			shape === "circle"
 				? avatarDimension(theme.tokens, size) / 2

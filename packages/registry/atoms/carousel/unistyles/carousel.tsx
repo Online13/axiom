@@ -84,7 +84,8 @@ export function Carousel<T>({
 		active,
 		itemWidth: width,
 		interval,
-		snapToInterval,
+		snapToOffsets,
+		endPadding,
 		onLayout,
 		onMomentumScrollEnd,
 		onTouchStart,
@@ -110,8 +111,9 @@ export function Carousel<T>({
 				data={data as unknown[]}
 				horizontal
 				showsHorizontalScrollIndicator={false}
-				decelerationRate={snapToInterval ? "fast" : "normal"}
-				snapToInterval={snapToInterval}
+				decelerationRate={snapToOffsets ? "fast" : "normal"}
+				snapToOffsets={snapToOffsets}
+				snapToEnd={false}
 				disableIntervalMomentum={snap === "item"}
 				windowSize={windowSize}
 				initialNumToRender={3}
@@ -122,7 +124,7 @@ export function Carousel<T>({
 				onTouchEnd={onTouchEnd}
 				onTouchCancel={onTouchEnd}
 				accessibilityLabel={accessibilityLabel}
-				contentContainerStyle={styles.content(inset, spacing)}
+				contentContainerStyle={styles.content(inset, endPadding, spacing)}
 				getItemLayout={(_, i) => ({
 					length: interval,
 					offset: inset + interval * i,
@@ -212,8 +214,9 @@ function Dot({
 }
 
 const styles = StyleSheet.create((theme) => ({
-	content: (inset: number, gap: number) => ({
-		paddingHorizontal: inset,
+	content: (inset: number, endPadding: number, gap: number) => ({
+		paddingStart: inset,
+		paddingEnd: endPadding,
 		gap,
 	}),
 	item: (width: number) => ({ width }),

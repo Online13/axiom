@@ -1,6 +1,8 @@
+import type { ReactNode } from "react";
 import { StyleSheet, type StyleProp, type ViewStyle } from "react-native";
 
 import { Tappable, type TappableProps } from "@/components/core/tappable";
+import { Badge } from "@/components/ui/badge";
 import { Icon, iconColor, type IconColor } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
 import { useTheme } from "@/theme";
@@ -24,6 +26,11 @@ export type IconButtonProps = Omit<
 	selected?: boolean;
 	/** Overrides the icon color of the variant, except when disabled. */
 	color?: IconColor;
+	/**
+	 * A number shows a counter, `true` a dot. Pinned to the icon, not to the button's corner,
+	 * so it stays on the glyph at every size. A counter is added to the accessibility label.
+	 */
+	badge?: number | boolean;
 	style?: StyleProp<ViewStyle>;
 };
 
@@ -35,6 +42,8 @@ export function IconButton({
 	selected = false,
 	disabled = false,
 	color,
+	badge,
+	accessibilityLabel,
 	accessibilityState,
 	style,
 	...props
@@ -56,6 +65,11 @@ export function IconButton({
 			pressScale={tokens.metrics.pressScale}
 			{...props}
 			disabled={disabled}
+			accessibilityLabel={
+				typeof badge === "number" && badge > 0
+					? `${accessibilityLabel}, ${badge}`
+					: accessibilityLabel
+			}
 			accessibilityState={{ ...accessibilityState, selected }}
 			style={({ pressed }) => {
 				const state = colorsFor(pressed);
@@ -77,17 +91,38 @@ export function IconButton({
 			}}
 		>
 			{({ pressed }) => (
-				<Icon
-					name={icon}
-					size={size}
-					color={
-						color && !disabled
-							? iconColor(colors, color)
-							: colorsFor(pressed).foreground
-					}
-				/>
+				<WithBadge badge={badge}>
+					<Icon
+						name={icon}
+						size={size}
+						color={
+							color && !disabled
+								? iconColor(colors, color)
+								: colorsFor(pressed).foreground
+						}
+					/>
+				</WithBadge>
 			)}
 		</Tappable>
+	);
+}
+
+/** Anchors the badge on the glyph: on the 44pt box, a dot would float a corner away from the icon. */
+function WithBadge({
+	badge,
+	children,
+}: {
+	badge: number | boolean | undefined;
+	children: ReactNode;
+}) {
+	if (badge === undefined || badge === false || badge === 0)
+		return <>{children}</>;
+	return (
+		<Badge.Anchor
+			badge={badge === true ? <Badge dot /> : <Badge count={badge} />}
+		>
+			{children}
+		</Badge.Anchor>
 	);
 }
 
