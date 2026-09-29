@@ -191,7 +191,10 @@ function barrels(files: PlannedFile[], config: ProjectConfig): PlannedFile[] {
  * it then fails with a clear message instead of resolving to the wrong file.
  */
 /** The file sets of `item` that apply to the project: its own, plus the ones its config selects. */
-function sets(item: RegistryItem, config: ProjectConfig): FileSet[] {
+export function sets(
+	item: RegistryItem,
+	config: Pick<ProjectConfig, "styling" | "icons" | "navigation">,
+): FileSet[] {
 	return [
 		item,
 		item.variants?.[VARIANT_OF[config.styling]] ?? {},
@@ -234,8 +237,7 @@ function locate(
 	const createOnly = typeof file !== "string" && file.createOnly === true;
 	const alias = ALIAS_OF[item.type];
 	const aliasDir = () => aliasToDir(cwd, config.aliases[alias]);
-	// How the registry addresses this file: one flat namespace per alias, keyed by file name.
-	const from = `${DEFAULT_ALIASES[alias]}/${stripExtension(basename(path))}`;
+	const from = registryAddress(file, item);
 
 	switch (placement(file, item)) {
 		case "target":
@@ -249,14 +251,13 @@ function locate(
 		case "as": {
 			// The file places itself inside its alias folder, subfolder included.
 			const as = (file as { as: string }).as;
-			const within = stripIndex(stripExtension(as));
 			return {
 				source,
 				destination: join(aliasDir(), as),
 				createOnly,
 				address: {
-					from: join(DEFAULT_ALIASES[alias], within),
-					to: join(config.aliases[alias], within),
+					from,
+					to: join(config.aliases[alias], stripIndex(stripExtension(as))),
 				},
 			};
 		}
@@ -289,6 +290,19 @@ function locate(
 				},
 			};
 	}
+}
+
+/**
+ * How registry sources import a file: one flat namespace per alias, keyed by file name
+ * (`@/components/ui/icons`), or the `as` path (`@/theme/components`).
+ */
+export function registryAddress(file: RegistryFile, item: RegistryItem) {
+	const path = typeof file === "string" ? file : file.path;
+	const alias = DEFAULT_ALIASES[ALIAS_OF[item.type]];
+	if (typeof file !== "string" && file.as) {
+		return join(alias, stripIndex(stripExtension(file.as)));
+	}
+	return `${alias}/${stripExtension(basename(path))}`;
 }
 
 /** Maps the registry's default aliases to the project's. */

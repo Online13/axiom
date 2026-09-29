@@ -12,6 +12,10 @@ import {
 
 export const CONFIG_FILE = "axiom.json";
 
+export function configExists(cwd: string) {
+	return existsSync(join(cwd, CONFIG_FILE));
+}
+
 export function readConfig(cwd: string): ProjectConfig {
 	const file = join(cwd, CONFIG_FILE);
 	if (!existsSync(file)) {

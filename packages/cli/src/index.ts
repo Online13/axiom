@@ -1,6 +1,12 @@
 #!/usr/bin/env node
-import { existsSync, watch } from "node:fs";
-import { join, resolve } from "node:path";
+import {
+	existsSync,
+	mkdirSync,
+	readFileSync,
+	watch,
+	writeFileSync,
+} from "node:fs";
+import { dirname, join, relative, resolve } from "node:path";
 import { parseArgs } from "node:util";
 
 import { copyItems, type CopyOptions, type OverwriteAnswer } from "./copy.ts";
@@ -21,6 +27,7 @@ import { installCommand, installDependencies } from "./install.ts";
 import {
 	CONFIG_FILE,
 	aliasToDir,
+	configExists,
 	detectNavigation,
 	missingDependencies,
 	parseNavigation,
@@ -28,12 +35,19 @@ import {
 	writeConfig,
 } from "./project.ts";
 import { readRegistry, resolveItems } from "./registry.ts";
+import { buildStandalone } from "./standalone.ts";
 import {
 	COMPONENTS_FILE,
 	projectTokenEntries,
 	registerTokens,
 	syncTokens,
 } from "./tokens.ts";
+import {
+	ALIAS_OF,
+	DEFAULT_ALIASES,
+	type ProjectConfig,
+	type RegistryItem,
+} from "./types.ts";
 import {
 	accent,
 	cancel,
@@ -75,7 +89,7 @@ Options:
   --force            Start over on a project that already has an axiom.json
   --cwd <path>       Project root (default: current folder)`;
 
-const ADD_USAGE = `Usage: axiom add [items...] --registry <path> [--icons <source>] [--navigation <library>] [--overwrite] [--watch] [--cwd <path>]
+const ADD_USAGE = `Usage: axiom add [items...] --registry <path> [--standalone] [--icons <source>] [--navigation <library>] [--overwrite] [--watch] [--cwd <path>]
 
 Copies items and their internal dependencies into the project, using the
 styling and aliases of its axiom.json. Without items, copies again every item
@@ -95,8 +109,16 @@ Navigation:
   package.json and saves it as "navigation" in axiom.json: expo-router,
   react-navigation, or react-native when there is none.
 
+Standalone:
+  --standalone writes each item as one self-contained file, for an app that
+  has its own design system: what it stands on is inlined, the theme is
+  replaced by Axiom's light values, and it imports nothing but npm packages.
+  Nothing else is copied, and axiom.json is neither needed nor written.
+
 Options:
   --registry <path>  Registry folder (the one holding registry.json)
+  --standalone       One self-contained file per item, without the theme
+  --styling <tool>   With --standalone and no axiom.json: stylesheet or unistyles
   --icons <source>   Icon source, when axiom.json has none: expo-symbols or custom
   --navigation <library>
                      Navigation library, when axiom.json has none: expo-router,
@@ -149,16 +171,7 @@ async function run({
 	const items = resolveItems(registry, requested);
 	const interactive = isInteractive();
 
-	if (items.some((item) => item.iconSources) && !config.icons) {
-		if (iconsFlag)
-			config = { ...config, icons: parseIconSource(iconsFlag, cwd) };
-		else if (interactive)
-			config = { ...config, icons: await askIconSource(cwd) };
-		else
-			throw new Error(
-				"Choose where icons come from: pass --icons expo-symbols or --icons custom.",
-			);
-	}
+	config = await withIconSource(config, items, iconsFlag, cwd);
 
 	if (items.some((item) => item.navigationSources) && !config.navigation) {
 		const navigation = navigationFlag
@@ -243,6 +256,138 @@ async function run({
 	return result;
 }
 
+/** `config` with an icon source, asked for when one of `items` needs it and there is none. */
+async function withIconSource(
+	config: ProjectConfig,
+	items: RegistryItem[],
+	flag: string | undefined,
+	cwd: string,
+): Promise<ProjectConfig> {
+	if (!items.some((item) => item.iconSources) || config.icons) return config;
+	if (flag) return { ...config, icons: parseIconSource(flag, cwd) };
+	if (isInteractive()) return { ...config, icons: await askIconSource(cwd) };
+	throw new Error(
+		"Choose where icons come from: pass --icons expo-symbols or --icons custom.",
+	);
+}
+
+type StandaloneOptions = {
+	names: string[];
+	registryRoot: string;
+	cwd: string;
+	styling?: string;
+	icons?: string;
+	overwrite: boolean;
+	install: boolean;
+};
+
+/**
+ * `add --standalone`: one self-contained file per item. The project's axiom.json is read when there
+ * is one, for its styling and aliases, and never written: nothing but the files is added.
+ */
+async function runStandalone({
+	names,
+	registryRoot,
+	cwd,
+	styling: stylingFlag,
+	icons,
+	overwrite,
+	install,
+}: StandaloneOptions) {
+	if (!names.length) throw new Error("Name the items to add standalone.");
+
+	const registry = readRegistry(registryRoot);
+	const interactive = isInteractive();
+	const available = availableStylings(registry);
+
+	// The project's config when it has one; the default aliases otherwise.
+	const project = configExists(cwd) ? readConfig(cwd) : undefined;
+	let styling = stylingFlag ? parseStyling(stylingFlag, available) : project?.styling;
+	if (!styling && interactive) styling = await askStyling(available);
+	if (!styling) {
+		throw new Error(
+			`Without an ${CONFIG_FILE}, choose a styling tool: pass --styling ${available.join(" or --styling ")}.`,
+		);
+	}
+	let config: ProjectConfig = {
+		...(project ?? { aliases: DEFAULT_ALIASES, items: [] }),
+		styling,
+	};
+	config = await withIconSource(config, resolveItems(registry, names), icons, cwd);
+
+	const written: string[] = [];
+	const unchanged: string[] = [];
+	const kept: string[] = [];
+	const dependencies = new Set<string>();
+	let answer: OverwriteAnswer | undefined = overwrite ? "all" : undefined;
+
+	// Built before anything is written, so an item that can't be standalone leaves the project untouched.
+	const results = names.map((name) =>
+		buildStandalone(registry, registryRoot, name, config),
+	);
+
+	for (const result of results) {
+		const destination = join(
+			aliasToDir(cwd, config.aliases[ALIAS_OF[result.item.type]]),
+			result.fileName,
+		);
+		const path = relative(cwd, destination);
+		result.dependencies.forEach((dependency) => dependencies.add(dependency));
+
+		if (existsSync(destination)) {
+			if (readFileSync(destination, "utf8") === result.content) {
+				unchanged.push(path);
+				continue;
+			}
+			if (answer !== "all") {
+				const choice: OverwriteAnswer =
+					answer === "none" || !interactive
+						? "no"
+						: await confirmOverwrite(path);
+				if (choice === "all" || choice === "none") answer = choice;
+				if (choice === "no" || choice === "none") {
+					kept.push(path);
+					continue;
+				}
+			}
+		}
+
+		mkdirSync(dirname(destination), { recursive: true });
+		writeFileSync(destination, result.content);
+		written.push(path);
+
+		if (result.missingIcons.length) {
+			log.warn(
+				`${path} draws ${result.missingIcons.map((icon) => accent(icon)).join(", ")}: add ${result.missingIcons.length > 1 ? "them" : "it"} to its icons object.`,
+			);
+		}
+	}
+
+	if (written.length) {
+		log.success(
+			`${written.length} written\n${written.map((path) => muted(path)).join("\n")}`,
+		);
+	}
+	if (kept.length) {
+		const hint = interactive ? "" : " Run in a terminal to be asked, or pass --overwrite.";
+		log.warn(`Kept your version of ${kept.join(", ")}.${hint}`);
+	}
+
+	// No `init` ran: the styling tool may be missing too.
+	const stylingDependency = STYLING_DEPENDENCY[config.styling];
+	if (stylingDependency) dependencies.add(stylingDependency);
+	const missing = missingDependencies(cwd, [...dependencies]);
+	if (missing.length) {
+		if (install) await installDependencies(cwd, missing);
+		else
+			log.warn(
+				`Missing dependencies. Install them with:\n${accent(installCommand(cwd, missing).join(" "))}`,
+			);
+	}
+
+	return { written, unchanged, kept };
+}
+
 type InitOptions = {
 	registryRoot: string;
 	cwd: string;
@@ -315,6 +460,7 @@ async function main() {
 			"no-install": { type: "boolean", default: false },
 			force: { type: "boolean", default: false },
 			watch: { type: "boolean", default: false },
+			standalone: { type: "boolean", default: false },
 			cwd: { type: "string" },
 			help: { type: "boolean", short: "h", default: false },
 		},
@@ -350,6 +496,23 @@ async function main() {
 		});
 		outro(
 			`${result.written.length} written, ${result.unchanged.length} unchanged. Add a component with ${accent("axiom add button")}.`,
+		);
+		return;
+	}
+
+	if (values.standalone) {
+		if (values.watch) throw new Error("--standalone and --watch don't go together.");
+		const result = await runStandalone({
+			names,
+			registryRoot,
+			cwd,
+			styling: values.styling,
+			icons: values.icons,
+			overwrite: values.overwrite,
+			install: values.install,
+		});
+		outro(
+			`${result.written.length} written, ${result.unchanged.length} unchanged, ${result.kept.length} kept.`,
 		);
 		return;
 	}

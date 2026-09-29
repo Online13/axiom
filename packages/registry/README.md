@@ -51,6 +51,12 @@ A file the project fills once copied, like the icon registry `icons.tsx`, is dec
 { "path": "atoms/icon/icons.tsx", "createOnly": true }
 ```
 
+### Standalone form
+
+`axiom add <item> --standalone` derives a single theme-free file from the sources here: nothing to write per item. It relies on the conventions above: the theme is read through `useTheme()` (or Unistyles' `theme`), tokens files export `<item>Tokens` with a named return type, and files of other items are imported through aliases.
+
+An item that can't work on its own, like `portal` (it needs a host mounted by the app), declares `"standalone": false`. The CLI refuses it and every item that depends on it.
+
 ## Typecheck
 
 ```bash
@@ -62,7 +68,8 @@ Aliases don't resolve in this folder on their own, since each file lands somewhe
 - `tsconfig.json`: the `stylesheet` variant. It's the file your editor reads, so imports like `@/components/core/tappable` resolve while you write code here;
 - `tsconfig.<variant>.json`: the other variants, once they have files;
 - `tsconfig.base.json`: the shared options;
-- `scripts/tsconfig.json`: the Node scripts.
+- `scripts/tsconfig.json`: the Node scripts;
+- `.generated/standalone/<variant>/tsconfig.json`: the standalone form of every item, written by `scripts/standalone.ts`, each file compiled with nothing but its npm imports.
 
 The generated files cover every `.ts` and `.tsx` of their variant, but only files listed in `registry.json` get an alias: importing an unlisted file fails. Don't edit them. Run `bun run tsconfig` after changing `registry.json` (the editor picks up the new aliases), or `bun run typecheck`.
 

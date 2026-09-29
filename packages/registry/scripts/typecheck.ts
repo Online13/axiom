@@ -2,7 +2,7 @@
 //
 // Each variant is its own program — the same alias (`@/theme`, `@/components/ui/button`) points to a
 // different file in each one, so they can't be merged into a single config. Run `scripts/tsconfig.ts`
-// first: this script only checks the configs it wrote.
+// and `scripts/standalone.ts` first: this script only checks the configs they wrote.
 //
 //   bun scripts/typecheck.ts
 import { spawnSync } from "node:child_process";
@@ -18,6 +18,8 @@ const configs = [
 	"tsconfig.json",
 	...VARIANTS.map((variant) => `tsconfig.${variant}.json`),
 	"scripts/tsconfig.json",
+	// Written by scripts/standalone.ts: every item's standalone file, compiled on its own.
+	...VARIANTS.map((variant) => `.generated/standalone/${variant}/tsconfig.json`),
 ].filter((file) => existsSync(join(root, file)));
 
 let failed = false;

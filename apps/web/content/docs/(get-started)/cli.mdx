@@ -118,6 +118,24 @@ The first item that depends on the navigation library, like `use-overlay-back-ha
 
 Without a terminal (CI, a script), nobody can answer: differing files are kept and the CLI lists them.
 
+### Standalone
+
+```npm
+npx axiom add tab --standalone
+```
+
+For an app that already has its own design system and wants one component from the catalog. `--standalone` writes a single file that imports only React, React Native and the npm packages the component uses:
+
+- the Axiom pieces it stands on (Tappable, Text, Icon, its hooks) are inlined;
+- `useTheme()` is gone. The file declares a `theme` constant with the values of the light theme it reads, and each component's tokens are typed as in the registry;
+- nothing else is copied, and `axiom.json` is neither needed nor written.
+
+The component no longer follows a theme: light / dark and any restyling are yours to handle, in a file that is already yours. What Axiom still guarantees is the behavior: touch targets, gestures, states, safe areas, accessibility.
+
+The file goes where its layer's alias resolves in `tsconfig.json`: `@/components/ui/tab.tsx` for a primitive. Without an `axiom.json`, pass `--styling stylesheet` or `--styling unistyles`, or answer the prompt. A component that draws icons carries its own icon registry, the `icons` object in the file, filled from the source you pick; add your icons there.
+
+Components that render through a portal (Dialog, Menu, Bottom Sheet, Toast, Snackbar) aren't available standalone yet: a portal needs a host mounted at the root of the app.
+
 ## fetch
 
 ```npm

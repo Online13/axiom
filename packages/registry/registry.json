@@ -71,6 +71,7 @@
 		{
 			"name": "portal",
 			"type": "core",
+			"standalone": false,
 			"files": [
 				"core/portal/portal.tsx"
 			],
@@ -106,6 +107,7 @@
 		{
 			"name": "use-overlay-back-handler",
 			"type": "hooks",
+			"standalone": false,
 			"navigationSources": {
 				"expo-router": {
 					"files": [

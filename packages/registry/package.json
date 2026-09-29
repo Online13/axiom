@@ -6,7 +6,8 @@
 	"description": "Source of every item Axiom can copy into a project",
 	"scripts": {
 		"tsconfig": "bun scripts/tsconfig.ts",
-		"typecheck": "bun scripts/tsconfig.ts && bun scripts/typecheck.ts"
+		"standalone": "bun scripts/standalone.ts",
+		"typecheck": "bun scripts/tsconfig.ts && bun scripts/standalone.ts && bun scripts/typecheck.ts"
 	},
 	"devDependencies": {
 		"@react-navigation/native": "^7.4.1",

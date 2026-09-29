@@ -143,6 +143,11 @@ export type RegistryItem = FileSet & {
 	navigationSources?: Partial<Record<Navigation, FileSet>>;
 	/** Icon names the item renders itself. They must exist in the project's icon registry. */
 	requiredIcons?: string[];
+	/**
+	 * `false` when the item has no theme-free form: `add --standalone` refuses it and every item
+	 * depending on it. A portal, for instance, needs a host mounted by the app.
+	 */
+	standalone?: false;
 };
 
 export type Registry = {
