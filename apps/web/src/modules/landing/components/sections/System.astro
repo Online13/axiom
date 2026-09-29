@@ -1,23 +1,34 @@
 ---
-import Title from '../Title.astro';
-import { docs } from '../../lib/links';
+import Title from "../Title.astro";
+import { docs } from "../../lib/links";
 
 // Each layer opens the matching section of the docs. Primitives keep Atomic
 // Design as their internal organization; compositions and blocks sit on top.
 const layers = [
-	{ name: 'Foundations', href: docs('/foundations'), detail: 'Tokens · color · type · spacing · radius' },
 	{
-		name: 'Primitives',
-		href: docs('/components'),
-		detail: 'Button · Avatar · Item · Card · AppBar · Scaffold',
-		sub: 'Atoms · Molecules · Organisms · Templates',
+		name: "Foundations",
+		href: docs("/foundations"),
+		detail: "Tokens · color · type · spacing · radius",
 	},
-	{ name: 'Compositions', href: docs('/compositions'), detail: 'Product Card · Settings Item · Profile Item' },
-	{ name: 'Blocks', href: docs('/blocks'), detail: 'Settings Section · Profile Header · Checkout · Paywall · Login' },
+	{
+		name: "Primitives",
+		href: docs("/components"),
+		detail: "Button · Avatar · Item · Card · AppBar · Scaffold",
+	},
+	{
+		name: "Compositions",
+		href: docs("/compositions"),
+		detail: "Product Card · Settings Item · Profile Item",
+	},
+	{
+		name: "Blocks",
+		href: docs("/blocks"),
+		detail: "Settings Section · Profile Header · Checkout · Paywall · Login",
+	},
 ];
 
-const swatches = ['#f5f5f5', '#8a8a8a', '#262626', '#0a0a0a', '#ff5a1f'];
-const blocks = ['Settings', 'Profile', 'Checkout', 'Paywall', 'Login'];
+const swatches = ["#f5f5f5", "#8a8a8a", "#262626", "#0a0a0a", "#ff5a1f"];
+const blocks = ["Settings", "Profile", "Checkout", "Paywall", "Login"];
 ---
 
 <section class="section section--full system" id="system">
@@ -37,7 +48,6 @@ const blocks = ['Settings', 'Profile', 'Checkout', 'Paywall', 'Login'];
 								<a href={layer.href}>{layer.name}</a>
 							</h3>
 							<p>{layer.detail}</p>
-							{layer.sub && <small>{layer.sub}</small>}
 						</div>
 						<div class="system__block" aria-hidden="true">
 							{i === 0 && (
@@ -262,7 +272,7 @@ const blocks = ['Settings', 'Profile', 'Checkout', 'Paywall', 'Login'];
 		background: var(--accent);
 	}
 	.s-switch::after {
-		content: '';
+		content: "";
 		position: absolute;
 		top: 0.15rem;
 		right: 0.15rem;
@@ -332,7 +342,11 @@ const blocks = ['Settings', 'Profile', 'Checkout', 'Paywall', 'Login'];
 		width: 1.9rem;
 		height: 1.9rem;
 		border-radius: 5px;
-		background: linear-gradient(135deg, var(--line), color-mix(in srgb, var(--accent) 35%, transparent));
+		background: linear-gradient(
+			135deg,
+			var(--line),
+			color-mix(in srgb, var(--accent) 35%, transparent)
+		);
 	}
 	.s-card__text {
 		flex: 1;

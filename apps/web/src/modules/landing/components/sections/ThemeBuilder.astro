@@ -1,0 +1,914 @@
+---
+import { Logo } from "../../../brand/Logo";
+import { googleFonts } from "../../../theme-builder/lib/fonts";
+import { presets as builderPresets } from "../../../theme-builder/lib/presets";
+import {
+	controlShapes,
+	radiusScales,
+	spacingScales,
+	type ControlShape,
+	type RadiusScale,
+	type SpacingScale,
+	type Theme,
+} from "../../../theme-builder/lib/theme";
+import Title from "../Title.astro";
+import Button from "../Button.astro";
+import Phone from "../Phone.astro";
+import BuilderIcon from "../BuilderIcon.astro";
+import BuilderScreen from "../BuilderScreen.astro";
+
+// The theme builder as it stands, playing three of its real presets in turn:
+// same header, same floating sidebar, same canvas and overlay controls. Every
+// value comes from `theme-builder/lib`, so the preview cannot drift from it.
+
+type Scheme = "light" | "dark";
+
+// Which presets play, and the scheme each one is shown in.
+const shown: { id: string; scheme: Scheme }[] = [
+	{ id: "media", scheme: "dark" },
+	{ id: "warm", scheme: "light" },
+	{ id: "precision", scheme: "dark" },
+];
+
+const presets = shown.map(({ id, scheme }) => {
+	const preset = builderPresets.find((p) => p.id === id);
+	if (!preset) throw new Error(`Unknown theme builder preset: ${id}`);
+	return { ...preset, scheme };
+});
+
+const fontCategory = (family: string) => {
+	const category = googleFonts.find((font) => font.family === family)?.category;
+	return category === "sans-serif" ? "Sans" : category === "monospace" ? "Mono" : (category ?? "");
+};
+
+const controlCorner: Record<ControlShape, (radius: number) => string> = {
+	square: (r) => `${0.3 * r}em`,
+	rounded: (r) => `${0.6 * r}em`,
+	pill: () => "999px",
+};
+
+/** The phones' colors, font, corners and density, as CSS variables. */
+function vars(theme: Theme, scheme: Scheme) {
+	const role = (path: string) => theme.overrides[path]?.[scheme] ?? "";
+	const radius = radiusScales[theme.radius].factor;
+	return [
+		`--p-accent:${role("primary.default")}`,
+		`--p-on:${role("primary.on")}`,
+		`--p-highlight:${role("highlight.default")}`,
+		`--p-bg:${role("background.default")}`,
+		// Cards sit on the subtle background in light, the elevated one in dark.
+		`--p-surface:${role(scheme === "light" ? "background.subtle" : "background.elevated")}`,
+		`--p-fg:${role("content.default")}`,
+		`--p-muted:${role("content.muted")}`,
+		`--p-line:${role("border.default")}`,
+		`--p-font:"${theme.fonts.body}",var(--font-sans)`,
+		`--p-radius:${0.9 * radius}em`,
+		`--p-ctrl:${controlCorner[theme.controls](radius)}`,
+		`--p-space:${spacingScales[theme.spacing].factor}`,
+	].join(";");
+}
+
+/** What the sidebar and overlay show as picked, `kind:value` per control. */
+const picks = (theme: Theme, scheme: Scheme) =>
+	[
+		`spacing:${theme.spacing}`,
+		`radius:${theme.radius}`,
+		`controls:${theme.controls}`,
+		`scheme:${scheme}`,
+	].join(" ");
+
+const [first] = presets;
+const firstPicks = picks(first.theme, first.scheme).split(" ");
+const pressed = (pick: string) => (firstPicks.includes(pick) ? "true" : "false");
+
+// The corner each radius scale and control shape draws on its tile.
+const cornerOf = (scale: RadiusScale) => `${radiusScales[scale].factor * 0.55}rem`;
+const controlOf: Record<ControlShape, string> = { square: "3px", rounded: "6px", pill: "10px" };
+---
+
+<section class="section theme-builder" id="theme-builder">
+	<div class="container theme-builder__inner">
+		<header class="theme-builder__header">
+			<p class="eyebrow">06 / Theme builder</p>
+			<Title>Shape your<br />theme visually.</Title>
+			<p class="theme-builder__lede">
+				Tune colors, type, shape and spacing. Preview the result live on real screens, then export
+				the theme into your project.
+			</p>
+			<Button href="/theme-builder" variant="ghost">Open the theme builder</Button>
+		</header>
+
+		<div class="theme-builder__demo">
+			<figure class="tbd" style={vars(first.theme, first.scheme)}>
+				<figcaption class="sr-only">
+					The theme builder applying its Media, Warm and Precision presets.
+				</figcaption>
+
+				<div class="tbd__app" aria-hidden="true">
+					<div class="tbd__bar">
+						<span class="tbd__dots"><i></i><i></i><i></i></span>
+						<span class="tbd__url">/theme-builder</span>
+					</div>
+
+					<div class="tbd__header">
+						<span class="tbd__side">
+							<Logo />
+							<i class="tbd__sep"></i>
+							<span class="tbd__muted">Theme builder</span>
+						</span>
+						<span class="tbd__segmented tbd__views">
+							<span data-on><BuilderIcon name="smartphone" />Preview</span>
+							<span><BuilderIcon name="grid" />Design system</span>
+						</span>
+						<span class="tbd__side tbd__side--end">
+							<span class="tbd__btn tbd__btn--ghost"><BuilderIcon name="save" />Save</span>
+							<span class="tbd__btn tbd__btn--ghost"><BuilderIcon name="folder" />Load</span>
+							<span class="tbd__btn"><BuilderIcon name="download" />Export theme</span>
+						</span>
+					</div>
+
+					<div class="tbd__main">
+						<div class="tbd__canvas">
+							<div class="tbd__devices">
+								<div class="tbd__device">
+									<div class="tbd__phone"><Phone><BuilderScreen screen="home" /></Phone></div>
+									<span class="tbd__caption">07 · Home</span>
+								</div>
+								<div class="tbd__device">
+									<div class="tbd__phone"><Phone><BuilderScreen screen="profile" /></Phone></div>
+									<span class="tbd__caption">15 · Profile</span>
+								</div>
+							</div>
+
+							<div class="tbd__overlay">
+								<span class="tbd__segmented tbd__float">
+									<span data-on><BuilderIcon name="smartphone" />iPhone</span>
+									<span><BuilderIcon name="tablet" />Android</span>
+								</span>
+								<span class="tbd__segmented tbd__float">
+									<span data-pick="scheme:light" aria-pressed={pressed("scheme:light")}>
+										<BuilderIcon name="sun" />Light
+									</span>
+									<span data-pick="scheme:dark" aria-pressed={pressed("scheme:dark")}>
+										<BuilderIcon name="moon" />Dark
+									</span>
+								</span>
+								<span class="tbd__zoom tbd__float">
+									<BuilderIcon name="minus" /><span>64%</span><BuilderIcon name="plus" /><BuilderIcon name="focus" />
+								</span>
+							</div>
+						</div>
+
+						<div class="tbd__panel">
+							<div class="tbd__panel-head">
+								<span class="tbd__hide"><BuilderIcon name="panel" /></span>
+								<span data-text="name">{first.theme.name}</span>
+							</div>
+							<div class="tbd__sections">
+								<div class="tbd__preset">
+									<span class="tbd__label">Preset</span>
+									<span class="tbd__trigger">
+										<span data-text="name">{first.theme.name}</span>
+										<BuilderIcon name="chevron" />
+									</span>
+									<p class="tbd__note" data-text="description">{first.description}</p>
+								</div>
+
+								<div class="tbd__section">
+									<span class="tbd__title">Spacing<BuilderIcon name="chevron" /></span>
+									<span class="tbd__segmented tbd__segmented--vertical">
+										{
+											(Object.keys(spacingScales) as SpacingScale[]).map((scale) => (
+												<span data-pick={`spacing:${scale}`} aria-pressed={pressed(`spacing:${scale}`)}>
+													{spacingScales[scale].label}
+												</span>
+											))
+										}
+									</span>
+								</div>
+
+								<div class="tbd__section">
+									<span class="tbd__title" data-folded>Colors<BuilderIcon name="chevron" /></span>
+								</div>
+
+								<div class="tbd__section">
+									<span class="tbd__title">Fonts<BuilderIcon name="chevron" /></span>
+									<span class="tbd__fontcard">
+										<span class="tbd__fontcard-head">Heading font<BuilderIcon name="chevron" /></span>
+										<span class="tbd__fontcard-body">
+											<b class="tbd__aa">Aa</b>
+											<span class="tbd__fontcard-meta">
+												<span data-text="font">{first.theme.fonts.heading}</span>
+												<span class="tbd__category" data-text="category">
+													{fontCategory(first.theme.fonts.heading)}
+												</span>
+											</span>
+										</span>
+									</span>
+								</div>
+
+								<div class="tbd__section">
+									<span class="tbd__title">Shape<BuilderIcon name="chevron" /></span>
+									<span class="tbd__label">Corners</span>
+									<span class="tbd__shapes">
+										{
+											(Object.keys(radiusScales) as RadiusScale[]).map((scale) => (
+												<span data-pick={`radius:${scale}`} aria-pressed={pressed(`radius:${scale}`)}>
+													<i class="tbd__corner" style={`border-top-left-radius: ${cornerOf(scale)}`} />
+												</span>
+											))
+										}
+									</span>
+									<span class="tbd__label">Controls</span>
+									<span class="tbd__shapes">
+										{
+											(Object.keys(controlShapes) as ControlShape[]).map((shape) => (
+												<span data-pick={`controls:${shape}`} aria-pressed={pressed(`controls:${shape}`)}>
+													<i class="tbd__control" style={`border-radius: ${controlOf[shape]}`} />
+												</span>
+											))
+										}
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</figure>
+
+			<div class="theme-builder__presets" role="group" aria-label="Preset">
+				{
+					presets.map((p, i) => (
+						<button
+							type="button"
+							class="theme-builder__preset"
+							aria-pressed={i === 0 ? "true" : "false"}
+							data-vars={vars(p.theme, p.scheme)}
+							data-picks={picks(p.theme, p.scheme)}
+							data-name={p.theme.name}
+							data-description={p.description}
+							data-font={p.theme.fonts.heading}
+							data-category={fontCategory(p.theme.fonts.heading)}
+						>
+							{p.theme.name}
+							<i class="theme-builder__progress" data-progress aria-hidden="true" />
+						</button>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	import { autoplay } from "../../lib/autoplay";
+
+	const root = document.querySelector<HTMLElement>(".theme-builder");
+	const preview = root?.querySelector<HTMLElement>(".tbd");
+	const buttons = root ? [...root.querySelectorAll<HTMLButtonElement>(".theme-builder__preset")] : [];
+	let current = 0;
+
+	function select(index: number) {
+		const button = buttons[index];
+		if (!preview || !button) return;
+		current = index;
+		buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
+		preview.setAttribute("style", button.dataset.vars ?? "");
+
+		const picks = (button.dataset.picks ?? "").split(" ");
+		preview.querySelectorAll<HTMLElement>("[data-pick]").forEach((el) => {
+			el.setAttribute("aria-pressed", String(picks.includes(el.dataset.pick ?? "")));
+		});
+
+		const text: Record<string, string | undefined> = {
+			name: button.dataset.name,
+			description: button.dataset.description,
+			font: button.dataset.font,
+			category: button.dataset.category,
+		};
+		preview.querySelectorAll<HTMLElement>("[data-text]").forEach((el) => {
+			el.textContent = text[el.dataset.text ?? ""] ?? "";
+		});
+	}
+
+	buttons.forEach((button, i) =>
+		button.addEventListener("click", () => {
+			select(i);
+			cycle?.restart();
+		}),
+	);
+
+	const cycle = root && autoplay(root, buttons.length, () => current, select, 4200);
+</script>
+
+<style>
+	.theme-builder {
+		padding-block: 6rem;
+	}
+
+	.theme-builder__inner {
+		display: grid;
+		grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+		align-items: center;
+		gap: 4rem;
+	}
+
+	.theme-builder__header {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1.25rem;
+	}
+
+	.theme-builder__lede {
+		color: var(--muted);
+		margin-bottom: 0.75rem;
+	}
+
+	.theme-builder__demo {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1.25rem;
+		min-width: 0;
+	}
+
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
+	/* ---------- Preset tabs ---------- */
+	.theme-builder__presets {
+		display: flex;
+		gap: 0.35rem;
+		padding: 0.25rem;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+	}
+
+	.theme-builder__preset {
+		position: relative;
+		overflow: hidden;
+		padding: 0.45rem 1.1rem;
+		border: 0;
+		border-radius: 999px;
+		background: none;
+		color: var(--muted);
+		font: inherit;
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition:
+			background-color 0.25s,
+			color 0.25s;
+	}
+
+	.theme-builder__preset:hover {
+		color: var(--fg);
+	}
+
+	.theme-builder__preset[aria-pressed="true"] {
+		background: var(--fg);
+		color: var(--bg);
+	}
+
+	.theme-builder__preset:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+
+	/* Countdown along the bottom of the active preset, only while autoplay runs. */
+	.theme-builder__progress {
+		position: absolute;
+		left: 1.1rem;
+		right: 1.1rem;
+		bottom: 0.2rem;
+		height: 2px;
+		border-radius: 1px;
+		background: color-mix(in srgb, var(--bg) 45%, transparent);
+		transform: scaleX(0);
+		transform-origin: left;
+	}
+
+	.theme-builder[data-autoplay] .theme-builder__preset[aria-pressed="true"] .theme-builder__progress {
+		animation: autoplay-progress var(--autoplay-duration) linear forwards;
+		animation-play-state: var(--autoplay-state, paused);
+	}
+
+	@keyframes autoplay-progress {
+		from {
+			transform: scaleX(0);
+		}
+		to {
+			transform: scaleX(1);
+		}
+	}
+
+	/* ---------- The builder ---------- */
+	/* Square corners and hairlines, as in the builder's own chrome. */
+	.tbd {
+		--ease: 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+		--line-strong: color-mix(in srgb, var(--fg) 18%, var(--bg));
+
+		align-self: stretch;
+		margin: 0;
+		overflow: hidden;
+		border: 1px solid var(--line);
+		background: var(--bg);
+		font-size: 0.8125rem;
+	}
+
+	.tbd :global(.builder-icon) {
+		font-size: 0.95em;
+	}
+
+	.tbd [aria-pressed] {
+		transition:
+			background-color var(--ease),
+			border-color var(--ease),
+			color var(--ease);
+	}
+
+	/* ---------- Browser window ---------- */
+	.tbd__bar {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		height: 2.25rem;
+		padding: 0 1rem;
+		border-bottom: 1px solid var(--line);
+		background: var(--surface);
+	}
+
+	.tbd__dots {
+		display: flex;
+		gap: 0.4rem;
+	}
+
+	.tbd__dots i {
+		width: 0.6rem;
+		height: 0.6rem;
+		border-radius: 50%;
+		background: var(--line);
+	}
+
+	.tbd__url {
+		flex: 0 1 18rem;
+		margin-inline: auto;
+		padding: 0.2rem 0.75rem;
+		background: var(--bg);
+		color: var(--muted);
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		text-align: center;
+	}
+
+	.tbd__muted {
+		color: var(--muted);
+	}
+
+	/* ---------- Header ---------- */
+	.tbd__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		height: 3.25rem;
+		padding-inline: 1rem;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.tbd__side {
+		display: flex;
+		flex: 1;
+		align-items: center;
+		gap: 0.65rem;
+		min-width: 0;
+	}
+
+	.tbd__side :global(svg[role="img"]) {
+		font-size: 1rem;
+	}
+
+	.tbd__side--end {
+		justify-content: flex-end;
+		gap: 0.4rem;
+	}
+
+	.tbd__sep {
+		width: 1px;
+		height: 1rem;
+		background: var(--line-strong);
+	}
+
+	.tbd__btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.4rem 0.75rem;
+		border: 1px solid var(--fg);
+		background: var(--fg);
+		color: var(--bg);
+		font-weight: 500;
+		white-space: nowrap;
+	}
+
+	.tbd__btn--ghost {
+		border-color: var(--line);
+		background: transparent;
+		color: var(--fg);
+	}
+
+	/* ---------- Segmented controls ---------- */
+	.tbd__segmented {
+		display: flex;
+		border: 1px solid var(--line);
+	}
+
+	.tbd__segmented > span {
+		display: inline-flex;
+		flex: 1;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		padding: 0.35rem 0.6rem;
+		color: var(--muted);
+		font-size: 0.72rem;
+		white-space: nowrap;
+	}
+
+	.tbd__segmented > span + span {
+		border-left: 1px solid var(--line);
+	}
+
+	.tbd__segmented--vertical {
+		flex-direction: column;
+	}
+
+	.tbd__segmented--vertical > span {
+		justify-content: flex-start;
+		padding: 0.45rem 0.65rem;
+	}
+
+	.tbd__segmented--vertical > span + span {
+		border-left: 0;
+		border-top: 1px solid var(--line);
+	}
+
+	.tbd__segmented > [data-on],
+	.tbd__segmented > [aria-pressed="true"] {
+		background: var(--fg);
+		color: var(--bg);
+	}
+
+	.tbd__views {
+		flex: none;
+	}
+
+	/* ---------- Canvas ---------- */
+	.tbd__main {
+		position: relative;
+		height: 34rem;
+	}
+
+	/* The worktable grid: a major line every four cells. */
+	.tbd__canvas {
+		--grid-line: color-mix(in srgb, var(--fg) 4%, transparent);
+		--grid-line-major: color-mix(in srgb, var(--fg) 7%, transparent);
+
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+		background-color: var(--surface-raised);
+		background-image:
+			linear-gradient(to right, var(--grid-line-major) 1px, transparent 1px),
+			linear-gradient(to bottom, var(--grid-line-major) 1px, transparent 1px),
+			linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+			linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+		background-size:
+			64px 64px,
+			64px 64px,
+			16px 16px,
+			16px 16px;
+	}
+
+	/* The screens, clear of the floating panel. */
+	.tbd__devices {
+		position: absolute;
+		inset: 3.25rem 1rem 1rem calc(var(--panel-w, 15rem) + 1.75rem);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 2.5rem;
+	}
+
+	.tbd__device {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.75rem;
+		height: 100%;
+		min-height: 0;
+	}
+
+	/* A definite height, so the frame's aspect ratio gives it its width and
+	   the screens sit side by side instead of collapsing onto each other. */
+	.tbd__phone {
+		flex: none;
+		height: calc(100% - 1.6rem);
+		aspect-ratio: 9 / 19.5;
+	}
+
+	.tbd__caption {
+		color: var(--muted);
+		font-family: var(--font-mono);
+		font-size: 0.62rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	/* The frame's screen follows the preset, and sits flat on the canvas. */
+	.tbd__phone :global(.phone) {
+		--accent: var(--p-accent);
+		--s-bg: var(--p-bg);
+		--s-surface: var(--p-surface);
+		--s-fg: var(--p-fg);
+		--s-muted: var(--p-muted);
+		--s-line: var(--p-line);
+
+		box-shadow: inset 0 0 0 1px #3a3a3a;
+	}
+
+	.tbd__phone :global(.phone__screen) {
+		transition:
+			background-color var(--ease),
+			color var(--ease);
+	}
+
+	/* ---------- Floating controls ---------- */
+	.tbd__overlay {
+		position: absolute;
+		top: 0.75rem;
+		right: 0.75rem;
+		display: flex;
+		gap: 0.4rem;
+	}
+
+	.tbd__float {
+		border-color: var(--line-strong);
+		background: var(--card);
+	}
+
+	.tbd__zoom {
+		display: flex;
+		align-items: center;
+		color: var(--muted);
+	}
+
+	.tbd__zoom > * {
+		display: grid;
+		place-items: center;
+		height: 100%;
+		padding-inline: 0.5rem;
+	}
+
+	.tbd__zoom > * + * {
+		border-left: 1px solid var(--line);
+	}
+
+	.tbd__zoom :global(.builder-icon) {
+		box-sizing: content-box;
+		width: 0.85rem;
+	}
+
+	.tbd__zoom span {
+		font-family: var(--font-mono);
+		font-size: 0.66rem;
+	}
+
+	/* ---------- Floating sidebar ---------- */
+	.tbd__panel {
+		position: absolute;
+		top: 0.75rem;
+		bottom: 0.75rem;
+		left: 0.75rem;
+		display: flex;
+		flex-direction: column;
+		width: var(--panel-w);
+		overflow: hidden;
+		border: 1px solid var(--line-strong);
+		background: var(--card);
+	}
+
+	.tbd__main {
+		--panel-w: 15rem;
+	}
+
+	.tbd__panel-head {
+		display: flex;
+		flex: none;
+		align-items: center;
+		gap: 0.6rem;
+		height: 2.25rem;
+		border-bottom: 1px solid var(--line);
+		font-weight: 500;
+	}
+
+	.tbd__hide {
+		display: grid;
+		place-items: center;
+		width: 2.25rem;
+		height: 100%;
+		border-right: 1px solid var(--line);
+		color: var(--muted);
+	}
+
+	.tbd__sections {
+		display: flex;
+		flex-direction: column;
+		padding: 0 0.9rem;
+		overflow: hidden;
+	}
+
+	.tbd__preset,
+	.tbd__section {
+		display: flex;
+		flex-direction: column;
+		gap: 0.55rem;
+		padding-block: 0.8rem;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.tbd__label {
+		font-size: 0.72rem;
+	}
+
+	.tbd__note {
+		margin: 0;
+		color: var(--muted);
+		font-size: 0.68rem;
+		line-height: 1.45;
+	}
+
+	.tbd__trigger {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.4rem 0.55rem;
+		border: 1px solid var(--line);
+		background: var(--bg);
+	}
+
+	.tbd__trigger :global(.builder-icon) {
+		color: var(--muted);
+	}
+
+	.tbd__title {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		color: var(--muted);
+		font-family: var(--font-mono);
+		font-size: 0.62rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.tbd__title :global(.builder-icon) {
+		rotate: 90deg;
+	}
+
+	.tbd__title[data-folded] :global(.builder-icon) {
+		rotate: 0deg;
+	}
+
+	/* A font role as a specimen, set in its own face. */
+	.tbd__fontcard {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 0.6rem;
+		border: 1px solid var(--line);
+		background: var(--bg);
+	}
+
+	.tbd__fontcard-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		color: var(--muted);
+		font-family: var(--font-mono);
+		font-size: 0.66rem;
+	}
+
+	.tbd__fontcard-body {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		font-family: var(--p-font);
+	}
+
+	.tbd__aa {
+		font-size: 2rem;
+		line-height: 1;
+	}
+
+	.tbd__fontcard-meta {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		font-weight: 500;
+	}
+
+	.tbd__category {
+		color: var(--muted);
+		font-family: var(--font-mono);
+		font-size: 0.58rem;
+		font-weight: 400;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	/* Shapes picked by their look. */
+	.tbd__shapes {
+		display: grid;
+		grid-auto-columns: 1fr;
+		grid-auto-flow: column;
+		gap: 0.3rem;
+	}
+
+	.tbd__shapes > span {
+		display: grid;
+		place-items: center;
+		height: 2.6rem;
+		border: 1px solid var(--line);
+		background: var(--bg);
+		color: var(--muted);
+	}
+
+	.tbd__shapes > [aria-pressed="true"] {
+		border-color: var(--fg);
+		background: color-mix(in srgb, var(--fg) 8%, var(--bg));
+		color: var(--fg);
+	}
+
+	.tbd__corner {
+		width: 1.3rem;
+		height: 1.3rem;
+		margin: 0.45rem 0 0 0.45rem;
+		border-top: 2px solid currentColor;
+		border-left: 2px solid currentColor;
+	}
+
+	.tbd__control {
+		width: 2rem;
+		height: 0.95rem;
+		border: 2px solid currentColor;
+	}
+
+	@media (max-width: 1100px) {
+		.theme-builder__inner {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 900px) {
+		.tbd__side--end .tbd__btn--ghost,
+		.tbd__overlay > :first-child {
+			display: none;
+		}
+	}
+
+	/* Too narrow for the panel: the canvas alone, as with the sidebar put away. */
+	@media (max-width: 760px) {
+		.tbd__panel,
+		.tbd__side--end,
+		.tbd__views {
+			display: none;
+		}
+
+		.tbd__main {
+			--panel-w: -0.75rem;
+			height: 28rem;
+		}
+	}
+
+	@media (max-width: 520px) {
+		.tbd__device + .tbd__device,
+		.tbd__overlay > :last-child {
+			display: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.tbd *,
+		.tbd :global(*) {
+			transition: none !important;
+		}
+	}
+</style>

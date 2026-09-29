@@ -1,0 +1,377 @@
+---
+import { Image } from "astro:assets";
+import BuilderIcon from "./BuilderIcon.astro";
+import ridge from "@theme-builder/assets/demo/editorial/ridge.jpg";
+import stones from "@theme-builder/assets/demo/editorial/stones.jpg";
+import library from "@theme-builder/assets/demo/editorial/library.jpg";
+import cabin from "@theme-builder/assets/demo/editorial/cabin.jpg";
+
+// One screen of the theme builder preview. Colors come from the Phone frame
+// (`--s-*`, `--accent`); font, radius, control shape and spacing come from the
+// preset on the preview (`--p-*`), so every value animates when it changes.
+interface Props {
+	screen: "home" | "profile";
+}
+
+const { screen } = Astro.props;
+
+const cards = [
+	{ title: "Design", meta: "2.4k stories", image: stones },
+	{ title: "Architecture", meta: "1.1k stories", image: library },
+];
+const tabs = [
+	{ name: "Home", icon: "home" },
+	{ name: "Explore", icon: "search" },
+	{ name: "Library", icon: "library" },
+	{ name: "Profile", icon: "user" },
+] as const;
+const active = screen === "home" ? "Home" : "Profile";
+const settings = [
+	{ label: "Notifications", on: true },
+	{ label: "Offline reading", on: false },
+	{ label: "Weekly digest", on: true },
+];
+---
+
+<div class="bs">
+	{
+		screen === "home" ? (
+			<div class="bs__body">
+				<header class="bs__head">
+					<b class="bs__title">
+						Good morning,
+						<br />
+						Sam
+					</b>
+					<BuilderIcon name="bell" />
+				</header>
+				<p class="bs__lede">Ideas, stories and design for a calmer internet.</p>
+				<Image class="bs__hero" src={ridge} alt="" width={360} />
+				<div class="bs__row">
+					<b>For you</b>
+					<span class="bs__link">See all</span>
+				</div>
+				<div class="bs__cards">
+					{cards.map((card) => (
+						<div class="bs__card">
+							<Image class="bs__thumb" src={card.image} alt="" width={200} />
+							<div class="bs__card-text">
+								<span>
+									<b>{card.title}</b>
+									<small>{card.meta}</small>
+								</span>
+								<BuilderIcon name="heart" />
+							</div>
+						</div>
+					))}
+				</div>
+			</div>
+		) : (
+			<div class="bs__body">
+				<div class="bs__profile">
+					<Image class="bs__avatar" src={cabin} alt="" width={120} />
+					<b class="bs__name">Sam Rivera</b>
+					<small>Writer · Lisbon</small>
+				</div>
+				<div class="bs__actions">
+					<span class="bs__btn">Follow</span>
+					<span class="bs__btn bs__btn--soft">Message</span>
+				</div>
+				<div class="bs__stats">
+					<span><b>128</b><small>Stories</small></span>
+					<span><b>4.2k</b><small>Readers</small></span>
+					<span><b>36</b><small>Saved</small></span>
+				</div>
+				<div class="bs__row">
+					<b>Settings</b>
+				</div>
+				<ul class="bs__list">
+					{settings.map((item) => (
+						<li>
+							{item.label}
+							<i class:list={["bs__switch", { "bs__switch--on": item.on }]} />
+						</li>
+					))}
+				</ul>
+			</div>
+		)
+	}
+
+	<nav class="bs__tabs">
+		{
+			tabs.map((tab) => (
+				<span class:list={["bs__tab", { "bs__tab--active": tab.name === active }]}>
+					<BuilderIcon name={tab.icon} />
+					{tab.name}
+				</span>
+			))
+		}
+	</nav>
+</div>
+
+<style>
+	.bs {
+		--gap: calc(1em * var(--p-space, 1));
+		--ease: 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+		font-family: var(--p-font, var(--font-sans));
+		transition:
+			background-color var(--ease),
+			color var(--ease);
+	}
+
+	.bs__body {
+		flex: 1;
+		min-height: 0;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		gap: var(--gap);
+		padding: calc(var(--gap) * 0.6) calc(var(--gap) * 1.4) 0;
+		transition:
+			gap var(--ease),
+			padding var(--ease);
+	}
+
+	.bs b {
+		font-weight: 600;
+	}
+
+	.bs small {
+		display: block;
+		font-size: 0.75em;
+		color: var(--s-muted);
+	}
+
+	.bs__head {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		font-size: 1.1em;
+	}
+
+	.bs__title {
+		font-size: 1.55em;
+		line-height: 1.1;
+		letter-spacing: -0.03em;
+	}
+
+	.bs__lede {
+		margin-top: calc(var(--gap) * -0.5);
+		font-size: 0.85em;
+		color: var(--s-muted);
+	}
+
+	.bs__hero,
+	.bs__thumb,
+	.bs__card {
+		display: block;
+		width: 100%;
+		object-fit: cover;
+		border-radius: var(--p-radius, 0.9em);
+		transition: border-radius var(--ease);
+	}
+
+	.bs__hero {
+		flex: none;
+		height: 9.5em;
+	}
+
+	.bs__row {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+	}
+
+	.bs__link {
+		font-size: 0.8em;
+		font-weight: 600;
+		color: var(--accent);
+		transition: color var(--ease);
+	}
+
+	.bs__cards {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: calc(var(--gap) * 0.7);
+		transition: gap var(--ease);
+	}
+
+	.bs__card {
+		overflow: hidden;
+		background: var(--s-surface);
+		transition:
+			border-radius var(--ease),
+			background-color var(--ease);
+	}
+
+	.bs__thumb {
+		height: 5em;
+		border-radius: 0;
+	}
+
+	.bs__card-text {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.55em 0.65em;
+		font-size: 0.8em;
+		line-height: 1.25;
+	}
+
+	/* Profile */
+	.bs__profile {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.2em;
+		margin-top: 0.6em;
+		text-align: center;
+	}
+
+	.bs__avatar {
+		width: 4.6em;
+		height: 4.6em;
+		margin-bottom: 0.5em;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+
+	.bs__name {
+		font-size: 1.2em;
+		letter-spacing: -0.02em;
+	}
+
+	.bs__actions {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: calc(var(--gap) * 0.6);
+		transition: gap var(--ease);
+	}
+
+	.bs__btn {
+		padding: calc(0.7em * var(--p-space, 1)) 0;
+		border-radius: var(--p-ctrl, 0.6em);
+		background: var(--accent);
+		color: var(--p-on, #fff);
+		font-size: 0.85em;
+		font-weight: 600;
+		text-align: center;
+		transition:
+			border-radius var(--ease),
+			padding var(--ease),
+			background-color var(--ease),
+			color var(--ease);
+	}
+
+	.bs__btn--soft {
+		background: var(--s-surface);
+		color: var(--s-fg);
+	}
+
+	.bs__stats {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		padding: calc(0.8em * var(--p-space, 1)) 0;
+		border-radius: var(--p-radius, 0.9em);
+		background: var(--s-surface);
+		text-align: center;
+		transition:
+			border-radius var(--ease),
+			padding var(--ease),
+			background-color var(--ease);
+	}
+
+	.bs__list {
+		list-style: none;
+		margin: calc(var(--gap) * -0.4) 0 0;
+		padding: 0 0.9em;
+		border-radius: var(--p-radius, 0.9em);
+		background: var(--s-surface);
+		font-size: 0.85em;
+		transition:
+			border-radius var(--ease),
+			background-color var(--ease);
+	}
+
+	.bs__list li {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: calc(0.85em * var(--p-space, 1)) 0;
+		transition: padding var(--ease);
+	}
+
+	.bs__list li + li {
+		border-top: 1px solid var(--s-line);
+	}
+
+	.bs__switch {
+		position: relative;
+		width: 2.4em;
+		height: 1.4em;
+		border-radius: 999px;
+		background: var(--s-line);
+		transition: background-color var(--ease);
+	}
+
+	.bs__switch::after {
+		content: "";
+		position: absolute;
+		top: 0.15em;
+		left: 0.15em;
+		width: 1.1em;
+		height: 1.1em;
+		border-radius: 50%;
+		background: #fff;
+	}
+
+	.bs__switch--on {
+		background: var(--accent);
+	}
+
+	.bs__switch--on::after {
+		left: auto;
+		right: 0.15em;
+	}
+
+	/* Tab bar */
+	.bs__tabs {
+		flex: none;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		padding: 0.7em 0.6em 2em;
+		border-top: 1px solid var(--s-line);
+		background: var(--s-bg);
+	}
+
+	.bs__tab {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.3em;
+		font-size: 0.65em;
+		color: var(--s-muted);
+	}
+
+	.bs__tab :global(svg) {
+		font-size: 1.9em;
+	}
+
+	.bs__tab--active {
+		color: var(--accent);
+		font-weight: 600;
+		transition: color var(--ease);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.bs,
+		.bs * {
+			transition: none !important;
+		}
+	}
+</style>
