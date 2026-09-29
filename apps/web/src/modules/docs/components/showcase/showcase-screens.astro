@@ -5,7 +5,7 @@
 import Glyph from '@docs/components/preview/glyph.astro';
 
 interface Props {
-  app: 'demo' | 'tempo' | 'tally' | 'atlas' | 'chapter' | 'corner';
+  app: 'demo' | 'noty' | 'tempo' | 'tally' | 'atlas' | 'chapter' | 'corner';
 }
 
 const { app } = Astro.props;
@@ -22,6 +22,7 @@ const caption = 'text-xs text-fd-muted-foreground';
 
 const captions: Record<Props['app'], [string, string, string]> = {
   demo: ['Catalog', 'Component screen', 'Foundations'],
+  noty: ['Notes', 'Note', 'Todo'],
   tempo: ['Today', 'Reorder', 'Streaks'],
   tally: ['Balances', 'Add expense', 'Settle up'],
   atlas: ['Map', 'Place sheet', 'Search'],
@@ -51,6 +52,32 @@ const [first, second, third] = captions[app];
             <Glyph name="sliders" size={10} strokeWidth={2.4} />
             <Glyph name="sun" size={10} strokeWidth={2.4} />
           </span>
+        </>
+      )}
+
+      {app === 'noty' && (
+        <>
+          <span class={`flex h-7 items-center px-2 text-[10px] font-semibold ${accent}`}>Notes</span>
+          <span class={`mx-2 flex h-5 items-center gap-1.5 rounded-full ${box} px-2`}>
+            <Glyph name="search" size={8} strokeWidth={2.6} class={accent} />
+            <span class={`${line} w-1/2`} />
+          </span>
+          <span class="mt-2 flex flex-col gap-1.5 px-2">
+            {[false, true, false].map((todo) => (
+              <span class={`flex flex-col gap-1.5 rounded-[5px] ${box} p-1.5`}>
+                <span class={`${strong} w-1/2`} />
+                {todo ? (
+                  <span class="flex items-center gap-1.5">
+                    <span class="flex size-2.5 shrink-0 items-center justify-center rounded-[3px] bg-fd-foreground text-fd-background"><Glyph name="check" size={6} strokeWidth={3} /></span>
+                    <span class={`${line} flex-1`} />
+                  </span>
+                ) : (
+                  <span class={`${line} w-full`} />
+                )}
+              </span>
+            ))}
+          </span>
+          <span class="absolute bottom-3 right-2 flex size-7 items-center justify-center rounded-full bg-fd-foreground text-fd-background"><Glyph name="edit" size={11} strokeWidth={2.6} /></span>
         </>
       )}
 
@@ -200,6 +227,30 @@ const [first, second, third] = captions[app];
         </>
       )}
 
+      {app === 'noty' && (
+        <>
+          <span class={`flex h-7 items-center justify-between px-2 text-[8px] ${accent}`}>
+            <Glyph name="chevron-left" size={9} strokeWidth={2.4} />
+            <Glyph name="more" size={9} strokeWidth={2.8} />
+          </span>
+          <span class={`px-2 text-[10px] font-semibold ${accent}`}>Groceries</span>
+          <span class="mt-2 flex flex-col gap-1.5 px-2">
+            <span class={line} />
+            <span class="flex items-center gap-0.5"><span class={`${line} w-1/2`} /><span class="h-2 w-px bg-fd-foreground" /></span>
+          </span>
+          <span class="absolute inset-x-0 bottom-0 flex flex-col gap-1 border-t border-fd-border bg-fd-muted/70 p-1.5">
+            {[10, 9, 7].map((keys) => (
+              <span class="flex justify-center gap-0.5">
+                {Array.from({ length: keys }, () => (
+                  <span class="h-3 w-1.5 rounded-[2px] bg-fd-background" />
+                ))}
+              </span>
+            ))}
+            <span class="mx-auto h-3 w-1/2 rounded-[2px] bg-fd-background" />
+          </span>
+        </>
+      )}
+
       {app === 'tempo' && (
         <>
           <span class={`flex h-7 items-center justify-between px-2 text-[8px] font-semibold ${accent}`}>
@@ -332,6 +383,37 @@ const [first, second, third] = captions[app];
             {[4, 8, 12, 16, 20].map((size) => (
               <span class="w-2 rounded-[2px] bg-fd-foreground/40" style={{ height: `${size}px` }} />
             ))}
+          </span>
+        </>
+      )}
+
+      {app === 'noty' && (
+        <>
+          <span class={`flex h-7 items-center justify-between px-2 text-[8px] ${accent}`}>
+            <Glyph name="chevron-left" size={9} strokeWidth={2.4} />
+            <span>2 of 5</span>
+            <Glyph name="more" size={9} strokeWidth={2.8} />
+          </span>
+          <span class={`px-2 text-[10px] font-semibold ${accent}`}>This week</span>
+          <span class="mt-2 flex flex-col gap-2 px-2">
+            {[false, false, false, true, true].map((done) => (
+              <span class="flex items-center gap-2">
+                {done ? (
+                  <span class="flex size-3 shrink-0 items-center justify-center rounded-[3px] bg-fd-foreground text-fd-background"><Glyph name="check" size={7} strokeWidth={3} /></span>
+                ) : (
+                  <span class="size-3 shrink-0 rounded-[3px] border border-fd-muted-foreground/50" />
+                )}
+                {done ? (
+                  <span class="relative flex-1"><span class={line} /><span class="absolute inset-x-0 top-1/2 h-px bg-fd-muted-foreground/60" /></span>
+                ) : (
+                  <span class={`${strong} flex-1`} />
+                )}
+              </span>
+            ))}
+          </span>
+          <span class="absolute inset-x-2 bottom-3 flex items-center gap-1.5 text-[8px]">
+            <Glyph name="plus" size={9} strokeWidth={2.6} />
+            <span>Add item</span>
           </span>
         </>
       )}

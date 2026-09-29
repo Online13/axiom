@@ -59,6 +59,28 @@ const accent = 'text-fd-foreground';
         </>
       )}
 
+      {preview === 'noty' && (
+        <>
+          <span class={`flex h-5 items-center px-1.5 text-[7px] font-semibold ${accent}`}>Notes</span>
+          <span class="flex flex-col gap-1 px-1.5">
+            {[false, true, false].map((todo) => (
+              <span class={`flex flex-col gap-1 rounded-[4px] ${box} p-1`}>
+                <span class={`${strong} w-1/2`} />
+                {todo ? (
+                  <span class="flex items-center gap-1">
+                    <span class="flex size-2 shrink-0 items-center justify-center rounded-[2px] bg-fd-foreground text-fd-background"><Glyph name="check" size={5} strokeWidth={3} /></span>
+                    <span class={`${line} flex-1`} />
+                  </span>
+                ) : (
+                  <span class={`${line} w-full`} />
+                )}
+              </span>
+            ))}
+          </span>
+          <span class="absolute bottom-2 right-2 flex size-5 items-center justify-center rounded-full bg-fd-foreground text-fd-background"><Glyph name="edit" size={8} strokeWidth={2.6} /></span>
+        </>
+      )}
+
       {preview === 'tempo' && (
         <>
           <span class="flex items-center justify-between px-2 pt-3">

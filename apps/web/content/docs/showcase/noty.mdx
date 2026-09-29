@@ -1,0 +1,44 @@
+---
+title: Noty
+description: "Notes and simple todos — write fast, tick things off, swipe away what's done."
+---
+
+<Callout title="Planned">
+	Not built yet. Noty is the first app after the demo: small enough to ship
+	quickly, and it keeps the keyboard on screen almost all the time.
+</Callout>
+
+One list of notes, and any note can turn into a checklist. No folders, no tags, no sync settings: open the app, type, close it. What's left to test is the part every app gets wrong at some point, writing with the keyboard up.
+
+<ShowcaseScreens app="noty" />
+
+## Why this app
+
+A notes app spends most of its life with the keyboard open. Noty checks that the system handles that without special cases in the app:
+
+- The editor is a [TextArea](/docs/atoms/text-area) that grows with its content and keeps the caret above the keyboard.
+- A todo is a line with a [Checkbox](/docs/atoms/checkbox). Return adds the next one, backspace on an empty one removes it.
+- [Swipe](/docs/behaviors/swipe-actions) on a note archives or deletes it, and the delete stays [undoable](/docs/patterns/undoable-action).
+- Search filters the list as you type, from a [SearchBar](/docs/molecules/search-bar) at the top.
+
+## Screens
+
+| Screen | What it holds                                                      |
+| ------ | ------------------------------------------------------------------ |
+| Notes  | The list, a search field, a floating button to start a note.       |
+| Note   | Title and body, full screen, the keyboard up from the first frame. |
+| Todo   | A checklist: done items struck through and moved to the bottom.    |
+
+## Built with
+
+- [TextArea](/docs/atoms/text-area) and [Input](/docs/atoms/input) for the editor.
+- [Item](/docs/atoms/item) and [Checkbox](/docs/atoms/checkbox) for notes and todos.
+- [SearchBar](/docs/molecules/search-bar) and [Empty](/docs/atoms/empty) for the list and its empty state.
+- [FloatingButton](/docs/atoms/floating-button) to start a note.
+- [useSwipeActions](/docs/hooks/use-swipe-actions) and [undoable action](/docs/patterns/undoable-action) for archive and delete.
+
+## What it checks
+
+- The caret never ends up behind the keyboard, on any screen size.
+- Checking a todo is one tap, with no delay and no layout jump.
+- Deleting a note by mistake takes one tap to undo.

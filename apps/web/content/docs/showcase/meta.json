@@ -1,5 +1,5 @@
 {
 	"title": "Showcase",
 	"root": true,
-	"pages": ["index", "demo", "tempo", "tally", "atlas", "chapter", "corner"]
+	"pages": ["index", "demo", "noty"]
 }
