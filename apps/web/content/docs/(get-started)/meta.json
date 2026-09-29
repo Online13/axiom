@@ -3,9 +3,7 @@
 	"root": true,
 	"pages": [
 		"index",
-		"installation",
-		"cli",
-		"configuration",
+		"getting-started",
 		"styling",
 		"---Project---",
 		"roadmap"

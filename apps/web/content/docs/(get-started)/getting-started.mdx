@@ -1,6 +1,6 @@
 ---
-title: Installation
-description: "Set up Axiom in an Expo or React Native project."
+title: Getting Started
+description: "Your first Axiom component on screen in three commands."
 ---
 
 <Callout title="Not published yet">
@@ -9,21 +9,15 @@ description: "Set up Axiom in an Expo or React Native project."
 	change.
 </Callout>
 
-## Before you start
+All you need is an Expo or React Native app. Run these at its root.
 
-You need an existing Expo or React Native app. Axiom doesn't create the project for you.
-
-Copied components are imported through a path alias (`@/components/ui` by default). If your `tsconfig.json` doesn't resolve `@/` yet, `init` offers to add the entry for you, or lets you pick aliases your project already resolves.
-
-## 1. Initialize your project
-
-Run `init` at the root of your app:
+## 1. Initialize
 
 ```npm
 npx axiom init
 ```
 
-It asks which styling tool your project uses:
+Pick the styling tool you already use:
 
 ```txt title="Terminal" noCopy
 ◆  Which styling tool does your project use?
@@ -34,37 +28,7 @@ It asks which styling tool your project uses:
 └
 ```
 
-`nativewind` and `uniwind` both get the `tailwind` variant. Only the stylings the registry has a variant for are offered.
-
-Then it:
-
-- checks that your `tsconfig.json` resolves the aliases, and offers to add the missing `paths` entries;
-- copies the foundations: theme contracts, default tokens, `light` and `dark` themes;
-- copies the headless core;
-- installs the styling dependency when there is one (`react-native-unistyles`, `nativewind` or `uniwind`). This happens once, not for every component.
-
-Pass `--no-install` to print the install command instead of running it.
-
-Your choices are saved in a config file at the root of the project:
-
-```json title="axiom.json"
-{
-	"$schema": "https://axiom.dev/schema.json",
-	"styling": "stylesheet",
-	"aliases": {
-		"theme": "@/theme",
-		"core": "@/components/core",
-		"hooks": "@/hooks",
-		"components": "@/components/ui",
-		"compositions": "@/components/compositions",
-		"blocks": "@/components/blocks"
-	}
-}
-```
-
-Each alias tells the CLI where a layer is copied. See [Where files go](/docs/configuration#where-files-go).
-
-The file also gets an `items` list. `init` and `add` fill it with everything they copy, and `npx axiom fetch` copies the whole list into a project. See [Configuration](/docs/configuration) for every key.
+That's the only question. `init` copies the theme and the headless core, fixes your `tsconfig.json` aliases if needed, and saves your choices in `axiom.json`.
 
 ## 2. Add a component
 
@@ -72,7 +36,7 @@ The file also gets an `items` list. `init` and `add` fill it with everything the
 npx axiom add button
 ```
 
-The CLI copies the variant that matches your `styling` setting, along with any internal dependency the component needs and doesn't find in your project. See [CLI](/docs/cli) for details.
+The button lands in `components/ui/button.tsx`, in the variant that matches your styling, with anything it depends on.
 
 ## 3. Use it
 
@@ -84,30 +48,31 @@ export function SaveButton() {
 }
 ```
 
-The file is now part of your app. Change it as you like.
+Run your app. The button is there, and the file is yours: open it and change whatever you want.
 
-## Manual installation
+## Keep going
 
-You can skip the CLI entirely. Every component page shows the source for each styling variant, and lists:
+Add the next piece your screen needs. Whatever it relies on comes with it:
 
-- the internal dependencies to copy first (for example `portal`, `overlay`, `tappable`);
-- the npm packages to install (for example `react-native-reanimated`, `react-native-gesture-handler`).
-
-Copy the files for your variant into your project, install the listed packages, and import the component.
-
-## Next steps
+```npm
+npx axiom add bottom-sheet
+```
 
 <Cards>
-	<Card title="CLI" href="/docs/cli">
-		What `init` and `add` do, step by step.
+	<Card title="Primitives" href="/docs/components">
+		Pick your next component.
 	</Card>
-	<Card title="Styling" href="/docs/styling">
-		How the variants work and how they differ.
+	<Card title="Compositions" href="/docs/compositions">
+		Ready-made cards, rows and app bars.
 	</Card>
 	<Card title="Foundations" href="/docs/foundations">
-		Customize the theme and tokens.
+		Make the theme yours.
 	</Card>
-	<Card title="Primitives" href="/docs/components">
-		Browse the components.
+	<Card title="CLI" href="/docs/cli">
+		Every command and option, and `axiom.json`.
 	</Card>
 </Cards>
+
+## Without the CLI
+
+Every component page shows the source for each styling variant, the internal files to copy first (such as `portal` or `tappable`) and the npm packages to install. Copy, install, import.

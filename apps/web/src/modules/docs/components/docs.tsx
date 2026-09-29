@@ -9,11 +9,32 @@ import { navigate } from "astro:transitions/client";
 import { RootProvider } from "fumadocs-ui/provider/astro";
 import { Banner } from "fumadocs-ui/components/banner";
 import type { AstroProviderProps } from "fumadocs-core/framework/astro";
+import type { GetLayoutTabsOptions } from "fumadocs-ui/layouts/shared";
 import SearchDialog from "./search";
 import { Logo } from "../../brand/Logo";
 import { ThemeSwitcher } from "../../brand/ThemeSwitcher";
 
 const githubUrl = "https://github.com/Online13/axiom";
+
+// Tabs whose section is not built yet get a "Soon" pill next to their title.
+const soonTabs = new Set(["/docs/agent", "/docs/showcase"]);
+
+const tabs: GetLayoutTabsOptions = {
+	transform: (tab) =>
+		soonTabs.has(tab.url)
+			? {
+					...tab,
+					title: (
+						<>
+							{tab.title}
+							<span className="docs-soon-tag">
+								Soon
+							</span>
+						</>
+					),
+				}
+			: tab,
+};
 
 function preventActiveFolderNavigation(event: MouseEvent<HTMLElement>) {
 	if (!(event.target instanceof Element)) return;
@@ -81,6 +102,7 @@ export function Docs({
 				sidebar={{ collapsible: false }}
 				// Root folders become tabs; 'navbar' puts them on their own row under the header.
 				tabMode="navbar"
+				tabs={tabs}
 				// 'top' moves the logo and search out of the sidebar into a full-width header.
 				nav={{
 					mode: "top",

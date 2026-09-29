@@ -11,6 +11,9 @@
 		"---Hooks---",
 		"...hooks",
 		"---Core---",
-		"...core"
+		"...core",
+		"---CLI---",
+		"cli",
+		"configuration"
 	]
 }

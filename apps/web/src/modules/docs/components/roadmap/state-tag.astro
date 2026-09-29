@@ -1,0 +1,29 @@
+---
+// The state of a roadmap item as a colored pill, shared by the components table and the checklist.
+
+export type State = 'shipped' | 'progress' | 'next' | 'planned';
+
+interface Props {
+  state: State;
+}
+
+const { state } = Astro.props;
+
+const label: Record<State, string> = {
+  shipped: 'Shipped',
+  progress: 'In progress',
+  next: 'Next up',
+  planned: 'Planned',
+};
+
+const tone: Record<State, string> = {
+  shipped: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
+  progress: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+  next: 'bg-sky-500/15 text-sky-700 dark:text-sky-400',
+  planned: 'bg-fd-muted-foreground/15 text-fd-muted-foreground',
+};
+---
+
+<span class={`not-prose inline-flex shrink-0 whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-medium leading-4 ${tone[state]}`}>
+  {label[state]}
+</span>

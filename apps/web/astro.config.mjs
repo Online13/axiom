@@ -52,6 +52,16 @@ export default defineConfig({
 				"@legendapp/state/sync",
 				"@legendapp/state/persist-plugins/local-storage",
 				"lucide-react",
+				// Same for the docs island (sidebar, TOC, search): a late re-bundle 504s
+				// its imports and the whole layout stays static (no folder toggle, no TOC tracking).
+				"fumadocs-ui/layouts/notebook",
+				"fumadocs-ui/layouts/notebook/page",
+				"fumadocs-ui/provider/astro",
+				"fumadocs-ui/components/banner",
+				"fumadocs-ui/components/dialog/search",
+				"fumadocs-ui/contexts/i18n",
+				"fumadocs-core/search/client",
+				"fumadocs-core/search/client/orama-static",
 			],
 		},
 	},

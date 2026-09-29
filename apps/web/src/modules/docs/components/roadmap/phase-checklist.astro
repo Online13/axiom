@@ -1,7 +1,10 @@
 ---
-// The workstreams of the phase in progress, each item with its own state.
+// The workstreams of the phase in progress, each item as a checkbox with its own state.
+// A shipped item is checked, one in progress is half-checked, the rest are empty.
 // "Next up" marks where the work resumes, so the reader sees the current position
 // down to the item, not only down to the phase.
+
+import StateTag from './state-tag.astro';
 
 interface Props {
   title?: string;
@@ -13,41 +16,41 @@ const groups = [
   {
     name: 'Styling variants',
     items: [
-      { name: 'stylesheet', detail: 'behavior / style split in place', status: 'done' },
-      { name: 'unistyles', detail: '67 entries, same API, other engine', status: 'done' },
+      { name: 'stylesheet', detail: 'behavior / style split in place', status: 'shipped' },
+      { name: 'unistyles', detail: '76 entries, same API, other engine', status: 'shipped' },
       { name: 'tailwind', detail: 'NativeWind / Uniwind, once the split is proven', status: 'next' },
     ],
   },
   {
     name: 'Components',
     items: [
-      { name: 'Foundations', detail: 'tokens, ThemeColors, Theme, light / dark', status: 'done' },
-      { name: 'Core', detail: 'Slot, Portal, Overlay, OverlayStack, Tappable, Haptics', status: 'done' },
-      { name: 'Hooks', detail: 'useRefreshControl, useControllableState, useOverlayBackHandler', status: 'done' },
-      { name: 'Primitives', detail: 'typography, 33 atoms, 3 molecules, Passcode, 5 templates', status: 'done' },
-      { name: 'Compositions', detail: '21 entries: cards, items, app bars', status: 'doing' },
-      { name: 'Blocks', detail: 'SettingsSection', status: 'doing' },
+      { name: 'Foundations', detail: 'tokens, ThemeColors, Theme, light / dark', status: 'shipped' },
+      { name: 'Core', detail: 'Slot, Portal, Overlay, OverlayStack, Tappable, Haptics', status: 'shipped' },
+      { name: 'Hooks', detail: 'useRefreshControl, useControllableState, useOverlayBackHandler', status: 'shipped' },
+      { name: 'Primitives', detail: 'typography, 33 atoms, 3 molecules, Passcode, 5 templates', status: 'shipped' },
+      { name: 'Compositions', detail: '30 entries: cards, items, app bars', status: 'progress' },
+      { name: 'Blocks', detail: 'SettingsSection', status: 'progress' },
     ],
   },
   {
     name: 'Tooling',
     items: [
-      { name: 'registry.json', detail: 'component manifest, 77 entries', status: 'done' },
-      { name: 'CLI', detail: 'add and init ship, fetch left to write', status: 'doing' },
-      { name: 'Standalone mode', detail: 'add --standalone: one file, no theme; portal-based entries later', status: 'done' },
-      { name: 'Demo apps', detail: 'StyleSheet and Unistyles done, NativeWind / Uniwind scaffolded', status: 'doing' },
-      { name: 'Theme builder', detail: 'public: overrides, presets, previews, agent export', status: 'done' },
-      { name: 'Foundations screen', detail: 'colors, typography, spacing, radius, icons, targets, states', status: 'done' },
-      { name: 'CI', detail: 'typecheck per variant, props parity, lint, tests, builds', status: 'todo' },
+      { name: 'registry.json', detail: 'component manifest, 86 entries', status: 'shipped' },
+      { name: 'CLI', detail: 'add and init ship, fetch left to write', status: 'progress' },
+      { name: 'Standalone mode', detail: 'add --standalone: one file, no theme; portal-based entries later', status: 'shipped' },
+      { name: 'Demo apps', detail: 'StyleSheet and Unistyles with compositions, NativeWind / Uniwind scaffolded', status: 'progress' },
+      { name: 'Theme builder', detail: 'public: overrides, presets, previews, agent export', status: 'shipped' },
+      { name: 'Foundations screen', detail: 'colors, typography, spacing, radius, icons, targets, states', status: 'shipped' },
+      { name: 'CI', detail: 'CLI typecheck and tests run; variants, parity, lint, builds to add', status: 'progress' },
     ],
   },
 ];
 
-const mark = {
-  done: 'bg-fd-foreground border-fd-foreground',
-  doing: 'bg-fd-background border-fd-foreground ring-[3px] ring-fd-foreground/15',
-  next: 'bg-fd-background border-fd-foreground',
-  todo: 'bg-fd-background border-fd-muted-foreground/40',
+const box = {
+  shipped: 'border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500',
+  progress: 'border-amber-500 bg-amber-500/15 text-amber-600 dark:text-amber-400',
+  next: 'border-sky-500 text-sky-500',
+  planned: 'border-fd-muted-foreground/40',
 };
 ---
 
@@ -58,22 +61,21 @@ const mark = {
       <ol class="flex flex-col gap-2.5">
         {group.items.map((item) => (
           <li class="flex gap-2.5">
-            <span class={`mt-1 size-2.5 shrink-0 rounded-full border-2 ${mark[item.status]}`} aria-hidden="true" />
+            <span class={`mt-0.5 flex size-4 shrink-0 items-center justify-center rounded border-[1.5px] ${box[item.status]}`} aria-hidden="true">
+              {item.status === 'shipped' && (
+                <svg viewBox="0 0 16 16" class="size-3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3.5 8.5l3 3 6-7" />
+                </svg>
+              )}
+              {item.status === 'progress' && <span class="h-0.5 w-2 rounded-full bg-current" />}
+            </span>
             <span class="flex min-w-0 flex-col gap-0.5">
               <span class="flex flex-wrap items-center gap-1.5">
-                <span class={`text-sm leading-5 ${item.status === 'todo' ? 'text-fd-muted-foreground' : 'font-medium'}`}>
+                <span class={`text-sm leading-5 ${item.status === 'planned' ? 'text-fd-muted-foreground' : 'font-medium'}`}>
+                  <span class="sr-only">{item.status === 'shipped' ? 'Done: ' : item.status === 'progress' ? 'In progress: ' : 'To do: '}</span>
                   {item.name}
                 </span>
-                {item.status === 'next' && (
-                  <span class="rounded-full border border-fd-foreground/30 px-1.5 py-px text-[10px] font-semibold uppercase leading-none">
-                    Next up
-                  </span>
-                )}
-                {item.status === 'doing' && (
-                  <span class="rounded-full bg-fd-foreground px-1.5 py-px text-[10px] font-semibold uppercase leading-none text-fd-background">
-                    In progress
-                  </span>
-                )}
+                {(item.status === 'progress' || item.status === 'next') && <StateTag state={item.status} />}
               </span>
               <span class="text-xs leading-5 text-fd-muted-foreground">{item.detail}</span>
             </span>
