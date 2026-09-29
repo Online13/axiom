@@ -20,6 +20,23 @@ import ToastExamples from "@/demo/examples/toast";
 import ToolBarExamples from "@/demo/examples/tool-bar";
 import BottomTabBarExamples from "@/demo/examples/bottom-tab-bar";
 import TypographyExamples from "@/demo/examples/typography";
+import ProductCardScreen from "@/demo/examples/compositions/cards/product-card";
+import ListingCardScreen from "@/demo/examples/compositions/cards/listing-card";
+import RecipeCardScreen from "@/demo/examples/compositions/cards/recipe-card";
+import ArticleCardScreen from "@/demo/examples/compositions/cards/article-card";
+import EventCardScreen from "@/demo/examples/compositions/cards/event-card";
+import ProfileCardScreen from "@/demo/examples/compositions/cards/profile-card";
+import OfferCardScreen from "@/demo/examples/compositions/cards/offer-card";
+import PricingCardScreen from "@/demo/examples/compositions/cards/pricing-card";
+import StatsCardScreen from "@/demo/examples/compositions/cards/stats-card";
+import SettingsItemScreen from "@/demo/examples/compositions/rows/settings-item";
+import TrackItemScreen from "@/demo/examples/compositions/rows/track-item";
+import ConversationItemScreen from "@/demo/examples/compositions/rows/conversation-item";
+import NotificationItemScreen from "@/demo/examples/compositions/rows/notification-item";
+import SearchResultItemScreen from "@/demo/examples/compositions/rows/search-result-item";
+import SearchAppBarScreen from "@/demo/examples/compositions/bars/search-app-bar";
+import ProfileAppBarScreen from "@/demo/examples/compositions/bars/profile-app-bar";
+import SettingsSectionScreen from "@/demo/examples/blocks/settings-section";
 import { SectionScope } from "@/demo/section";
 import { Screen } from "@/demo/screen";
 import { Text } from "@/components/ui/text";
@@ -112,6 +129,24 @@ const EXAMPLES = {
 	},
 	title: { Component: TypographyExamples, titles: ["Title"] },
 	portal: { Component: PortalExamples, titles: ["Portal"] },
+	// Compositions and blocks: one screen each, every section shown.
+	"product-card": { Component: ProductCardScreen },
+	"listing-card": { Component: ListingCardScreen },
+	"recipe-card": { Component: RecipeCardScreen },
+	"article-card": { Component: ArticleCardScreen },
+	"event-card": { Component: EventCardScreen },
+	"profile-card": { Component: ProfileCardScreen },
+	"offer-card": { Component: OfferCardScreen },
+	"pricing-card": { Component: PricingCardScreen },
+	"stats-card": { Component: StatsCardScreen },
+	"settings-item": { Component: SettingsItemScreen },
+	"track-item": { Component: TrackItemScreen },
+	"conversation-item": { Component: ConversationItemScreen },
+	"notification-item": { Component: NotificationItemScreen },
+	"search-result-item": { Component: SearchResultItemScreen },
+	"search-app-bar": { Component: SearchAppBarScreen },
+	"profile-app-bar": { Component: ProfileAppBarScreen },
+	"settings-section": { Component: SettingsSectionScreen },
 } as const;
 
 function PortalExamples() {

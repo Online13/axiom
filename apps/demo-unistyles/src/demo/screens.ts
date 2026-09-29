@@ -302,18 +302,124 @@ export const SCREENS = [
 		group: "Core",
 		description: "Forward behavior to a child",
 	},
+
+	{
+		name: "product-card",
+		title: "ProductCard",
+		group: "Cards",
+		description: "Default and spotlight",
+	},
+	{
+		name: "listing-card",
+		title: "ListingCard",
+		group: "Cards",
+		description: "Stays and homes, five layouts",
+	},
+	{
+		name: "recipe-card",
+		title: "RecipeCard",
+		group: "Cards",
+		description: "Stats, ingredients and a cook button",
+	},
+	{
+		name: "article-card",
+		title: "ArticleCard",
+		group: "Cards",
+		description: "Cover, excerpt and byline",
+	},
+	{
+		name: "event-card",
+		title: "EventCard",
+		group: "Cards",
+		description: "Date, details and who's going",
+	},
+	{
+		name: "profile-card",
+		title: "ProfileCard",
+		group: "Cards",
+		description: "Stats, follow and message",
+	},
+	{
+		name: "offer-card",
+		title: "OfferCard",
+		group: "Cards",
+		description: "Benefit, highlights and fee",
+	},
+	{
+		name: "pricing-card",
+		title: "PricingCard",
+		group: "Cards",
+		description: "Plans, featured and current",
+	},
+	{
+		name: "stats-card",
+		title: "StatsCard",
+		group: "Cards",
+		description: "A metric and its trend",
+	},
+	{
+		name: "settings-item",
+		title: "SettingsItem",
+		group: "Rows",
+		description: "Navigation, value and switch",
+	},
+	{
+		name: "track-item",
+		title: "TrackItem",
+		group: "Rows",
+		description: "Artwork, duration and playing state",
+	},
+	{
+		name: "conversation-item",
+		title: "ConversationItem",
+		group: "Rows",
+		description: "Preview, unread and muted",
+	},
+	{
+		name: "notification-item",
+		title: "NotificationItem",
+		group: "Rows",
+		description: "From a person or from the app",
+	},
+	{
+		name: "search-result-item",
+		title: "SearchResultItem",
+		group: "Rows",
+		description: "Highlighted query and an action",
+	},
+	{
+		name: "search-app-bar",
+		title: "SearchAppBar",
+		group: "Bars",
+		description: "A search field as the bar",
+	},
+	{
+		name: "profile-app-bar",
+		title: "ProfileAppBar",
+		group: "Bars",
+		description: "Greeting, avatar and actions",
+	},
+	{
+		name: "settings-section",
+		title: "SettingsSection",
+		group: "Blocks",
+		description: "Titled groups of settings rows",
+	},
 ] as const;
 
 export type Screen = (typeof SCREENS)[number];
 export type ScreenGroup = Screen["group"];
 
-/** The tabs of the Components section: the foundations, then the primitives by Atomic Design level. */
+/** The tabs of the Components section: the foundations, then the primitives by Atomic Design level,
+ * then the compositions and blocks built from them. */
 export const CATEGORIES = [
 	{ value: "foundation", label: "Foundation" },
 	{ value: "atoms", label: "Atoms" },
 	{ value: "molecules", label: "Molecules" },
 	{ value: "organisms", label: "Organisms" },
 	{ value: "templates", label: "Templates" },
+	{ value: "compositions", label: "Compositions" },
+	{ value: "blocks", label: "Blocks" },
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number]["value"];
@@ -329,6 +435,10 @@ const CATEGORY_OF_GROUP: Record<ScreenGroup, Category> = {
 	Molecules: "molecules",
 	Organisms: "organisms",
 	Templates: "templates",
+	Cards: "compositions",
+	Rows: "compositions",
+	Bars: "compositions",
+	Blocks: "blocks",
 };
 
 export function screensOf(category: Category): Screen[] {

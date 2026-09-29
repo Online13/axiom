@@ -64,6 +64,18 @@ export const icons = {
 	// Demo only: the password field.
 	visible: symbol("eye", "visibility"),
 	hidden: symbol("eye.slash", "visibility_off"),
+	more: symbol("ellipsis", "more_horiz"),
+	// Demo only: the compositions.
+	area: symbol("square.dashed", "square_foot"),
+	bath: symbol("shower", "shower"),
+	bed: symbol("bed.double", "bed"),
+	calories: symbol("flame", "local_fire_department"),
+	filter: symbol("line.3.horizontal.decrease", "tune"),
+	location: symbol("mappin.and.ellipse", "location_on"),
+	notifications: symbol("bell", "notifications"),
+	people: symbol("person.2", "group"),
+	revenue: symbol("chart.line.uptrend.xyaxis", "trending_up"),
+	time: symbol("clock", "schedule"),
 } satisfies IconRegistry;
 
 export type IconName = keyof typeof icons;
