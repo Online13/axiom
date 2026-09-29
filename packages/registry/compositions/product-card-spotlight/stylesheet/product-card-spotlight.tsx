@@ -17,7 +17,8 @@ export type ProductCardSpotlightProps = {
 	badge?: string;
 	/**
 	 * A cut-out `Image` (transparent background) with `resizeMode="contain"`, so the product
-	 * floats on the card's background. Give it a size or an `aspectRatio`.
+	 * floats on the card's background. The card gives it a square: style it `width: "100%"` and
+	 * `height: "100%"`.
 	 */
 	media: ReactNode;
 	actionLabel?: string;
@@ -50,7 +51,7 @@ export function ProductCardSpotlight({
 		>
 			{/* Inset, no frame: the product sits on the card's background. */}
 			<View style={{ padding: tokens.spacing[4], paddingBottom: 0 }}>
-				{media}
+				<View style={styles.frame}>{media}</View>
 				{badge ? (
 					<View style={[styles.overlay, { padding: tokens.spacing[3] }]}>
 						<Badge variant="highlight">{badge}</Badge>
@@ -79,6 +80,10 @@ export function ProductCardSpotlight({
 }
 
 const styles = StyleSheet.create({
+	// A square the product fits in, whatever the size of its file.
+	frame: {
+		aspectRatio: 1,
+	},
 	overlay: {
 		...StyleSheet.absoluteFill,
 		alignItems: "flex-start",

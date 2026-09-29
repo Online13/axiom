@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import {
 	Image,
 	View,
@@ -10,7 +10,6 @@ import { StyleSheet } from "react-native-unistyles";
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Carousel } from "@/components/ui/carousel";
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
 import { Separator } from "@/components/ui/separator";
@@ -33,8 +32,7 @@ export type ListingCardProps = {
 	/** Shown small after the price: "/mo", "/night". */
 	priceUnit?: string;
 	subtitle?: string;
-	/** One photo, or several to swipe through. */
-	images: ImageSourcePropType[];
+	image: ImageSourcePropType;
 	aspectRatio?: number;
 	/** A short label on the photo: "Guest favorite", "New". */
 	badge?: string;
@@ -50,18 +48,13 @@ export function ListingCard({
 	price,
 	priceUnit,
 	subtitle,
-	images,
+	image,
 	aspectRatio = 4 / 3,
 	badge,
 	specs,
 	onPress,
 	style,
 }: ListingCardProps) {
-	const [photo, setPhoto] = useState(0);
-	const renderPhoto = (source: ImageSourcePropType) => (
-		<Image source={source} resizeMode="cover" style={{ aspectRatio }} />
-	);
-
 	return (
 		<Card
 			variant="elevated"
@@ -71,24 +64,10 @@ export function ListingCard({
 			}
 			style={style}
 		>
-			<View>
-				{images.length > 1 ? (
-					<Carousel
-						data={images}
-						contentInset={0}
-						gap={0}
-						onIndexChange={setPhoto}
-						accessibilityLabel="Photos"
-						renderItem={({ item }) => renderPhoto(item)}
-					/>
-				) : (
-					renderPhoto(images[0])
-				)}
+			<View style={{ aspectRatio }}>
+				<Image source={image} resizeMode="cover" style={styles.photo} />
 				<View style={styles.mediaOverlay}>
-					{badge ? <Badge variant="highlight">{badge}</Badge> : <View />}
-					{images.length > 1 ? (
-						<Dots count={images.length} active={photo} />
-					) : null}
+					{badge ? <Badge variant="highlight">{badge}</Badge> : null}
 				</View>
 			</View>
 			<Card.Header>
@@ -140,25 +119,11 @@ export function ListingCard({
 	);
 }
 
-/** Photos stay the same in both schemes, so the dots on them are always white. */
-function Dots({ count, active }: { count: number; active: number }) {
-	return (
-		<View
-			accessible
-			accessibilityLabel={`Photo ${active + 1} of ${count}`}
-			style={styles.dots}
-		>
-			{Array.from({ length: count }, (_, index) => (
-				<View
-					key={index}
-					style={[styles.dot, index === active && styles.dotActive]}
-				/>
-			))}
-		</View>
-	);
-}
-
 const styles = StyleSheet.create((theme) => ({
+	photo: {
+		width: "100%",
+		height: "100%",
+	},
 	section: {
 		gap: theme.tokens.spacing[3],
 	},
@@ -187,20 +152,5 @@ const styles = StyleSheet.create((theme) => ({
 		flexDirection: "row",
 		alignItems: "center",
 		flexShrink: 1,
-	},
-	dots: {
-		flexDirection: "row",
-		alignSelf: "center",
-		gap: 4,
-	},
-	dot: {
-		width: 6,
-		height: 6,
-		borderRadius: 3,
-		backgroundColor: "hsla(0, 0%, 100%, 0.5)",
-	},
-	dotActive: {
-		width: 14,
-		backgroundColor: "hsla(0, 0%, 100%, 1)",
 	},
 }));

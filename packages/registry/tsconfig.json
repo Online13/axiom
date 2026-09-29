@@ -315,8 +315,35 @@
       "@/components/compositions/pricing-card": [
         "./compositions/pricing-card/stylesheet/pricing-card.tsx"
       ],
+      "@/components/compositions/pricing-card-compact": [
+        "./compositions/pricing-card-compact/stylesheet/pricing-card-compact.tsx"
+      ],
+      "@/components/compositions/pricing-card-toggle": [
+        "./compositions/pricing-card-toggle/stylesheet/pricing-card-toggle.tsx"
+      ],
+      "@/components/compositions/pricing-card-horizontal": [
+        "./compositions/pricing-card-horizontal/stylesheet/pricing-card-horizontal.tsx"
+      ],
+      "@/components/compositions/pricing-card-hero": [
+        "./compositions/pricing-card-hero/stylesheet/pricing-card-hero.tsx"
+      ],
+      "@/components/compositions/pricing-card-tile": [
+        "./compositions/pricing-card-tile/stylesheet/pricing-card-tile.tsx"
+      ],
       "@/components/compositions/stats-card": [
         "./compositions/stats-card/stylesheet/stats-card.tsx"
+      ],
+      "@/components/compositions/stats-card-sparkline": [
+        "./compositions/stats-card-sparkline/stylesheet/stats-card-sparkline.tsx"
+      ],
+      "@/components/compositions/stats-card-progress": [
+        "./compositions/stats-card-progress/stylesheet/stats-card-progress.tsx"
+      ],
+      "@/components/compositions/stats-card-inline": [
+        "./compositions/stats-card-inline/stylesheet/stats-card-inline.tsx"
+      ],
+      "@/components/compositions/stats-card-ring": [
+        "./compositions/stats-card-ring/stylesheet/stats-card-ring.tsx"
       ],
       "@/components/compositions/search-result-item": [
         "./compositions/search-result-item/stylesheet/search-result-item.tsx"

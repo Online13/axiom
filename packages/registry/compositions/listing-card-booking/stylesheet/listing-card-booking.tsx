@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import {
 	Image,
 	StyleSheet,
@@ -11,7 +11,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Carousel } from "@/components/ui/carousel";
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
 import { Separator } from "@/components/ui/separator";
@@ -35,8 +34,8 @@ export type ListingCardBookingProps = {
 	price: string;
 	/** Shown small after the price: "/night". */
 	priceUnit?: string;
-	/** One photo, or several to swipe through. They cover the whole card. */
-	images: ImageSourcePropType[];
+	/** Covers the whole card. */
+	image: ImageSourcePropType;
 	/** Of the whole card. Portrait by default. */
 	aspectRatio?: number;
 	/** A short label on the photo: "Rare find". */
@@ -55,7 +54,7 @@ export function ListingCardBooking({
 	subtitle,
 	price,
 	priceUnit,
-	images,
+	image,
 	aspectRatio = 3 / 4,
 	badge,
 	specs,
@@ -65,7 +64,6 @@ export function ListingCardBooking({
 	style,
 }: ListingCardBookingProps) {
 	const { tokens } = useTheme();
-	const [photo, setPhoto] = useState(0);
 
 	return (
 		<Card
@@ -78,27 +76,13 @@ export function ListingCardBooking({
 			style={style}
 		>
 			<View style={{ aspectRatio }}>
-				{images.length > 1 ? (
-					<Carousel
-						data={images}
-						contentInset={0}
-						gap={0}
-						onIndexChange={setPhoto}
-						accessibilityLabel="Photos"
-						renderItem={({ item }) => (
-							<Image source={item} resizeMode="cover" style={{ aspectRatio }} />
-						)}
-						style={StyleSheet.absoluteFill}
-					/>
-				) : (
-					<Image
-						source={images[0]}
-						resizeMode="cover"
-						style={StyleSheet.absoluteFill}
-					/>
-				)}
+				<Image
+					source={image}
+					resizeMode="cover"
+					style={styles.photo}
+				/>
 				<View style={styles.scrim} />
-				{/* Only the button takes touches: swipes elsewhere go through to the photos. */}
+				{/* Only the button takes touches: presses elsewhere go through to the card. */}
 				<View style={[styles.content, { padding: tokens.spacing[4] }]}>
 					{badge ? (
 						<Badge variant="highlight" style={styles.badge}>
@@ -109,9 +93,6 @@ export function ListingCardBooking({
 					)}
 					<View style={styles.passThrough}>
 						<View style={[styles.noTouch, { gap: tokens.spacing[1] }]}>
-							{images.length > 1 ? (
-								<Dots count={images.length} active={photo} />
-							) : null}
 							<Title variant="headingSm" numberOfLines={1} style={styles.onMedia}>
 								{title}
 							</Title>
@@ -152,6 +133,7 @@ export function ListingCardBooking({
 							style={[
 								styles.row,
 								styles.passThrough,
+								styles.spread,
 								{ gap: tokens.spacing[2], marginTop: tokens.spacing[4] },
 							]}
 						>
@@ -180,7 +162,7 @@ export function ListingCardBooking({
 								onPress={onAction}
 								pressScale={tokens.metrics.pressScale}
 								accessibilityLabel={`${actionLabel}, ${title}`}
-								style={[styles.grow, styles.action, { borderRadius: tokens.radius.full }]}
+								style={[styles.action, { borderRadius: tokens.radius.full }]}
 							>
 								<Text weight="semibold" style={styles.actionLabel}>
 									{actionLabel}
@@ -194,34 +176,22 @@ export function ListingCardBooking({
 	);
 }
 
-function Dots({ count, active }: { count: number; active: number }) {
-	return (
-		<View
-			accessible
-			accessibilityLabel={`Photo ${active + 1} of ${count}`}
-			style={styles.dots}
-		>
-			{Array.from({ length: count }, (_, index) => (
-				<View
-					key={index}
-					style={[styles.dot, index === active && styles.dotActive]}
-				/>
-			))}
-		</View>
-	);
-}
-
 // The scrim keeps the photo dark behind the text in both schemes, so the text on it is always white.
 const ON_MEDIA = {
 	text: "hsla(0, 0%, 100%, 1)",
 	muted: "hsla(0, 0%, 100%, 0.75)",
 	line: "hsla(0, 0%, 100%, 0.25)",
-	dot: "hsla(0, 0%, 100%, 0.5)",
 	fill: "hsla(0, 0%, 100%, 0.2)",
 	ink: "hsla(0, 0%, 0%, 1)",
 };
 
 const styles = StyleSheet.create({
+	// A bundled image defaults to its file's pixel size: absoluteFill alone does not stretch it.
+	photo: {
+		...StyleSheet.absoluteFill,
+		width: "100%",
+		height: "100%",
+	},
 	scrim: {
 		...StyleSheet.absoluteFill,
 		pointerEvents: "none",
@@ -233,6 +203,9 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		alignItems: "stretch",
 		pointerEvents: "box-none",
+	},
+	spread: {
+		justifyContent: "space-between",
 	},
 	passThrough: {
 		pointerEvents: "box-none",
@@ -247,9 +220,6 @@ const styles = StyleSheet.create({
 	row: {
 		flexDirection: "row",
 		alignItems: "center",
-	},
-	grow: {
-		flex: 1,
 	},
 	onMedia: {
 		color: ON_MEDIA.text,
@@ -273,21 +243,5 @@ const styles = StyleSheet.create({
 	},
 	actionLabel: {
 		color: ON_MEDIA.ink,
-	},
-	dots: {
-		flexDirection: "row",
-		alignSelf: "center",
-		gap: 4,
-		marginBottom: 8,
-	},
-	dot: {
-		width: 6,
-		height: 6,
-		borderRadius: 3,
-		backgroundColor: ON_MEDIA.dot,
-	},
-	dotActive: {
-		width: 14,
-		backgroundColor: ON_MEDIA.text,
 	},
 });

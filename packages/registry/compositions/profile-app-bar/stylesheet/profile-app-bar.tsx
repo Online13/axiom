@@ -9,7 +9,6 @@ import {
 import { Tappable } from "@/components/core/tappable";
 import { AppBar } from "@/components/ui/app-bar";
 import { Avatar } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { IconButton } from "@/components/ui/icon-button";
 import type { IconName } from "@/components/ui/icons";
 import { Text } from "@/components/ui/text";
@@ -103,35 +102,17 @@ export function ProfileAppBar({
 			{actions?.length ? (
 				<AppBar.Actions>
 					{actions.slice(0, 2).map((action, index) => (
-						<ActionButton key={index} action={action} />
+						<IconButton
+							key={index}
+							icon={action.icon}
+							badge={action.badge}
+							onPress={action.onPress}
+							accessibilityLabel={action.label}
+						/>
 					))}
 				</AppBar.Actions>
 			) : null}
 		</AppBar>
-	);
-}
-
-function ActionButton({ action }: { action: AppBarAction }) {
-	const button = (
-		<IconButton
-			icon={action.icon}
-			onPress={action.onPress}
-			accessibilityLabel={
-				typeof action.badge === "number" && action.badge > 0
-					? `${action.label}, ${action.badge}`
-					: action.label
-			}
-		/>
-	);
-	if (!action.badge) return button;
-	return (
-		<Badge.Anchor
-			badge={
-				action.badge === true ? <Badge dot /> : <Badge count={action.badge} />
-			}
-		>
-			{button}
-		</Badge.Anchor>
 	);
 }
 

@@ -1560,7 +1560,6 @@
 			"internalDependencies": [
 				"badge",
 				"card",
-				"carousel",
 				"icon",
 				"separator",
 				"text",
@@ -1588,7 +1587,6 @@
 				"badge",
 				"button",
 				"card",
-				"carousel",
 				"icon",
 				"separator",
 				"text",
@@ -1614,7 +1612,6 @@
 			"internalDependencies": [
 				"badge",
 				"card",
-				"carousel",
 				"icon",
 				"separator",
 				"text",
@@ -1641,7 +1638,6 @@
 				"avatar",
 				"badge",
 				"card",
-				"carousel",
 				"icon",
 				"separator",
 				"text",
@@ -1668,7 +1664,6 @@
 				"badge",
 				"button",
 				"card",
-				"carousel",
 				"icon",
 				"separator",
 				"text",
@@ -1918,6 +1913,138 @@
 			}
 		},
 		{
+			"name": "pricing-card-compact",
+			"type": "compositions",
+			"internalDependencies": [
+				"badge",
+				"radio",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/pricing-card-compact/stylesheet/pricing-card-compact.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/pricing-card-compact/unistyles/pricing-card-compact.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "pricing-card-toggle",
+			"type": "compositions",
+			"requiredIcons": [
+				"check"
+			],
+			"internalDependencies": [
+				"badge",
+				"button",
+				"card",
+				"icon",
+				"segmented-control",
+				"text",
+				"theme",
+				"title",
+				"use-controllable-state"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/pricing-card-toggle/stylesheet/pricing-card-toggle.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/pricing-card-toggle/unistyles/pricing-card-toggle.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "pricing-card-horizontal",
+			"type": "compositions",
+			"requiredIcons": [
+				"check"
+			],
+			"internalDependencies": [
+				"badge",
+				"button",
+				"card",
+				"icon",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/pricing-card-horizontal/stylesheet/pricing-card-horizontal.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/pricing-card-horizontal/unistyles/pricing-card-horizontal.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "pricing-card-hero",
+			"type": "compositions",
+			"requiredIcons": [
+				"check"
+			],
+			"internalDependencies": [
+				"badge",
+				"button",
+				"card",
+				"icon",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/pricing-card-hero/stylesheet/pricing-card-hero.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/pricing-card-hero/unistyles/pricing-card-hero.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "pricing-card-tile",
+			"type": "compositions",
+			"internalDependencies": [
+				"badge",
+				"radio",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/pricing-card-tile/stylesheet/pricing-card-tile.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/pricing-card-tile/unistyles/pricing-card-tile.tsx"
+					]
+				}
+			}
+		},
+		{
 			"name": "stats-card",
 			"type": "compositions",
 			"internalDependencies": [
@@ -1937,6 +2064,105 @@
 				"unistyles": {
 					"files": [
 						"compositions/stats-card/unistyles/stats-card.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "stats-card-sparkline",
+			"type": "compositions",
+			"dependencies": [
+				"react-native-svg"
+			],
+			"internalDependencies": [
+				"badge",
+				"card",
+				"icon",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/stats-card-sparkline/stylesheet/stats-card-sparkline.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/stats-card-sparkline/unistyles/stats-card-sparkline.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "stats-card-progress",
+			"type": "compositions",
+			"internalDependencies": [
+				"card",
+				"icon",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/stats-card-progress/stylesheet/stats-card-progress.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/stats-card-progress/unistyles/stats-card-progress.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "stats-card-inline",
+			"type": "compositions",
+			"internalDependencies": [
+				"badge",
+				"card",
+				"icon",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/stats-card-inline/stylesheet/stats-card-inline.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/stats-card-inline/unistyles/stats-card-inline.tsx"
+					]
+				}
+			}
+		},
+		{
+			"name": "stats-card-ring",
+			"type": "compositions",
+			"dependencies": [
+				"react-native-svg"
+			],
+			"internalDependencies": [
+				"card",
+				"text",
+				"theme",
+				"title"
+			],
+			"variants": {
+				"stylesheet": {
+					"files": [
+						"compositions/stats-card-ring/stylesheet/stats-card-ring.tsx"
+					]
+				},
+				"unistyles": {
+					"files": [
+						"compositions/stats-card-ring/unistyles/stats-card-ring.tsx"
 					]
 				}
 			}
@@ -1976,7 +2202,6 @@
 			],
 			"internalDependencies": [
 				"app-bar",
-				"badge",
 				"icon-button",
 				"search-bar",
 				"theme"
@@ -2000,7 +2225,6 @@
 			"internalDependencies": [
 				"app-bar",
 				"avatar",
-				"badge",
 				"icon-button",
 				"tappable",
 				"text",

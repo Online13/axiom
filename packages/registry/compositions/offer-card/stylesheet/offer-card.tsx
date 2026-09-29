@@ -135,8 +135,9 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	art: {
+		// A height, not an aspectRatio: a bundled image's own pixel height would win over the ratio.
 		width: ART_WIDTH,
-		aspectRatio: CARD_RATIO,
+		height: ART_WIDTH / CARD_RATIO,
 	},
 	start: {
 		flexDirection: "row",

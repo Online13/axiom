@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import {
 	Image,
 	StyleSheet,
@@ -10,7 +10,6 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Carousel } from "@/components/ui/carousel";
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
 import { Separator } from "@/components/ui/separator";
@@ -32,8 +31,8 @@ export type ListingCardOverlayProps = {
 	/** Already formatted, currency included: "$200k". */
 	price: string;
 	subtitle?: string;
-	/** One photo, or several to swipe through. They cover the whole card. */
-	images: ImageSourcePropType[];
+	/** Covers the whole card. */
+	image: ImageSourcePropType;
 	/** Of the whole card. Portrait by default. */
 	aspectRatio?: number;
 	/** A short label on the photo: "Newly listed". */
@@ -49,7 +48,7 @@ export function ListingCardOverlay({
 	title,
 	price,
 	subtitle,
-	images,
+	image,
 	aspectRatio = 3 / 4,
 	badge,
 	specs,
@@ -57,7 +56,6 @@ export function ListingCardOverlay({
 	style,
 }: ListingCardOverlayProps) {
 	const { tokens } = useTheme();
-	const [photo, setPhoto] = useState(0);
 
 	return (
 		<Card
@@ -68,27 +66,13 @@ export function ListingCardOverlay({
 			style={style}
 		>
 			<View style={{ aspectRatio }}>
-				{images.length > 1 ? (
-					<Carousel
-						data={images}
-						contentInset={0}
-						gap={0}
-						onIndexChange={setPhoto}
-						accessibilityLabel="Photos"
-						renderItem={({ item }) => (
-							<Image source={item} resizeMode="cover" style={{ aspectRatio }} />
-						)}
-						style={StyleSheet.absoluteFill}
-					/>
-				) : (
-					<Image
-						source={images[0]}
-						resizeMode="cover"
-						style={StyleSheet.absoluteFill}
-					/>
-				)}
+				<Image
+					source={image}
+					resizeMode="cover"
+					style={styles.photo}
+				/>
 				<View style={styles.scrim} />
-				{/* Nothing in it is pressable: swipes go through to the photos. */}
+				{/* Nothing in it is pressable: presses go through to the card. */}
 				<View style={[styles.content, { padding: tokens.spacing[4] }]}>
 					{badge ? (
 						<Badge variant="highlight" style={styles.badge}>
@@ -98,9 +82,6 @@ export function ListingCardOverlay({
 						<View />
 					)}
 					<View style={{ gap: tokens.spacing[1] }}>
-						{images.length > 1 ? (
-							<Dots count={images.length} active={photo} />
-						) : null}
 						<View style={[styles.row, { gap: tokens.spacing[2] }]}>
 							<Title
 								variant="headingSm"
@@ -154,32 +135,20 @@ export function ListingCardOverlay({
 	);
 }
 
-function Dots({ count, active }: { count: number; active: number }) {
-	return (
-		<View
-			accessible
-			accessibilityLabel={`Photo ${active + 1} of ${count}`}
-			style={styles.dots}
-		>
-			{Array.from({ length: count }, (_, index) => (
-				<View
-					key={index}
-					style={[styles.dot, index === active && styles.dotActive]}
-				/>
-			))}
-		</View>
-	);
-}
-
 // The scrim keeps the photo dark behind the text in both schemes, so the text on it is always white.
 const ON_MEDIA = {
 	text: "hsla(0, 0%, 100%, 1)",
 	muted: "hsla(0, 0%, 100%, 0.75)",
 	line: "hsla(0, 0%, 100%, 0.25)",
-	dot: "hsla(0, 0%, 100%, 0.5)",
 };
 
 const styles = StyleSheet.create({
+	// A bundled image defaults to its file's pixel size: absoluteFill alone does not stretch it.
+	photo: {
+		...StyleSheet.absoluteFill,
+		width: "100%",
+		height: "100%",
+	},
 	scrim: {
 		...StyleSheet.absoluteFill,
 		pointerEvents: "none",
@@ -214,21 +183,5 @@ const styles = StyleSheet.create({
 	specs: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-	},
-	dots: {
-		flexDirection: "row",
-		alignSelf: "center",
-		gap: 4,
-		marginBottom: 8,
-	},
-	dot: {
-		width: 6,
-		height: 6,
-		borderRadius: 3,
-		backgroundColor: ON_MEDIA.dot,
-	},
-	dotActive: {
-		width: 14,
-		backgroundColor: ON_MEDIA.text,
 	},
 });

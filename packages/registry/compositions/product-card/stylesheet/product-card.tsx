@@ -14,7 +14,10 @@ export type ProductCardProps = {
 	subtitle?: string;
 	/** A short label on the media, or above the title without media: "New", "-20%". */
 	badge?: string;
-	/** Usually an `Image`. It fills the card's width; give it a size or an `aspectRatio`. */
+	/**
+	 * Usually an `Image` with `width: "100%"` and `flex: 1`: the card is 3:4 with media, the text keeps
+	 * its height and the image fills the rest. Set the card's width with `style`.
+	 */
 	media?: ReactNode;
 	actionLabel?: string;
 	/** Shows the action button. */
@@ -43,10 +46,10 @@ export function ProductCard({
 			variant="outlined"
 			onPress={onPress}
 			accessibilityLabel={onPress ? `${title}, ${price}` : undefined}
-			style={style}
+			style={[media ? styles.ratio : undefined, style]}
 		>
 			{media ? (
-				<View>
+				<View style={styles.media}>
 					{media}
 					{label ? (
 						<View
@@ -80,6 +83,14 @@ export function ProductCard({
 }
 
 const styles = StyleSheet.create({
+	// Width:height, with media. The width comes from the caller.
+	ratio: {
+		aspectRatio: 3 / 4,
+	},
+	// Takes the height the text leaves.
+	media: {
+		flexGrow: 1,
+	},
 	overlay: {
 		...StyleSheet.absoluteFill,
 		alignItems: "flex-start",
