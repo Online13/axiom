@@ -64,8 +64,8 @@ const center = () => ({
 });
 
 /**
- * The part of the view the floating sidebar leaves free: fitting and focusing
- * center the screens there rather than behind the panel.
+ * The part of the view the floating sidebar and the tools beside it leave
+ * free: fitting and focusing center the screens there rather than behind them.
  */
 function area() {
 	const width = view?.clientWidth ?? 0;
@@ -73,10 +73,11 @@ function area() {
 	const panel = ui$.sidebarOpen.peek()
 		? document.querySelector(".tb-panel")?.getBoundingClientRect()
 		: undefined;
-	const left =
-		panel && view
-			? Math.max(panel.right - view.getBoundingClientRect().left, 0)
-			: 0;
+	const tools = document.querySelector(".tb-tools")?.getBoundingClientRect();
+	const edge = Math.max(panel?.right ?? 0, tools?.right ?? 0);
+	const left = view
+		? Math.max(edge - view.getBoundingClientRect().left, 0)
+		: 0;
 	return { left, width: width - left, height };
 }
 
@@ -173,9 +174,9 @@ export function focusScreen(element: Element, zoom?: number) {
 	frame = requestAnimationFrame(step);
 }
 
-/** Brings the phone nearest the middle of the free view in, at about 83%. */
-export function focusNearest() {
-	if (!view || !world) return;
+/** The phone nearest the middle of the free view. */
+function nearestPhone() {
+	if (!view || !world) return null;
 	const { x, y, z } = camera$.peek();
 	const free = area();
 	// The middle of the free view, in world points.
@@ -194,11 +195,32 @@ export function focusNearest() {
 			nearest = phone;
 		}
 	}
+	return nearest;
+}
+
+/** Brings the phone nearest the middle of the free view in, at about 83%. */
+export function focusNearest() {
+	const nearest = nearestPhone();
 	if (!nearest) return;
 	// Pressed again on the same phone, the glide is not skipped: the zoom may
 	// have moved since.
 	focused = null;
 	focusScreen(nearest, FOCUS_ZOOM);
+}
+
+/** The label of the screen nearest the middle of the free view. */
+export const nearestScreen = () =>
+	nearestPhone()?.closest<HTMLElement>(".tb-device")?.dataset.screen ?? null;
+
+/** Brings the screen labelled `label` forward and fits it to the free view. */
+export function showScreen(label: string) {
+	const phone = world?.querySelector(
+		`.tb-device[data-screen="${CSS.escape(label)}"] .tb-phone`,
+	);
+	if (!phone) return;
+	ui$.focusedScreen.set(label);
+	focused = null;
+	focusScreen(phone);
 }
 
 // A mouse wheel reports lines on some systems; the rest report pixels.
@@ -257,9 +279,13 @@ export function useCamera(
 			return { px: event.clientX - box.left, py: event.clientY - box.top };
 		};
 
+		// A screen brought forward holds the camera until the focus is left.
+		const held = () => ui$.focusedScreen.peek() !== null;
+
 		// A pinch on a trackpad arrives as a wheel with Ctrl held.
 		const wheel = (event: WheelEvent) => {
 			event.preventDefault();
+			if (held()) return;
 			moving();
 			const dx = pixels(event, event.deltaX);
 			const dy = pixels(event, event.deltaY);
@@ -288,6 +314,7 @@ export function useCamera(
 		};
 
 		const down = (event: PointerEvent) => {
+			if (held()) return;
 			if (event.button !== 0 && event.button !== 1) return;
 			// The middle button would start the browser's autoscroll.
 			if (event.button === 1) event.preventDefault();
@@ -341,14 +368,17 @@ export function useCamera(
 		};
 
 		const key = (event: KeyboardEvent) => {
-			if (typing(event.target)) return;
+			if (typing(event.target) || held()) return;
 			const mod = event.metaKey || event.ctrlKey;
+			// In slide mode the arrows step between the screens instead.
+			const slides =
+				ui$.tools.slides.peek() && ui$.view.peek() === "preview";
 			const pan = event.shiftKey ? 240 : 48;
 			const actions: Record<string, (() => void) | undefined> = {
-				ArrowLeft: () => panBy(pan, 0),
-				ArrowRight: () => panBy(-pan, 0),
-				ArrowUp: () => panBy(0, pan),
-				ArrowDown: () => panBy(0, -pan),
+				ArrowLeft: slides ? undefined : () => panBy(pan, 0),
+				ArrowRight: slides ? undefined : () => panBy(-pan, 0),
+				ArrowUp: slides ? undefined : () => panBy(0, pan),
+				ArrowDown: slides ? undefined : () => panBy(0, -pan),
 				"+": zoomIn,
 				"=": zoomIn,
 				"-": zoomOut,
@@ -391,6 +421,7 @@ export function useCamera(
 	// Screens change size with the device, and the sheet is another world:
 	// start over from a fitted row.
 	useLayoutEffect(() => {
+		ui$.focusedScreen.set(null);
 		fitWidth();
 	}, [device, shown]);
 }

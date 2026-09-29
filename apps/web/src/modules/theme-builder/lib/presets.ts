@@ -3,7 +3,7 @@
 // density that suit the mood. Picking a preset replaces the whole theme.
 
 import type { ColorScheme } from "@docs/lib/tokens";
-import { hexToRgb, onColor, rgbToHex } from "./color";
+import { mix } from "./color";
 import type {
 	ControlShape,
 	FontFamily,
@@ -33,16 +33,9 @@ type Scheme = {
 	error: string;
 };
 
-/** `amount` of `to` over `from`, in sRGB. */
-const mix = (from: string, to: string, amount: number) => {
-	const a = hexToRgb(from);
-	const b = hexToRgb(to);
-	const at = (x: number, y: number) => x + (y - x) * amount;
-	return rgbToHex({ r: at(a.r, b.r), g: at(a.g, b.g), b: at(a.b, b.b) });
-};
-
+// Pressed, subtle and on roles are left out: the builder derives them from
+// these (see `derivedRoles`), so they keep following when a color is edited.
 function roles(s: Scheme): Record<string, string> {
-	const tint = (color: string) => mix(s.bg, color, 0.16);
 	return {
 		"background.default": s.bg,
 		"background.subtle": s.subtle,
@@ -59,20 +52,11 @@ function roles(s: Scheme): Record<string, string> {
 		"border.strong": s.faint,
 		"border.focus": s.link ?? s.accent,
 		"primary.default": s.accent,
-		"primary.pressed": mix(s.accent, s.fg, 0.25),
-		"primary.subtle": tint(s.accent),
-		"primary.on": onColor(s.accent),
 		"highlight.default": s.highlight,
-		"highlight.subtle": tint(s.highlight),
-		"highlight.on": onColor(s.highlight),
 		"feedback.info": s.info,
-		"feedback.infoSubtle": tint(s.info),
 		"feedback.success": s.success,
-		"feedback.successSubtle": tint(s.success),
 		"feedback.warning": s.warning,
-		"feedback.warningSubtle": tint(s.warning),
 		"feedback.error": s.error,
-		"feedback.errorSubtle": tint(s.error),
 	};
 }
 
@@ -102,7 +86,7 @@ function preset(
 	return {
 		id: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
 		description,
-		theme: { name, overrides, ...look },
+		theme: { name, overrides, darkMode: true, ...look },
 	};
 }
 
@@ -540,4 +524,50 @@ export const presets: Preset[] = [
 			spacing: "compact",
 		},
 	),
+	// Written as its exported overrides rather than a Scheme: it points roles at
+	// palette steps and sets pressed, subtle and on roles by hand.
+	{
+		id: "greeny",
+		description:
+			"Deep mint surfaces, a soft orange accent on pill buttons and a swashed display face.",
+		theme: {
+			name: "Greeny",
+			darkMode: false,
+			fonts: { heading: "Sansita Swashed", body: "Inter" },
+			radius: "round",
+			controls: "pill",
+			spacing: "comfortable",
+			overrides: {
+				"background.default": { light: "mint.900", dark: "#131629" },
+				"background.subtle": { light: "mint.800", dark: "#0d0f1f" },
+				"background.elevated": { light: "mint.700", dark: "#1f2340" },
+				"background.inverse": { light: "#2d2c2b", dark: "#f4f3f8" },
+				"content.default": { light: "gray.50", dark: "#f4f3f8" },
+				"content.muted": { light: "gray.50", dark: "#b4b6cc" },
+				"content.subtle": { light: "#a09d99", dark: "#6d7090" },
+				"content.disabled": { light: "gray.50", dark: "#494c67" },
+				"content.inverse": { light: "#ffffff", dark: "#131629" },
+				"content.link": { light: "orange.500", dark: "#4b8bff" },
+				"border.default": { light: "gray.950", dark: "#2c3052" },
+				"border.subtle": { light: "#f5f2f0", dark: "#20233e" },
+				"border.strong": { light: "#a09d99", dark: "#6d7090" },
+				"border.focus": { light: "#0061ef", dark: "#4b8bff" },
+				"primary.default": { light: "orange.400", dark: "#4b8bff" },
+				"primary.pressed": { light: "#0b54be", dark: "#75a5fd" },
+				"primary.subtle": { light: "mint.700", dark: "#1c294b" },
+				"primary.on": { light: "gray.950", dark: "#0a0a0a" },
+				"highlight.default": { light: "#ff7e1d", dark: "#ff9b54" },
+				"highlight.subtle": { light: "#ffeadb", dark: "#392b30" },
+				"highlight.on": { light: "#0a0a0a", dark: "#0a0a0a" },
+				"feedback.info": { light: "#0061ef", dark: "#4b8bff" },
+				"feedback.infoSubtle": { light: "#d6e6fc", dark: "#1c294b" },
+				"feedback.success": { light: "#008a5e", dark: "#3ecf8e" },
+				"feedback.successSubtle": { light: "#d6ece5", dark: "#1a3439" },
+				"feedback.warning": { light: "#c77700", dark: "#ffce00" },
+				"feedback.warningSubtle": { light: "#f6e9d6", dark: "#393322" },
+				"feedback.error": { light: "#e54530", dark: "#ff6b5b" },
+				"feedback.errorSubtle": { light: "#fbe1de", dark: "#392431" },
+			},
+		},
+	},
 ];

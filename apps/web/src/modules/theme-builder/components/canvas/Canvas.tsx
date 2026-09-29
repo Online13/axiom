@@ -1,11 +1,15 @@
 import { observer } from "@legendapp/state/react";
 import { useRef } from "react";
+import { drawnScheme } from "../../lib/theme";
+import { theme$ } from "../../state/theme";
 import { ui$ } from "../../state/ui";
 import { SidebarToggle } from "../sidebar/SidebarToggle";
 import { useCamera } from "./camera";
 import { RenderSettings } from "./RenderSettings";
 import { IndexApp } from "./screens/IndexApp";
+import { SlideControls } from "./SlideControls";
 import { DesignSystem } from "./system/DesignSystem";
+import { Toolbar } from "./Toolbar";
 import { ZoomControls } from "./ZoomControls";
 
 /**
@@ -13,10 +17,16 @@ import { ZoomControls } from "./ZoomControls";
  * a canvas that pans and zooms rather than scrolls.
  */
 export const Canvas = observer(function Canvas() {
-	const scheme = ui$.scheme.get();
+	// The preview stylesheet has its own dark-only rules (shadows, scrims,
+	// separators), so a light-only theme must never be marked dark.
+	const scheme = drawnScheme(
+		{ darkMode: theme$.darkMode.get() },
+		ui$.scheme.get(),
+	);
 	const device = ui$.device.get();
 	const shown = ui$.view.get();
 	const focused = ui$.focusedScreen.get() !== null;
+	const picking = ui$.tools.pick.get();
 	const view = useRef<HTMLElement>(null);
 	const world = useRef<HTMLDivElement>(null);
 	useCamera(view, world, device, shown);
@@ -35,20 +45,22 @@ export const Canvas = observer(function Canvas() {
 				}}
 			>
 				<p id="tb-view-help" hidden>
-					Arrow keys pan, plus and minus zoom, Shift+1 fits every screen,
-					Shift+3 focuses the screen in the middle, Shift+0 shows them at
-					full size.
+					Arrow keys pan (or step between screens in slide mode), plus and
+					minus zoom, Escape leaves a focused screen, Shift+1 fits every
+					screen, Shift+3 focuses the screen in the middle, Shift+0 shows
+					them at full size.
 				</p>
 				<div
 					ref={world}
 					className={`tb-world ${shown === "preview" ? "tb-devices" : "tb-system"}`}
 					data-ax-preview
 					data-scheme={scheme}
+					data-picking={picking ? "" : undefined}
 				>
 					{shown === "preview" ? (
 						<>
 							{/* Behind the screen brought forward, over every other:
-							    a click on it puts them back. */}
+							    a click on it leaves the focus. */}
 							<div
 								className="tb-dim"
 								data-shown={focused ? "" : undefined}
@@ -65,10 +77,12 @@ export const Canvas = observer(function Canvas() {
 			{/* Floating over the canvas, as on a map; after the view in the
 			    tab order, since they act on it. */}
 			<SidebarToggle />
+			<Toolbar />
 			<div className="tb-overlay">
 				<RenderSettings />
 				<ZoomControls />
 			</div>
+			<SlideControls />
 		</main>
 	);
 });

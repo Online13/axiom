@@ -1,7 +1,7 @@
 import { observer } from "@legendapp/state/react";
 import { type MouseEvent, type ReactNode, useRef } from "react";
 import { roleForVariable } from "../../lib/theme";
-import { announce, back, ui$ } from "../../state/ui";
+import { announce, openPage, ui$ } from "../../state/ui";
 import { focusScreen } from "./camera";
 import { inspect } from "./inspect";
 
@@ -9,8 +9,8 @@ const pick = (event: MouseEvent<HTMLDivElement>) =>
 	inspect(event.target as Element, event.currentTarget);
 
 /**
- * Shows the roles that paint the part in the sidebar, text first. A part drawn
- * with a raw palette step has no role to change.
+ * Shows the roles that paint the part in the list of every color, text first.
+ * A part drawn with a raw palette step has no role to change.
  */
 function focus(variables: (string | undefined)[]) {
 	const paths = [
@@ -25,8 +25,7 @@ function focus(variables: (string | undefined)[]) {
 		announce("This part uses a fixed palette step, not a role.");
 		return;
 	}
-	back();
-	ui$.sections.colors.set(true);
+	openPage({ kind: "colors" });
 	ui$.focusedRoles.set({ paths, at: Date.now() });
 }
 
@@ -38,12 +37,10 @@ function focus(variables: (string | undefined)[]) {
 export const DeviceFrame = observer(function DeviceFrame({
 	label,
 	caption,
-	grouped,
 	children,
 }: {
 	label: string;
 	caption?: string;
-	grouped?: boolean;
 	children: ReactNode;
 }) {
 	const device = ui$.device.get();
@@ -60,23 +57,28 @@ export const DeviceFrame = observer(function DeviceFrame({
 	};
 
 	return (
-		<figure className="tb-device" data-focused={focused ? "" : undefined}>
+		<figure
+			className="tb-device"
+			data-screen={label}
+			data-focused={focused ? "" : undefined}
+		>
 			<div className="tb-phone" data-device={device}>
 				<div
 					className="ax-screen"
 					data-device={device}
-					data-grouped={grouped ? "true" : undefined}
 					// The mockups are pictures, not apps: nothing inside is focusable.
-					// Pointing at a part outlines it; clicking brings the phone to the
-					// middle of the canvas, dims the others behind it, and opens the
-					// part's colors in the sidebar,
-					// which is where they are edited from the keyboard.
+					// Clicking brings the phone to the middle of the canvas, dims the
+					// others behind it and holds the camera there until the focus is
+					// left. With the pick tool on, pointing at a part also outlines it
+					// and clicking opens the part's colors in the sidebar, which is
+					// where they are edited from the keyboard.
 					onMouseOver={(event) => outline(pick(event)?.element ?? null)}
 					onMouseLeave={() => outline(null)}
 					onClick={(event) => {
 						const phone = event.currentTarget.parentElement;
 						if (phone) focusScreen(phone);
 						ui$.focusedScreen.set(label);
+						if (!ui$.tools.pick.peek()) return;
 						const hit = pick(event);
 						if (hit) focus([hit.text, hit.background, hit.border]);
 					}}

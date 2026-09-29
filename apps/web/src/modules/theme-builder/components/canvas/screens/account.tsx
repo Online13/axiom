@@ -26,12 +26,20 @@ import { space } from "./space";
 export function Profile() {
 	return (
 		<>
-			<div className="ax-row" data-justify="end" style={{ padding: space(0, 12) }}>
+			<div
+				className="ax-row"
+				data-justify="end"
+				style={{ padding: space(0, 12) }}
+			>
 				<span className="ax-anchor">
 					<span className="ax-icon-btn">
 						<Bell className="ax-glyph" size={22} strokeWidth={1.9} />
 					</span>
-					<span className="ax-badge" data-kind="count" style={{ top: 4, right: 2 }}>
+					<span
+						className="ax-badge"
+						data-kind="count"
+						style={{ top: 4, right: 2 }}
+					>
 						3
 					</span>
 				</span>
@@ -40,7 +48,11 @@ export function Profile() {
 				</span>
 			</div>
 
-			<div className="ax-stack" data-gap="12" style={{ padding: space(0, 20) }}>
+			<div
+				className="ax-stack"
+				data-gap="12"
+				style={{ padding: space(0, 20) }}
+			>
 				<span className="ax-row" data-gap="16">
 					<span className="ax-avatar" data-size="xl">
 						{reader.initials}
@@ -57,14 +69,23 @@ export function Profile() {
 						["4", "collections"],
 						["36", "following"],
 					].map(([value, label]) => (
-						<span key={label} className="ax-card" data-variant="filled" style={{ flex: 1, padding: space(10, 12) }}>
+						<span
+							key={label}
+							className="ax-card"
+							data-variant="filled"
+							style={{ flex: 1, padding: space(10, 12) }}
+						>
 							<span className="ax-headline">{value}</span>
 							<span className="ax-caption ax-muted">{label}</span>
 						</span>
 					))}
 				</span>
 				<span className="ax-row" data-gap="8">
-					<span className="ax-btn" data-variant="outline" style={{ flex: 1 }}>
+					<span
+						className="ax-btn"
+						data-variant="outline"
+						style={{ flex: 1 }}
+					>
 						Edit profile
 					</span>
 					<span className="ax-icon-btn" data-variant="outline">
@@ -78,14 +99,25 @@ export function Profile() {
 				<span>Activity</span>
 			</div>
 
-			<div className="ax-row" data-gap="12" data-align="start" style={{ padding: space(16, 20, 0) }}>
+			<div
+				className="ax-row"
+				data-gap="12"
+				data-align="start"
+				style={{ padding: space(16, 20, 0) }}
+			>
 				{[saved.architecture, saved.ideas].map((collection) => (
-					<span key={collection.title} className="ax-stack ax-grow" data-gap="8">
+					<span
+						key={collection.title}
+						className="ax-stack ax-grow"
+						data-gap="8"
+					>
 						<Mosaic collection={collection} height={140} />
 						<span className="ax-row" data-justify="between">
 							<span className="ax-stack" style={{ gap: 0 }}>
 								<span className="ax-headline">{collection.title}</span>
-								<span className="ax-caption ax-muted">{collection.count} stories</span>
+								<span className="ax-caption ax-muted">
+									{collection.count} stories
+								</span>
 							</span>
 							<span className="ax-badge" data-variant="outline">
 								Public
@@ -104,7 +136,11 @@ export function EditProfile() {
 	return (
 		<>
 			<AppBar title="Edit profile" />
-			<div className="ax-stack" data-gap="8" style={{ padding: space(8, 24, 0), alignItems: "center" }}>
+			<div
+				className="ax-stack"
+				data-gap="8"
+				style={{ padding: space(8, 24, 0), alignItems: "center" }}
+			>
 				<span className="ax-anchor">
 					<span className="ax-avatar" data-size="xl">
 						{reader.initials}
@@ -113,7 +149,12 @@ export function EditProfile() {
 						className="ax-icon-btn"
 						data-variant="solid"
 						data-size="sm"
-						style={{ position: "absolute", right: -4, bottom: -4, boxShadow: "0 0 0 3px var(--ax-background-default)" }}
+						style={{
+							position: "absolute",
+							right: -4,
+							bottom: -4,
+							boxShadow: "0 0 0 3px var(--ax-background-default)",
+						}}
 					>
 						<Camera className="ax-glyph" size={16} strokeWidth={2} />
 					</span>
@@ -121,7 +162,11 @@ export function EditProfile() {
 				<span className="ax-footnote ax-link">Change photo</span>
 			</div>
 
-			<div className="ax-stack" data-gap="16" style={{ padding: space(20, 24, 0) }}>
+			<div
+				className="ax-stack"
+				data-gap="16"
+				style={{ padding: space(20, 24, 0) }}
+			>
 				<div className="ax-field">
 					<span className="ax-label">Display name</span>
 					<span className="ax-control">
@@ -191,8 +236,16 @@ const settingGroups: [string, Row[]][] = [
 		"Notifications & privacy",
 		[
 			{ icon: Bell, title: "Notifications", trailing: chevron("On") },
-			{ icon: Lock, title: "Private profile", trailing: <span className="ax-switch" /> },
-			{ icon: Download, title: "Offline reading", trailing: <span className="ax-switch" data-checked /> },
+			{
+				icon: Lock,
+				title: "Private profile",
+				trailing: <span className="ax-switch" />,
+			},
+			{
+				icon: Download,
+				title: "Offline reading",
+				trailing: <span className="ax-switch" data-checked />,
+			},
 		],
 	],
 	[
@@ -208,13 +261,19 @@ export function Settings() {
 	return (
 		<>
 			<AppBar title="Settings" />
-			<div className="ax-list" style={{ marginTop: space(8) }}>
+			<div
+				className="ax-list"
+				data-variant="filled"
+				style={{ marginTop: space(8) }}
+			>
 				<div className="ax-item" data-size="lg">
 					<span className="ax-avatar" data-size="lg">
 						{reader.initials}
 					</span>
 					<span className="ax-item-content">
-						<span className="ax-item-title ax-semibold">{reader.name}</span>
+						<span className="ax-item-title ax-semibold">
+							{reader.name}
+						</span>
 						<span className="ax-item-desc">{reader.email}</span>
 					</span>
 					<span className="ax-item-trailing">{chevron()}</span>
@@ -224,11 +283,15 @@ export function Settings() {
 			{settingGroups.map(([group, rows]) => (
 				<div key={group}>
 					<div className="ax-section">{group}</div>
-					<div className="ax-list" data-inset>
+					<div className="ax-list" data-variant="filled" data-inset>
 						{rows.map(({ icon: Icon, title, trailing }) => (
 							<div key={title} className="ax-item">
 								<span className="ax-tile" data-color="subtle">
-									<Icon className="ax-glyph" size={18} strokeWidth={2} />
+									<Icon
+										className="ax-glyph"
+										size={18}
+										strokeWidth={2}
+									/>
 								</span>
 								<span className="ax-item-content">
 									<span className="ax-item-title">{title}</span>
@@ -240,7 +303,11 @@ export function Settings() {
 				</div>
 			))}
 
-			<div className="ax-list" style={{ marginTop: space(24) }}>
+			<div
+				className="ax-list"
+				data-variant="filled"
+				style={{ marginTop: space(24) }}
+			>
 				<div className="ax-item" style={{ justifyContent: "center" }}>
 					<span className="ax-danger">Sign out</span>
 				</div>
@@ -250,9 +317,23 @@ export function Settings() {
 }
 
 /** A tiny screen drawn with the theme in one scheme, whatever the phone shows. */
-function SchemeThumb({ scheme, style }: { scheme: ColorScheme; style?: CSSProperties }) {
+function SchemeThumb({
+	scheme,
+	style,
+}: {
+	scheme: ColorScheme;
+	style?: CSSProperties;
+}) {
 	const bar = (width: string, height: number, color: string) => (
-		<span style={{ width, height, flex: "none", borderRadius: height / 2, background: `var(--ax-${color})` }} />
+		<span
+			style={{
+				width,
+				height,
+				flex: "none",
+				borderRadius: height / 2,
+				background: `var(--ax-${color})`,
+			}}
+		/>
 	);
 	return (
 		<span
@@ -270,7 +351,13 @@ function SchemeThumb({ scheme, style }: { scheme: ColorScheme; style?: CSSProper
 		>
 			{bar("70%", 6, "content-default")}
 			{bar("90%", 4, "content-subtle")}
-			<span style={{ flex: 1, borderRadius: "var(--ax-radius-sm)", background: "var(--ax-background-subtle)" }} />
+			<span
+				style={{
+					flex: 1,
+					borderRadius: "var(--ax-radius-sm)",
+					background: "var(--ax-background-subtle)",
+				}}
+			/>
 			{bar("55%", 12, "primary-default")}
 		</span>
 	);
@@ -287,7 +374,11 @@ export function Appearance() {
 		<>
 			<AppBar title="Appearance" />
 			<div className="ax-section">Theme</div>
-			<div className="ax-row" data-gap="12" style={{ padding: space(0, 16) }}>
+			<div
+				className="ax-row"
+				data-gap="12"
+				style={{ padding: space(0, 16) }}
+			>
 				{modes.map(([label, schemes]) => {
 					const on = label === "Dark";
 					return (
@@ -295,7 +386,12 @@ export function Appearance() {
 							key={label}
 							className="ax-card"
 							data-variant="outlined"
-							style={{ flex: 1, gap: space(10), padding: space(6), ...(on ? selected : undefined) }}
+							style={{
+								flex: 1,
+								gap: space(10),
+								padding: space(6),
+								...(on ? selected : undefined),
+							}}
 						>
 							<span
 								style={{
@@ -310,8 +406,15 @@ export function Appearance() {
 									<SchemeThumb key={scheme} scheme={scheme} />
 								))}
 							</span>
-							<span className="ax-row" data-justify="center" style={{ paddingBottom: space(6) }}>
-								<span className="ax-radio" data-checked={on || undefined} />
+							<span
+								className="ax-row"
+								data-justify="center"
+								style={{ paddingBottom: space(6) }}
+							>
+								<span
+									className="ax-radio"
+									data-checked={on || undefined}
+								/>
 								<span className="ax-subhead ax-semibold">{label}</span>
 							</span>
 						</span>
@@ -320,15 +423,26 @@ export function Appearance() {
 			</div>
 
 			<div className="ax-section">Reading</div>
-			<div className="ax-list">
-				<div className="ax-item" style={{ flexDirection: "column", alignItems: "stretch", gap: space(10), paddingBlock: space(14) }}>
+			<div className="ax-list" data-variant="filled">
+				<div
+					className="ax-item"
+					style={{
+						flexDirection: "column",
+						alignItems: "stretch",
+						gap: space(10),
+						paddingBlock: space(14),
+					}}
+				>
 					<span className="ax-row" data-justify="between">
 						<span className="ax-item-title">Text size</span>
 						<span className="ax-subhead ax-muted">18 pt</span>
 					</span>
 					<span className="ax-row" data-gap="12">
 						<span className="ax-footnote">A</span>
-						<span className="ax-slider ax-grow" style={{ "--to": "58%" } as CSSProperties}>
+						<span
+							className="ax-slider ax-grow"
+							style={{ "--to": "58%" } as CSSProperties}
+						>
 							<span className="ax-thumb" style={{ left: "58%" }} />
 						</span>
 						<span className="ax-title3">A</span>
@@ -348,8 +462,8 @@ export function Appearance() {
 				</div>
 			</div>
 			<div className="ax-footnote-block">
-				Dark follows your theme's dark colors, even when the rest of your phone
-				is light.
+				Dark follows your theme's dark colors, even when the rest of your
+				phone is light.
 			</div>
 		</>
 	);
@@ -366,25 +480,42 @@ export function NotificationSettings() {
 	return (
 		<>
 			<AppBar title="Notifications" />
-			<div className="ax-list" style={{ marginTop: space(8) }}>
+			<div
+				className="ax-list"
+				data-variant="filled"
+				style={{ marginTop: space(8) }}
+			>
 				<div className="ax-item" data-size="lg">
 					<span className="ax-item-content">
-						<span className="ax-item-title ax-semibold">Allow notifications</span>
-						<span className="ax-item-desc">Never between 22:00 and 8:00</span>
+						<span className="ax-item-title ax-semibold">
+							Allow notifications
+						</span>
+						<span className="ax-item-desc">
+							Never between 22:00 and 8:00
+						</span>
 					</span>
 					<span className="ax-switch" data-checked />
 				</div>
 			</div>
 
 			<div className="ax-section">Stories</div>
-			<div className="ax-list">
+			<div className="ax-list" data-variant="filled">
 				{topicsSettings.map(([title, detail, on, disabled]) => (
-					<div key={title} className="ax-item" data-size="lg" data-state={disabled ? "disabled" : undefined}>
+					<div
+						key={title}
+						className="ax-item"
+						data-size="lg"
+						data-state={disabled ? "disabled" : undefined}
+					>
 						<span className="ax-item-content">
 							<span className="ax-item-title">{title}</span>
 							<span className="ax-item-desc">{detail}</span>
 						</span>
-						<span className="ax-switch" data-checked={on || undefined} data-disabled={disabled || undefined} />
+						<span
+							className="ax-switch"
+							data-checked={on || undefined}
+							data-disabled={disabled || undefined}
+						/>
 					</div>
 				))}
 			</div>
@@ -426,22 +557,30 @@ const events: [string, Event[]][] = [
 				who: <Avatar initials={authors.noor.initials} />,
 				what: (
 					<>
-						<span className="ax-semibold">{authors.noor.name}</span> published “{stories.materials.title}”
+						<span className="ax-semibold">{authors.noor.name}</span>{" "}
+						published “{stories.materials.title}”
 					</>
 				),
 				when: "12 min ago",
 				unread: true,
-				aside: <Artwork cover={stories.materials.cover} size={44} radius="sm" />,
+				aside: (
+					<Artwork cover={stories.materials.cover} size={44} radius="sm" />
+				),
 			},
 			{
 				who: (
 					<span style={{ width: 32, flex: "none" }}>
-						<Mosaic collection={collections.calm} height={32} radius="sm" />
+						<Mosaic
+							collection={collections.calm}
+							height={32}
+							radius="sm"
+						/>
 					</span>
 				),
 				what: (
 					<>
-						<span className="ax-semibold">{collections.calm.title}</span> has 2 new stories
+						<span className="ax-semibold">{collections.calm.title}</span>{" "}
+						has 2 new stories
 					</>
 				),
 				when: "1 h ago",
@@ -451,7 +590,8 @@ const events: [string, Event[]][] = [
 				who: <Avatar initials={authors.theo.initials} />,
 				what: (
 					<>
-						<span className="ax-semibold">{authors.theo.name}</span> started following you
+						<span className="ax-semibold">{authors.theo.name}</span>{" "}
+						started following you
 					</>
 				),
 				when: "3 h ago",
@@ -469,13 +609,23 @@ const events: [string, Event[]][] = [
 		[
 			{
 				who: (
-					<span className="ax-tile" data-color="subtle" style={{ width: 32, height: 32, borderRadius: 999 }}>
-						<Check className="ax-glyph ax-success" size={16} strokeWidth={2.6} />
+					<span
+						className="ax-tile"
+						data-color="subtle"
+						style={{ width: 32, height: 32, borderRadius: 999 }}
+					>
+						<Check
+							className="ax-glyph ax-success"
+							size={16}
+							strokeWidth={2.6}
+						/>
 					</span>
 				),
 				what: (
 					<>
-						Your collection <span className="ax-semibold">Architecture</span> reached 20 stories
+						Your collection{" "}
+						<span className="ax-semibold">Architecture</span> reached 20
+						stories
 					</>
 				),
 				when: "Yesterday",
@@ -484,11 +634,14 @@ const events: [string, Event[]][] = [
 				who: <Avatar initials={authors.jonas.initials} />,
 				what: (
 					<>
-						Picked for you: “{stories.kyoto.title}” by {authors.jonas.name}
+						Picked for you: “{stories.kyoto.title}” by{" "}
+						{authors.jonas.name}
 					</>
 				),
 				when: "Yesterday",
-				aside: <Artwork cover={stories.kyoto.cover} size={44} radius="sm" />,
+				aside: (
+					<Artwork cover={stories.kyoto.cover} size={44} radius="sm" />
+				),
 			},
 		],
 	],
@@ -499,11 +652,21 @@ export function NotificationCenter() {
 		<>
 			<AppBar
 				title="Activity"
-				end={<span className="ax-footnote ax-link ax-semibold" style={{ paddingRight: space(8) }}>Mark all read</span>}
+				end={
+					<span
+						className="ax-footnote ax-link ax-semibold"
+						style={{ paddingRight: space(8) }}
+					>
+						Mark all read
+					</span>
+				}
 			/>
 			<div className="ax-tabs">
 				<span data-active>
-					All <span className="ax-badge" data-kind="count">3</span>
+					All{" "}
+					<span className="ax-badge" data-kind="count">
+						3
+					</span>
 				</span>
 				<span>Following</span>
 				<span>Collections</span>
@@ -522,14 +685,21 @@ export function NotificationCenter() {
 							data-align="start"
 							style={{
 								padding: space(12, 20),
-								background: event.unread ? "var(--ax-primary-subtle)" : undefined,
+								background: event.unread
+									? "var(--ax-primary-subtle)"
+									: undefined,
 							}}
 						>
 							{event.who}
 							<span className="ax-stack ax-grow" data-gap="4">
 								<span className="ax-subhead">{event.what}</span>
-								<span className="ax-row ax-caption ax-muted" data-gap="4">
-									{event.unread && <span className="ax-badge-dot ax-link" />}
+								<span
+									className="ax-row ax-caption ax-muted"
+									data-gap="4"
+								>
+									{event.unread && (
+										<span className="ax-badge-dot ax-link" />
+									)}
 									{event.when}
 								</span>
 							</span>

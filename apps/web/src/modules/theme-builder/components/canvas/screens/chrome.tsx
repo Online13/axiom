@@ -2,13 +2,7 @@
 // wordmark, bylines and the story row. Repeating the same parts is the point:
 // a theme change shows up the same way everywhere.
 
-import {
-	Bookmark,
-	ChevronLeft,
-	Compass,
-	House,
-	User,
-} from "lucide-react";
+import { Bookmark, ChevronLeft, Compass, House, User } from "lucide-react";
 import type { CSSProperties, ReactNode } from "react";
 import { Artwork } from "./Artwork";
 import { type AuthorId, authors, type Collection, type Story } from "./content";
@@ -28,7 +22,13 @@ export function TabBar({ active }: { active: TabId }) {
 	return (
 		<div
 			className="ax-tabbar"
-			style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 16 }}
+			style={{
+				position: "absolute",
+				left: 0,
+				right: 0,
+				bottom: 0,
+				zIndex: 16,
+			}}
 		>
 			{tabs.map(([id, label, Icon]) => (
 				<span
@@ -40,7 +40,9 @@ export function TabBar({ active }: { active: TabId }) {
 						className="ax-glyph"
 						size={24}
 						strokeWidth={1.9}
-						fill={id === active && id === "saved" ? "currentColor" : "none"}
+						fill={
+							id === active && id === "saved" ? "currentColor" : "none"
+						}
 					/>
 					<span>{label}</span>
 				</span>
@@ -85,7 +87,11 @@ export const Wordmark = ({ size = 22 }: { size?: number }) => (
 export const Kicker = ({ children }: { children: ReactNode }) => (
 	<span
 		className="ax-caption ax-link"
-		style={{ letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700 }}
+		style={{
+			letterSpacing: "0.1em",
+			textTransform: "uppercase",
+			fontWeight: 700,
+		}}
 	>
 		{children}
 	</span>
@@ -176,7 +182,11 @@ export const selected: CSSProperties = {
 /** Onboarding step: where the reader is, and a way out. */
 export function Steps({ step, of }: { step: number; of: number }) {
 	return (
-		<div className="ax-stack" data-gap="8" style={{ padding: space(4, 20, 0) }}>
+		<div
+			className="ax-stack"
+			data-gap="8"
+			style={{ padding: space(4, 20, 0) }}
+		>
 			<span className="ax-row" data-justify="between">
 				<span className="ax-footnote ax-muted">
 					Step {step} of {of}

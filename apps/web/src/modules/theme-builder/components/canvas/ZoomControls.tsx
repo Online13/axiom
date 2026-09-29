@@ -3,6 +3,12 @@ import { Focus, Minus, Plus } from "lucide-react";
 import { ui$ } from "../../state/ui";
 import { camera$, fitAll, focusNearest, zoomIn, zoomOut } from "./camera";
 
+/** The controls move the camera, so they first leave a focused screen. */
+const free = (action: () => void) => () => {
+	ui$.focusedScreen.set(null);
+	action();
+};
+
 /**
  * Zoom out, the current zoom (a click fits every screen), zoom in, and focus:
  * the screen nearest the middle, brought in at about 83%.
@@ -13,7 +19,7 @@ export const ZoomControls = observer(function ZoomControls() {
 
 	return (
 		<div className="tb-zoom tb-float" role="group" aria-label="Zoom">
-			<button type="button" aria-label="Zoom out" onClick={zoomOut}>
+			<button type="button" aria-label="Zoom out" onClick={free(zoomOut)}>
 				<Minus size={14} aria-hidden="true" />
 			</button>
 			<button
@@ -21,11 +27,11 @@ export const ZoomControls = observer(function ZoomControls() {
 				className="tb-zoom__level"
 				title="Fit every screen (Shift+1)"
 				aria-label={`Zoom ${zoom}%, fit every screen`}
-				onClick={fitAll}
+				onClick={free(fitAll)}
 			>
 				{zoom}%
 			</button>
-			<button type="button" aria-label="Zoom in" onClick={zoomIn}>
+			<button type="button" aria-label="Zoom in" onClick={free(zoomIn)}>
 				<Plus size={14} aria-hidden="true" />
 			</button>
 			{phones && (
@@ -33,7 +39,7 @@ export const ZoomControls = observer(function ZoomControls() {
 					type="button"
 					title="Focus the screen in the middle (Shift+3)"
 					aria-label="Focus the screen in the middle"
-					onClick={focusNearest}
+					onClick={free(focusNearest)}
 				>
 					<Focus size={14} aria-hidden="true" />
 				</button>

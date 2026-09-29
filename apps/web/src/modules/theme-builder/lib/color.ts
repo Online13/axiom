@@ -81,6 +81,14 @@ export function rgbToHsla({ r, g, b }: Rgb): string {
 
 export const hslaToHex = (value: string) => rgbToHex(hslaToRgb(value));
 
+/** `amount` of `to` over `from`, in sRGB. */
+export const mix = (from: string, to: string, amount: number) => {
+	const a = hexToRgb(from);
+	const b = hexToRgb(to);
+	const at = (x: number, y: number) => x + (y - x) * amount;
+	return rgbToHex({ r: at(a.r, b.r), g: at(a.g, b.g), b: at(a.b, b.b) });
+};
+
 /* ---------- OKLCH ---------- */
 
 const toLinear = (channel: number) =>

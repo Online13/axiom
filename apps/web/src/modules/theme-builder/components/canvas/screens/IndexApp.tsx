@@ -19,12 +19,7 @@ import { Article, Author, CollectionDetail } from "./reading";
 import { RemoveDialog, SaveSheet, Saved, SavedEmpty } from "./saved";
 import { ErrorState, Loading, Success } from "./states";
 
-const screens: {
-	name: string;
-	Screen: ComponentType;
-	/** Settings-style screens sit on the subtle background. */
-	grouped?: boolean;
-}[] = [
+export const screens: { name: string; Screen: ComponentType }[] = [
 	{ name: "Welcome", Screen: Welcome },
 	{ name: "Choose interests", Screen: Interests },
 	{ name: "Personalize", Screen: Personalize },
@@ -41,9 +36,9 @@ const screens: {
 	{ name: "Saved · empty", Screen: SavedEmpty },
 	{ name: "Profile", Screen: Profile },
 	{ name: "Edit profile", Screen: EditProfile },
-	{ name: "Settings", Screen: Settings, grouped: true },
-	{ name: "Appearance", Screen: Appearance, grouped: true },
-	{ name: "Notifications", Screen: NotificationSettings, grouped: true },
+	{ name: "Settings", Screen: Settings },
+	{ name: "Appearance", Screen: Appearance },
+	{ name: "Notifications", Screen: NotificationSettings },
 	{ name: "Activity", Screen: NotificationCenter },
 	{ name: "Save to collection", Screen: SaveSheet },
 	{ name: "Remove dialog", Screen: RemoveDialog },
@@ -53,12 +48,11 @@ const screens: {
 ];
 
 export function IndexApp() {
-	return screens.map(({ name, Screen, grouped }, i) => (
+	return screens.map(({ name, Screen }, i) => (
 		<DeviceFrame
 			key={name}
 			label={name}
 			caption={`${String(i + 1).padStart(2, "0")} · ${name}`}
-			grouped={grouped}
 		>
 			<Screen />
 		</DeviceFrame>

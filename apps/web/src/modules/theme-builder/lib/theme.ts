@@ -15,7 +15,7 @@ import {
 	type PaletteStep,
 } from "@docs/lib/tokens";
 import { SYSTEM_FONT, fontStack } from "./fonts";
-import { hslaToHex } from "./color";
+import { hslaToHex, mix, onColor } from "./color";
 
 export type PaletteHue = keyof typeof palette;
 
@@ -95,6 +95,8 @@ export type RoleOverrides = Record<
 export type Theme = {
 	name: string;
 	overrides: RoleOverrides;
+	/** Off: the theme has one look, and its dark scheme is its light one. */
+	darkMode: boolean;
 	radius: RadiusScale;
 	controls: ControlShape;
 	spacing: SpacingScale;
@@ -104,6 +106,7 @@ export type Theme = {
 export const defaultTheme: Theme = {
 	name: "Axiom",
 	overrides: {},
+	darkMode: true,
 	radius: "default",
 	controls: "rounded",
 	spacing: "default",
@@ -199,16 +202,74 @@ export const resolve = (value: string): string => {
 	return hslaToHex(palette[hue][Number(step) as PaletteStep]);
 };
 
+/** A tinted surface: a little of `color` over the background. */
+const tint = (hex: (path: string) => string, path: string) =>
+	mix(hex("background.default"), hex(path), 0.16);
+
+/**
+ * Roles that follow others: what they are made of, and how. Axiom ships each
+ * as a palette step; once one of its sources is set by hand, the shipped step
+ * no longer matches, so the role is worked out from the sources instead.
+ */
+export const derivedRoles: Record<
+	string,
+	{ from: string[]; derive: (hex: (path: string) => string) => string }
+> = {
+	"primary.pressed": {
+		from: ["primary.default", "content.default"],
+		derive: (hex) => mix(hex("primary.default"), hex("content.default"), 0.25),
+	},
+	"primary.subtle": {
+		from: ["primary.default", "background.default"],
+		derive: (hex) => tint(hex, "primary.default"),
+	},
+	"primary.on": {
+		from: ["primary.default"],
+		derive: (hex) => onColor(hex("primary.default")),
+	},
+	"highlight.subtle": {
+		from: ["highlight.default", "background.default"],
+		derive: (hex) => tint(hex, "highlight.default"),
+	},
+	"highlight.on": {
+		from: ["highlight.default"],
+		derive: (hex) => onColor(hex("highlight.default")),
+	},
+	...Object.fromEntries(
+		(["info", "success", "warning", "error"] as const).map((kind) => [
+			`feedback.${kind}Subtle`,
+			{
+				from: [`feedback.${kind}`, "background.default"],
+				derive: (hex: (path: string) => string) => tint(hex, `feedback.${kind}`),
+			},
+		]),
+	),
+};
+
 /** The roles of one scheme: what Axiom ships, then any hand-set role on top. */
 export function buildScheme(
 	scheme: ColorScheme,
 	overrides: RoleOverrides = {},
 ): Swatch[] {
+	const custom = (path: string) => overrides[path]?.[scheme];
+	const shipped = (role: ColorRole, key: string) =>
+		(colorRoles[role] as Record<string, { light: string; dark: string }>)[
+			key
+		][scheme];
+	const hex = (path: string) => {
+		const [role, key] = path.split(".") as [ColorRole, string];
+		return resolve(custom(path) ?? shipped(role, key));
+	};
+
 	return (Object.keys(colorRoles) as ColorRole[]).flatMap((role) =>
 		Object.entries(colorRoles[role]).map(([key, entry]) => {
-			const auto = (entry as { light: string; dark: string })[scheme];
-			const custom = overrides[`${role}.${key}`]?.[scheme];
-			const value = custom ?? auto;
+			const path = `${role}.${key}`;
+			const derived = derivedRoles[path];
+			const auto =
+				derived && derived.from.some((source) => custom(source) !== undefined)
+					? derived.derive(hex)
+					: shipped(role, key);
+			const value = custom(path) ?? auto;
 			return {
 				role,
 				key,
@@ -218,11 +279,26 @@ export function buildScheme(
 				source: /^[a-z]+\.\d+$/.test(value) ? value : "—",
 				value,
 				auto,
-				custom: custom !== undefined,
+				custom: custom(path) !== undefined,
 			};
 		}),
 	);
 }
+
+/** The scheme a theme is drawn in: without a dark mode, it is always light. */
+export const drawnScheme = (
+	theme: Pick<Theme, "darkMode">,
+	scheme: ColorScheme,
+): ColorScheme => (theme.darkMode ? scheme : "light");
+
+/**
+ * The roles a theme draws one scheme with. Without a dark mode, dark is the
+ * light scheme; its own overrides are kept, for when it comes back.
+ */
+export const themeScheme = (
+	theme: Pick<Theme, "overrides" | "darkMode">,
+	scheme: ColorScheme,
+) => buildScheme(drawnScheme(theme, scheme), theme.overrides);
 
 /** The role path a preview variable names — `--ax-content-muted` → `content.muted`. */
 export const roleForVariable = (variable: string) =>
@@ -295,7 +371,7 @@ export function themeCss(theme: Theme): string {
 	const { sm, md, lg, xl } = radiusValues(theme.radius);
 
 	const block = (scheme: ColorScheme) =>
-		buildScheme(scheme, theme.overrides)
+		themeScheme(theme, scheme)
 			.map((swatch) => `${swatch.variable}:${swatch.hex};`)
 			.join("");
 
@@ -342,6 +418,10 @@ export function normalizeTheme(raw: unknown): Theme {
 	return {
 		name: text(value.name, defaultTheme.name),
 		overrides: normalizeOverrides(value.overrides),
+		darkMode:
+			typeof value.darkMode === "boolean"
+				? value.darkMode
+				: defaultTheme.darkMode,
 		radius:
 			typeof value.radius === "string" && value.radius in radiusScales
 				? (value.radius as RadiusScale)
@@ -389,6 +469,7 @@ export function encodeTheme(theme: Theme): string {
 	params.set("heading", theme.fonts.heading);
 	params.set("body", theme.fonts.body);
 	if (theme.name !== defaultTheme.name) params.set("name", theme.name);
+	if (!theme.darkMode) params.set("dark", "off");
 	if (Object.keys(theme.overrides).length)
 		params.set("roles", JSON.stringify(theme.overrides));
 	return params.toString();
@@ -405,6 +486,7 @@ export function decodeTheme(search: string): Theme {
 	}
 	return normalizeTheme({
 		overrides,
+		darkMode: get("dark") !== "off",
 		name: get("name"),
 		radius: get("radius"),
 		controls: get("controls"),

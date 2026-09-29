@@ -18,20 +18,33 @@ export function Welcome() {
 					label="Tall shelves in a quiet reading room"
 				/>
 			</div>
-			<div className="ax-stack" data-gap="12" style={{ padding: space(32, 24, 0) }}>
+			<div
+				className="ax-stack"
+				data-gap="12"
+				style={{ padding: space(32, 24, 0) }}
+			>
 				<Wordmark />
 				<span className="ax-large-title">Keep what matters</span>
 				<span className="ax-text ax-muted">
-					Essays, stories and ideas worth coming back to, chosen by people who
-					care and saved in one calm place.
+					Essays, stories and ideas worth coming back to, chosen by people
+					who care and saved in one calm place.
 				</span>
 			</div>
 			<div className="ax-fill" />
-			<div className="ax-stack" data-gap="8" style={{ padding: space(0, 24, 44) }}>
+			<div
+				className="ax-stack"
+				data-gap="8"
+				style={{ padding: space(0, 24, 44) }}
+			>
 				<span className="ax-btn" data-size="lg" data-block>
 					Get started
 				</span>
-				<span className="ax-btn" data-variant="outline" data-size="lg" data-block>
+				<span
+					className="ax-btn"
+					data-variant="outline"
+					data-size="lg"
+					data-block
+				>
 					I already have an account
 				</span>
 			</div>
@@ -59,11 +72,15 @@ export function Interests() {
 	return (
 		<>
 			<Steps step={1} of={2} />
-			<div className="ax-stack" data-gap="8" style={{ padding: space(24, 20, 0) }}>
+			<div
+				className="ax-stack"
+				data-gap="8"
+				style={{ padding: space(24, 20, 0) }}
+			>
 				<span className="ax-title1">What are you into?</span>
 				<span className="ax-subhead ax-muted">
-					Pick three or more. Home starts from these, and you can change them
-					any time.
+					Pick three or more. Home starts from these, and you can change
+					them any time.
 				</span>
 			</div>
 
@@ -83,7 +100,12 @@ export function Interests() {
 						style={{ padding: space(4), ...(on ? selected : undefined) }}
 					>
 						<span style={{ position: "relative" }}>
-							<Artwork cover={cover} size="fill" height={92} radius="md" />
+							<Artwork
+								cover={cover}
+								size="fill"
+								height={92}
+								radius="md"
+							/>
 							{on && (
 								<span
 									className="ax-checkbox"
@@ -94,7 +116,10 @@ export function Interests() {
 								</span>
 							)}
 						</span>
-						<span className="ax-stack" style={{ gap: 0, padding: space(8, 8, 6) }}>
+						<span
+							className="ax-stack"
+							style={{ gap: 0, padding: space(8, 8, 6) }}
+						>
 							<span className="ax-headline">{name}</span>
 							<span className="ax-caption ax-muted">{count}</span>
 						</span>
@@ -102,9 +127,17 @@ export function Interests() {
 				))}
 			</div>
 
-			<div className="ax-row" data-wrap style={{ padding: space(16, 20, 0) }}>
+			<div
+				className="ax-row"
+				data-wrap
+				style={{ padding: space(16, 20, 0) }}
+			>
 				{topicChips.map(([name, on]) => (
-					<span key={name} className="ax-chip" data-selected={on || undefined}>
+					<span
+						key={name}
+						className="ax-chip"
+						data-selected={on || undefined}
+					>
 						{on ? (
 							<Check className="ax-glyph" size={16} strokeWidth={2.4} />
 						) : (
@@ -134,14 +167,22 @@ export function Personalize() {
 	return (
 		<>
 			<Steps step={2} of={2} />
-			<div className="ax-stack" data-gap="8" style={{ padding: space(24, 20, 0) }}>
+			<div
+				className="ax-stack"
+				data-gap="8"
+				style={{ padding: space(24, 20, 0) }}
+			>
 				<span className="ax-title1">Make it yours</span>
 				<span className="ax-subhead ax-muted">
 					A few choices to tune what shows up first.
 				</span>
 			</div>
 
-			<div className="ax-stack" data-gap="8" style={{ padding: space(20, 20, 0) }}>
+			<div
+				className="ax-stack"
+				data-gap="8"
+				style={{ padding: space(20, 20, 0) }}
+			>
 				<span className="ax-label">How long do you like to read?</span>
 				<div className="ax-segmented">
 					<span>Quick</span>
@@ -150,7 +191,11 @@ export function Personalize() {
 				</div>
 			</div>
 
-			<div className="ax-stack" data-gap="8" style={{ padding: space(20, 20, 0) }}>
+			<div
+				className="ax-stack"
+				data-gap="8"
+				style={{ padding: space(20, 20, 0) }}
+			>
 				<span className="ax-label">Your reading brief</span>
 				{briefs.map(([title, detail, on]) => (
 					<span
@@ -159,12 +204,21 @@ export function Personalize() {
 						data-variant="outlined"
 						style={
 							on
-								? { ...selected, background: "var(--ax-primary-subtle)" }
+								? {
+										...selected,
+										background: "var(--ax-primary-subtle)",
+									}
 								: undefined
 						}
 					>
-						<span className="ax-choice" style={{ padding: space(12, 14) }}>
-							<span className="ax-radio" data-checked={on || undefined} />
+						<span
+							className="ax-choice"
+							style={{ padding: space(12, 14) }}
+						>
+							<span
+								className="ax-radio"
+								data-checked={on || undefined}
+							/>
 							<span className="ax-stack" style={{ gap: space(2) }}>
 								<span className="ax-headline">{title}</span>
 								<span className="ax-footnote ax-muted">{detail}</span>
@@ -174,7 +228,11 @@ export function Personalize() {
 				))}
 			</div>
 
-			<div className="ax-list" data-variant="outlined" style={{ margin: space(16, 20, 0) }}>
+			<div
+				className="ax-list"
+				data-variant="outlined"
+				style={{ margin: space(16, 20, 0) }}
+			>
 				<div className="ax-item">
 					<span className="ax-item-content">
 						<span className="ax-item-title">Audio versions</span>
@@ -183,23 +241,41 @@ export function Personalize() {
 				</div>
 				<div className="ax-item">
 					<span className="ax-item-content">
-						<span className="ax-item-title">Picks from people I follow</span>
+						<span className="ax-item-title">
+							Picks from people I follow
+						</span>
 					</span>
 					<span className="ax-switch" data-checked />
 				</div>
 			</div>
 
-			<div className="ax-card" data-variant="filled" style={{ margin: space(16, 20, 0) }}>
-				<div className="ax-stack" data-gap="8" style={{ padding: space(12, 14) }}>
+			<div
+				className="ax-card"
+				data-variant="filled"
+				style={{ margin: space(16, 20, 0) }}
+			>
+				<div
+					className="ax-stack"
+					data-gap="8"
+					style={{ padding: space(12, 14) }}
+				>
 					<span className="ax-caption ax-muted">YOUR INDEX</span>
 					<span className="ax-row" data-wrap style={{ gap: space(6) }}>
-						{["Design", "Architecture", "Culture", "Writing"].map((topic) => (
-							<span key={topic} className="ax-badge" data-variant="outline">
-								{topic}
-							</span>
-						))}
+						{["Design", "Architecture", "Culture", "Writing"].map(
+							(topic) => (
+								<span
+									key={topic}
+									className="ax-badge"
+									data-variant="outline"
+								>
+									{topic}
+								</span>
+							),
+						)}
 					</span>
-					<span className="ax-footnote">Mixed lengths · Daily brief at 8:00</span>
+					<span className="ax-footnote">
+						Mixed lengths · Daily brief at 8:00
+					</span>
 				</div>
 			</div>
 

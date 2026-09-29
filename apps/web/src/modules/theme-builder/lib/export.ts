@@ -6,13 +6,13 @@ import { palette, paletteSteps, type ColorScheme } from "@docs/lib/tokens";
 import { hexToRgb, hslaToHex, rgbToHsla } from "./color";
 import { SYSTEM_FONT, fontStack } from "./fonts";
 import {
-	buildScheme,
 	controlShapes,
 	primitives,
 	radiusValues,
 	shapedComponents,
 	spacingScales,
 	spacingValues,
+	themeScheme,
 	type Theme,
 } from "./theme";
 
@@ -93,7 +93,7 @@ const camel = (value: string) =>
 	value.replace(/-(.)/g, (_, c) => c.toUpperCase());
 
 const roleEntries = (theme: Theme, scheme: ColorScheme) =>
-	buildScheme(scheme, theme.overrides).map((swatch) => ({
+	themeScheme(theme, scheme).map((swatch) => ({
 		// `--ax-content-muted` → `content-muted`
 		name: swatch.variable.slice("--ax-".length),
 		variable: swatch.variable,
@@ -461,7 +461,7 @@ function colorsFile(theme: Theme): string {
 	const block = (scheme: ColorScheme) => {
 		const lines: string[] = [];
 		let role = "";
-		for (const swatch of buildScheme(scheme, theme.overrides)) {
+		for (const swatch of themeScheme(theme, scheme)) {
 			if (swatch.role !== role) {
 				if (role) lines.push("\t},");
 				lines.push(`\t${swatch.role}: {`);

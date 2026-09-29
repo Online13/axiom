@@ -3,7 +3,7 @@ import { Check, ChevronRight } from "lucide-react";
 import { useEffect } from "react";
 import { loadFont, SYSTEM_FONT } from "../../lib/fonts";
 import { type Preset, presets } from "../../lib/presets";
-import { buildScheme, defaultTheme, type Theme } from "../../lib/theme";
+import { defaultTheme, themeScheme, type Theme } from "../../lib/theme";
 import { applyPreset, theme$ } from "../../state/theme";
 import { announce, back, navigate, ui$ } from "../../state/ui";
 import { PageHeader } from "./PageHeader";
@@ -84,7 +84,7 @@ export const PresetPage = observer(function PresetPage() {
 				{choices.map((choice) => {
 					const { theme } = choice;
 					const hex = Object.fromEntries(
-						buildScheme(scheme, theme.overrides).map((swatch) => [
+						themeScheme(theme, scheme).map((swatch) => [
 							`${swatch.role}.${swatch.key}`,
 							swatch.hex,
 						]),

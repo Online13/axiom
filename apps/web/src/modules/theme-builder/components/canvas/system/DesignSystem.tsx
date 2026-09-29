@@ -49,13 +49,30 @@ import {
 import type { ReactNode } from "react";
 import { Artwork } from "../screens/Artwork";
 import { Wordmark } from "../screens/chrome";
-import { authors, collections, reader, stories, type Story } from "../screens/content";
+import {
+	authors,
+	collections,
+	reader,
+	stories,
+	type Story,
+} from "../screens/content";
 import { space } from "../screens/space";
 
 /** A white sheet on the tinted page: the unit every column stacks. */
-function Tile({ children, gap = 16, pad = 20 }: { children: ReactNode; gap?: number; pad?: number }) {
+function Tile({
+	children,
+	gap = 16,
+	pad = 20,
+}: {
+	children: ReactNode;
+	gap?: number;
+	pad?: number;
+}) {
 	return (
-		<div className="ax-card tb-ds__tile" style={{ gap: space(gap), padding: space(pad) }}>
+		<div
+			className="ax-card tb-ds__tile"
+			style={{ gap: space(gap), padding: space(pad) }}
+		>
 			{children}
 		</div>
 	);
@@ -96,7 +113,11 @@ function StoryCard({ story }: { story: Story }) {
 	return (
 		<div className="ax-card tb-ds__tile" style={{ flex: 1 }}>
 			<Artwork cover={story.cover} size="fill" height={150} radius="none" />
-			<span className="ax-stack" data-gap="4" style={{ padding: space(12, 14, 16) }}>
+			<span
+				className="ax-stack"
+				data-gap="4"
+				style={{ padding: space(12, 14, 16) }}
+			>
 				<span className="ax-headline">{story.title}</span>
 				<span className="ax-footnote ax-muted">
 					{story.topic} · {story.minutes} min
@@ -120,10 +141,17 @@ function SaveButton() {
 function SavedToast() {
 	return (
 		<span className="ax-toast" data-shape="card">
-			<Check className="ax-glyph" data-tone="success" size={20} strokeWidth={2.4} />
+			<Check
+				className="ax-glyph"
+				data-tone="success"
+				size={20}
+				strokeWidth={2.4}
+			/>
 			<span className="ax-stack ax-grow" data-gap="4">
 				<span className="ax-semibold">Saved to Read later</span>
-				<span className="ax-footnote ax-muted">You can find it offline in Saved.</span>
+				<span className="ax-footnote ax-muted">
+					You can find it offline in Saved.
+				</span>
 			</span>
 			<X className="ax-glyph ax-muted" size={18} strokeWidth={2} />
 		</span>
@@ -158,7 +186,8 @@ function Beta() {
 				<span className="ax-stack ax-grow" data-gap="4">
 					<span className="ax-headline">You're using Index 2.5 beta</span>
 					<span className="ax-subhead ax-muted">
-						Highlights and shared collections are new. Tell us what feels off.
+						Highlights and shared collections are new. Tell us what feels
+						off.
 					</span>
 				</span>
 			</span>
@@ -172,13 +201,18 @@ function Beta() {
 function Publish() {
 	return (
 		<Tile gap={12}>
-			<span className="ax-footnote ax-muted">Share “{collections.calm.title}”</span>
+			<span className="ax-footnote ax-muted">
+				Share “{collections.calm.title}”
+			</span>
 			<span className="ax-btn-group" data-block>
 				<span className="ax-btn">
 					<Share2 className="ax-glyph" size={18} strokeWidth={2.2} />
 					Publish now
 				</span>
-				<span className="ax-btn" style={{ flex: "none", padding: space(0, 14) }}>
+				<span
+					className="ax-btn"
+					style={{ flex: "none", padding: space(0, 14) }}
+				>
 					<ChevronDown className="ax-glyph" size={18} strokeWidth={2.4} />
 				</span>
 			</span>
@@ -205,24 +239,37 @@ function ColorField() {
 function Note() {
 	return (
 		<div className="ax-card tb-ds__tile">
-			<span className="ax-row" data-justify="between" style={{ padding: space(10, 12, 0) }}>
+			<span
+				className="ax-row"
+				data-justify="between"
+				style={{ padding: space(10, 12, 0) }}
+			>
 				<span className="ax-icon-btn" data-size="sm">
 					<ChevronLeft className="ax-glyph" size={22} strokeWidth={2} />
 				</span>
 				<span className="ax-headline">Note</span>
-				<span className="ax-subhead ax-link ax-semibold" style={{ paddingRight: space(8) }}>
+				<span
+					className="ax-subhead ax-link ax-semibold"
+					style={{ paddingRight: space(8) }}
+				>
 					Save
 				</span>
 			</span>
-			<span className="ax-stack" data-gap="8" style={{ padding: space(12, 16, 16) }}>
+			<span
+				className="ax-stack"
+				data-gap="8"
+				style={{ padding: space(12, 16, 16) }}
+			>
 				<div className="ax-textarea" data-state="focused">
 					<span className="ax-caret">
-						Read with the tide chapter. The bit on floating foundations is the
-						argument for the studio brief.
+						Read with the tide chapter. The bit on floating foundations is
+						the argument for the studio brief.
 					</span>
 				</div>
 				<span className="ax-row" data-justify="between">
-					<span className="ax-footnote ax-link ax-semibold">Clear note</span>
+					<span className="ax-footnote ax-link ax-semibold">
+						Clear note
+					</span>
 					<span className="ax-counter">112 / 500</span>
 				</span>
 			</span>
@@ -243,8 +290,8 @@ function Highlight() {
 				</span>
 			</span>
 			<span className="tb-ds__bubble ax-callout">
-				Attention is the only material an interface really works with; everything
-				else is arrangement.
+				Attention is the only material an interface really works with;
+				everything else is arrangement.
 			</span>
 			<span className="ax-caption ax-muted">Highlighted · 2 days ago</span>
 		</Tile>
@@ -264,13 +311,21 @@ function LibraryTabs() {
 					Collections <span className="ax-badge">7</span>
 				</span>
 			</div>
-			<span className="ax-stack" data-gap="12" style={{ padding: space(14, 16, 16) }}>
+			<span
+				className="ax-stack"
+				data-gap="12"
+				style={{ padding: space(14, 16, 16) }}
+			>
 				{[stories.treeline, stories.presses].map((story) => (
 					<span key={story.title} className="ax-row" data-gap="12">
 						<Artwork cover={story.cover} size={44} radius="sm" />
 						<span className="ax-stack ax-grow" style={{ gap: 0 }}>
-							<span className="ax-subhead ax-semibold">{story.title}</span>
-							<span className="ax-caption ax-muted">{authors[story.author].name}</span>
+							<span className="ax-subhead ax-semibold">
+								{story.title}
+							</span>
+							<span className="ax-caption ax-muted">
+								{authors[story.author].name}
+							</span>
 						</span>
 					</span>
 				))}
@@ -296,7 +351,11 @@ function EditorToolbar() {
 				))}
 				<span className="ax-separator" data-orientation="vertical" />
 				<span className="ax-icon-btn" data-shape="square">
-					<Trash2 className="ax-glyph ax-danger" size={20} strokeWidth={2} />
+					<Trash2
+						className="ax-glyph ax-danger"
+						size={20}
+						strokeWidth={2}
+					/>
 				</span>
 			</span>
 		</Tile>
@@ -327,8 +386,12 @@ function Offline() {
 		<div className="ax-card tb-ds__tile">
 			<div className="ax-item" data-size="lg">
 				<span className="ax-item-content">
-					<span className="ax-item-title ax-semibold">Offline reading</span>
-					<span className="ax-item-desc">Keeps 30 saved stories on this phone</span>
+					<span className="ax-item-title ax-semibold">
+						Offline reading
+					</span>
+					<span className="ax-item-desc">
+						Keeps 30 saved stories on this phone
+					</span>
 				</span>
 				<span className="ax-switch" data-checked />
 			</div>
@@ -410,10 +473,18 @@ function Calendar() {
 					<span className="ax-headline">October, 2026</span>
 					<span className="ax-row" data-gap="4">
 						<span className="ax-icon-btn" data-size="sm">
-							<ChevronLeft className="ax-glyph" size={20} strokeWidth={2} />
+							<ChevronLeft
+								className="ax-glyph"
+								size={20}
+								strokeWidth={2}
+							/>
 						</span>
 						<span className="ax-icon-btn" data-size="sm">
-							<ChevronRight className="ax-glyph" size={20} strokeWidth={2} />
+							<ChevronRight
+								className="ax-glyph"
+								size={20}
+								strokeWidth={2}
+							/>
 						</span>
 					</span>
 				</div>
@@ -424,14 +495,19 @@ function Calendar() {
 						</span>
 					))}
 					{days.map(({ day, outside }) => (
-						<span key={`${outside ? "p" : "d"}${day}`} {...dayProps(day, outside)}>
+						<span
+							key={`${outside ? "p" : "d"}${day}`}
+							{...dayProps(day, outside)}
+						>
 							<i>{day}</i>
 						</span>
 					))}
 				</div>
 			</div>
 			<span className="ax-row" data-justify="between">
-				<span className="ax-footnote ax-muted">Reading streak · Oct 12 – 16</span>
+				<span className="ax-footnote ax-muted">
+					Reading streak · Oct 12 – 16
+				</span>
 				<span className="ax-badge" data-variant="success">
 					5 days
 				</span>
@@ -449,7 +525,13 @@ function Period() {
 			{periods.map((period, i) => (
 				<div key={period} className="ax-menu-item">
 					{period}
-					{i === 0 && <Check className="ax-glyph ax-check" size={18} strokeWidth={2.6} />}
+					{i === 0 && (
+						<Check
+							className="ax-glyph ax-check"
+							size={18}
+							strokeWidth={2.6}
+						/>
+					)}
 				</div>
 			))}
 			<div className="ax-menu-gap" />
@@ -468,7 +550,12 @@ function PublishOptions() {
 	return (
 		<div className="ax-list tb-ds__list" data-inset>
 			{publishOptions.map(([Icon, title, desc], i) => (
-				<div key={title} className="ax-item" data-size="lg" data-state={i === 0 ? "selected" : undefined}>
+				<div
+					key={title}
+					className="ax-item"
+					data-size="lg"
+					data-state={i === 0 ? "selected" : undefined}
+				>
 					<span className="ax-tile" data-size="lg" data-color="subtle">
 						<Icon className="ax-glyph" size={20} strokeWidth={2} />
 					</span>
@@ -528,8 +615,8 @@ function ReaderQuote() {
 				“
 			</span>
 			<span className="ax-title3" style={{ fontWeight: 500 }}>
-				Index is the only app where I finish what I save. Collections turned a
-				pile of tabs into a reading list.
+				Index is the only app where I finish what I save. Collections turned
+				a pile of tabs into a reading list.
 			</span>
 		</Tile>
 	);
@@ -540,7 +627,12 @@ function CoverCarousel() {
 	return (
 		<div className="ax-card tb-ds__tile">
 			<span style={{ position: "relative", display: "block" }}>
-				<Artwork cover={collections.cities.covers[0]} size="fill" height={180} radius="none" />
+				<Artwork
+					cover={collections.cities.covers[0]}
+					size="fill"
+					height={180}
+					radius="none"
+				/>
 				<span className="ax-dots tb-ds__dots">
 					<span data-active />
 					<span />
@@ -548,9 +640,15 @@ function CoverCarousel() {
 					<span />
 				</span>
 			</span>
-			<span className="ax-stack" data-gap="4" style={{ padding: space(12, 14, 16) }}>
+			<span
+				className="ax-stack"
+				data-gap="4"
+				style={{ padding: space(12, 14, 16) }}
+			>
 				<span className="ax-headline">{collections.cities.title}</span>
-				<span className="ax-footnote ax-muted">{collections.cities.count} stories</span>
+				<span className="ax-footnote ax-muted">
+					{collections.cities.count} stories
+				</span>
 			</span>
 		</div>
 	);
@@ -574,7 +672,11 @@ function FollowActions() {
 				</span>
 				<span className="ax-grow" />
 				<span className="ax-anchor">
-					<span className="ax-icon-btn" data-variant="outline" data-size="sm">
+					<span
+						className="ax-icon-btn"
+						data-variant="outline"
+						data-size="sm"
+					>
 						<Bell className="ax-glyph" size={18} strokeWidth={2} />
 					</span>
 					<span className="ax-badge" data-kind="count">
@@ -597,7 +699,9 @@ function ContinueReading() {
 			<span className="ax-row" data-gap="12">
 				<Artwork cover={story.cover} size={56} radius="md" />
 				<span className="ax-stack ax-grow" style={{ gap: space(2) }}>
-					<span className="ax-caption ax-muted">{story.topic} · Sep 20</span>
+					<span className="ax-caption ax-muted">
+						{story.topic} · Sep 20
+					</span>
 					<span className="ax-subhead ax-semibold">{story.title}</span>
 				</span>
 			</span>
@@ -605,7 +709,9 @@ function ContinueReading() {
 				<span className="ax-progress">
 					<span style={{ width: "62%" }} />
 				</span>
-				<span className="ax-caption ax-muted">4 of {story.minutes} min left</span>
+				<span className="ax-caption ax-muted">
+					4 of {story.minutes} min left
+				</span>
 			</span>
 		</Tile>
 	);
@@ -619,22 +725,44 @@ function FeaturedStory() {
 	return (
 		<div className="ax-card tb-ds__tile">
 			<span style={{ position: "relative", display: "block" }}>
-				<Artwork cover={story.cover} size="fill" height={220} radius="none" />
-				<span className="ax-badge tb-ds__on-media" data-variant="highlight" style={{ left: space(12) }}>
+				<Artwork
+					cover={story.cover}
+					size="fill"
+					height={220}
+					radius="none"
+				/>
+				<span
+					className="ax-badge tb-ds__on-media"
+					data-variant="highlight"
+					style={{ left: space(12) }}
+				>
 					New
 				</span>
-				<span className="ax-icon-btn tb-ds__on-media" data-size="sm" data-variant="solid" style={{ right: space(12) }}>
+				<span
+					className="ax-icon-btn tb-ds__on-media"
+					data-size="sm"
+					data-variant="solid"
+					style={{ right: space(12) }}
+				>
 					<Bookmark className="ax-glyph" size={16} strokeWidth={2.2} />
 				</span>
 			</span>
-			<span className="ax-stack" data-gap="12" style={{ padding: space(14, 16, 16) }}>
+			<span
+				className="ax-stack"
+				data-gap="12"
+				style={{ padding: space(14, 16, 16) }}
+			>
 				<span className="ax-stack" data-gap="4">
 					<span className="ax-title3">{story.title}</span>
 					<span className="ax-footnote ax-muted">
 						{authors[story.author].name} · {story.minutes} min
 					</span>
 				</span>
-				<span className="ax-btn" data-size="sm" style={{ alignSelf: "flex-start" }}>
+				<span
+					className="ax-btn"
+					data-size="sm"
+					style={{ alignSelf: "flex-start" }}
+				>
 					Start reading
 				</span>
 			</span>
@@ -655,7 +783,12 @@ function DailyGoal() {
 					<span className="ax-btn" data-size="sm" data-variant="outline">
 						<Minus className="ax-glyph" size={16} strokeWidth={2.2} />
 					</span>
-					<span className="ax-btn" data-size="sm" data-variant="outline" style={{ minWidth: 44 }}>
+					<span
+						className="ax-btn"
+						data-size="sm"
+						data-variant="outline"
+						style={{ minWidth: 44 }}
+					>
 						3
 					</span>
 					<span className="ax-btn" data-size="sm" data-variant="outline">
@@ -682,7 +815,9 @@ function RenameCollection() {
 				<span className="ax-control">
 					<span className="ax-value ax-caret ax-grow">Weekend reads</span>
 				</span>
-				<span className="ax-helper">Shown to the people you share it with.</span>
+				<span className="ax-helper">
+					Shown to the people you share it with.
+				</span>
 			</div>
 		</Tile>
 	);
@@ -728,7 +863,9 @@ function Streak() {
 			<span className="ax-stack ax-grow" data-gap="8">
 				<span className="ax-stack" style={{ gap: 0 }}>
 					<span className="ax-alert-title">Read 1 more story today</span>
-					<span className="ax-alert-desc">and keep your 5-day streak.</span>
+					<span className="ax-alert-desc">
+						and keep your 5-day streak.
+					</span>
 				</span>
 				<span className="ax-progress">
 					<span style={{ width: "80%" }} />
@@ -752,7 +889,11 @@ function ProIncludes() {
 			<span className="ax-stack" data-gap="12">
 				{proFeatures.map(([Icon, label]) => (
 					<span key={label} className="ax-row" data-gap="12">
-						<Icon className="ax-glyph ax-muted" size={20} strokeWidth={2} />
+						<Icon
+							className="ax-glyph ax-muted"
+							size={20}
+							strokeWidth={2}
+						/>
 						<span className="ax-subhead">{label}</span>
 					</span>
 				))}
@@ -797,7 +938,10 @@ function ProOffer() {
 				<span className="ax-stack ax-grow" style={{ gap: space(2) }}>
 					<span className="ax-subhead ax-semibold">Index Pro</span>
 					<span className="ax-row ax-footnote" data-gap="8">
-						<span className="ax-muted" style={{ textDecoration: "line-through" }}>
+						<span
+							className="ax-muted"
+							style={{ textDecoration: "line-through" }}
+						>
 							€48
 						</span>
 						<span className="ax-semibold">€36 / year</span>

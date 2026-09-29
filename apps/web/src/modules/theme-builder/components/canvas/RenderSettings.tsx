@@ -1,5 +1,5 @@
 import { observer } from "@legendapp/state/react";
-import { Moon, Smartphone, Sun, Tablet } from "lucide-react";
+import { Smartphone, Tablet } from "lucide-react";
 import { type DeviceKind, ui$ } from "../../state/ui";
 
 const devices: { id: DeviceKind; label: string; Icon: typeof Smartphone }[] = [
@@ -7,57 +7,30 @@ const devices: { id: DeviceKind; label: string; Icon: typeof Smartphone }[] = [
 	{ id: "android", label: "Android", Icon: Tablet },
 ];
 
-/** How the mockups are rendered: the device shell and the color scheme. */
+/** The device shell the mockups are drawn in. */
 export const RenderSettings = observer(function RenderSettings() {
 	const device = ui$.device.get();
-	const scheme = ui$.scheme.get();
 	// The sheet has no device shell.
 	const phones = ui$.view.get() === "preview";
 
+	if (!phones) return null;
 	return (
-		<>
-			{phones && (
-				<div
-					className="tb-segmented tb-float"
-					role="group"
-					aria-label="Device mockup"
-				>
-					{devices.map(({ id, label, Icon }) => (
-						<button
-							key={id}
-							type="button"
-							aria-pressed={device === id}
-							onClick={() => ui$.device.set(id)}
-						>
-							<Icon size={14} aria-hidden="true" />
-							{label}
-						</button>
-					))}
-				</div>
-			)}
-
-			<div
-				className="tb-segmented tb-float"
-				role="group"
-				aria-label="Color scheme"
-			>
+		<div
+			className="tb-segmented tb-float"
+			role="group"
+			aria-label="Device mockup"
+		>
+			{devices.map(({ id, label, Icon }) => (
 				<button
+					key={id}
 					type="button"
-					aria-pressed={scheme === "light"}
-					onClick={() => ui$.scheme.set("light")}
+					aria-pressed={device === id}
+					onClick={() => ui$.device.set(id)}
 				>
-					<Sun size={14} aria-hidden="true" />
-					Light
+					<Icon size={14} aria-hidden="true" />
+					{label}
 				</button>
-				<button
-					type="button"
-					aria-pressed={scheme === "dark"}
-					onClick={() => ui$.scheme.set("dark")}
-				>
-					<Moon size={14} aria-hidden="true" />
-					Dark
-				</button>
-			</div>
-		</>
+			))}
+		</div>
 	);
 });

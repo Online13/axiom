@@ -10,6 +10,7 @@ import { loadFont } from "../lib/fonts";
 import {
 	decodeTheme,
 	defaultTheme,
+	derivedRoles,
 	encodeTheme,
 	normalizeTheme,
 	type Theme,
@@ -62,6 +63,13 @@ export function setRole(
 	scheme: ColorScheme,
 	value: string | null,
 ) {
+	write(path, scheme, value);
+	// The roles made from this one follow it again, in this scheme.
+	for (const [derived, { from }] of Object.entries(derivedRoles))
+		if (from.includes(path)) write(derived, scheme, null);
+}
+
+function write(path: string, scheme: ColorScheme, value: string | null) {
 	const entry = { ...theme$.overrides[path].peek() };
 	if (value === null) delete entry[scheme];
 	else entry[scheme] = value;
@@ -70,6 +78,9 @@ export function setRole(
 }
 
 export const resetRoles = () => theme$.overrides.set({});
+
+/** Turns the dark scheme on, or off so that it is the light one. */
+export const setDarkMode = (on: boolean) => theme$.darkMode.set(on);
 
 export type FontRole = keyof Theme["fonts"];
 

@@ -11,7 +11,7 @@ import {
 	resolve,
 } from "../../lib/theme";
 import { setRole, theme$ } from "../../state/theme";
-import { announce, back, navigate, ui$ } from "../../state/ui";
+import { announce, back, replacePage, ui$ } from "../../state/ui";
 import { HexField } from "./HexField";
 import { PageHeader } from "./PageHeader";
 
@@ -55,9 +55,10 @@ export const ColorPage = observer(function ColorPage({
 						key={option}
 						type="button"
 						aria-pressed={option === scheme}
+						disabled={option === "dark" && !theme.darkMode}
 						onClick={() => {
 							ui$.scheme.set(option);
-							navigate({ kind: "color", path, scheme: option });
+							replacePage({ kind: "color", path, scheme: option });
 						}}
 					>
 						{option === "light" ? "Light" : "Dark"}

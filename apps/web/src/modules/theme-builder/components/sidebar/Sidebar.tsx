@@ -1,6 +1,12 @@
 import { observer } from "@legendapp/state/react";
 import { ChevronDown, RotateCcw } from "lucide-react";
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import {
+	type CSSProperties,
+	type ReactNode,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { resetRoles, resetTheme, theme$ } from "../../state/theme";
 import {
 	announce,
@@ -11,49 +17,59 @@ import {
 } from "../../state/ui";
 import { ThemeName } from "../ThemeName";
 import { ColorPage } from "./ColorPage";
-import { ColorRoles } from "./ColorRoles";
+import { ColorRolesPage, EssentialColors } from "./ColorRoles";
 import { FontField, FontPage } from "./FontControl";
 import { PresetField, PresetPage } from "./PresetControl";
 import { ShapeControls } from "./ShapeControls";
 import { SidebarHide } from "./SidebarToggle";
 import { SpacingControls } from "./SpacingControls";
 
-type Page = Exclude<SidebarPage, { kind: "root" }>;
+/** How many pages can stack over the sections: every color, then one of them. */
+const LEVELS = 2;
+
+const keyOf = (page: SidebarPage) =>
+	page.kind === "font"
+		? page.role
+		: page.kind === "color"
+			? page.path
+			: page.kind;
 
 /**
- * Two panes side by side: the sections, and the page of whatever value is
- * being picked. Opening a page slides the track left; the pane out of view is
- * inert, so neither the keyboard nor a screen reader lands in it. A list page
- * widens the panel to twice its width as it slides in. The whole
- * panel floats over the canvas and folds away into its top-left corner.
+ * The sections, then one pane per page that can stack over them: whatever
+ * value is being picked, or the list of every color and a value of it. Opening
+ * a page slides the track left; the panes out of view are inert, so neither
+ * the keyboard nor a screen reader lands in them. A list page widens the panel
+ * to twice its width as it slides in. The whole panel floats over the canvas
+ * and folds away into its top-left corner.
  */
 export const Sidebar = observer(function Sidebar() {
-	const page = ui$.page.get();
-	const open = page.kind !== "root";
+	const pages = ui$.pages.get();
+	const depth = pages.length;
+	const top = pages.at(-1);
 	const shownPanel = ui$.sidebarOpen.get();
-	// The page keeps its content while it slides back out of view.
-	const [shown, setShown] = useState<Page | null>(null);
-	const pane = useRef<HTMLDivElement>(null);
+	// A page keeps its content while it slides back out of view.
+	const [shown, setShown] = useState<SidebarPage[]>([]);
+	const panes = useRef<(HTMLDivElement | null)[]>([]);
+	const lastDepth = useRef(0);
 	// Lists of fonts and presets get twice the room; a color page does not.
-	const wide = page.kind === "font" || page.kind === "preset";
+	const wide = top?.kind === "font" || top?.kind === "preset";
 
-	if (open && page !== shown) setShown(page);
+	if (pages.some((page, index) => page !== shown[index]))
+		setShown([...pages, ...shown.slice(depth)]);
 
 	// A page opens scrolled to the top, focus on its search field or its way
-	// back. Switching the scheme of the same role is not a new page.
-	const key = !open
-		? null
-		: page.kind === "font"
-			? page.role
-			: page.kind === "color"
-				? page.path
-				: page.kind;
+	// back. Switching the scheme of the same role is not a new page, and
+	// coming back to a page leaves it as it was.
+	const key = top ? `${depth}:${keyOf(top)}` : null;
 	useEffect(() => {
-		if (!key || !pane.current) return;
-		pane.current.scrollTop = 0;
+		const returning = depth < lastDepth.current;
+		lastDepth.current = depth;
+		const pane = panes.current[depth];
+		if (!key || returning || !pane) return;
+		pane.scrollTop = 0;
 		const target =
-			pane.current.querySelector<HTMLElement>("[data-autofocus]") ??
-			pane.current.querySelector<HTMLElement>(".tb-page__back");
+			pane.querySelector<HTMLElement>("[data-autofocus]") ??
+			pane.querySelector<HTMLElement>(".tb-page__back");
 		target?.focus({ preventScroll: true });
 	}, [key]);
 
@@ -70,22 +86,34 @@ export const Sidebar = observer(function Sidebar() {
 				<SidebarHide />
 				<ThemeName />
 			</div>
-			<div className="tb-nav" data-page={open ? "" : undefined}>
-				<div className="tb-nav__pane" inert={open}>
+			<div
+				className="tb-nav"
+				style={{ "--depth": depth } as CSSProperties}
+			>
+				<div className="tb-nav__pane" inert={depth > 0}>
 					<Sections />
 				</div>
-				<div
-					className="tb-nav__pane tb-page"
-					ref={pane}
-					inert={!open}
-					onKeyDown={(event) => event.key === "Escape" && back()}
-				>
-					{shown?.kind === "color" && (
-						<ColorPage path={shown.path} scheme={shown.scheme} />
-					)}
-					{shown?.kind === "font" && <FontPage role={shown.role} />}
-					{shown?.kind === "preset" && <PresetPage />}
-				</div>
+				{Array.from({ length: LEVELS }, (_, index) => {
+					const page = shown[index];
+					return (
+						<div
+							key={index}
+							className="tb-nav__pane tb-page"
+							ref={(node) => {
+								panes.current[index + 1] = node;
+							}}
+							inert={depth !== index + 1}
+							onKeyDown={(event) => event.key === "Escape" && back()}
+						>
+							{page?.kind === "color" && (
+								<ColorPage path={page.path} scheme={page.scheme} />
+							)}
+							{page?.kind === "colors" && <ColorRolesPage />}
+							{page?.kind === "font" && <FontPage role={page.role} />}
+							{page?.kind === "preset" && <PresetPage />}
+						</div>
+					);
+				})}
 			</div>
 		</aside>
 	);
@@ -101,7 +129,7 @@ const Sections = observer(function Sections() {
 				<SpacingControls />
 			</Section>
 			<Section id="colors" title="Colors">
-				<ColorRoles />
+				<EssentialColors />
 			</Section>
 			<Section id="fonts" title="Fonts">
 				<FontField role="heading" />
