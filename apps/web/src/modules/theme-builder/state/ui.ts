@@ -17,8 +17,11 @@ export type Paint = {
 
 export type DeviceKind = "ios" | "android";
 
+/** What the canvas shows: the app's screens, or the components on one sheet. */
+export type CanvasView = "preview" | "system";
+
 /** The foldable sections of the sidebar. */
-export type SidebarSection = "colors" | "fonts" | "shape" | "spacing";
+export type SidebarSection = "spacing" | "colors" | "fonts" | "shape";
 
 /**
  * What the sidebar shows: its sections, or one value being picked — a role in
@@ -33,6 +36,9 @@ export type SidebarPage =
 export type UiState = {
 	scheme: ColorScheme;
 	device: DeviceKind;
+	view: CanvasView;
+	/** The screen brought forward on the canvas; the others dim behind it. */
+	focusedScreen: string | null;
 	exportOpen: boolean;
 	loadOpen: boolean;
 	exportOptions: ExportOptions;
@@ -51,13 +57,15 @@ export type UiState = {
 export const ui$ = observable<UiState>({
 	scheme: "light",
 	device: "ios",
+	view: "preview",
+	focusedScreen: null,
 	exportOpen: false,
 	loadOpen: false,
 	exportOptions: { ...defaultExportOptions },
 	status: "Changes apply instantly.",
 	page: { kind: "root" },
 	sidebarOpen: true,
-	sections: { colors: true, fonts: false, shape: false, spacing: false },
+	sections: { spacing: true, colors: true, fonts: false, shape: false },
 	focusedRoles: null,
 });
 
@@ -72,6 +80,12 @@ syncObservable(ui$.scheme, {
 syncObservable(ui$.device, {
 	persist: {
 		name: "axiom.theme-builder.device",
+		plugin: ObservablePersistLocalStorage,
+	},
+});
+syncObservable(ui$.view, {
+	persist: {
+		name: "axiom.theme-builder.view",
 		plugin: ObservablePersistLocalStorage,
 	},
 });

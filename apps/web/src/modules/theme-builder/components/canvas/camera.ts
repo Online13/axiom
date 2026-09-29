@@ -5,7 +5,7 @@
 
 import { observable } from "@legendapp/state";
 import { type RefObject, useLayoutEffect } from "react";
-import { type DeviceKind, ui$ } from "../../state/ui";
+import { type CanvasView, type DeviceKind, ui$ } from "../../state/ui";
 
 /** Where the world's top-left corner sits in the view, and its scale. */
 export type Camera = { x: number; y: number; z: number };
@@ -213,12 +213,13 @@ const typing = (target: EventTarget | null) =>
 /**
  * Wires the view's pointer, wheel and keyboard to the camera, and draws the
  * camera onto the world. The world is fitted to a row on first render and
- * whenever the device, and so the size of every screen, changes.
+ * whenever the device, and so the size of every screen, or the view changes.
  */
 export function useCamera(
 	viewRef: RefObject<HTMLElement | null>,
 	worldRef: RefObject<HTMLElement | null>,
 	device: DeviceKind,
+	shown: CanvasView,
 ) {
 	useLayoutEffect(() => {
 		const v = viewRef.current;
@@ -387,8 +388,9 @@ export function useCamera(
 		};
 	}, [viewRef, worldRef]);
 
-	// Screens change size with the device: start over from a fitted row.
+	// Screens change size with the device, and the sheet is another world:
+	// start over from a fitted row.
 	useLayoutEffect(() => {
 		fitWidth();
-	}, [device]);
+	}, [device, shown]);
 }

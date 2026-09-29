@@ -5,7 +5,7 @@ import { theme$ } from "../state/theme";
 import { announce, ui$ } from "../state/ui";
 import { Logo } from "../../brand/Logo";
 import { ThemeSwitcher } from "../../brand/ThemeSwitcher";
-import { ThemeName } from "./ThemeName";
+import { ViewTabs } from "./ViewTabs";
 
 export const Header = observer(function Header() {
 	const save = () => {
@@ -23,11 +23,15 @@ export const Header = observer(function Header() {
 				<span className="tb-header__title">Theme builder</span>
 			</div>
 
-			<ThemeName />
+			<ViewTabs />
 
 			<div className="tb-header__side tb-header__side--end">
 				<ThemeSwitcher className="tb-header__theme" />
-				<button type="button" className="tb-btn tb-btn--ghost" onClick={save}>
+				<button
+					type="button"
+					className="tb-btn tb-btn--ghost"
+					onClick={save}
+				>
 					<Save size={15} aria-hidden="true" />
 					<span>Save</span>
 				</button>

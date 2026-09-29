@@ -1,5 +1,6 @@
 import { observer } from "@legendapp/state/react";
 import { Focus, Minus, Plus } from "lucide-react";
+import { ui$ } from "../../state/ui";
 import { camera$, fitAll, focusNearest, zoomIn, zoomOut } from "./camera";
 
 /**
@@ -8,6 +9,7 @@ import { camera$, fitAll, focusNearest, zoomIn, zoomOut } from "./camera";
  */
 export const ZoomControls = observer(function ZoomControls() {
 	const zoom = Math.round(camera$.z.get() * 100);
+	const phones = ui$.view.get() === "preview";
 
 	return (
 		<div className="tb-zoom tb-float" role="group" aria-label="Zoom">
@@ -26,14 +28,16 @@ export const ZoomControls = observer(function ZoomControls() {
 			<button type="button" aria-label="Zoom in" onClick={zoomIn}>
 				<Plus size={14} aria-hidden="true" />
 			</button>
-			<button
-				type="button"
-				title="Focus the screen in the middle (Shift+3)"
-				aria-label="Focus the screen in the middle"
-				onClick={focusNearest}
-			>
-				<Focus size={14} aria-hidden="true" />
-			</button>
+			{phones && (
+				<button
+					type="button"
+					title="Focus the screen in the middle (Shift+3)"
+					aria-label="Focus the screen in the middle"
+					onClick={focusNearest}
+				>
+					<Focus size={14} aria-hidden="true" />
+				</button>
+			)}
 		</div>
 	);
 });

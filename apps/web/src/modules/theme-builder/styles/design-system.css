@@ -1,0 +1,146 @@
+/*
+ * Design system board (components/canvas/system/DesignSystem.tsx).
+ * A fixed-size sheet the canvas camera zooms and pans: five columns of tiles on
+ * a page tinted from the theme's own primary, so it follows light and dark.
+ * Tiles are real `.ax-*` primitives; only the layout and a few bits live here.
+ */
+
+.tb-ds {
+	display: flex;
+	flex-direction: column;
+	gap: calc(40 * var(--ax-space));
+	width: 2180px;
+	padding: calc(56 * var(--ax-space)) calc(56 * var(--ax-space)) calc(64 * var(--ax-space));
+	border-radius: var(--ax-radius-xl);
+	background: color-mix(in srgb, var(--ax-primary-default) 7%, var(--ax-background-subtle));
+	color: var(--ax-content-default);
+	font-family: var(--ax-font);
+	font-size: 17px;
+	line-height: 22px;
+	text-align: left;
+	cursor: default;
+	user-select: none;
+	transition:
+		background-color 200ms ease,
+		color 200ms ease;
+}
+
+.tb-ds__head {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	padding: 0 calc(4 * var(--ax-space));
+}
+
+/* Five columns, each a stack of tiles of their own height: masonry without the script. */
+.tb-ds__cols {
+	display: grid;
+	grid-template-columns: repeat(5, minmax(0, 1fr));
+	align-items: start;
+	gap: calc(28 * var(--ax-space));
+}
+
+.tb-ds__col {
+	display: flex;
+	flex-direction: column;
+	gap: calc(28 * var(--ax-space));
+	min-width: 0;
+}
+
+.tb-ds .tb-art {
+	display: block;
+	flex: none;
+}
+
+/* On the tinted page, lists and menus sit as tiles too, full column width. */
+.tb-ds__list {
+	margin: 0;
+	box-shadow: var(--ax-shadow);
+}
+
+.tb-ds__menu {
+	width: 100%;
+	backdrop-filter: none;
+	background: var(--ax-background-elevated);
+	border-radius: var(--ax-radius-lg);
+	box-shadow: var(--ax-shadow);
+}
+
+/* The brand mark on a primary square, like an app icon. */
+.tb-ds__logo {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 72px;
+	height: 72px;
+	border-radius: var(--ax-radius-lg);
+	background: var(--ax-primary-default);
+	color: var(--ax-primary-on);
+}
+
+/* Splits a button's label from its figure. */
+.tb-ds__divider {
+	align-self: center;
+	width: 1px;
+	height: 20px;
+	margin: 0 calc(6 * var(--ax-space));
+	background: currentColor;
+	opacity: 0.35;
+}
+
+.tb-ds__swatch {
+	flex: none;
+	width: 22px;
+	height: 22px;
+	border-radius: var(--ax-radius-sm);
+	background: var(--ax-highlight-default);
+	box-shadow: inset 0 0 0 1px var(--ax-border-subtle);
+}
+
+/* A highlighted passage, drawn as a message bubble. */
+.tb-ds__bubble {
+	padding: calc(12 * var(--ax-space)) calc(14 * var(--ax-space));
+	border-radius: var(--ax-radius-lg) var(--ax-radius-lg) var(--ax-radius-lg) var(--ax-radius-sm);
+	background: var(--ax-background-subtle);
+	box-shadow: inset 3px 0 0 var(--ax-highlight-default);
+}
+
+.tb-ds__tile {
+	min-width: 0;
+}
+
+/* A badge or a button pinned to the top corners of a cover. */
+.tb-ds__on-media {
+	position: absolute;
+	top: calc(12 * var(--ax-space));
+}
+
+/* Carousel dots over the bottom of a cover, on a veil that keeps them visible on any photo. */
+.tb-ds__dots {
+	position: absolute;
+	bottom: calc(10 * var(--ax-space));
+	left: 50%;
+	transform: translateX(-50%);
+	padding: calc(5 * var(--ax-space)) calc(8 * var(--ax-space));
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--ax-background-default) 80%, transparent);
+}
+
+/* The opening quote of a testimonial, set large in the heading font. */
+.tb-ds__quote-mark {
+	height: 28px;
+	font-family: var(--ax-font-heading, var(--ax-font));
+	font-size: 56px;
+	line-height: 56px;
+	color: var(--ax-content-subtle);
+}
+
+/* Four facts side by side, each an icon over its caption. */
+.tb-ds__facts {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: calc(12 * var(--ax-space));
+	padding: calc(14 * var(--ax-space)) calc(12 * var(--ax-space));
+	border-radius: var(--ax-radius-md);
+	box-shadow: inset 0 0 0 1px var(--ax-border-subtle);
+}

@@ -33,27 +33,66 @@ const categories: { value: Category; label: string }[] = [
 const face = (family: string) =>
 	family === SYSTEM_FONT ? undefined : `'${family}', system-ui`;
 
-/** The face of one font role, set in itself. Opens the font list. */
+const samples: Record<FontRole, string> = {
+	heading: "Discover things worth keeping",
+	body: "The quick brown fox jumps over the lazy dog.",
+};
+
+/**
+ * The face of one font role, shown as a specimen set in itself: a large Aa,
+ * its name and a line of text. Opens the font list.
+ */
 export const FontField = observer(function FontField({
 	role,
 }: {
 	role: FontRole;
 }) {
 	const current = theme$.fonts[role].get();
+	const category =
+		current === SYSTEM_FONT
+			? "System"
+			: (categories.find(
+					({ value }) =>
+						value ===
+						googleFonts.find((font) => font.family === current)?.category,
+				)?.label ?? "");
 	return (
-		<div className="tb-field">
-			<span className="tb-field__label">{roleLabels[role]}</span>
-			<button
-				type="button"
-				className="tb-fontpicker__trigger"
-				aria-label={`${roleLabels[role]}: ${current}`}
-				onClick={() => navigate({ kind: "font", role })}
+		<button
+			type="button"
+			className="tb-fontcard"
+			aria-label={`${roleLabels[role]}: ${current}`}
+			onClick={() => navigate({ kind: "font", role })}
+		>
+			<span className="tb-fontcard__head">
+				<span className="tb-field__label">{roleLabels[role]}</span>
+				<ChevronRight size={14} aria-hidden="true" />
+			</span>
+			<span
+				className="tb-fontcard__body"
 				style={{ fontFamily: face(current) }}
 			>
-				<span className="tb-truncate">{current}</span>
-				<ChevronRight size={14} aria-hidden="true" />
-			</button>
-		</div>
+				<span
+					className="tb-fontcard__sample"
+					data-role={role}
+					aria-hidden="true"
+				>
+					Aa
+				</span>
+				<span className="tb-fontcard__meta">
+					<span className="tb-fontcard__family tb-truncate">
+						{current}
+					</span>
+					<span className="tb-fontcard__category">{category}</span>
+				</span>
+			</span>
+			<span
+				className="tb-fontcard__line tb-truncate"
+				style={{ fontFamily: face(current) }}
+				aria-hidden="true"
+			>
+				{samples[role]}
+			</span>
+		</button>
 	);
 });
 

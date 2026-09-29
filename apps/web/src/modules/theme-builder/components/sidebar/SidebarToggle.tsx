@@ -1,6 +1,7 @@
 import { observer } from "@legendapp/state/react";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { ui$ } from "../../state/ui";
+import { ThemeName } from "../ThemeName";
 
 /**
  * Puts the sidebar away or brings it back, and hands the focus to the button
@@ -11,7 +12,7 @@ function setSidebar(open: boolean) {
 	// The button only takes the focus once its side is no longer inert.
 	requestAnimationFrame(() =>
 		document
-			.querySelector<HTMLElement>(open ? ".tb-panel__hide" : ".tb-show")
+			.querySelector<HTMLElement>(open ? ".tb-panel__hide" : ".tb-show__btn")
 			?.focus({ preventScroll: true }),
 	);
 }
@@ -33,21 +34,26 @@ export function SidebarHide() {
 	);
 }
 
-/** Floating in the canvas corner while the sidebar is away: brings it back. */
+/**
+ * Floating in the canvas corner while the sidebar is away: brings it back, and
+ * keeps the theme's name in sight.
+ */
 export const SidebarToggle = observer(function SidebarToggle() {
 	const open = ui$.sidebarOpen.get();
 	return (
-		<button
-			type="button"
-			className="tb-show tb-float"
-			title="Show the sidebar"
-			aria-label="Show the sidebar"
-			aria-controls="tb-panel"
-			aria-expanded="false"
-			inert={open}
-			onClick={() => setSidebar(true)}
-		>
-			<PanelLeftOpen size={16} aria-hidden="true" />
-		</button>
+		<div className="tb-show tb-float" inert={open}>
+			<button
+				type="button"
+				className="tb-show__btn"
+				title="Show the sidebar"
+				aria-label="Show the sidebar"
+				aria-controls="tb-panel"
+				aria-expanded="false"
+				onClick={() => setSidebar(true)}
+			>
+				<PanelLeftOpen size={16} aria-hidden="true" />
+			</button>
+			<ThemeName />
+		</div>
 	);
 });

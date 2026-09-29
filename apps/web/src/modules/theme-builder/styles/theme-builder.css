@@ -180,25 +180,40 @@ input[type="color"] {
 	font-size: 0.9rem;
 }
 
+/* ---------- Canvas view tabs ---------- */
+
+/* Both tabs as wide as the widest label; doubled to win over .tb-segmented's flex. */
+.tb-segmented.tb-views {
+	display: grid;
+	flex: none;
+	grid-auto-columns: 1fr;
+	grid-auto-flow: column;
+}
+
+.tb-views button {
+	padding-inline: 0.85rem;
+}
+
 /* ---------- Editable theme name ---------- */
 
+/* In the sidebar head, and beside the show button while the sidebar is away. */
 .tb-name,
 .tb-name__input {
-	flex: none;
-	max-width: 40vw;
-	padding: 0.35rem 0.7rem;
+	flex: 1;
+	min-width: 0;
+	padding: 0.3rem 0.5rem;
 	border: 1px solid transparent;
 	background: transparent;
-	font-size: 0.95rem;
+	font-size: 0.9rem;
 	font-weight: 500;
-	text-align: center;
+	text-align: left;
 }
 
 .tb-name {
 	display: inline-flex;
 	align-items: center;
+	justify-content: space-between;
 	gap: 0.5rem;
-	min-width: 0;
 }
 
 .tb-name:hover {
@@ -224,7 +239,6 @@ input[type="color"] {
 }
 
 .tb-name__input {
-	width: 18rem;
 	border-color: var(--line-strong);
 	background: var(--raised);
 	color: var(--fg);
@@ -450,13 +464,14 @@ input[type="color"] {
 	display: flex;
 	flex: none;
 	align-items: center;
-	gap: 0.75rem;
+	gap: 0.5rem;
+	padding-right: 0.5rem;
 	height: var(--corner);
 	border-bottom: 1px solid var(--line);
 }
 
 .tb-panel__hide,
-.tb-show {
+.tb-show__btn {
 	display: inline-flex;
 	flex: none;
 	align-items: center;
@@ -475,18 +490,11 @@ input[type="color"] {
 }
 
 .tb-panel__hide:hover,
-.tb-show:hover {
+.tb-show__btn:hover {
 	color: var(--fg);
 	background: var(--hover);
 }
 
-.tb-panel__title {
-	color: var(--muted);
-	font-family: var(--font-mono);
-	font-size: 0.7rem;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-}
 
 /* The content goes first on the way out and comes last on the way in. */
 .tb-panel__head > :not(.tb-panel__hide),
@@ -514,8 +522,14 @@ input[type="color"] {
 		transform var(--slide);
 }
 
-/* Stands where the hide button was, once the panel has folded into it. */
+/* Stands where the hide button was, once the panel has folded into it, the
+   theme's name beside it. */
 .tb-show {
+	display: flex;
+	align-items: center;
+	max-width: min(22rem, 100% - var(--float-inset) * 2);
+	padding-right: 0.35rem;
+	transform-origin: top left;
 	position: absolute;
 	z-index: 20;
 	top: var(--float-inset);
@@ -539,6 +553,16 @@ input[type="color"] {
 .tb-show:not([inert]) {
 	opacity: 1;
 	scale: 1;
+}
+
+.tb-show__btn {
+	border: 0;
+	border-right: 1px solid var(--line);
+	background: transparent;
+}
+
+.tb-show .tb-name {
+	margin-left: 0.35rem;
 }
 
 /* The sections and the page being picked on, side by side; a page slides in. */
@@ -1067,7 +1091,7 @@ input[type="color"] {
 }
 
 /* Promoted only while the camera moves, so text redraws sharp at rest. */
-.tb-view[data-moving] .tb-devices {
+.tb-view[data-moving] .tb-world {
 	will-change: transform;
 }
 
@@ -1078,17 +1102,50 @@ input[type="color"] {
 
 /* ---------- Devices ---------- */
 
-/* Four screens to a row, at real device points: the camera scales the whole
-   grid, so the gaps are sized for a phone at full size. */
-.tb-devices {
+/* The layer camera.ts moves and scales: the screens, or the sheet. */
+.tb-world {
 	position: absolute;
 	top: 0;
 	left: 0;
+	width: max-content;
+	transform-origin: 0 0;
+}
+
+/* Over every screen but the one brought forward; a click on it clears. The
+   world is scaled, so it spans far past any view. */
+.tb-dim {
+	position: absolute;
+	z-index: 1;
+	inset: -50000px;
+	background: color-mix(in srgb, var(--canvas) 82%, transparent);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.25s ease;
+}
+
+.tb-dim[data-shown] {
+	opacity: 1;
+	pointer-events: auto;
+	cursor: default;
+}
+
+/* Each screen is its own stacking context, so the tab bar and the other
+   layered parts inside it stay under the dim with the rest of their screen. */
+.tb-device {
+	position: relative;
+	z-index: 0;
+}
+
+.tb-device[data-focused] {
+	z-index: 2;
+}
+
+/* Four screens to a row, at real device points: the camera scales the whole
+   grid, so the gaps are sized for a phone at full size. */
+.tb-devices {
 	display: grid;
 	grid-template-columns: repeat(4, max-content);
 	gap: 4rem;
-	width: max-content;
-	transform-origin: 0 0;
 }
 
 .tb-device {
@@ -1290,6 +1347,122 @@ input[type="color"] {
 
 .tb-fontpicker {
 	position: relative;
+}
+
+/* A font role as a specimen, set in its own face. */
+.tb-fontcard {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+	width: 100%;
+	padding: 0.75rem;
+	border: 1px solid var(--line);
+	background: var(--raised);
+	color: var(--fg);
+	text-align: left;
+	cursor: pointer;
+}
+
+.tb-fontcard:hover {
+	border-color: var(--line-strong);
+}
+
+.tb-fontcard__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	color: var(--muted);
+	font-family: var(--font-mono);
+}
+
+.tb-fontcard__body {
+	display: flex;
+	align-items: center;
+	gap: 0.85rem;
+	min-width: 0;
+}
+
+.tb-fontcard__sample {
+	flex: none;
+	font-size: 2.6rem;
+	line-height: 1;
+}
+
+.tb-fontcard__sample[data-role="heading"] {
+	font-weight: 700;
+}
+
+.tb-fontcard__meta {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	min-width: 0;
+}
+
+.tb-fontcard__family {
+	font-size: 1rem;
+	font-weight: 500;
+}
+
+.tb-fontcard__category {
+	color: var(--muted);
+	font-family: var(--font-mono);
+	font-size: 0.68rem;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.tb-fontcard__line {
+	padding-top: 0.6rem;
+	border-top: 1px solid var(--line);
+	color: var(--muted);
+	font-size: 0.85rem;
+}
+
+/* Shapes picked by their look: each option draws the corner it gives. */
+.tb-shapes {
+	display: grid;
+	grid-auto-columns: 1fr;
+	grid-auto-flow: column;
+	gap: 0.4rem;
+}
+
+.tb-shape {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 3.5rem;
+	border: 1px solid var(--line);
+	background: var(--raised);
+	color: var(--muted);
+	cursor: pointer;
+}
+
+.tb-shape:hover {
+	border-color: var(--line-strong);
+	color: var(--fg);
+}
+
+.tb-shape[aria-pressed="true"] {
+	border-color: var(--fg);
+	color: var(--fg);
+	background: var(--hover);
+}
+
+/* One corner of a large square, so the curve is all that shows. */
+.tb-shape__corner {
+	width: 1.75rem;
+	height: 1.75rem;
+	margin: 0.6rem 0 0 0.6rem;
+	border-top: 2px solid currentColor;
+	border-left: 2px solid currentColor;
+}
+
+/* A button's outline. */
+.tb-shape__control {
+	width: 2.75rem;
+	height: 1.25rem;
+	border: 2px solid currentColor;
 }
 
 .tb-fontpicker__trigger {

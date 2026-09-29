@@ -4,9 +4,9 @@ import { Pencil } from "lucide-react";
 import { theme$ } from "../state/theme";
 
 /**
- * The theme's name lives in the header, centred, and is edited in place: a
- * click turns the title into an input, Enter or a blur commits, Escape backs
- * out.
+ * The theme's name heads the sidebar, and stays beside the show button while
+ * the sidebar is away. It is edited in place: a click turns it into an input,
+ * Enter or a blur commits, Escape backs out.
  */
 export const ThemeName = observer(function ThemeName() {
 	const name = theme$.name.get();

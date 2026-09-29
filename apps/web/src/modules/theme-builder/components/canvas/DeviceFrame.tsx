@@ -47,6 +47,7 @@ export const DeviceFrame = observer(function DeviceFrame({
 	children: ReactNode;
 }) {
 	const device = ui$.device.get();
+	const focused = ui$.focusedScreen.get() === label;
 	const hovered = useRef<Element | null>(null);
 
 	// The outline is a DOM attribute, not React state: hovering must not
@@ -59,7 +60,7 @@ export const DeviceFrame = observer(function DeviceFrame({
 	};
 
 	return (
-		<figure className="tb-device">
+		<figure className="tb-device" data-focused={focused ? "" : undefined}>
 			<div className="tb-phone" data-device={device}>
 				<div
 					className="ax-screen"
@@ -67,13 +68,15 @@ export const DeviceFrame = observer(function DeviceFrame({
 					data-grouped={grouped ? "true" : undefined}
 					// The mockups are pictures, not apps: nothing inside is focusable.
 					// Pointing at a part outlines it; clicking brings the phone to the
-					// middle of the canvas and opens the part's colors in the sidebar,
+					// middle of the canvas, dims the others behind it, and opens the
+					// part's colors in the sidebar,
 					// which is where they are edited from the keyboard.
 					onMouseOver={(event) => outline(pick(event)?.element ?? null)}
 					onMouseLeave={() => outline(null)}
 					onClick={(event) => {
 						const phone = event.currentTarget.parentElement;
 						if (phone) focusScreen(phone);
+						ui$.focusedScreen.set(label);
 						const hit = pick(event);
 						if (hit) focus([hit.text, hit.background, hit.border]);
 					}}

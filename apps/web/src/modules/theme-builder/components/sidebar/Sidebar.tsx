@@ -9,6 +9,7 @@ import {
 	type SidebarSection,
 	ui$,
 } from "../../state/ui";
+import { ThemeName } from "../ThemeName";
 import { ColorPage } from "./ColorPage";
 import { ColorRoles } from "./ColorRoles";
 import { FontField, FontPage } from "./FontControl";
@@ -67,7 +68,7 @@ export const Sidebar = observer(function Sidebar() {
 		>
 			<div className="tb-panel__head">
 				<SidebarHide />
-				<span className="tb-panel__title">Theme</span>
+				<ThemeName />
 			</div>
 			<div className="tb-nav" data-page={open ? "" : undefined}>
 				<div className="tb-nav__pane" inert={open}>
@@ -96,6 +97,9 @@ const Sections = observer(function Sections() {
 	return (
 		<>
 			<PresetField />
+			<Section id="spacing" title="Spacing">
+				<SpacingControls />
+			</Section>
 			<Section id="colors" title="Colors">
 				<ColorRoles />
 			</Section>
@@ -108,9 +112,6 @@ const Sections = observer(function Sections() {
 			</Section>
 			<Section id="shape" title="Shape">
 				<ShapeControls />
-			</Section>
-			<Section id="spacing" title="Spacing">
-				<SpacingControls />
 			</Section>
 
 			<section className="tb-group tb-group--actions">
