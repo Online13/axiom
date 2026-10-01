@@ -100,6 +100,54 @@
 	--color-fd-muted-foreground: #8b84b0;
 }
 
+/*
+ * The landing's cyan accent, kept for actions and hover. Dark uses it as is; light takes
+ * a deeper cyan so it stays readable as text on white.
+ */
+:root {
+	--docs-accent: #0e7490;
+}
+
+.dark {
+	--docs-accent: #61dafb;
+}
+
+/* Fumadocs only uses primary for active states in the nav, tabs and TOC: tint them cyan. */
+#nd-sidebar,
+#nd-subnav,
+#nd-toc {
+	--color-fd-primary: var(--docs-accent);
+}
+
+.prose :where(a:not([data-card])):not(:where(.not-prose, .not-prose *)) {
+	text-decoration-color: color-mix(in oklab, var(--docs-accent) 55%, transparent);
+	transition:
+		color 0.15s,
+		text-decoration-color 0.15s;
+}
+
+.prose :where(a:not([data-card])):not(:where(.not-prose, .not-prose *)):hover {
+	color: var(--docs-accent);
+	text-decoration-color: var(--docs-accent);
+	opacity: 1;
+}
+
+.prose a[data-card] {
+	transition: border-color 0.15s;
+}
+
+.prose a[data-card]:hover {
+	border-color: var(--docs-accent);
+}
+
+:focus-visible {
+	outline-color: var(--docs-accent);
+}
+
+::selection {
+	background: color-mix(in oklab, var(--docs-accent) 30%, transparent);
+}
+
 /* Container values shared with the landing (src/modules/landing/styles/global.css). */
 :root {
 	--container-max: 1440px;
