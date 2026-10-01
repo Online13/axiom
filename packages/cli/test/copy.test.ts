@@ -17,14 +17,24 @@ const REGISTRY: Registry = {
 		{
 			name: "theme",
 			type: "foundations",
-			files: ["theme/index.ts", { path: "theme/components.ts", as: "components/index.ts" }],
+			files: [
+				"theme/index.ts",
+				{ path: "theme/components.ts", as: "components/index.ts" },
+			],
 		},
-		{ name: "text", type: "typography", files: ["text/text.tsx"], internalDependencies: ["theme"] },
+		{
+			name: "text",
+			type: "typography",
+			files: ["text/text.tsx"],
+			internalDependencies: ["theme"],
+		},
 		{
 			name: "icon",
 			type: "atoms",
 			files: ["icon/icon.tsx", "icon/icon-types.ts"],
-			iconSources: { custom: { files: [{ path: "icon/icons.tsx", createOnly: true }] } },
+			iconSources: {
+				custom: { files: [{ path: "icon/icons.tsx", createOnly: true }] },
+			},
 			internalDependencies: ["theme"],
 		},
 		{
@@ -35,7 +45,11 @@ const REGISTRY: Registry = {
 			dependencies: ["react-native-reanimated"],
 			internalDependencies: ["icon", "text", "theme"],
 		},
-		{ name: "fancy", type: "atoms", variants: { unistyles: { files: ["fancy/fancy.tsx"] } } },
+		{
+			name: "fancy",
+			type: "atoms",
+			variants: { unistyles: { files: ["fancy/fancy.tsx"] } },
+		},
 	],
 };
 
@@ -79,7 +93,8 @@ function copy(
 	});
 }
 
-const read = (cwd: string, path: string) => readFileSync(join(cwd, path), "utf8");
+const read = (cwd: string, path: string) =>
+	readFileSync(join(cwd, path), "utf8");
 
 describe("copyItems", () => {
 	test("places every file by its rule, and lists the npm dependencies", async () => {
@@ -102,7 +117,11 @@ describe("copyItems", () => {
 
 	test("rewrites imports to where each file now lives", async () => {
 		const project = setup({
-			aliases: { ...config().aliases, components: "@/ui", theme: "@/design" },
+			aliases: {
+				...config().aliases,
+				components: "@/ui",
+				theme: "@/design",
+			},
 		});
 		await copy(project, ["button"]);
 
@@ -156,7 +175,9 @@ describe("copyItems", () => {
 			expect(result.kept).toEqual([
 				{ path: "src/components/ui/icon/icons.tsx", reason: "owned" },
 			]);
-			expect(read(project.cwd, "src/components/ui/icon/icons.tsx")).toBe("// mine\n");
+			expect(read(project.cwd, "src/components/ui/icon/icons.tsx")).toBe(
+				"// mine\n",
+			);
 		});
 
 		test("keeps dependencies, unless forced", async () => {
@@ -187,10 +208,36 @@ describe("copyItems", () => {
 				},
 			});
 			expect(asked).toHaveLength(1);
-			expect(result.kept.map((file) => file.reason)).toEqual(["declined", "declined"]);
+			expect(result.kept.map((file) => file.reason)).toEqual([
+				"declined",
+				"declined",
+			]);
 
-			const all = await copy(project, ["button"], { confirm: async () => "all" });
+			const all = await copy(project, ["button"], {
+				confirm: async () => "all",
+			});
 			expect(all.written).toHaveLength(2);
+		});
+
+		test("still asks about theme files with --overwrite", async () => {
+			const project = setup();
+			await copy(project, ["button"]);
+			edit(project.cwd, "src/components/ui/button.tsx");
+			edit(project.cwd, "src/theme/components/button.ts");
+
+			const asked: string[] = [];
+			const result = await copy(project, ["button"], {
+				overwrite: "always",
+				confirm: async (path) => {
+					asked.push(path);
+					return "no";
+				},
+			});
+			expect(asked).toEqual(["src/theme/components/button.ts"]);
+			expect(result.written).toEqual(["src/components/ui/button.tsx"]);
+			expect(read(project.cwd, "src/theme/components/button.ts")).toBe(
+				"// mine\n",
+			);
 		});
 
 		test("keeps them when nobody can be asked", async () => {
@@ -211,14 +258,18 @@ describe("copyItems", () => {
 			);
 			const unistyles = setup({ styling: "unistyles" });
 			await copy(unistyles, ["fancy"]);
-			expect(existsSync(join(unistyles.cwd, "src/components/ui/fancy.tsx"))).toBe(true);
+			expect(
+				existsSync(join(unistyles.cwd, "src/components/ui/fancy.tsx")),
+			).toBe(true);
 		});
 
 		test("an item needing an icon source the project hasn't set", async () => {
-			await expect(copy(setup({ icons: undefined }), ["icon"])).rejects.toThrow(
-				'"icon" needs an icon source',
-			);
-			await expect(copy(setup({ icons: "expo-symbols" }), ["icon"])).rejects.toThrow(
+			await expect(
+				copy(setup({ icons: undefined }), ["icon"]),
+			).rejects.toThrow('"icon" needs an icon source');
+			await expect(
+				copy(setup({ icons: "expo-symbols" }), ["icon"]),
+			).rejects.toThrow(
 				`"icon" doesn't support the "expo-symbols" icon source.`,
 			);
 		});

@@ -3,7 +3,7 @@ import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 import { hasDependency } from "./project.ts";
-import { log, muted, task } from "./ui.ts";
+import { accent, confirm, log, muted, task } from "./ui.ts";
 
 export const PACKAGE_MANAGERS = ["bun", "pnpm", "yarn", "npm"] as const;
 export type PackageManager = (typeof PACKAGE_MANAGERS)[number];
@@ -39,14 +39,40 @@ export function installCommand(cwd: string, dependencies: string[]): string[] {
 	return [manager, manager === "npm" ? "install" : "add", ...dependencies];
 }
 
+/** `ask` confirms first, `always` installs without asking, `never` prints the command instead. */
+export type InstallMode = "ask" | "always" | "never";
+
+/** Installs the `missing` dependencies, or prints the command, depending on `mode`. */
+export async function resolveMissingDependencies(
+	cwd: string,
+	missing: string[],
+	mode: InstallMode,
+) {
+	if (!missing.length) return;
+	const command = installCommand(cwd, missing).join(" ");
+	const install =
+		mode === "always" ||
+		(mode === "ask" &&
+			(await confirm({
+				message: `Install ${missing.map((name) => accent(name)).join(", ")}? ${muted(command)}`,
+			})));
+	if (install) await installDependencies(cwd, missing);
+	else log.warn(`Missing dependencies. Install them with:\n${accent(command)}`);
+}
+
 export async function installDependencies(cwd: string, dependencies: string[]) {
 	const command = installCommand(cwd, dependencies);
 	const list = dependencies.join(", ");
 	let output = "";
 
+	// Stays on screen once the spinner is gone, so it's clear what the command touched.
+	log.step(
+		`Installing ${dependencies.map((name) => accent(name)).join(", ")}\n${muted(command.join(" "))}`,
+	);
+
 	try {
 		await task(
-			`Installing ${list} ${muted(command.join(" "))}`,
+			`Installing ${list}`,
 			() => {
 				const [file, ...args] = command;
 				const { status, error, stderr, stdout } = spawnSync(file, args, {

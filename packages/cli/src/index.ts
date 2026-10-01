@@ -23,7 +23,7 @@ import {
 	ensureAliases,
 	parseStyling,
 } from "./init.ts";
-import { installCommand, installDependencies } from "./install.ts";
+import { type InstallMode, resolveMissingDependencies } from "./install.ts";
 import {
 	CONFIG_FILE,
 	aliasToDir,
@@ -69,7 +69,7 @@ Commands:
 
 Run "axiom <command> --help" for the options of a command.`;
 
-const INIT_USAGE = `Usage: axiom init --registry <path> [--styling <tool>] [--no-install] [--force] [--cwd <path>]
+const INIT_USAGE = `Usage: axiom init --registry <path> [--styling <tool>] [--install | --no-install] [--force] [--cwd <path>]
 
 Sets up an existing Expo or React Native project:
 
@@ -77,7 +77,7 @@ Sets up an existing Expo or React Native project:
   2. makes sure its tsconfig.json resolves the aliases, offering to add the
      missing "paths" entries;
   3. copies the foundations (tokens, theme) and the core primitives;
-  4. installs the styling dependency and what the copied files need;
+  4. asks, then installs the styling dependency and what the copied files need;
   5. writes axiom.json, with everything it copied listed in "items".
 
 Options:
@@ -85,6 +85,7 @@ Options:
   --styling <tool>   Styling tool, instead of being asked: stylesheet,
                      unistyles, nativewind or uniwind. Only the ones the
                      registry has a variant for are accepted
+  --install          Install dependencies without asking
   --no-install       Print the install command instead of running it
   --force            Start over on a project that already has an axiom.json
   --cwd <path>       Project root (default: current folder)`;
@@ -123,8 +124,10 @@ Options:
   --navigation <library>
                      Navigation library, when axiom.json has none: expo-router,
                      react-navigation or react-native. Detected otherwise
-  --overwrite        Overwrite the items you name without asking
-  --install          Install missing dependencies instead of printing the command
+  --overwrite        Overwrite the items you name without asking. Theme files
+                     are still asked about: they hold your customizations
+  --install          Install missing dependencies without asking
+  --no-install       Print the install command instead of asking
   --watch            Copy again whenever a registry file changes. Overwrites
                      dependencies too: use it on a project that mirrors the registry
   --cwd <path>       Project root (default: current folder)`;
@@ -148,8 +151,7 @@ type RunOptions = {
 	overwrite: CopyOptions["overwrite"];
 	icons?: string;
 	navigation?: string;
-	/** Run the install command instead of printing it. */
-	install: boolean;
+	install: InstallMode;
 	/** Packages the command needs on top of what the copied files declare, like the styling tool. */
 	extraDependencies?: string[];
 };
@@ -222,7 +224,9 @@ async function run({
 	if (declined.length) {
 		const hint = interactive
 			? ""
-			: " Run in a terminal to be asked, or pass --overwrite.";
+			: overwrite === "always"
+				? " Theme files are only overwritten after asking: run in a terminal."
+				: " Run in a terminal to be asked, or pass --overwrite.";
 		log.warn(
 			`Kept your version of ${declined.map((file) => file.path).join(", ")}.${hint}`,
 		);
@@ -241,17 +245,11 @@ async function run({
 		);
 	}
 
-	const missing = missingDependencies(cwd, [
-		...result.dependencies,
-		...extraDependencies,
-	]);
-	if (missing.length) {
-		if (install) await installDependencies(cwd, missing);
-		else
-			log.warn(
-				`Missing dependencies. Install them with:\n${accent(installCommand(cwd, missing).join(" "))}`,
-			);
-	}
+	await resolveMissingDependencies(
+		cwd,
+		missingDependencies(cwd, [...result.dependencies, ...extraDependencies]),
+		install,
+	);
 
 	return result;
 }
@@ -278,7 +276,7 @@ type StandaloneOptions = {
 	styling?: string;
 	icons?: string;
 	overwrite: boolean;
-	install: boolean;
+	install: InstallMode;
 };
 
 /**
@@ -302,7 +300,9 @@ async function runStandalone({
 
 	// The project's config when it has one; the default aliases otherwise.
 	const project = configExists(cwd) ? readConfig(cwd) : undefined;
-	let styling = stylingFlag ? parseStyling(stylingFlag, available) : project?.styling;
+	let styling = stylingFlag
+		? parseStyling(stylingFlag, available)
+		: project?.styling;
 	if (!styling && interactive) styling = await askStyling(available);
 	if (!styling) {
 		throw new Error(
@@ -313,7 +313,12 @@ async function runStandalone({
 		...(project ?? { aliases: DEFAULT_ALIASES, items: [] }),
 		styling,
 	};
-	config = await withIconSource(config, resolveItems(registry, names), icons, cwd);
+	config = await withIconSource(
+		config,
+		resolveItems(registry, names),
+		icons,
+		cwd,
+	);
 
 	const written: string[] = [];
 	const unchanged: string[] = [];
@@ -369,21 +374,20 @@ async function runStandalone({
 		);
 	}
 	if (kept.length) {
-		const hint = interactive ? "" : " Run in a terminal to be asked, or pass --overwrite.";
+		const hint = interactive
+			? ""
+			: " Run in a terminal to be asked, or pass --overwrite.";
 		log.warn(`Kept your version of ${kept.join(", ")}.${hint}`);
 	}
 
 	// No `init` ran: the styling tool may be missing too.
 	const stylingDependency = STYLING_DEPENDENCY[config.styling];
 	if (stylingDependency) dependencies.add(stylingDependency);
-	const missing = missingDependencies(cwd, [...dependencies]);
-	if (missing.length) {
-		if (install) await installDependencies(cwd, missing);
-		else
-			log.warn(
-				`Missing dependencies. Install them with:\n${accent(installCommand(cwd, missing).join(" "))}`,
-			);
-	}
+	await resolveMissingDependencies(
+		cwd,
+		missingDependencies(cwd, [...dependencies]),
+		install,
+	);
 
 	return { written, unchanged, kept };
 }
@@ -392,7 +396,7 @@ type InitOptions = {
 	registryRoot: string;
 	cwd: string;
 	styling?: string;
-	install: boolean;
+	install: InstallMode;
 	force: boolean;
 };
 
@@ -486,12 +490,24 @@ async function main() {
 
 	intro(`axiom ${command}`);
 
+	// --install and --no-install decide up front; otherwise a terminal is asked first, and without
+	// one, init installs (its job is to set the project up) while add prints the command.
+	const install: InstallMode = values.install
+		? "always"
+		: values["no-install"]
+			? "never"
+			: isInteractive()
+				? "ask"
+				: command === "init"
+					? "always"
+					: "never";
+
 	if (command === "init") {
 		const result = await runInit({
 			registryRoot,
 			cwd,
 			styling: values.styling,
-			install: !values["no-install"],
+			install,
 			force: values.force,
 		});
 		outro(
@@ -501,7 +517,8 @@ async function main() {
 	}
 
 	if (values.standalone) {
-		if (values.watch) throw new Error("--standalone and --watch don't go together.");
+		if (values.watch)
+			throw new Error("--standalone and --watch don't go together.");
 		const result = await runStandalone({
 			names,
 			registryRoot,
@@ -509,7 +526,7 @@ async function main() {
 			styling: values.styling,
 			icons: values.icons,
 			overwrite: values.overwrite,
-			install: values.install,
+			install,
 		});
 		outro(
 			`${result.written.length} written, ${result.unchanged.length} unchanged, ${result.kept.length} kept.`,
@@ -530,7 +547,7 @@ async function main() {
 		overwrite,
 		icons: values.icons,
 		navigation: values.navigation,
-		install: values.install,
+		install,
 	});
 	const summary = `${result.written.length} written, ${result.unchanged.length} unchanged, ${result.kept.length} kept.`;
 
@@ -552,7 +569,8 @@ async function main() {
 				registryRoot,
 				cwd,
 				overwrite: "force",
-				install: values.install,
+				// No prompt under the watcher: it would interrupt every change.
+				install: values.install ? "always" : "never",
 			}).catch((error: Error) => log.error(error.message));
 		}, 100);
 	});

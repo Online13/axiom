@@ -46,7 +46,8 @@ export type CopyOptions = {
 	/**
 	 * What to do when a requested file exists and differs:
 	 * - `ask`: call `confirm` for each file;
-	 * - `always`: overwrite without asking (`--overwrite`);
+	 * - `always`: overwrite without asking (`--overwrite`), except theme files, which hold the
+	 *   project's customizations: those are still asked about;
 	 * - `force`: overwrite dependencies too (watch mode, where the project is a copy of the registry).
 	 * `createOnly` files are never overwritten, whatever the mode.
 	 */
@@ -418,6 +419,7 @@ export async function copyItems(
 	};
 	let overwrite = options.overwrite;
 	let declineAll = false;
+	const themeDir = aliasToDir(cwd, config.aliases.theme) + sep;
 
 	// Every file is read, rewritten and decided on before anything is written,
 	// so an error in one file leaves the project untouched.
@@ -454,7 +456,11 @@ export async function copyItems(
 				result.kept.push({ path, reason: "dependency" });
 				continue;
 			}
-			if (overwrite === "ask") {
+			const isTheme = file.destination.startsWith(themeDir);
+			if (
+				overwrite === "ask" ||
+				(isTheme && options.overwrite === "always")
+			) {
 				const answer =
 					declineAll || !options.confirm
 						? "no"
