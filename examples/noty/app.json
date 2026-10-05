@@ -1,0 +1,91 @@
+{
+  "expo": {
+    "name": "noty",
+    "slug": "noty",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "noty",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "icon": "./assets/expo.icon"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.onlinenk.noty"
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#208AEF",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 76
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "ios": {
+            "fonts": [
+              "@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf",
+              "@expo-google-fonts/inter/500Medium/Inter_500Medium.ttf",
+              "@expo-google-fonts/inter-tight/600SemiBold/InterTight_600SemiBold.ttf",
+              "@expo-google-fonts/inter-tight/700Bold/InterTight_700Bold.ttf",
+              "@expo-google-fonts/inter-tight/800ExtraBold/InterTight_800ExtraBold.ttf"
+            ]
+          },
+          "android": {
+            "fonts": [
+              {
+                "fontFamily": "Inter",
+                "fontDefinitions": [
+                  {
+                    "path": "@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf",
+                    "weight": 400
+                  },
+                  {
+                    "path": "@expo-google-fonts/inter/500Medium/Inter_500Medium.ttf",
+                    "weight": 500
+                  }
+                ]
+              },
+              {
+                "fontFamily": "Inter Tight",
+                "fontDefinitions": [
+                  {
+                    "path": "@expo-google-fonts/inter-tight/600SemiBold/InterTight_600SemiBold.ttf",
+                    "weight": 600
+                  },
+                  {
+                    "path": "@expo-google-fonts/inter-tight/700Bold/InterTight_700Bold.ttf",
+                    "weight": 700
+                  },
+                  {
+                    "path": "@expo-google-fonts/inter-tight/800ExtraBold/InterTight_800ExtraBold.ttf",
+                    "weight": 800
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

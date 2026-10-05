@@ -1,0 +1,39 @@
+{
+  "$schema": "https://axiom.dev/schema.json",
+  "styling": "unistyles",
+  "icons": "expo-symbols",
+  "aliases": {
+    "theme": "@/theme",
+    "core": "@/components/core",
+    "hooks": "@/hooks",
+    "components": "@/components/ui",
+    "compositions": "@/components/compositions",
+    "blocks": "@/components/blocks"
+  },
+  "items": [
+    "app-bar",
+    "badge",
+    "card",
+    "checkbox",
+    "chip",
+    "empty",
+    "haptics",
+    "icon",
+    "icon-button",
+    "input",
+    "overlay",
+    "portal",
+    "scaffold",
+    "search-bar",
+    "separator",
+    "slot",
+    "spinner",
+    "tappable",
+    "text",
+    "text-area",
+    "theme",
+    "title",
+    "tokens",
+    "use-controllable-state"
+  ]
+}

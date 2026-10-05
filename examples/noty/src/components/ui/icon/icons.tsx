@@ -1,0 +1,70 @@
+import { SymbolView } from "expo-symbols";
+import type { ComponentProps } from "react";
+
+import type { IconComponent, IconRegistry } from "./icon-types";
+
+// The icon registry of your app. Every icon the app shows is declared here, and only here.
+// `axiom add icon` creates this file once and never overwrites it: it's yours.
+//
+// Rules:
+// - screens and components use <Icon name="…" />, never an icon library directly;
+// - name an icon after what it means (`close`, `settings`), not after the glyph (`xmark`, `gear`);
+// - names are kebab-case;
+// - every entry takes { size, color, strokeWidth? }: wrap a set with other props in an adapter, like `symbol` below;
+// - to change set, change the entries here. Nothing else in the app moves.
+//
+// Source: `expo-symbols` (SF Symbols on iOS, Material Symbols on Android).
+// Add entries with `symbol(iosName, androidName)`. To move to another set, replace the entries: nothing else changes.
+
+type SymbolName = ComponentProps<typeof SymbolView>["name"];
+type IosSymbol = Extract<SymbolName, string>;
+type AndroidSymbol = NonNullable<Exclude<SymbolName, string>["android"]>;
+
+/** Adapter for `expo-symbols`. */
+function symbol(ios: IosSymbol, android: AndroidSymbol): IconComponent {
+	return function SymbolIcon({ size, color }) {
+		return (
+			<SymbolView
+				name={{ ios, android, web: android }}
+				size={size}
+				tintColor={color}
+			/>
+		);
+	};
+}
+
+export const icons = {
+	add: symbol("plus", "add"),
+	"arrow-left": symbol("arrow.left", "arrow_back"),
+	backspace: symbol("delete.left", "backspace"),
+	biometrics: symbol("faceid", "fingerprint"),
+	calendar: symbol("calendar", "calendar_today"),
+	check: symbol("checkmark", "check"),
+	"chevron-down": symbol("chevron.down", "keyboard_arrow_down"),
+	"chevron-left": symbol("chevron.left", "chevron_left"),
+	"chevron-right": symbol("chevron.right", "chevron_right"),
+	close: symbol("xmark", "close"),
+	delete: symbol("trash", "delete"),
+	error: symbol("exclamationmark.circle", "error"),
+	family: symbol("person.3", "groups"),
+	favorite: symbol("heart", "favorite"),
+	file: symbol("doc", "description"),
+	fitness: symbol("figure.run", "directions_run"),
+	home: symbol("house", "home"),
+	image: symbol("photo", "image"),
+	info: symbol("info.circle", "info"),
+	menu: symbol("line.3.horizontal", "menu"),
+	minus: symbol("minus", "remove"),
+	more: symbol("ellipsis", "more_horiz"),
+	person: symbol("person.crop.circle", "person"),
+	pin: symbol("pin", "push_pin"),
+	refresh: symbol("arrow.clockwise", "refresh"),
+	search: symbol("magnifyingglass", "search"),
+	settings: symbol("gearshape", "settings"),
+	share: symbol("square.and.arrow.up", "share"),
+	success: symbol("checkmark.circle", "check_circle"),
+	warning: symbol("exclamationmark.triangle", "warning"),
+	work: symbol("briefcase", "work"),
+} satisfies IconRegistry;
+
+export type IconName = keyof typeof icons;

@@ -1,11 +1,26 @@
 {
 	"name": "axiom-project",
-	"type": "module",
+	"devDependencies": {
+		"prettier": "^3.9.8",
+		"wrangler": "^4.131.2"
+	},
 	"private": true,
+	"scripts": {
+		"web": "bun run --cwd apps/web",
+		"demo:stylesheet": "bun run --cwd apps/demo-stylesheet",
+		"demo:unistyles": "bun run --cwd apps/demo-unistyles",
+		"demo:nativewind": "bun run --cwd apps/demo-nativewind",
+		"demo:uniwind": "bun run --cwd apps/demo-uniwind",
+		"example:noty": "bun run --cwd examples/noty",
+		"sim:ios": "node scripts/native-sim.mjs",
+		"format": "prettier --write ."
+	},
+	"type": "module",
 	"workspaces": {
 		"packages": [
 			"packages/*",
-			"apps/*"
+			"apps/*",
+			"examples/*"
 		],
 		"catalog": {
 			"react": "19.2.3",
@@ -13,18 +28,5 @@
 			"@types/react": "~19.2.2",
 			"@types/react-dom": "~19.2.2"
 		}
-	},
-	"scripts": {
-		"web": "bun run --cwd apps/web",
-		"demo:stylesheet": "bun run --cwd apps/demo-stylesheet",
-		"demo:unistyles": "bun run --cwd apps/demo-unistyles",
-		"demo:nativewind": "bun run --cwd apps/demo-nativewind",
-		"demo:uniwind": "bun run --cwd apps/demo-uniwind",
-		"sim:ios": "node scripts/native-sim.mjs",
-		"format": "prettier --write ."
-	},
-	"devDependencies": {
-		"prettier": "^3.9.8",
-		"wrangler": "^4.131.2"
 	}
 }
