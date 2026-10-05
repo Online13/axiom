@@ -21,7 +21,7 @@ The same behavior, frame by frame:
 ## When to use it
 
 - Long feeds and lists read from top to bottom: news, social feed, search results, a long article.
-- Bars that are useful but not needed while reading: [AppBar](/docs/templates/app-bar), [BottomTabBar](/docs/templates/bottom-tab-bar), a floating action button.
+- Bars that are useful but not needed while reading: [AppBar](/docs/components/app-bar), [BottomTabBar](/docs/components/bottom-tab-bar), a floating action button.
 
 Don't hide a bar that holds the main action of the screen (a checkout button, a composer), short lists that barely scroll, or a screen where the user switches tabs often.
 
@@ -75,7 +75,7 @@ const bars = useHideOnScroll({ height: 56 });
 // top bar: translateY -bars.hidden.value, bottom bar: +bars.hidden.value
 ```
 
-Installation, options and return value are documented in [useHideOnScroll](/docs/hooks/use-hide-on-scroll). Components that support it take the value directly, like `hideOnScroll` on [SearchBar in an AppBar](/docs/molecules/search-bar#searchbar-in-an-appbar).
+Installation, options and return value are documented in [useHideOnScroll](/docs/hooks/use-hide-on-scroll). Components that support it take the value directly, like `hideOnScroll` on [SearchBar in an AppBar](/docs/components/search-bar#searchbar-in-an-appbar).
 
 ## Accessibility
 

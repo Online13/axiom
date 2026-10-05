@@ -4,7 +4,7 @@ description: "An action that happens right away and can be cancelled for a few s
 ---
 
 <Callout title="Draft">
-	Specified, not implemented yet. It relies on [Snackbar](/docs/atoms/snackbar) and
+	Specified, not implemented yet. It relies on [Snackbar](/docs/components/snackbar) and
 	its `onDismiss` reason. The API may change.
 </Callout>
 
@@ -25,7 +25,7 @@ The same action, frame by frame:
 
 It works whatever triggers the action: a button in the row, a [full swipe](/docs/behaviors/swipe-actions#full-swipe), a menu entry, a toolbar action.
 
-Don't use it when the action can't be reverted, or affects more than the user sees, like a folder with its content or an account. Ask first with a [Dialog](/docs/atoms/dialog).
+Don't use it when the action can't be reverted, or affects more than the user sees, like a folder with its content or an account. Ask first with a [Dialog](/docs/components/dialog).
 
 ## How it works
 
@@ -37,7 +37,7 @@ The screen updates immediately. The request waits for the snackbar to close.
 - **One pending action.** A new action replaces the snackbar, which commits the previous one.
 - **Commit on leave.** Leaving the screen or backgrounding the app commits what's pending.
 - **Undo restores in place.** The item comes back at its position, not at the end of the list.
-- If the request fails, put the item back and show the error in a [Toast](/docs/atoms/toast).
+- If the request fails, put the item back and show the error in a [Toast](/docs/components/toast).
 
 ## Implementation
 
@@ -72,6 +72,6 @@ const remove = (message: Message) => {
 
 ## Related
 
-- [Snackbar](/docs/atoms/snackbar)
+- [Snackbar](/docs/components/snackbar)
 - [Swipe actions](/docs/behaviors/swipe-actions)
-- [Toast](/docs/atoms/toast)
+- [Toast](/docs/components/toast)

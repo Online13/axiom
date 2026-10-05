@@ -40,7 +40,7 @@ The second card has no photo: the avatar falls back to the initials, on a hue ta
 npx axiom add profile-card
 ```
 
-Also copies: [`card`](/docs/atoms/card), [`avatar`](/docs/atoms/avatar), [`separator`](/docs/atoms/separator), [`button`](/docs/atoms/button), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/profile-card.tsx`. It brings no tokens of its own.
+Also copies: [`card`](/docs/components/card), [`avatar`](/docs/components/avatar), [`separator`](/docs/components/separator), [`button`](/docs/components/button), [`title`](/docs/components/title), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/profile-card.tsx`. It brings no tokens of its own.
 
 ## Usage
 
@@ -76,7 +76,7 @@ const [following, setFollowing] = useState(user.isFollowed);
 | ---------------- | ---------------------- | ------------- | --------------------------------------------------------------------------------------------------- |
 | `name`           | `string`               | —             | Shown as the title. Gives the avatar its initials and hue when there is no photo.                   |
 | `handle`         | `string`               | —             | Under the name, muted: `"@lena.m"`.                                                                  |
-| `avatar`         | `ImageSourcePropType`  | —             | The photo, in an `xl` [Avatar](/docs/atoms/avatar). The initials show while it loads or if it fails. |
+| `avatar`         | `ImageSourcePropType`  | —             | The photo, in an `xl` [Avatar](/docs/components/avatar). The initials show while it loads or if it fails. |
 | `bio`            | `string`               | —             | Centered, up to three lines.                                                                        |
 | `stats`          | `ProfileStat[]`        | —             | `{ value, label }`, already formatted: `"12.4k"`. Between lines, each read as "12.4k Followers". Three fit. |
 | `following`      | `boolean`              | `false`       | Swaps the follow button to its outlined "Following" state.                                          |
@@ -90,12 +90,12 @@ const [following, setFollowing] = useState(user.isFollowed);
 
 ## Built with
 
-- [Card](/docs/atoms/card): the elevated surface and its header.
-- [Avatar](/docs/atoms/avatar): the photo, or the initials on a hue from the name.
-- [Title](/docs/atoms/title): the name and the stat values.
-- [Text](/docs/atoms/text): the handle, the bio and the stat labels.
-- [Separator](/docs/atoms/separator): the lines between the stats.
-- [Button](/docs/atoms/button): follow in `solid`, or `outline` once followed, and message in `outline`.
+- [Card](/docs/components/card): the elevated surface and its header.
+- [Avatar](/docs/components/avatar): the photo, or the initials on a hue from the name.
+- [Title](/docs/components/title): the name and the stat values.
+- [Text](/docs/components/text): the handle, the bio and the stat labels.
+- [Separator](/docs/components/separator): the lines between the stats.
+- [Button](/docs/components/button): follow in `solid`, or `outline` once followed, and message in `outline`.
 
 ## Used in
 

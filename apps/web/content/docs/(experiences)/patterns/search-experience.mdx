@@ -5,11 +5,12 @@ description: "Complete search pattern, from the field to the results."
 
 <Callout title="Draft">
 	Specified, not implemented yet. The field is
-	[SearchBar](/docs/molecules/search-bar); the rest is screen logic. The API may
-	change.
+	[SearchBar](/docs/components/search-bar), in a
+	[SearchAppBar](/docs/compositions/search-app-bar) for the Cancel button; the
+	rest is screen logic. The API may change.
 </Callout>
 
-[SearchBar](/docs/molecules/search-bar) is only the field. The search experience is everything around it: what the screen shows before the user types, while they type, and when nothing matches.
+[SearchBar](/docs/components/search-bar) is only the field. The search experience is everything around it: what the screen shows before the user types, while they type, and when nothing matches.
 
 <SearchExperiencePreview />
 
@@ -25,7 +26,7 @@ The screen, frame by frame:
 
 What the screen shows when the field is focused and still empty.
 
-- List the last queries, most recent first, as tappable rows built with [Item](/docs/atoms/item).
+- List the last queries, most recent first, as tappable rows built with [Item](/docs/components/item).
 - Tapping a row runs that query again.
 - Let the user remove one entry, and clear the whole list.
 
@@ -41,7 +42,7 @@ Where recent searches come from.
 
 Wait for a short pause in typing before sending the request, around 250 ms.
 
-- Show the `loading` state of [SearchBar](/docs/molecules/search-bar) while the request runs.
+- Show the `loading` state of [SearchBar](/docs/components/search-bar) while the request runs.
 - Ignore responses to older queries, so results never flash back to a previous one.
 - A local list can filter on every keystroke, without debounce.
 
@@ -74,7 +75,7 @@ const results = useQuery({
 	enabled: !!debounced,
 });
 
-<SearchBar
+<SearchAppBar
 	value={query}
 	onChangeText={setQuery}
 	loading={results.isFetching}
@@ -99,7 +100,8 @@ const results = useQuery({
 
 ## Related
 
-- [SearchBar](/docs/molecules/search-bar)
+- [SearchBar](/docs/components/search-bar)
+- [SearchAppBar](/docs/compositions/search-app-bar)
 - [Async content state](/docs/patterns/async-content-state)
-- [Empty](/docs/atoms/empty), for the no-results state
-- [Chip](/docs/atoms/chip), for filters
+- [Empty](/docs/components/empty), for the no-results state
+- [Chip](/docs/components/chip), for filters

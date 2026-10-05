@@ -115,7 +115,7 @@ That's the whole integration. Every component in the first two groups now plays 
 
 ### 3. Test on a device
 
-The iOS Simulator and most Android emulators play nothing. Run a development build on a phone, flip a [Switch](/docs/atoms/switch) and drag a [Slider](/docs/atoms/slider) with a `step`: you should feel a bump, then a tick per step.
+The iOS Simulator and most Android emulators play nothing. Run a development build on a phone, flip a [Switch](/docs/components/switch) and drag a [Slider](/docs/components/slider) with a `step`: you should feel a bump, then a tick per step.
 
 If nothing plays on iOS, check Settings › Sounds & Haptics › System Haptics. iOS respects it for every app.
 
@@ -138,7 +138,7 @@ haptic?: HapticKind | false;
 <Button onPress={pay} haptic="light">Pay €84.00</Button>
 ```
 
-On [Button](/docs/atoms/button) and the other pressable components, the haptic plays on `onPressIn`, when the finger touches, together with the [press scale](/docs/core/tappable#press-scale). Waiting for `onPress` would add the release delay back.
+On [Button](/docs/components/button) and the other pressable components, the haptic plays on `onPressIn`, when the finger touches, together with the [press scale](/docs/core/tappable#press-scale). Waiting for `onPress` would add the release delay back.
 
 ## From your own code
 
@@ -159,7 +159,7 @@ async function save() {
 }
 ```
 
-[Toast](/docs/atoms/toast) and [Snackbar](/docs/atoms/snackbar) don't play a haptic on their own: they also show messages the user didn't trigger, like a sync that finished in the background.
+[Toast](/docs/components/toast) and [Snackbar](/docs/components/snackbar) don't play a haptic on their own: they also show messages the user didn't trigger, like a sync that finished in the background.
 
 ## Turning haptics off
 
@@ -183,7 +183,7 @@ export function haptic(kind: HapticKind): void {
 ## Related
 
 - [Tappable](/docs/core/tappable)
-- [Switch](/docs/atoms/switch)
-- [Slider](/docs/atoms/slider)
-- [Menu](/docs/atoms/menu)
+- [Switch](/docs/components/switch)
+- [Slider](/docs/components/slider)
+- [Menu](/docs/components/menu)
 - [Pull to refresh](/docs/hooks/use-refresh-control)

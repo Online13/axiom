@@ -13,11 +13,11 @@ Foundations → Primitives → Compositions → Blocks
 
 <ComponentLayers />
 
-| Kind                                   | What it is                                                              | Examples                                            |
-| -------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------- |
+| Kind                                        | What it is                                                             | Examples                                            |
+| ------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------- |
 | [Primitives](#how-primitives-are-organized) | Generic building blocks with an API meant to be reused in many screens | Button, Text, Icon, Input, Item, Card, AppBar, Tabs |
-| [Compositions](/docs/compositions)     | Concrete interfaces assembled from primitives, ready to use             | Product Card, Settings Item                         |
-| [Blocks](/docs/blocks)                 | Complete or near-complete sections of an app                            | Settings Section, onboarding, paywall               |
+| [Compositions](/docs/compositions)          | Concrete interfaces assembled from primitives, ready to use            | Product Card, Settings Item                         |
+| [Blocks](/docs/blocks)                      | Complete or near-complete sections of an app                           | Settings Section, onboarding, paywall               |
 
 Each kind is built from the ones before it. A primitive uses [foundations](/docs/foundations) (tokens, typography, the theme) and the [headless core](/docs/core). A composition uses primitives. A block uses primitives and compositions.
 
@@ -26,6 +26,18 @@ Each kind is built from the ones before it. A primitive uses [foundations](/docs
 A primitive doesn't know what your app is about. `Card` is a surface with a header, media and a footer; it has no idea whether it will hold a product, a trip or a post. `Item` is a row with a leading slot, a title and a trailing slot; it can be a message, a contact or a setting.
 
 That generality is the point: one primitive covers many screens, and its props describe layout and states, not content. Primitives are sorted with Atomic Design, see [below](#how-primitives-are-organized).
+
+### Native props pass through
+
+A primitive, and each of its parts, accepts the props of the element it renders at its root: `View` props for a `Card.Header`, `Pressable` props for a `Chip` with `onPress`, `ScrollView` props for a `Scaffold.Content`. They land on that element, so `testID`, `onLayout`, `hitSlop`, accessibility props or `contentContainerStyle` work without copying the component.
+
+```tsx
+<Chip.Group testID="filters" onLayout={onLayout} style={{ paddingVertical: 8 }}>
+	{chips}
+</Chip.Group>
+```
+
+A few props stay under the component's control because its behavior depends on them, such as the accessibility role of a tab. Handlers the component also needs, like `onLayout`, are called after its own. Compositions don't follow this rule: their API is fixed, and you change the file instead.
 
 ## Compositions
 
@@ -43,12 +55,12 @@ The CLI copies the composition and the primitives it uses. From there you change
 
 Primitive pages also show code: "Navigation row", "Summary widget on a dashboard". Those are **examples**. They are not the same thing as compositions.
 
-|                  | Example                                         | Composition                                     |
-| ---------------- | ----------------------------------------------- | ----------------------------------------------- |
-| Purpose          | Shows how to use a primitive's API              | Gives you a finished interface to reuse         |
-| Where it lives   | In the primitive's page, as a snippet           | In the registry, with its own page              |
-| How you get it   | Read it, copy the lines you need                | `npx axiom add <name>`                          |
-| Has its own API  | No, it's a use of the primitive's props         | Yes: typed props, documented in a table         |
+|                 | Example                                 | Composition                             |
+| --------------- | --------------------------------------- | --------------------------------------- |
+| Purpose         | Shows how to use a primitive's API      | Gives you a finished interface to reuse |
+| Where it lives  | In the primitive's page, as a snippet   | In the registry, with its own page      |
+| How you get it  | Read it, copy the lines you need        | `npx axiom add <name>`                  |
+| Has its own API | No, it's a use of the primitive's props | Yes: typed props, documented in a table |
 
 When a pattern keeps coming back across apps and deserves its own props, it becomes a composition. Until then, it stays an example.
 
@@ -65,8 +77,8 @@ Card  →  Product Card   →  product grid (Commerce)
 Item  →  Settings Item  →  Settings Section
 ```
 
-- [Card](/docs/atoms/card) → [Product Card](/docs/compositions/product-card) → a product grid in the planned [Commerce](/docs/blocks/commerce) blocks.
-- [Item](/docs/atoms/item) → [Settings Item](/docs/compositions/settings-item) → [Settings Section](/docs/blocks/settings-section).
+- [Card](/docs/components/card) → [Product Card](/docs/compositions/product-card) → a product grid in the planned [Commerce](/docs/blocks/commerce) blocks.
+- [Item](/docs/components/item) → [Settings Item](/docs/compositions/settings-item) → [Settings Section](/docs/blocks/settings-section).
 
 Each primitive page lists the compositions built with it, and each composition page links back to its primitives and forward to the blocks that use it.
 
@@ -97,10 +109,10 @@ Axiom keeps the first four stages to sort its primitives:
 
 | Level                        | In Axiom                                                                                 | Examples                           |
 | ---------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------- |
-| [Atoms](/docs/atoms)         | The smallest units you use directly in a screen, each installed on its own               | Button, Input, Avatar, BottomSheet |
-| [Molecules](/docs/molecules) | A few atoms forming one coherent function                                                | SearchBar, DatePicker, Attachment  |
-| [Organisms](/docs/organisms) | Components that own a full interaction, with their own layout, states and input handling | Passcode                           |
-| [Templates](/docs/templates) | Structures that frame a screen or a large area of it                                     | Scaffold, AppBar, BottomTabBar     |
+| [Atoms](/docs/components/atoms)         | The smallest units you use directly in a screen, each installed on its own               | Button, Input, Avatar, BottomSheet |
+| [Molecules](/docs/components/molecules) | A few atoms forming one coherent function                                                | SearchBar, DatePicker, Attachment  |
+| [Organisms](/docs/components/organisms) | Components that own a full interaction, with their own layout, states and input handling | Passcode                           |
+| [Templates](/docs/components/templates) | Structures that frame a screen or a large area of it                                     | Scaffold, AppBar, BottomTabBar     |
 
 The differences with the book are deliberate:
 
@@ -124,7 +136,7 @@ When a primitive doesn't fit a level cleanly, it goes where its responsibility i
 
 - [Compositions](/docs/compositions)
 - [Blocks](/docs/blocks)
-- [Atoms](/docs/atoms)
+- [Atoms](/docs/components/atoms)
 - [Foundations](/docs/foundations)
 - [Core](/docs/core)
 - [Behaviors](/docs/behaviors)

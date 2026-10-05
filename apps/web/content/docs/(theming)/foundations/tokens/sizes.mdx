@@ -1,6 +1,6 @@
 ---
 title: Sizes
-description: "Standard sizes for icons, avatars and controls."
+description: "Standard sizes for icons, avatars, controls and inputs."
 ---
 
 <Callout title="Draft">
@@ -14,10 +14,13 @@ export const sizes = {
 	icon: { sm: 16, md: 20, lg: 24 },
 	avatar: { sm: 32, md: 40, lg: 56 },
 	control: { sm: 32, md: 44, lg: 52 },
+	input: { sm: 50, md: 56, lg: 64 },
 } satisfies Sizes;
 ```
 
-`control` sets the height of buttons, inputs and similar controls. The `md` size matches the [minimum touch target](/docs/foundations/tokens/metrics).
+`control` sets the height of buttons and similar controls. The `md` size matches the [minimum touch target](/docs/foundations/tokens/metrics).
+
+`input` sets the fixed height of single-line fields: inputs, input groups, search bars, OTP cells and the date picker trigger. It starts at 50pt, so a field stays comfortable to tap and read. Text areas grow with their content and don't use it.
 
 ## Usage
 

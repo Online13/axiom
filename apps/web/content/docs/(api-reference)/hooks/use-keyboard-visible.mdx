@@ -1,0 +1,41 @@
+---
+title: useKeyboardVisible
+description: "Whether the software keyboard is open, for the screen that reacts to it."
+---
+
+A component doesn't watch the keyboard on its own: the screen that needs to react calls `useKeyboardVisible` and decides what to do. The usual case is a [BottomTabBar](/docs/components/bottom-tab-bar) that steps aside so a field keeps its room.
+
+## Installation
+
+```npm
+npx axiom add use-keyboard-visible
+```
+
+No dependency: it listens to React Native's `Keyboard` events.
+
+## Usage
+
+```tsx
+import { useKeyboardVisible } from "@/hooks/use-keyboard-visible";
+
+function MessagesScreen() {
+	const keyboardVisible = useKeyboardVisible();
+
+	return (
+		<>
+			<Conversation />
+			{keyboardVisible ? null : <AppTabBar />}
+		</>
+	);
+}
+```
+
+## API
+
+```tsx
+const visible = useKeyboardVisible();
+```
+
+Returns `true` from the moment the keyboard starts to open until it has closed. On iOS it follows the `keyboardWill…` events, so the change lines up with the keyboard animation. Android only sends `keyboardDid…`, so the change happens once the keyboard is in place.
+
+Each call attaches its own listeners: call it in the screen that needs it, not in every component.

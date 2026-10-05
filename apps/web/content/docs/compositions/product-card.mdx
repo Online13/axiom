@@ -187,9 +187,9 @@ The two variants are separate components with their own code: install the one yo
 npx axiom add product-card
 ```
 
-Also copies: [`card`](/docs/atoms/card), [`text`](/docs/atoms/text), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button) and their dependencies. The file lands in `components/compositions/product-card.tsx`.
+Also copies: [`card`](/docs/components/card), [`text`](/docs/components/text), [`badge`](/docs/components/badge), [`button`](/docs/components/button) and their dependencies. The file lands in `components/compositions/product-card.tsx`.
 
-Product Card brings no tokens of its own: it uses the `outlined` variant of [Card](/docs/atoms/card), the `highlight` variant of [Badge](/docs/atoms/badge) and the default [Button](/docs/atoms/button).
+Product Card brings no tokens of its own: it uses the `outlined` variant of [Card](/docs/components/card), the `highlight` variant of [Badge](/docs/components/badge) and the default [Button](/docs/components/button).
 
 </VariantPanel>
 
@@ -199,9 +199,9 @@ Product Card brings no tokens of its own: it uses the `outlined` variant of [Car
 npx axiom add product-card-spotlight
 ```
 
-Also copies: [`card`](/docs/atoms/card), [`text`](/docs/atoms/text), [`title`](/docs/atoms/title), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button) and their dependencies. The file lands in `components/compositions/product-card-spotlight.tsx`.
+Also copies: [`card`](/docs/components/card), [`text`](/docs/components/text), [`title`](/docs/components/title), [`badge`](/docs/components/badge), [`button`](/docs/components/button) and their dependencies. The file lands in `components/compositions/product-card-spotlight.tsx`.
 
-It brings no tokens of its own: it uses the `filled` variant of [Card](/docs/atoms/card), the `headingSm` variant of [Title](/docs/atoms/title) for the price, the `highlight` variant of [Badge](/docs/atoms/badge) and the default [Button](/docs/atoms/button).
+It brings no tokens of its own: it uses the `filled` variant of [Card](/docs/components/card), the `headingSm` variant of [Title](/docs/components/title) for the price, the `highlight` variant of [Badge](/docs/components/badge) and the default [Button](/docs/components/button).
 
 </VariantPanel>
 
@@ -264,7 +264,7 @@ Use cut-out images (transparent background) with `resizeMode="contain"`: a photo
 | `title`       | `string`               | —               | Product name, shown as the card title.                                                                               |
 | `price`       | `string`               | —               | Already formatted, currency included: `"$24.00"`. Shown in semibold under the title.                                 |
 | `subtitle`    | `string`               | —               | Secondary line under the title: a color, a size, a brand.                                                            |
-| `badge`       | `string`               | —               | Short label in a `highlight` [Badge](/docs/atoms/badge): `"New"`, `"-20%"`. Sits on the media, or above the title without media. |
+| `badge`       | `string`               | —               | Short label in a `highlight` [Badge](/docs/components/badge): `"New"`, `"-20%"`. Sits on the media, or above the title without media. |
 | `media`       | `ReactNode`            | —               | Usually an `Image` with `width: "100%"` and `flex: 1`. With media the card is 3:4: the text keeps its height, the image fills the rest. |
 | `actionLabel` | `string`               | `"Add to cart"` | Label of the action button.                                                                                          |
 | `onAction`    | `() => void`           | —               | Shows the full-width action button and handles its press. Without it, there is no button.                            |
@@ -278,9 +278,9 @@ Use cut-out images (transparent background) with `resizeMode="contain"`: a photo
 | Prop          | Type                   | Default         | Description                                                                                                          |
 | ------------- | ---------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `title`       | `string`               | —               | Product name, on one line under the price.                                                                           |
-| `price`       | `string`               | —               | Already formatted, currency included: `"$24.00"`. Shown first, as a `headingSm` [Title](/docs/atoms/title).          |
+| `price`       | `string`               | —               | Already formatted, currency included: `"$24.00"`. Shown first, as a `headingSm` [Title](/docs/components/title).          |
 | `subtitle`    | `string`               | —               | Secondary line under the name: a color, a size.                                                                      |
-| `badge`       | `string`               | —               | Short label in a `highlight` [Badge](/docs/atoms/badge), on the product: `"New"`, `"-20%"`.                          |
+| `badge`       | `string`               | —               | Short label in a `highlight` [Badge](/docs/components/badge), on the product: `"New"`, `"-20%"`.                          |
 | `media`       | `ReactNode`            | —               | Required. A cut-out `Image` with `resizeMode="contain"`, inset from the card's edges, in a square. Style it `width: "100%"` and `height: "100%"`. |
 | `actionLabel` | `string`               | `"Add to cart"` | Label of the action button.                                                                                          |
 | `onAction`    | `() => void`           | —               | Shows the full-width action button and handles its press. Without it, there is no button.                            |
@@ -291,11 +291,11 @@ Use cut-out images (transparent background) with `resizeMode="contain"`: a photo
 
 ## Built with
 
-- [Card](/docs/atoms/card): the surface (`outlined`, `filled` for Spotlight), its header, title and description.
-- [Badge](/docs/atoms/badge): the `highlight` label.
-- [Button](/docs/atoms/button): the full-width action.
-- [Text](/docs/atoms/text): the price, and the name in Spotlight.
-- [Title](/docs/atoms/title): the price in Spotlight.
+- [Card](/docs/components/card): the surface (`outlined`, `filled` for Spotlight), its header, title and description.
+- [Badge](/docs/components/badge): the `highlight` label.
+- [Button](/docs/components/button): the full-width action.
+- [Text](/docs/components/text): the price, and the name in Spotlight.
+- [Title](/docs/components/title): the price in Spotlight.
 
 ## Used in
 

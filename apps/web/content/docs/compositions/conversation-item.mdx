@@ -25,7 +25,7 @@ Unread conversations have a bold name, a time in the link color and a counter. A
 npx axiom add conversation-item
 ```
 
-Also copies: [`item`](/docs/atoms/item), [`avatar`](/docs/atoms/avatar), [`badge`](/docs/atoms/badge), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/conversation-item.tsx`. It brings no tokens of its own.
+Also copies: [`item`](/docs/components/item), [`avatar`](/docs/components/avatar), [`badge`](/docs/components/badge), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/conversation-item.tsx`. It brings no tokens of its own.
 
 ## Usage
 
@@ -52,7 +52,7 @@ The row doesn't format the time: pass `"9:41"` for today, `"Yesterday"`, then a 
 | Prop          | Type                  | Default | Description                                                                                   |
 | ------------- | --------------------- | ------- | --------------------------------------------------------------------------------------------- |
 | `name`        | `string`              | —       | A person or a group. Gives the avatar its initials and hue when there is no photo.            |
-| `avatar`      | `ImageSourcePropType` | —       | The photo, in an `lg` [Avatar](/docs/atoms/avatar).                                           |
+| `avatar`      | `ImageSourcePropType` | —       | The photo, in an `lg` [Avatar](/docs/components/avatar).                                           |
 | `status`      | `AvatarStatus`        | —       | Presence dot on the avatar: `online`, `away`, `busy`, `offline`.                               |
 | `preview`     | `string`              | —       | The last message, up to two lines.                                                            |
 | `time`        | `string`              | —       | Already formatted, at the end of the first line.                                              |
@@ -67,10 +67,10 @@ The row reads as one element: "Lena Moreau, 2 unread messages, See you at 8, 9:4
 
 ## Built with
 
-- [Item](/docs/atoms/item): the 64pt row and its slots.
-- [Avatar](/docs/atoms/avatar): the photo, the initials and the presence dot.
-- [Badge](/docs/atoms/badge): the unread counter.
-- [Text](/docs/atoms/text): name, time and preview.
+- [Item](/docs/components/item): the 64pt row and its slots.
+- [Avatar](/docs/components/avatar): the photo, the initials and the presence dot.
+- [Badge](/docs/components/badge): the unread counter.
+- [Text](/docs/components/text): name, time and preview.
 
 ## Used in
 

@@ -51,7 +51,7 @@ Three things the list needs:
 
 ### Errors
 
-The hook doesn't catch the error: handle it in `onRefresh`, for example with a [Toast](/docs/atoms/toast). A pull whose `onRefresh` rejects still settles, and the rejection goes no further. `refresh()` returns the same promise, so a caller that awaits it does see the failure.
+The hook doesn't catch the error: handle it in `onRefresh`, for example with a [Toast](/docs/components/toast). A pull whose `onRefresh` rejects still settles, and the rejection goes no further. `refresh()` returns the same promise, so a caller that awaits it does see the failure.
 
 ```tsx
 const refresh = useRefreshControl({
@@ -146,4 +146,4 @@ The whole return value is typed as `RefreshControl`, which is what a custom indi
 
 - [Pull-to-refresh](/docs/behaviors/pull-to-refresh)
 - [Async content state](/docs/patterns/async-content-state)
-- [Spinner](/docs/atoms/spinner)
+- [Spinner](/docs/components/spinner)

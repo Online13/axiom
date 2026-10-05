@@ -171,9 +171,9 @@ The variants are separate components with their own code: install the one you ne
 npx axiom add pricing-card
 ```
 
-Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/pricing-card.tsx`. It brings no tokens of its own.
+Also copies: [`card`](/docs/components/card), [`badge`](/docs/components/badge), [`button`](/docs/components/button), [`icon`](/docs/components/icon), [`title`](/docs/components/title), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/pricing-card.tsx`. It brings no tokens of its own.
 
-Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+Requires the `check` icon in your [icon registry](/docs/components/icon#icons-that-components-need).
 
 </VariantPanel>
 
@@ -183,7 +183,7 @@ Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-co
 npx axiom add pricing-card-compact
 ```
 
-Also copies: [`radio`](/docs/atoms/radio), [`badge`](/docs/atoms/badge), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/pricing-card-compact.tsx`. It brings no tokens of its own.
+Also copies: [`radio`](/docs/components/radio), [`badge`](/docs/components/badge), [`title`](/docs/components/title), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/pricing-card-compact.tsx`. It brings no tokens of its own.
 
 </VariantPanel>
 
@@ -193,9 +193,9 @@ Also copies: [`radio`](/docs/atoms/radio), [`badge`](/docs/atoms/badge), [`title
 npx axiom add pricing-card-toggle
 ```
 
-Also copies: [`card`](/docs/atoms/card), [`segmented-control`](/docs/atoms/segmented-control), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/pricing-card-toggle.tsx`. It brings no tokens of its own.
+Also copies: [`card`](/docs/components/card), [`segmented-control`](/docs/components/segmented-control), [`badge`](/docs/components/badge), [`button`](/docs/components/button), [`icon`](/docs/components/icon), [`title`](/docs/components/title), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/pricing-card-toggle.tsx`. It brings no tokens of its own.
 
-Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+Requires the `check` icon in your [icon registry](/docs/components/icon#icons-that-components-need).
 
 </VariantPanel>
 
@@ -205,9 +205,9 @@ Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-co
 npx axiom add pricing-card-hero
 ```
 
-Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/pricing-card-hero.tsx`. It brings no tokens of its own: the surface is `primary.default` and the text `primary.on`.
+Also copies: [`card`](/docs/components/card), [`badge`](/docs/components/badge), [`button`](/docs/components/button), [`icon`](/docs/components/icon), [`title`](/docs/components/title), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/pricing-card-hero.tsx`. It brings no tokens of its own: the surface is `primary.default` and the text `primary.on`.
 
-Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+Requires the `check` icon in your [icon registry](/docs/components/icon#icons-that-components-need).
 
 </VariantPanel>
 
@@ -217,9 +217,9 @@ Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-co
 npx axiom add pricing-card-horizontal
 ```
 
-Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/pricing-card-horizontal.tsx`. It brings no tokens of its own.
+Also copies: [`card`](/docs/components/card), [`badge`](/docs/components/badge), [`button`](/docs/components/button), [`icon`](/docs/components/icon), [`title`](/docs/components/title), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/pricing-card-horizontal.tsx`. It brings no tokens of its own.
 
-Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+Requires the `check` icon in your [icon registry](/docs/components/icon#icons-that-components-need).
 
 </VariantPanel>
 
@@ -229,7 +229,7 @@ Requires the `check` icon in your [icon registry](/docs/atoms/icon#icons-that-co
 npx axiom add pricing-card-tile
 ```
 
-Also copies: [`radio`](/docs/atoms/radio), [`badge`](/docs/atoms/badge), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/pricing-card-tile.tsx`. It brings no tokens of its own.
+Also copies: [`radio`](/docs/components/radio), [`badge`](/docs/components/badge), [`title`](/docs/components/title), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/pricing-card-tile.tsx`. It brings no tokens of its own.
 
 </VariantPanel>
 
@@ -272,7 +272,7 @@ import { RadioGroup } from "@/components/ui/radio";
 </RadioGroup>;
 ```
 
-Each row is a [Radio](/docs/atoms/radio): it must sit inside a `RadioGroup`, which holds the selected plan. Put the purchase button under the group.
+Each row is a [Radio](/docs/components/radio): it must sit inside a `RadioGroup`, which holds the selected plan. Put the purchase button under the group.
 
 </VariantPanel>
 
@@ -496,13 +496,13 @@ Compact and Tile are radios in a `radiogroup`: each is read as one item with its
 
 ## Built with
 
-- [Card](/docs/atoms/card): the outlined surface, filled with the primary color on Hero.
-- [Title](/docs/atoms/title): the name and the price.
-- [Badge](/docs/atoms/badge): the plan tag and the discount.
-- [Icon](/docs/atoms/icon) and [Text](/docs/atoms/text): the features.
-- [Button](/docs/atoms/button): solid on the featured plan, outlined on the others, inverted on Hero.
-- [Radio](/docs/atoms/radio): the selection of Compact and Tile.
-- [Segmented Control](/docs/atoms/segmented-control): the billing switch of Toggle.
+- [Card](/docs/components/card): the outlined surface, filled with the primary color on Hero.
+- [Title](/docs/components/title): the name and the price.
+- [Badge](/docs/components/badge): the plan tag and the discount.
+- [Icon](/docs/components/icon) and [Text](/docs/components/text): the features.
+- [Button](/docs/components/button): solid on the featured plan, outlined on the others, inverted on Hero.
+- [Radio](/docs/components/radio): the selection of Compact and Tile.
+- [Segmented Control](/docs/components/segmented-control): the billing switch of Toggle.
 
 ## Used in
 

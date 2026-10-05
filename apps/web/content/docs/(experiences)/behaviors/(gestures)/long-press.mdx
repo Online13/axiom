@@ -5,7 +5,7 @@ description: "Hold an element to get secondary actions on it, without a visible 
 
 <Callout title="Draft">
 	The long press is handled by [Tappable](/docs/core/tappable) (`onLongPress`), and
-	the menu it opens by [Menu](/docs/atoms/menu). Both APIs are conceptual and may
+	the menu it opens by [Menu](/docs/components/menu). Both APIs are conceptual and may
 	change.
 </Callout>
 
@@ -21,7 +21,7 @@ Press and hold a row. Release early and it's a tap, which opens the file. Move t
 - Shortcuts that save a trip to a detail screen: react to a message, copy a link, preview a photo.
 - Entering [selection mode](/docs/patterns/selection-mode) on a list.
 
-A long press can't be seen, so never make it the only way to reach an action. Every action it offers must also exist somewhere visible: a "more" button, the detail screen, an [AppBar](/docs/templates/app-bar) action. Don't use it for the main action of an element or on elements with no tap action at all, where users won't think of holding.
+A long press can't be seen, so never make it the only way to reach an action. Every action it offers must also exist somewhere visible: a "more" button, the detail screen, an [AppBar](/docs/components/app-bar) action. Don't use it for the main action of an element or on elements with no tap action at all, where users won't think of holding.
 
 ## How it works
 
@@ -52,22 +52,22 @@ Axiom has no dedicated hook: the gesture is part of [`Tappable`](/docs/core/tapp
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | React Native `Pressable`                    | Timing, slop and cancellation when the parent scroll view takes over. Nothing to reimplement.                                        |
 | `react-native-reanimated`                   | The scale during the delay, driven by the pressed state, on the UI thread.                                                           |
-| `expo-haptics` (or the platform haptic API) | The light impact when `onLongPress` fires. [Menu](/docs/atoms/menu) does it for you with `haptic`.                                        |
+| `expo-haptics` (or the platform haptic API) | The light impact when `onLongPress` fires. [Menu](/docs/components/menu) does it for you with `haptic`.                                        |
 | `react-native-gesture-handler`              | Only when the long press starts another gesture, like dragging the lifted item: `Gesture.LongPress()` composed with `Gesture.Pan()`. |
 
 ### In a screen
 
 ```tsx title="Conceptual"
 // Row actions: Menu opens on long press and lifts the row.
-<Menu.Root>
-  <Menu.Trigger>
+<ContextMenu.Root>
+  <ContextMenu.Trigger>
     <Item onPress={() => open(file)}>…</Item>
-  </Menu.Trigger>
-  <Menu.Content>
-    <Menu.Item icon="share" onPress={share}>Share</Menu.Item>
-    <Menu.Item icon="trash" destructive onPress={remove}>Delete</Menu.Item>
-  </Menu.Content>
-</Menu.Root>
+  </ContextMenu.Trigger>
+  <ContextMenu.Content>
+    <ContextMenu.Item icon="share" onPress={share}>Share</ContextMenu.Item>
+    <ContextMenu.Item icon="trash" destructive onPress={remove}>Delete</ContextMenu.Item>
+  </ContextMenu.Content>
+</ContextMenu.Root>
 
 // Anything else: Tappable directly.
 <Tappable onPress={open} onLongPress={startSelection} delayLongPress={400}>…</Tappable>
@@ -82,6 +82,6 @@ Axiom has no dedicated hook: the gesture is part of [`Tappable`](/docs/core/tapp
 ## Related
 
 - [Tappable](/docs/core/tappable)
-- [Menu](/docs/atoms/menu)
+- [Menu](/docs/components/menu)
 - [Selection mode](/docs/patterns/selection-mode)
 - [Drag-to-reorder](/docs/behaviors/drag-to-reorder)

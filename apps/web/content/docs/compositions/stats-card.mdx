@@ -125,7 +125,7 @@ The variants are separate components with their own code: install the one you ne
 npx axiom add stats-card
 ```
 
-Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/stats-card.tsx`. It brings no tokens of its own.
+Also copies: [`card`](/docs/components/card), [`badge`](/docs/components/badge), [`icon`](/docs/components/icon), [`title`](/docs/components/title), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/stats-card.tsx`. It brings no tokens of its own.
 
 </VariantPanel>
 
@@ -135,7 +135,7 @@ Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`icon`](
 npx axiom add stats-card-sparkline
 ```
 
-Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/stats-card-sparkline.tsx`. It brings no tokens of its own.
+Also copies: [`card`](/docs/components/card), [`badge`](/docs/components/badge), [`icon`](/docs/components/icon), [`title`](/docs/components/title), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/stats-card-sparkline.tsx`. It brings no tokens of its own.
 
 Needs [`react-native-svg`](https://github.com/software-mansion/react-native-svg), a native module: rebuild your development build after installing it.
 
@@ -147,7 +147,7 @@ Needs [`react-native-svg`](https://github.com/software-mansion/react-native-svg)
 npx axiom add stats-card-progress
 ```
 
-Also copies: [`card`](/docs/atoms/card), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/stats-card-progress.tsx`. It brings no tokens of its own.
+Also copies: [`card`](/docs/components/card), [`icon`](/docs/components/icon), [`title`](/docs/components/title), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/stats-card-progress.tsx`. It brings no tokens of its own.
 
 </VariantPanel>
 
@@ -157,7 +157,7 @@ Also copies: [`card`](/docs/atoms/card), [`icon`](/docs/atoms/icon), [`title`](/
 npx axiom add stats-card-inline
 ```
 
-Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`icon`](/docs/atoms/icon), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/stats-card-inline.tsx`. It brings no tokens of its own.
+Also copies: [`card`](/docs/components/card), [`badge`](/docs/components/badge), [`icon`](/docs/components/icon), [`title`](/docs/components/title), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/stats-card-inline.tsx`. It brings no tokens of its own.
 
 </VariantPanel>
 
@@ -167,7 +167,7 @@ Also copies: [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`icon`](
 npx axiom add stats-card-ring
 ```
 
-Also copies: [`card`](/docs/atoms/card), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/stats-card-ring.tsx`. It brings no tokens of its own.
+Also copies: [`card`](/docs/components/card), [`title`](/docs/components/title), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/stats-card-ring.tsx`. It brings no tokens of its own.
 
 Needs [`react-native-svg`](https://github.com/software-mansion/react-native-svg), a native module: rebuild your development build after installing it.
 
@@ -283,11 +283,11 @@ Values come formatted: the card never rounds or localizes a number.
 | `label`    | `string`                       | —                 | What is measured, muted, above the value.                                                      |
 | `value`    | `string`                       | —                 | Already formatted, in large type. Shrinks to fit one line.                                     |
 | `icon`     | `IconName`                     | —                 | Before the label.                                                                              |
-| `change`   | `string`                       | —                 | Change against the previous period, in a [Badge](/docs/atoms/badge): `"+12.4%"`.               |
+| `change`   | `string`                       | —                 | Change against the previous period, in a [Badge](/docs/components/badge): `"+12.4%"`.               |
 | `trend`    | `'up' \| 'down' \| 'flat'`     | `'flat'`          | Direction of the change. `flat` keeps the badge neutral.                                       |
 | `positive` | `boolean`                      | `trend !== 'down'` | Whether the change is good news: green if so, red if not. Pass `false` for spending or latency going up. |
 | `caption`  | `string`                       | —                 | After the change: `"vs last week"`.                                                            |
-| `variant`  | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/atoms/card) variant.                                                          |
+| `variant`  | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/components/card) variant.                                                          |
 | `onPress`  | `() => void`                   | —                 | Makes the card pressable, to open the detail.                                                  |
 | `style`    | `StyleProp<ViewStyle>`         | —                 | Extra styles, usually `flex: 1` in a row of cards.                                             |
 
@@ -301,11 +301,11 @@ Values come formatted: the card never rounds or localizes a number.
 | `value`    | `string`                       | —                 | Already formatted, in large type.                                            |
 | `data`     | `number[]`                     | —                 | The recent values, oldest first. Drawn as a 40pt line across the card.       |
 | `icon`     | `IconName`                     | —                 | Before the label.                                                            |
-| `change`   | `string`                       | —                 | In a [Badge](/docs/atoms/badge) next to the value.                           |
+| `change`   | `string`                       | —                 | In a [Badge](/docs/components/badge) next to the value.                           |
 | `trend`    | `'up' \| 'down' \| 'flat'`     | `'flat'`          | Colors the badge and the line.                                               |
 | `positive` | `boolean`                      | `trend !== 'down'` | Whether the change is good news.                                            |
 | `caption`  | `string`                       | —                 | Under the line: `"Last 7 days"`.                                             |
-| `variant`  | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/atoms/card) variant.                                        |
+| `variant`  | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/components/card) variant.                                        |
 | `onPress`  | `() => void`                   | —                 | Makes the card pressable.                                                    |
 | `style`    | `StyleProp<ViewStyle>`         | —                 | Extra styles, usually `flex: 1`.                                             |
 
@@ -321,7 +321,7 @@ Values come formatted: the card never rounds or localizes a number.
 | `progress` | `number`                       | —          | Share of the goal, from 0 to 1. Above 1, the bar stays full and turns green.  |
 | `icon`     | `IconName`                     | —          | Before the label.                                                             |
 | `caption`  | `string`                       | —          | Under the bar, on the right: `"1,796 to go"`. The percentage is on the left.  |
-| `variant`  | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/atoms/card) variant.                              |
+| `variant`  | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/components/card) variant.                              |
 | `onPress`  | `() => void`                   | —          | Makes the card pressable.                                                     |
 | `style`    | `StyleProp<ViewStyle>`         | —          | Extra styles for the card.                                                    |
 
@@ -334,10 +334,10 @@ Values come formatted: the card never rounds or localizes a number.
 | `label`    | `string`                       | —                 | What is measured, muted, after the icon.                           |
 | `value`    | `string`                       | —                 | Already formatted, on the right.                                   |
 | `icon`     | `IconName`                     | —                 | In a 32pt tile at the start of the row.                            |
-| `change`   | `string`                       | —                 | In a [Badge](/docs/atoms/badge) after the value.                   |
+| `change`   | `string`                       | —                 | In a [Badge](/docs/components/badge) after the value.                   |
 | `trend`    | `'up' \| 'down' \| 'flat'`     | `'flat'`          | Colors the badge.                                                  |
 | `positive` | `boolean`                      | `trend !== 'down'` | Whether the change is good news.                                  |
-| `variant`  | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/atoms/card) variant.                             |
+| `variant`  | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/components/card) variant.                             |
 | `onPress`  | `() => void`                   | —                 | Makes the row pressable.                                           |
 | `style`    | `StyleProp<ViewStyle>`         | —                 | Extra styles for the card.                                         |
 
@@ -352,7 +352,7 @@ Values come formatted: the card never rounds or localizes a number.
 | `progress`  | `number`                       | —                | Share of the goal, from 0 to 1. Above 1, the ring stays full and turns green. |
 | `caption`   | `string`                       | —                | Under the value: `"of 600 kcal"`.                                            |
 | `ringLabel` | `string`                       | the percentage   | Inside the 64pt ring.                                                        |
-| `variant`   | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/atoms/card) variant.                                    |
+| `variant`   | `'elevated' \| 'outlined' \| 'filled'` | `'filled'` | The [Card](/docs/components/card) variant.                                    |
 | `onPress`   | `() => void`                   | —                | Makes the card pressable.                                                    |
 | `style`     | `StyleProp<ViewStyle>`         | —                | Extra styles for the card.                                                   |
 
@@ -366,10 +366,10 @@ Progress and Ring are progress bars: they announce their percentage along with t
 
 ## Built with
 
-- [Card](/docs/atoms/card): the filled surface.
-- [Title](/docs/atoms/title): the value.
-- [Badge](/docs/atoms/badge): the change, in success, error or neutral.
-- [Icon](/docs/atoms/icon) and [Text](/docs/atoms/text): the label and the caption.
+- [Card](/docs/components/card): the filled surface.
+- [Title](/docs/components/title): the value.
+- [Badge](/docs/components/badge): the change, in success, error or neutral.
+- [Icon](/docs/components/icon) and [Text](/docs/components/text): the label and the caption.
 - `react-native-svg`: the line of Sparkline and the arc of Ring.
 
 ## Used in

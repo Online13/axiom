@@ -32,7 +32,7 @@ The footer of the list has four states. Only one request runs at a time.
 | State     | Footer                                                         | Leaves when                                                                                              |
 | --------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | `idle`    | Nothing.                                                       | The user scrolls within one screen of the end: `loading`.                                                |
-| `loading` | A small [Spinner](/docs/atoms/spinner).                             | The page arrives: rows are appended, back to `idle`, or `end` if it was the last one. It fails: `error`. |
+| `loading` | A small [Spinner](/docs/components/spinner).                             | The page arrives: rows are appended, back to `idle`, or `end` if it was the last one. It fails: `error`. |
 | `error`   | "Couldn't load more" and a Retry button. The loaded rows stay. | The user taps Retry: `loading`.                                                                          |
 | `end`     | A discreet divider, "You're all caught up".                    | Pull-to-refresh or a new filter resets the list.                                                         |
 
@@ -61,7 +61,7 @@ Axiom has no dedicated hook: the list handles the trigger, the data library hand
 | -------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | `FlatList` / `FlashList`                           | `onEndReached` and `onEndReachedThreshold`, `ListFooterComponent` for the footer.             |
 | TanStack Query `useInfiniteQuery`                  | Pages, cursors, `isFetchingNextPage`, `hasNextPage`, and the guard against parallel requests. |
-| [Spinner](/docs/atoms/spinner), [Button](/docs/atoms/button) | The loading and error footers.                                                                |
+| [Spinner](/docs/components/spinner), [Button](/docs/components/button) | The loading and error footers.                                                                |
 
 ### In a screen
 
@@ -107,4 +107,4 @@ const canLoad =
 - [Async content state](/docs/patterns/async-content-state), for the first load and the empty list
 - [Pull-to-refresh](/docs/behaviors/pull-to-refresh)
 - [Scroll-to-top](/docs/behaviors/scroll-to-top)
-- [Spinner](/docs/atoms/spinner)
+- [Spinner](/docs/components/spinner)

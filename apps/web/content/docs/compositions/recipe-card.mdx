@@ -44,9 +44,9 @@ Recipe Card is designed for a vertical feed: each card takes the full width of t
 npx axiom add recipe-card
 ```
 
-Also copies: [`card`](/docs/atoms/card), [`chip`](/docs/atoms/chip), [`badge`](/docs/atoms/badge), [`separator`](/docs/atoms/separator), [`icon`](/docs/atoms/icon), [`text`](/docs/atoms/text), [`button`](/docs/atoms/button) and their dependencies. The file lands in `components/compositions/recipe-card.tsx`. It brings no tokens of its own.
+Also copies: [`card`](/docs/components/card), [`chip`](/docs/components/chip), [`badge`](/docs/components/badge), [`separator`](/docs/components/separator), [`icon`](/docs/components/icon), [`text`](/docs/components/text), [`button`](/docs/components/button) and their dependencies. The file lands in `components/compositions/recipe-card.tsx`. It brings no tokens of its own.
 
-The stat icons come from your [icon registry](/docs/atoms/icon). Add the ones you use to `icons.tsx`, for example with `expo-symbols`:
+The stat icons come from your [icon registry](/docs/components/icon). Add the ones you use to `icons.tsx`, for example with `expo-symbols`:
 
 ```tsx title="components/ui/icons.tsx"
 timer: symbol("clock", "schedule"),
@@ -82,10 +82,9 @@ import { RecipeCard } from "@/components/compositions/recipe-card";
 | `title`          | `string`               | —                 | Name of the recipe, shown as the card title.                                                   |
 | `description`    | `string`               | —                 | Up to two lines under the title.                                                               |
 | `image`          | `ImageSourcePropType`  | —                 | The dish, in 4:3 at the top of the card.                                                       |
-| `badge`          | `string`               | —                 | Short label in a `highlight` [Badge](/docs/atoms/badge), on the photo: `"Spicy"`, `"Quick"`.   |
+| `badge`          | `string`               | —                 | Short label in a `highlight` [Badge](/docs/components/badge), on the photo: `"Spicy"`, `"Quick"`.   |
 | `stats`          | `RecipeStat[]`         | —                 | `{ icon?, value, label? }`: time, servings, difficulty. Shown as "**20** mins", between lines. Three fit. |
-| `ingredients`    | `string[]`             | —                 | Shown as filled [Chips](/docs/atoms/chip).                                                     |
-| `maxIngredients` | `number`               | `2`               | Chips shown before the rest are counted in a "+n" chip, read as "n more ingredients".          |
+| `ingredients`    | `string[]`             | —                 | Shown as filled [Chips](/docs/components/chip). The first `SHOWN_INGREDIENTS` (2, a constant in the file) show; the rest are counted in a "+n" chip, read as "n more ingredients". |
 | `actionLabel`    | `string`               | `"Start cooking"` | Label of the action button.                                                                    |
 | `onAction`       | `() => void`           | —                 | Shows the full-width button. Without it, there is no button.                                   |
 | `onPress`        | `() => void`           | —                 | Makes the whole card pressable, to open the recipe. The button keeps its own press.            |
@@ -93,13 +92,13 @@ import { RecipeCard } from "@/components/compositions/recipe-card";
 
 ## Built with
 
-- [Card](/docs/atoms/card): the elevated surface, its media, header and title.
-- [Chip](/docs/atoms/chip): the ingredients, `filled` and `sm`.
-- [Badge](/docs/atoms/badge): the `highlight` label.
-- [Separator](/docs/atoms/separator): the lines around and between the stats.
-- [Icon](/docs/atoms/icon): the stat icons, from your registry.
-- [Button](/docs/atoms/button): the full-width action.
-- [Text](/docs/atoms/text): the description and the stats.
+- [Card](/docs/components/card): the elevated surface, its media, header and title.
+- [Chip](/docs/components/chip): the ingredients, `filled` and `sm`.
+- [Badge](/docs/components/badge): the `highlight` label.
+- [Separator](/docs/components/separator): the lines around and between the stats.
+- [Icon](/docs/components/icon): the stat icons, from your registry.
+- [Button](/docs/components/button): the full-width action.
+- [Text](/docs/components/text): the description and the stats.
 
 ## Used in
 

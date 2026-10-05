@@ -62,7 +62,7 @@ description: "A titled group of Settings Items with a footer note, the building 
 npx axiom add settings-section
 ```
 
-Also copies: the [`settings-item`](/docs/compositions/settings-item) composition, [`separator`](/docs/atoms/separator), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/blocks/settings-section.tsx`.
+Also copies: the [`settings-item`](/docs/compositions/settings-item) composition, [`separator`](/docs/components/separator), [`text`](/docs/components/text) and their dependencies. The file lands in `components/blocks/settings-section.tsx`.
 
 ## Usage
 
@@ -72,6 +72,7 @@ import { SettingsItem } from "@/components/compositions/settings-item";
 
 <SettingsSection title="Notifications" footer="Quiet hours mute every alert.">
 	<SettingsItem
+		divider
 		icon="bell"
 		title="Push notifications"
 		trailing="switch"
@@ -87,15 +88,14 @@ import { SettingsItem } from "@/components/compositions/settings-item";
 </SettingsSection>;
 ```
 
-A settings screen is a [Scaffold](/docs/templates/scaffold) with a scroll view and one Settings Section per group.
+A settings screen is a [Scaffold](/docs/components/scaffold) with a scroll view and one Settings Section per group.
 
 ## Structure
 
 ```text
 SettingsSection
 ├── title        Text, footnote, muted, semibold (a header for screen readers)
-├── rows         your SettingsItem children
-│   └── between each pair: Separator, subtle, inset to the rows' margin
+├── rows         your SettingsItem children, each with its own divider
 └── footer       Text, footnote, muted
 ```
 
@@ -107,13 +107,12 @@ The title and footer are aligned to the screen margin (`metrics.screenMargin`). 
 | ---------- | ----------- | ------- | -------------------------------------------------------------------------------------------- |
 | `title`    | `string`    | —       | Header above the rows, announced as a header.                                                |
 | `footer`   | `string`    | —       | Note under the rows, to explain a setting.                                                   |
-| `children` | `ReactNode` | —       | `SettingsItem` rows. A hairline separates them; other elements are separated the same way.   |
+| `children` | `ReactNode` | —       | `SettingsItem` rows, rendered as written. Give each row but the last a `divider`.           |
 
 ## Built with
 
-- [Settings Item](/docs/compositions/settings-item): the rows. A composition built on [Item](/docs/atoms/item).
-- [Separator](/docs/atoms/separator): the inset hairlines between rows.
-- [Text](/docs/atoms/text): the title and the footer.
+- [Settings Item](/docs/compositions/settings-item): the rows. A composition built on [Item](/docs/components/item).
+- [Text](/docs/components/text): the title and the footer.
 
 ```text
 Item + Icon + Switch + Text  →  Settings Item  →  Settings Section

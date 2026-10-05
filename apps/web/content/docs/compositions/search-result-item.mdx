@@ -30,9 +30,9 @@ The first match of the query in each title is bold. A row with an action ends wi
 npx axiom add search-result-item
 ```
 
-Also copies: [`item`](/docs/atoms/item), [`icon`](/docs/atoms/icon), [`icon-button`](/docs/atoms/icon-button), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/search-result-item.tsx`. It brings no tokens of its own.
+Also copies: [`item`](/docs/components/item), [`icon`](/docs/components/icon), [`icon-button`](/docs/components/icon-button), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/search-result-item.tsx`. It brings no tokens of its own.
 
-Requires the `chevron-right` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+Requires the `chevron-right` icon in your [icon registry](/docs/components/icon#icons-that-components-need).
 
 ## Usage
 
@@ -71,7 +71,7 @@ The match is case-insensitive and only the first one is bold. The split is expor
 | `image`      | `ImageSourcePropType`    | —          | A 44pt thumbnail.                                                                         |
 | `imageShape` | `'square' \| 'circle'`   | `'square'` | `circle` for people and artists.                                                          |
 | `icon`       | `IconName`               | —          | On a subtle tile, when there is no image: a page, a setting, a recent search.             |
-| `action`     | `SearchResultAction`     | —          | `{ icon, label, onPress }`: a tinted [IconButton](/docs/atoms/icon-button) at the end.    |
+| `action`     | `SearchResultAction`     | —          | `{ icon, label, onPress }`: a tinted [IconButton](/docs/components/icon-button) at the end.    |
 | `onPress`    | `() => void`             | —          | Opens the result. Without `action`, adds a chevron.                                       |
 | `disabled`   | `boolean`                | `false`    | Disabled colors, no press.                                                                |
 
@@ -81,10 +81,10 @@ The row reads as one element: "Late Night Tales, Playlist, 42 songs · 2 h 51 mi
 
 ## Built with
 
-- [Item](/docs/atoms/item): the row and its slots.
-- [Icon](/docs/atoms/icon): the tile icon and the chevron.
-- [IconButton](/docs/atoms/icon-button): the action.
-- [Text](/docs/atoms/text): the title with its bold match, subtitle and metadata.
+- [Item](/docs/components/item): the row and its slots.
+- [Icon](/docs/components/icon): the tile icon and the chevron.
+- [IconButton](/docs/components/icon-button): the action.
+- [Text](/docs/components/text): the title with its bold match, subtitle and metadata.
 
 ## Used in
 
@@ -93,6 +93,6 @@ No block uses Search Result Item yet.
 ## Related
 
 - [Search App Bar](/docs/compositions/search-app-bar): the field above the results.
-- [Empty](/docs/atoms/empty): for a search with no results.
-- [SearchBar](/docs/molecules/search-bar)
+- [Empty](/docs/components/empty): for a search with no results.
+- [SearchBar](/docs/components/search-bar)
 - [Compositions](/docs/compositions)

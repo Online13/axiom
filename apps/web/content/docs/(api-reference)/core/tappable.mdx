@@ -15,7 +15,7 @@ npx axiom add tappable
 
 ## What it does
 
-`Tappable` is the press layer under [Button](/docs/atoms/button) and [IconButton](/docs/atoms/icon-button). It wraps React Native's `Pressable` and handles what every pressable element needs:
+`Tappable` is the press layer under [Button](/docs/components/button) and [IconButton](/docs/components/icon-button). It wraps React Native's `Pressable` and handles what every pressable element needs:
 
 - it tells the component it wraps whether it is pressed;
 - it blocks presses when disabled;
@@ -105,7 +105,7 @@ A color change alone reads late on a large target: the finger covers the part th
 
 The scale is applied on touch, with no animation and no `Reanimated` — the point is that it lands with the finger, and a spring would add the delay back.
 
-It is off unless you pass it. [Button](/docs/atoms/button), [IconButton](/docs/atoms/icon-button) and [FloatingButton](/docs/atoms/floating-button) opt in with [`metrics.pressScale`](/docs/foundations/tokens/metrics); rows, cells, checkboxes and tab items leave it out, because a list row that shrinks under the finger reads as a glitch rather than as feedback. Pass `pressScale` on those buttons to tune it, or `1` to drop it.
+It is off unless you pass it. [Button](/docs/components/button), [IconButton](/docs/components/icon-button) and [FloatingButton](/docs/components/floating-button) opt in with [`metrics.pressScale`](/docs/foundations/tokens/metrics); rows, cells, checkboxes and tab items leave it out, because a list row that shrinks under the finger reads as a glitch rather than as feedback. Pass `pressScale` on those buttons to tune it, or `1` to drop it.
 
 A `transform` of your own in `style` replaces the scale instead of fighting it.
 
@@ -119,7 +119,7 @@ A `transform` of your own in `style` replaces the scale instead of fighting it.
 </Tappable>
 ```
 
-It is off unless you pass it: a tap is not an event, so only the app knows which presses deserve one. Components built on `Tappable`, such as [Button](/docs/atoms/button), pass it through. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
+It is off unless you pass it: a tap is not an event, so only the app knows which presses deserve one. Components built on `Tappable`, such as [Button](/docs/components/button), pass it through. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
 
 ## Disabled
 
@@ -158,13 +158,13 @@ Other `Pressable` props are passed through.
 
 - The role is `button` by default. Set `link`, `tab` or another role when the element is not a button.
 - `accessibilityState.disabled` follows `disabled`, so VoiceOver and TalkBack announce it.
-- An element with only an icon has nothing to read. Give it an `accessibilityLabel`. [IconButton](/docs/atoms/icon-button) requires one.
+- An element with only an icon has nothing to read. Give it an `accessibilityLabel`. [IconButton](/docs/components/icon-button) requires one.
 - The computed `hitSlop` helps people with motor impairments too, not only people with large fingers.
 
 ## Used by
 
-- [Button](/docs/atoms/button)
-- [IconButton](/docs/atoms/icon-button)
+- [Button](/docs/components/button)
+- [IconButton](/docs/components/icon-button)
 
 ## Related
 

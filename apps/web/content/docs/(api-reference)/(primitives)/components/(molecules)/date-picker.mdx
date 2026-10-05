@@ -1,0 +1,370 @@
+---
+title: DatePicker
+description: "A Calendar in a BottomSheet, bound to a value and a draft. You write every part."
+---
+
+<PhonePreview half="bottom">
+	<div class="ax-body" style={{ gap: "12px" }}>
+		<div class="ax-field">
+			<span class="ax-label">Departure</span>
+			<div class="ax-control" data-state="focused">
+				<Glyph name="calendar" size={20} />
+				<span class="ax-value">Thu 17 Sep 2026</span>
+			</div>
+		</div>
+	</div>
+	<div class="ax-scrim" />
+	<div class="ax-sheet">
+		<span class="ax-handle" />
+		<div class="ax-sheet-header">
+			<span class="ax-link">Cancel</span>
+			<span class="ax-headline">Departure</span>
+			<span class="ax-link ax-semibold">Done</span>
+		</div>
+		<div class="ax-calendar">
+			<div class="ax-calendar-head">
+				<span class="ax-headline">
+					September 2026
+					<Glyph
+						name="chevron-right"
+						size={16}
+						class="ax-link"
+						style={{ verticalAlign: "-3px", marginLeft: "4px" }}
+					/>
+				</span>
+				<div class="ax-row" data-gap="4">
+					<span class="ax-icon-btn" data-size="sm">
+						<Glyph name="chevron-left" size={20} class="ax-link" />
+					</span>
+					<span class="ax-icon-btn" data-size="sm">
+						<Glyph name="chevron-right" size={20} class="ax-link" />
+					</span>
+				</div>
+			</div>
+			<div class="ax-calendar-grid">
+				<span class="ax-weekday">Mon</span>
+				<span class="ax-weekday">Tue</span>
+				<span class="ax-weekday">Wed</span>
+				<span class="ax-weekday">Thu</span>
+				<span class="ax-weekday">Fri</span>
+				<span class="ax-weekday">Sat</span>
+				<span class="ax-weekday">Sun</span>
+				<span data-today>14</span>
+				<span>15</span>
+				<span>16</span>
+				<span data-selected>
+					<i>17</i>
+				</span>
+				<span>18</span>
+				<span>19</span>
+				<span>20</span>
+				<span>21</span>
+				<span>22</span>
+				<span>23</span>
+				<span>24</span>
+				<span>25</span>
+				<span>26</span>
+				<span>27</span>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add date-picker
+```
+
+Also copies: [`calendar`](/docs/components/calendar), [`bottom-sheet`](/docs/components/bottom-sheet), [`button`](/docs/components/button), [`chip`](/docs/components/chip), [`input`](/docs/components/input) and their dependencies.
+
+Requires the `calendar` icon in your [icon registry](/docs/components/icon#icons-that-components-need). The field borrows the colors of [Input](/docs/components/input): DatePicker brings no tokens of its own.
+
+## Usage
+
+```tsx
+import { BottomSheet } from "@/components/ui/bottom-sheet";
+import { Calendar } from "@/components/ui/calendar";
+import { DatePicker } from "@/components/ui/date-picker";
+import { Field } from "@/components/ui/input";
+
+<Field>
+	<Field.Label>Departure</Field.Label>
+	<DatePicker value={date} onChange={setDate}>
+		<DatePicker.Trigger />
+		<BottomSheet.Content>
+			<BottomSheet.Handle />
+			<BottomSheet.Header
+				title="Departure"
+				leading={<DatePicker.Cancel />}
+				trailing={<DatePicker.Done />}
+			/>
+			<View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
+				<DatePicker.Calendar minDate={today}>
+					<Calendar.Header>
+						<Calendar.Title />
+						<Calendar.Nav>
+							<Calendar.PrevButton />
+							<Calendar.NextButton />
+						</Calendar.Nav>
+					</Calendar.Header>
+					<Calendar.Grid>
+						<Calendar.Weekdays />
+						<Calendar.Days />
+					</Calendar.Grid>
+				</DatePicker.Calendar>
+			</View>
+		</BottomSheet.Content>
+	</DatePicker>
+</Field>;
+```
+
+The whole picker is in front of you: a [Field](/docs/components/input#field), a trigger, a [BottomSheet](/docs/components/bottom-sheet) and a [Calendar](/docs/components/calendar). To change it, change what you write: another header, presets above the calendar, a Clear button under it, any element as the trigger. `DatePicker` only adds what those pieces don't know: the value the screen has, and the draft the user is editing.
+
+## How it's built
+
+```text
+          date-picker
+               │
+       ┌───────┴───────┐
+       ↓               ↓
+   calendar      bottom-sheet
+```
+
+`DatePicker` is a `BottomSheet.Root`: `BottomSheet.Content`, `BottomSheet.Header` and `BottomSheet.Trigger` work inside it as usual. The calendar edits a draft. Done applies it, Cancel or a swipe down drops it, so the screen's value only changes on confirmation.
+
+## Props
+
+### DatePicker
+
+| Prop       | Type                                        | Default       | Description                                                                                                              |
+| ---------- | ------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `mode`     | `'single' \| 'range'`                       | `'single'`    | One date, or a start and end date. `DatePicker.Calendar` follows it.                                                     |
+| `value`    | `Date \| { from: Date; to?: Date } \| null` | —             | The selected date or range. `null` shows the placeholder.                                                                |
+| `onChange` | `(value) => void`                           | —             | Called with the new value on Done, on Clear, or on the first press with `confirm="instant"`.                             |
+| `confirm`  | `'done' \| 'instant'`                       | `'done'`      | `done`: the value changes on Done, Cancel reverts it. `instant`: the sheet closes on the first press (single mode only). |
+| `haptic`   | `HapticKind \| false`                       | `'selection'` | Haptic played when the user picks a day or a preset. `false` turns it off.                                               |
+
+### Parts
+
+| Part                  | What it is                                                                                                                                                  |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DatePicker.Trigger`  | A field that shows the value and opens the sheet. Takes `placeholder`, `format` and `invalid`. Inside a Field, it announces its label and follows its state. |
+| `DatePicker.Calendar` | A `Calendar.Root` bound to the draft. Takes every other `Calendar.Root` prop (`minDate`, `maxDate`, `isDateDisabled`, `minRange`, `weekStartsOn`…) and the Calendar parts as children. |
+| `DatePicker.Cancel`   | A ghost Button that drops the draft and closes.                                                                                                             |
+| `DatePicker.Done`     | A ghost Button that applies the draft and closes. Leave it out with `confirm="instant"`.                                                                    |
+| `DatePicker.Clear`    | A ghost Button that sets the value to `null`. Disabled while the value is empty.                                                                            |
+| `DatePicker.Preset`   | A [Chip](/docs/components/chip) that picks its `value` into the draft: "Today", "Next weekend".                                                                  |
+
+The action buttons take every [Button](/docs/components/button) prop except `onPress`, and their text as children. `formatDateValue(value, locale)` is exported for your own trigger.
+
+## Haptics
+
+The picker plays a `selection` haptic when the user picks a day in the calendar or a preset. Pass `haptic={false}` to turn it off, or another kind to change it. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
+
+## Use cases
+
+### Date of a task
+
+`confirm="instant"`: one press sets the date and closes the sheet. Presets cover the common choices.
+
+<PhonePreview half="bottom" size="sm">
+	<div class="ax-scrim" />
+	<div class="ax-sheet">
+		<span class="ax-handle" />
+		<div class="ax-sheet-header">
+			<span class="ax-title3">Due date</span>
+			<span class="ax-link">Clear</span>
+		</div>
+		<div class="ax-row" style={{ padding: "4px 0 10px" }}>
+			<span class="ax-chip" data-size="sm">
+				Today
+			</span>
+			<span class="ax-chip" data-size="sm" data-selected>
+				Tomorrow
+			</span>
+			<span class="ax-chip" data-size="sm">
+				Next week
+			</span>
+		</div>
+		<div class="ax-calendar-grid">
+			<span class="ax-weekday">M</span>
+			<span class="ax-weekday">T</span>
+			<span class="ax-weekday">W</span>
+			<span class="ax-weekday">T</span>
+			<span class="ax-weekday">F</span>
+			<span class="ax-weekday">S</span>
+			<span class="ax-weekday">S</span>
+			<span data-today>14</span>
+			<span data-selected>
+				<i>15</i>
+			</span>
+			<span>16</span>
+			<span>17</span>
+			<span>18</span>
+			<span>19</span>
+			<span>20</span>
+			<span>21</span>
+			<span>22</span>
+			<span>23</span>
+			<span>24</span>
+			<span>25</span>
+			<span>26</span>
+			<span>27</span>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<DatePicker confirm="instant" value={task.due} onChange={(due) => update({ due })}>
+	<BottomSheet.Trigger asChild>
+		<Chip leading="calendar">
+			{task.due ? formatShort(task.due) : "Due date"}
+		</Chip>
+	</BottomSheet.Trigger>
+	<BottomSheet.Content>
+		<BottomSheet.Handle />
+		<BottomSheet.Header title="Due date" leading={<DatePicker.Cancel />} />
+		<View style={{ paddingHorizontal: 16, paddingBottom: 16, gap: 12 }}>
+			<View style={{ flexDirection: "row", gap: 8 }}>
+				<DatePicker.Preset value={today}>Today</DatePicker.Preset>
+				<DatePicker.Preset value={addDays(today, 1)}>Tomorrow</DatePicker.Preset>
+				<DatePicker.Preset value={nextMonday(today)}>Next week</DatePicker.Preset>
+			</View>
+			<DatePicker.Calendar>{monthParts}</DatePicker.Calendar>
+			<DatePicker.Clear fullWidth />
+		</View>
+	</BottomSheet.Content>
+</DatePicker>
+```
+
+### Travel dates
+
+`mode="range"` behind two fields that read as one. Done stays disabled until both dates are set.
+
+<PhonePreview size="sm">
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Porto · 2 guests</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body" style={{ gap: "12px" }}>
+		<div class="ax-input-group" style={{ height: "60px" }}>
+			<div
+				class="ax-grow"
+				style={{
+					flexDirection: "column",
+					alignItems: "flex-start",
+					justifyContent: "center",
+					gap: "0px",
+				}}
+			>
+				<span class="ax-caption ax-muted">Check-in</span>
+				<span class="ax-semibold">Thu 17 Sep</span>
+			</div>
+			<div
+				class="ax-grow"
+				style={{
+					flexDirection: "column",
+					alignItems: "flex-start",
+					justifyContent: "center",
+					gap: "0px",
+				}}
+			>
+				<span class="ax-caption ax-muted">Check-out</span>
+				<span class="ax-semibold">Mon 21 Sep</span>
+			</div>
+		</div>
+		<span class="ax-btn" data-block data-size="lg">
+			Search stays
+		</span>
+		<span class="ax-footnote ax-muted" style={{ textAlign: "center" }}>
+			4 nights
+		</span>
+	</div>
+</PhonePreview>
+
+```tsx
+<DatePicker mode="range" value={stay} onChange={setStay}>
+	<BottomSheet.Trigger asChild>
+		<StayField from={stay?.from} to={stay?.to} />
+	</BottomSheet.Trigger>
+	<BottomSheet.Content>
+		<BottomSheet.Handle />
+		<BottomSheet.Header
+			title="Your stay"
+			leading={<DatePicker.Cancel />}
+			trailing={<DatePicker.Done />}
+		/>
+		<View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
+			<DatePicker.Calendar minDate={today} minRange={1}>
+				{monthParts}
+			</DatePicker.Calendar>
+		</View>
+	</BottomSheet.Content>
+</DatePicker>
+```
+
+### Form field with validation
+
+A regular field in a form, with a label, `maxDate` and an error when the date is missing.
+
+<PhonePreview size="sm">
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="close" />
+		</span>
+		<span class="ax-appbar-title">Create account</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body" style={{ gap: "14px" }}>
+		<div class="ax-field">
+			<span class="ax-label">Full name</span>
+			<div class="ax-control">
+				<span class="ax-value">Katherine Johnson</span>
+			</div>
+		</div>
+		<div class="ax-field" data-state="invalid">
+			<span class="ax-label">Date of birth</span>
+			<div class="ax-control">
+				<span class="ax-placeholder">Select a date</span>
+				<Glyph name="calendar" size={20} />
+			</div>
+			<span class="ax-helper">We need your date of birth to continue.</span>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<Field>
+	<Field.Label>Date of birth</Field.Label>
+	<DatePicker value={birthdate} onChange={setBirthdate}>
+		<DatePicker.Trigger />
+		<BottomSheet.Content>
+			<BottomSheet.Handle />
+			<BottomSheet.Header
+				title="Date of birth"
+				leading={<DatePicker.Cancel />}
+				trailing={<DatePicker.Done />}
+			/>
+			<View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
+				<DatePicker.Calendar maxDate={subYears(today, 13)}>
+					{monthParts}
+				</DatePicker.Calendar>
+			</View>
+		</BottomSheet.Content>
+	</DatePicker>
+	{submitted && !birthdate ? (
+		<Field.Error>We need your date of birth to continue.</Field.Error>
+	) : null}
+</Field>
+```
+
+`monthParts` stands for the Calendar parts of the Usage example. Write them once in a small component of your app if every picker shows the same month.
+
+## Related
+
+- [Calendar](/docs/components/calendar)
+- [BottomSheet](/docs/components/bottom-sheet)

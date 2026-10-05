@@ -236,7 +236,7 @@ The file lands in `components/compositions/listing-card.tsx`.
 npx axiom add listing-card-detailed
 ```
 
-The file lands in `components/compositions/listing-card-detailed.tsx`. Also copies [`avatar`](/docs/atoms/avatar) and [`button`](/docs/atoms/button).
+The file lands in `components/compositions/listing-card-detailed.tsx`. Also copies [`avatar`](/docs/components/avatar) and [`button`](/docs/components/button).
 
 </VariantPanel>
 
@@ -256,7 +256,7 @@ The file lands in `components/compositions/listing-card-overlay.tsx`.
 npx axiom add listing-card-overlay-detailed
 ```
 
-The file lands in `components/compositions/listing-card-overlay-detailed.tsx`. Also copies [`avatar`](/docs/atoms/avatar).
+The file lands in `components/compositions/listing-card-overlay-detailed.tsx`. Also copies [`avatar`](/docs/components/avatar).
 
 </VariantPanel>
 
@@ -266,13 +266,13 @@ The file lands in `components/compositions/listing-card-overlay-detailed.tsx`. A
 npx axiom add listing-card-booking
 ```
 
-The file lands in `components/compositions/listing-card-booking.tsx`. Also copies [`button`](/docs/atoms/button).
+The file lands in `components/compositions/listing-card-booking.tsx`. Also copies [`button`](/docs/components/button).
 
 </VariantPanel>
 
-Every variant also copies [`card`](/docs/atoms/card), [`badge`](/docs/atoms/badge), [`separator`](/docs/atoms/separator), [`icon`](/docs/atoms/icon), [`text`](/docs/atoms/text), [`title`](/docs/atoms/title) and their dependencies. None brings tokens of its own.
+Every variant also copies [`card`](/docs/components/card), [`badge`](/docs/components/badge), [`separator`](/docs/components/separator), [`icon`](/docs/components/icon), [`text`](/docs/components/text), [`title`](/docs/components/title) and their dependencies. None brings tokens of its own.
 
-The spec icons come from your [icon registry](/docs/atoms/icon). Add the ones you use to `icons.tsx`, for example with `expo-symbols`:
+The spec icons come from your [icon registry](/docs/components/icon). Add the ones you use to `icons.tsx`, for example with `expo-symbols`:
 
 ```tsx title="components/ui/icons.tsx"
 bed: symbol("bed.double", "bed"),
@@ -414,7 +414,7 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 | `subtitle`    | `string`                | —       | One line under the title: a tagline, an area.                                                         |
 | `image`       | `ImageSourcePropType`   | —       | The photo.                                                                                            |
 | `aspectRatio` | `number`                | `4 / 3` | Of the photo.                                                                                         |
-| `badge`       | `string`                | —       | Short label in a `highlight` [Badge](/docs/atoms/badge), on the photo.                                |
+| `badge`       | `string`                | —       | Short label in a `highlight` [Badge](/docs/components/badge), on the photo.                                |
 | `specs`       | `ListingSpec[]`         | —       | `{ icon?, value, label? }`: beds, baths, area. Shown as "**2** Beds", separated by lines. Three fit.   |
 | `onPress`     | `() => void`            | —       | Makes the whole card pressable. The card is read as "title, price".                                   |
 | `style`       | `StyleProp<ViewStyle>`  | —       | Extra styles for the card container, for example a width in a rail.                                   |
@@ -425,15 +425,15 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 
 | Prop          | Type                    | Default          | Description                                                                                 |
 | ------------- | ----------------------- | ---------------- | ------------------------------------------------------------------------------------------- |
-| `price`       | `string`                | —                | Already formatted, currency included. Shown first, as a `headingSm` [Title](/docs/atoms/title). |
+| `price`       | `string`                | —                | Already formatted, currency included. Shown first, as a `headingSm` [Title](/docs/components/title). |
 | `priceLabel`  | `string`                | —                | Shown small after the price: `"List price"`.                                                |
 | `title`       | `string`                | —                | The seller or the building, in semibold.                                                    |
 | `subtitle`    | `string`                | —                | Usually the address, after the title on the same line.                                      |
 | `image`       | `ImageSourcePropType`   | —                | The photo.                                                                                  |
 | `aspectRatio` | `number`                | `4 / 3`          | Of the photo.                                                                               |
-| `badge`       | `string`                | —                | Short label in a `highlight` [Badge](/docs/atoms/badge), on the photo.                      |
+| `badge`       | `string`                | —                | Short label in a `highlight` [Badge](/docs/components/badge), on the photo.                      |
 | `specs`       | `ListingSpec[]`         | —                | `{ icon?, value, label? }`, between two lines.                                              |
-| `agent`       | `{ name, avatar? }`     | —                | Who posted the listing: an [Avatar](/docs/atoms/avatar) and "By name".                      |
+| `agent`       | `{ name, avatar? }`     | —                | Who posted the listing: an [Avatar](/docs/components/avatar) and "By name".                      |
 | `meta`        | `string`                | —                | At the end of the agent line: `"2 days ago"`.                                               |
 | `actionLabel` | `string`                | `"View details"` | Label of the action button.                                                                 |
 | `onAction`    | `() => void`            | —                | Shows the full-width button. Without it, there is no button.                                |
@@ -451,7 +451,7 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 | `subtitle`    | `string`                | —       | One line under the title: the address.                                                      |
 | `image`       | `ImageSourcePropType`   | —       | Covers the whole card.                                                                      |
 | `aspectRatio` | `number`                | `3 / 4` | Of the whole card. Portrait by default.                                                     |
-| `badge`       | `string`                | —       | Short label in a `highlight` [Badge](/docs/atoms/badge), top left.                          |
+| `badge`       | `string`                | —       | Short label in a `highlight` [Badge](/docs/components/badge), top left.                          |
 | `specs`       | `ListingSpec[]`         | —       | `{ icon?, value, label? }`, under a line, in white.                                         |
 | `onPress`     | `() => void`            | —       | Makes the whole card pressable.                                                             |
 | `style`       | `StyleProp<ViewStyle>`  | —       | Extra styles for the card container, for example a width in a rail.                         |
@@ -468,7 +468,7 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 | `subtitle`    | `string`                | —       | Usually the address, under the title, on up to two lines.                           |
 | `image`       | `ImageSourcePropType`   | —       | Covers the whole card.                                                              |
 | `aspectRatio` | `number`                | `3 / 4` | Of the whole card.                                                                  |
-| `badge`       | `string`                | —       | Short label in a `highlight` [Badge](/docs/atoms/badge), top left.                  |
+| `badge`       | `string`                | —       | Short label in a `highlight` [Badge](/docs/components/badge), top left.                  |
 | `specs`       | `ListingSpec[]`         | —       | `{ icon?, value, label? }`, stacked next to the title: value above, label below. Two fit. |
 | `agent`       | `{ name, avatar? }`     | —       | Who posted the listing, under a line.                                               |
 | `meta`        | `string`                | —       | After the agent: `"2 days ago"`.                                                    |
@@ -487,7 +487,7 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 | `priceUnit`   | `string`                | —               | Shown small after the price: `"/night"`.                                             |
 | `image`       | `ImageSourcePropType`   | —               | Covers the whole card.                                                               |
 | `aspectRatio` | `number`                | `3 / 4`         | Of the whole card.                                                                   |
-| `badge`       | `string`                | —               | Short label in a `highlight` [Badge](/docs/atoms/badge), top left.                   |
+| `badge`       | `string`                | —               | Short label in a `highlight` [Badge](/docs/components/badge), top left.                   |
 | `specs`       | `ListingSpec[]`         | —               | `{ icon?, value, label? }`, in white.                                                |
 | `actionLabel` | `string`                | `"Reserve now"` | Label of the white button. It is read as "label, title".                             |
 | `onAction`    | `() => void`            | —               | Required: the booking action.                                                        |
@@ -503,13 +503,13 @@ import { ListingCardBooking } from "@/components/compositions/listing-card-booki
 
 ## Built with
 
-- [Card](/docs/atoms/card): the elevated surface and, for the stacked variants, its header.
-- [Badge](/docs/atoms/badge): the `highlight` label on the photo.
-- [Separator](/docs/atoms/separator): the lines around and between the specs.
-- [Icon](/docs/atoms/icon): the spec icons, from your registry.
-- [Title](/docs/atoms/title) and [Text](/docs/atoms/text): name, price, address.
-- [Avatar](/docs/atoms/avatar): the agent, in the Detailed variants.
-- [Button](/docs/atoms/button): the action, in Detailed and Booking.
+- [Card](/docs/components/card): the elevated surface and, for the stacked variants, its header.
+- [Badge](/docs/components/badge): the `highlight` label on the photo.
+- [Separator](/docs/components/separator): the lines around and between the specs.
+- [Icon](/docs/components/icon): the spec icons, from your registry.
+- [Title](/docs/components/title) and [Text](/docs/components/text): name, price, address.
+- [Avatar](/docs/components/avatar): the agent, in the Detailed variants.
+- [Button](/docs/components/button): the action, in Detailed and Booking.
 
 ## Used in
 

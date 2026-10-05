@@ -1,6 +1,6 @@
 ---
 title: Search App Bar
-description: "Back or close, a search field in the bar and up to two actions."
+description: "Back or close, a search field in the bar, your actions and an optional Cancel."
 ---
 
 <PhonePreview>
@@ -24,9 +24,9 @@ The field takes the place of the title, between the back button and the actions.
 npx axiom add search-app-bar
 ```
 
-Also copies: [`app-bar`](/docs/templates/app-bar), [`search-bar`](/docs/molecules/search-bar), [`icon-button`](/docs/atoms/icon-button) and their dependencies. The file lands in `components/compositions/search-app-bar.tsx`. It brings no tokens of its own: colors come from [AppBar](/docs/templates/app-bar) and [SearchBar](/docs/molecules/search-bar).
+Also copies: [`app-bar`](/docs/components/app-bar), [`search-bar`](/docs/components/search-bar), [`icon-button`](/docs/components/icon-button), [`text`](/docs/components/text), [`tappable`](/docs/core/tappable) and their dependencies. Installs `react-native-reanimated`, for the Cancel slide. The file lands in `components/compositions/search-app-bar.tsx`. It brings no tokens of its own: colors come from [AppBar](/docs/components/app-bar) and [SearchBar](/docs/components/search-bar).
 
-Requires the `arrow-left` and `close` icons in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+Requires the `arrow-left` and `close` icons in your [icon registry](/docs/components/icon#icons-that-components-need).
 
 ## Usage
 
@@ -45,15 +45,32 @@ const [query, setQuery] = useState("");
 	autoFocus
 	loading={isFetching}
 	onNavigate={router.back}
-	actions={[
-		{ icon: "filter", label: "Filters", badge: activeFilters.length, onPress: openFilters },
-	]}
-/>;
+>
+	<IconButton
+		icon="filter"
+		badge={activeFilters.length}
+		accessibilityLabel="Filters"
+		onPress={openFilters}
+	/>
+</SearchAppBar>;
 ```
 
-Opened as a modal, pass `navigation="close"`. With [Scaffold](/docs/templates/scaffold), which already pads the status bar, pass `safeArea={false}`.
+Opened as a modal, pass `navigation="close"`. With [Scaffold](/docs/components/scaffold), which already pads the status bar, pass `safeArea={false}`.
 
-Every [SearchBar](/docs/molecules/search-bar) prop goes through to the field, except the cancel button: the navigation button takes its place. Use [AppBar with `AppBar.Search`](/docs/templates/app-bar) instead for a large title with a search field under it.
+The actions are the bar's children: write the buttons you need after the field, as many as fit. Every [SearchBar](/docs/components/search-bar) prop goes through to the field. To lay the field out yourself, put a SearchBar in [`AppBar.Center`](/docs/components/app-bar).
+
+### With Cancel
+
+On iOS, a search that's part of the screen often ends with a Cancel button. Pass `onCancel`: the button slides in while the field is focused, from its measured width so the field shrinks smoothly, and stays still with Reduce Motion. A press blurs the field, then calls `onCancel`, where you clear the query or leave the screen.
+
+```tsx
+<SearchAppBar
+	value={query}
+	onChangeText={setQuery}
+	placeholder="Search messages"
+	onCancel={() => setQuery("")}
+/>
+```
 
 ## Props
 
@@ -62,25 +79,25 @@ Every [SearchBar](/docs/molecules/search-bar) prop goes through to the field, ex
 | `navigation`      | `'back' \| 'close'`     | `'back'`                 | An arrow, or a cross for a search opened as a modal.                            |
 | `onNavigate`      | `() => void`            | —                        | Shows the navigation button.                                                    |
 | `navigationLabel` | `string`                | `"Back"` or `"Close"`    | Label of the navigation button.                                                 |
-| `actions`         | `AppBarAction[]`        | —                        | Up to two buttons after the field: `{ icon, label, onPress, badge? }`.          |
+| `children`        | `ReactNode`             | —                        | Buttons after the field, such as filters or scan. Rendered as written.          |
+| `onCancel`        | `() => void`            | —                        | Shows a Cancel button while the field is focused. Called after the field blurs. |
+| `cancelLabel`     | `string`                | `"Cancel"`               | Label of the Cancel button.                                                     |
 | `bordered`        | `boolean`               | `true`                   | Hairline under the bar.                                                         |
 | `safeArea`        | `boolean`               | `true`                   | Adds the top safe-area inset.                                                   |
 | `barStyle`        | `StyleProp<ViewStyle>`  | —                        | Styles for the bar.                                                             |
 | `variant`         | `'filled' \| 'outline'` | `'filled'`               | Look of the field.                                                              |
 | …                 | `SearchBarProps`        | —                        | `value`, `onChangeText`, `onSubmit`, `placeholder`, `loading`, `clearable`, `autoFocus`… |
 
-An action's `badge` is a number for a counter, or `true` for a dot.
-
 ## Accessibility
 
-The field is a search field with its placeholder as a label, from [SearchBar](/docs/molecules/search-bar). An action with a counter reads it after its label: "Filters, 2".
+The field is a search field with its placeholder as a label, from [SearchBar](/docs/components/search-bar). An action with a counter reads it after its label: "Filters, 2".
 
 ## Built with
 
-- [AppBar](/docs/templates/app-bar): the bar, its safe area, its background and its slots.
-- [SearchBar](/docs/molecules/search-bar): the 36pt field, its clear button and spinner.
-- [IconButton](/docs/atoms/icon-button): navigation and actions.
-- [Badge](/docs/atoms/badge): the counter or dot on an action.
+- [AppBar](/docs/components/app-bar): the bar, its safe area, its background and its slots.
+- [SearchBar](/docs/components/search-bar): the 36pt field, its clear button and spinner.
+- [IconButton](/docs/components/icon-button): navigation, and the actions you pass.
+- [Badge](/docs/components/badge): the counter or dot on an action.
 
 ## Used in
 

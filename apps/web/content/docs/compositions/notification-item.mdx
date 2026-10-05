@@ -25,7 +25,7 @@ A notification from a person shows their avatar and starts with their name in bo
 npx axiom add notification-item
 ```
 
-Also copies: [`item`](/docs/atoms/item), [`avatar`](/docs/atoms/avatar), [`icon`](/docs/atoms/icon), [`badge`](/docs/atoms/badge), [`button`](/docs/atoms/button), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/notification-item.tsx`. It brings no tokens of its own.
+Also copies: [`item`](/docs/components/item), [`avatar`](/docs/components/avatar), [`icon`](/docs/components/icon), [`badge`](/docs/components/badge), [`button`](/docs/components/button), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/notification-item.tsx`. It brings no tokens of its own.
 
 ## Usage
 
@@ -53,7 +53,7 @@ import { NotificationItem } from "@/components/compositions/notification-item";
 />
 ```
 
-`icon` takes a name from your [icon registry](/docs/atoms/icon): add `shipping`, `security`… to `icons.tsx` first.
+`icon` takes a name from your [icon registry](/docs/components/icon): add `shipping`, `security`… to `icons.tsx` first.
 
 ## Props
 
@@ -62,7 +62,7 @@ import { NotificationItem } from "@/components/compositions/notification-item";
 | `actor`       | `string`              | —       | Who the notification is about, in bold before the message. Gives the avatar its initials.   |
 | `message`     | `string`              | —       | The rest of the sentence, up to three lines with the actor.                                  |
 | `time`        | `string`              | —       | Already formatted: `"2m"`, `"Yesterday"`. In the link color while unread.                    |
-| `avatar`      | `ImageSourcePropType` | —       | The actor's photo, in an `md` [Avatar](/docs/atoms/avatar).                                  |
+| `avatar`      | `ImageSourcePropType` | —       | The actor's photo, in an `md` [Avatar](/docs/components/avatar).                                  |
 | `icon`        | `IconName`            | —       | Replaces the avatar with the icon on a round tile, when there is no `avatar`.                |
 | `unread`      | `boolean`             | `false` | Adds a dot at the end of the row.                                                            |
 | `actionLabel` | `string`              | —       | Label of the button under the message.                                                       |
@@ -76,12 +76,12 @@ The row reads as one element and starts with its state: "Unread, Lena Moreau sta
 
 ## Built with
 
-- [Item](/docs/atoms/item): the row, aligned to the top so long messages wrap under the avatar.
-- [Avatar](/docs/atoms/avatar): the actor's photo or initials.
-- [Icon](/docs/atoms/icon): the system icon.
-- [Badge](/docs/atoms/badge): the unread dot.
-- [Button](/docs/atoms/button): the action.
-- [Text](/docs/atoms/text): the message and the time.
+- [Item](/docs/components/item): the row, aligned to the top so long messages wrap under the avatar.
+- [Avatar](/docs/components/avatar): the actor's photo or initials.
+- [Icon](/docs/components/icon): the system icon.
+- [Badge](/docs/components/badge): the unread dot.
+- [Button](/docs/components/button): the action.
+- [Text](/docs/components/text): the message and the time.
 
 ## Used in
 
@@ -90,5 +90,5 @@ No block uses Notification Item yet.
 ## Related
 
 - [Conversation Item](/docs/compositions/conversation-item)
-- [Empty](/docs/atoms/empty): for an empty activity feed.
+- [Empty](/docs/components/empty): for an empty activity feed.
 - [Compositions](/docs/compositions)

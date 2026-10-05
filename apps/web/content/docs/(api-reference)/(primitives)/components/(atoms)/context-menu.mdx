@@ -1,0 +1,239 @@
+---
+title: ContextMenu
+description: "A menu opened by a long press on content, with the content lifted above the backdrop, iOS style."
+---
+
+A long press on a message, a photo or a row opens a menu of actions for that item. The pressed content is lifted above the dimmed screen, so the user sees what the actions apply to.
+
+`ContextMenu` is [Menu](/docs/components/menu) with another trigger: `Root`, `Content`, `Item`, `Group`, `Separator` and `Sub` are the same parts.
+
+## Installation
+
+```npm
+npx axiom add context-menu
+```
+
+Also copies: [`menu`](/docs/components/menu) and its dependencies. `context-menu.tsx` holds only the trigger: it has no styles, so it's the same file for every styling variant.
+
+## Usage
+
+```tsx
+import { ContextMenu } from "@/components/ui/context-menu";
+
+<ContextMenu.Root>
+	<ContextMenu.Trigger>
+		<PhotoThumbnail />
+	</ContextMenu.Trigger>
+	<ContextMenu.Content>
+		<ContextMenu.Item icon="share" onPress={share}>
+			Share
+		</ContextMenu.Item>
+		<ContextMenu.Separator />
+		<ContextMenu.Item icon="trash" destructive onPress={remove}>
+			Delete
+		</ContextMenu.Item>
+	</ContextMenu.Content>
+</ContextMenu.Root>;
+```
+
+## Props
+
+### ContextMenu.Trigger
+
+| Prop                 | Type                   | Default    | Description                                                                                                    |
+| -------------------- | ---------------------- | ---------- | -------------------------------------------------------------------------------------------------------------- |
+| `preview`            | `boolean \| ReactNode` | `true`     | Lifts a copy of the pressed element above the backdrop. Pass a node to show it in the element's place instead. |
+| `haptic`             | `HapticKind \| false`  | `'medium'` | Haptic played when the menu opens. `false` turns it off.                                                       |
+| `asChild`            | `boolean`              | `false`    | Uses the child as the trigger.                                                                                 |
+| `accessibilityLabel` | `string`               | —          | Label of the trigger, when its content has no text.                                                            |
+| `children`           | `ReactNode`            | —          | The element that opens the menu.                                                                               |
+
+The other parts and their props are on the [Menu](/docs/components/menu#props) page.
+
+## Haptics
+
+The menu plays a `medium` haptic as it opens: it confirms the press was long enough, the way iOS context menus do. Set `haptic` to change the kind, or `false` to turn it off. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
+
+## Accessibility
+
+The trigger announces "Long press for options": screen readers reach the menu through the long press action. Keep the same actions reachable another way too, such as a "more" button or swipe actions.
+
+## Use cases
+
+### Long press on a message
+
+The message is lifted as a preview above the backdrop; quick reactions sit above it.
+
+<PhonePreview size="sm">
+	<div class="ax-body" style={{ gap: "8px", paddingTop: "20px" }}>
+		<div class="ax-row">
+			<span
+				class="ax-subhead"
+				style={{
+					background: "var(--ax-background-subtle)",
+					padding: "8px 12px",
+					borderRadius: "18px",
+				}}
+			>
+				Found the bug.
+			</span>
+		</div>
+	</div>
+	<div
+		class="ax-scrim"
+		style={{ background: "rgb(0 0 0 / 0.2)", backdropFilter: "blur(8px)" }}
+	/>
+	<div
+		class="ax-layer"
+		style={{
+			flexDirection: "column",
+			alignItems: "flex-start",
+			justifyContent: "flex-start",
+			gap: "8px",
+			padding: "30px 16px 0",
+		}}
+	>
+		<div
+			class="ax-row"
+			style={{
+				background: "var(--ax-background-elevated)",
+				borderRadius: "999px",
+				padding: "6px 10px",
+				gap: "10px",
+				fontSize: "24px",
+				boxShadow: "var(--ax-shadow)",
+			}}
+		>
+			<span>❤️</span>
+			<span>👍</span>
+			<span>😂</span>
+			<span>😮</span>
+		</div>
+		<span
+			class="ax-subhead"
+			style={{
+				background: "var(--ax-background-elevated)",
+				padding: "8px 12px",
+				borderRadius: "18px",
+			}}
+		>
+			It was a moth. Taped it in the logbook.
+		</span>
+		<div class="ax-menu" style={{ width: "220px" }}>
+			<span class="ax-menu-item">
+				Reply
+				<Glyph name="arrow-up" size={20} />
+			</span>
+			<span class="ax-menu-item">
+				Copy
+				<Glyph name="copy" size={20} />
+			</span>
+			<span class="ax-menu-item" data-destructive>
+				Delete
+				<Glyph name="trash" size={20} />
+			</span>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<ContextMenu.Root>
+	<ContextMenu.Trigger>
+		<MessageBubble message={message} />
+	</ContextMenu.Trigger>
+	<ContextMenu.Content>
+		<Reactions onReact={react} />
+		<ContextMenu.Item icon="arrow-up" onPress={reply}>
+			Reply
+		</ContextMenu.Item>
+		<ContextMenu.Item icon="copy" onPress={copy}>
+			Copy
+		</ContextMenu.Item>
+		<ContextMenu.Item icon="trash" destructive onPress={remove}>
+			Delete
+		</ContextMenu.Item>
+	</ContextMenu.Content>
+</ContextMenu.Root>
+```
+
+### Row actions in a list
+
+A long press on a row, as an alternative to [swipe actions](/docs/behaviors/swipe-actions) that is easier to discover.
+
+<PhonePreview size="sm">
+	<div class="ax-list" data-variant="plain" style={{ paddingTop: "8px" }}>
+		<div class="ax-item">
+			<span class="ax-tile" data-color="blue">
+				<Glyph name="file" size={18} />
+			</span>
+			<span class="ax-item-title ax-grow">Roadmap.pdf</span>
+		</div>
+	</div>
+	<div
+		class="ax-scrim"
+		style={{ background: "rgb(0 0 0 / 0.2)", backdropFilter: "blur(8px)" }}
+	/>
+	<div
+		class="ax-layer"
+		style={{
+			flexDirection: "column",
+			alignItems: "stretch",
+			justifyContent: "flex-start",
+			gap: "8px",
+			padding: "60px 16px 0",
+		}}
+	>
+		<div
+			class="ax-item"
+			style={{
+				background: "var(--ax-background-elevated)",
+				borderRadius: "12px",
+			}}
+		>
+			<span class="ax-tile" data-color="green">
+				<Glyph name="image" size={18} />
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-item-title">Moodboard.png</span>
+				<span class="ax-item-desc">4.2 MB</span>
+			</div>
+		</div>
+		<div class="ax-menu">
+			<span class="ax-menu-item">
+				Open with…
+				<Glyph name="chevron-right" size={20} />
+			</span>
+			<span class="ax-menu-item">
+				Move
+				<Glyph name="archive" size={20} />
+			</span>
+			<span class="ax-menu-item" data-state="disabled">
+				Rename
+				<Glyph name="edit" size={20} />
+			</span>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<ContextMenu.Root>
+	<ContextMenu.Trigger>
+		<Item onPress={() => open(file)}>…</Item>
+	</ContextMenu.Trigger>
+	<ContextMenu.Content>
+		<ContextMenu.Sub label="Open with…">{apps.map(renderApp)}</ContextMenu.Sub>
+		<ContextMenu.Item icon="archive" onPress={move}>
+			Move
+		</ContextMenu.Item>
+		<ContextMenu.Item icon="edit" disabled={file.locked} onPress={rename}>
+			Rename
+		</ContextMenu.Item>
+	</ContextMenu.Content>
+</ContextMenu.Root>
+```
+
+## Related
+
+- [Menu](/docs/components/menu), opened by a button
+- [Long press](/docs/behaviors/long-press), to open it from a row
+- [BottomSheet](/docs/components/bottom-sheet)

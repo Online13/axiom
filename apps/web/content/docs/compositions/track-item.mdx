@@ -34,9 +34,9 @@ The first track is playing: its title turns to the link color. In an album, rows
 npx axiom add track-item
 ```
 
-Also copies: [`item`](/docs/atoms/item), [`badge`](/docs/atoms/badge), [`icon-button`](/docs/atoms/icon-button), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/track-item.tsx`. It brings no tokens of its own.
+Also copies: [`item`](/docs/components/item), [`badge`](/docs/components/badge), [`icon-button`](/docs/components/icon-button), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/track-item.tsx`. It brings no tokens of its own.
 
-Requires the `more` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need).
+Requires the `more` icon in your [icon registry](/docs/components/icon#icons-that-components-need).
 
 ## Usage
 
@@ -68,11 +68,11 @@ In an album, leave `artwork` out and pass `index`: the row starts with the track
 | `artwork`     | `ImageSourcePropType` | —        | Square cover art, 48pt, with the `sm` radius.                                        |
 | `index`       | `number`              | —        | Track number, shown when there is no artwork.                                        |
 | `duration`    | `number`              | —        | Length in seconds, at the end of the row in tabular figures.                         |
-| `explicit`    | `boolean`             | `false`  | Adds an "E" [Badge](/docs/atoms/badge) before the artist.                            |
+| `explicit`    | `boolean`             | `false`  | Adds an "E" [Badge](/docs/components/badge) before the artist.                            |
 | `playing`     | `boolean`             | `false`  | The track now playing: title and index in the link color, announced as selected.   |
 | `onPress`     | `() => void`          | —        | Plays the track.                                                                     |
 | `onLongPress` | `() => void`          | —        | Usually opens the same menu as the more button.                                      |
-| `onMore`      | `() => void`          | —        | Shows a ghost "more" [IconButton](/docs/atoms/icon-button) at the end of the row.    |
+| `onMore`      | `() => void`          | —        | Shows a ghost "more" [IconButton](/docs/components/icon-button) at the end of the row.    |
 | `moreLabel`   | `string`              | `"More"` | Label of the more button, read with the title: "More, Blue Monday".                  |
 | `disabled`    | `boolean`             | `false`  | A track that can't be played: disabled colors, no press.                             |
 
@@ -82,10 +82,10 @@ The row reads as one element: "Midnight City, M83, 4:03, Now playing". The playi
 
 ## Built with
 
-- [Item](/docs/atoms/item): the pressable row and its slots.
-- [Badge](/docs/atoms/badge): the explicit marker.
-- [IconButton](/docs/atoms/icon-button): the more button.
-- [Text](/docs/atoms/text): title, artist, index and duration.
+- [Item](/docs/components/item): the pressable row and its slots.
+- [Badge](/docs/components/badge): the explicit marker.
+- [IconButton](/docs/components/icon-button): the more button.
+- [Text](/docs/components/text): title, artist, index and duration.
 
 ## Used in
 

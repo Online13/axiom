@@ -78,7 +78,7 @@ Both open the same gap above the list, so an indicator written once works on bot
 
 <PullToRefreshMachine />
 
-`minDuration` prevents the spinner from flashing when the request answers in 50ms. If `onRefresh` rejects, the list still settles; the hook doesn't catch the error, so show it from `onRefresh` with a [Toast](/docs/atoms/toast).
+`minDuration` prevents the spinner from flashing when the request answers in 50ms. If `onRefresh` rejects, the list still settles; the hook doesn't catch the error, so show it from `onRefresh` with a [Toast](/docs/components/toast).
 
 ### In a screen
 
@@ -104,7 +104,7 @@ const refresh = useRefreshControl({
 
 ## Accessibility
 
-- Screen reader users can't pull. Keep a refresh button in the [AppBar](/docs/templates/app-bar) or an `accessibilityActions` entry on the list, and call `refresh()` from it.
+- Screen reader users can't pull. Keep a refresh button in the [AppBar](/docs/components/app-bar) or an `accessibilityActions` entry on the list, and call `refresh()` from it.
 - Announce the result when it matters ("3 new messages").
 - With Reduce Motion on, the list jumps back to `0` and the spinner is replaced by a static state.
 
@@ -112,5 +112,5 @@ const refresh = useRefreshControl({
 
 - [useRefreshControl](/docs/hooks/use-refresh-control)
 - [Async content state](/docs/patterns/async-content-state)
-- [Spinner](/docs/atoms/spinner)
-- [Skeleton](/docs/atoms/skeleton)
+- [Spinner](/docs/components/spinner)
+- [Skeleton](/docs/components/skeleton)

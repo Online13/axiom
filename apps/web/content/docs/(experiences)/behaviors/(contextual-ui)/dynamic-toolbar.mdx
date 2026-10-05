@@ -4,8 +4,9 @@ description: "A bottom bar that replaces navigation during a mode, with actions 
 ---
 
 <Callout title="Draft">
-	Specified, not implemented yet. The bar is [ToolBar](/docs/templates/tool-bar)
-	with its `visible` prop, driven by the screen's state. The API may change.
+	Specified, not implemented yet. The bar is [ToolBar](/docs/components/tool-bar),
+	rendered by the screen while the mode lasts and animated with Reanimated's
+	`entering` / `exiting`. The API may change.
 </Callout>
 
 While the user browses, the bottom of the screen belongs to navigation. When they enter a mode that needs its own commands, such as selecting, editing or cropping, a toolbar takes that place. Its actions stay in the same spots but turn on and off as the context changes. When the mode ends, navigation comes back.
@@ -49,11 +50,11 @@ Only remove an action when it can never apply in this mode, and decide it on ent
 ### Exiting and overflow
 
 - Every mode has an explicit way out: a **Done** or **Cancel** in the app bar, and the system back gesture. The toolbar never is the only exit.
-- More than four actions: keep the three most used and put the rest behind a **More** action opening a [Menu](/docs/atoms/menu).
+- More than four actions: keep the three most used and put the rest behind a **More** action opening a [Menu](/docs/components/menu).
 
 ## Implementation
 
-There is no dedicated hook: the mode and its context are screen state, and [ToolBar](/docs/templates/tool-bar) renders the actions.
+There is no dedicated hook: the mode and its context are screen state, and [ToolBar](/docs/components/tool-bar) renders the actions.
 
 | Library                   | Used for                                                                                                              |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
@@ -73,26 +74,30 @@ useLayoutEffect(() => {
 		?.setOptions({ tabBarStyle: editing ? { display: "none" } : undefined });
 }, [editing]);
 
-<ToolBar visible={editing}>
-	<ToolBar.Action
-		icon="undo"
-		label="Undo"
-		disabled={!history.canUndo}
-		onPress={history.undo}
-	/>
-	<ToolBar.Action
-		icon="redo"
-		label="Redo"
-		disabled={!history.canRedo}
-		onPress={history.redo}
-	/>
-	<ToolBar.Action
-		icon="check"
-		label="Save"
-		disabled={!draft.dirty || !draft.valid}
-		onPress={save}
-	/>
-</ToolBar>;
+{editing ? (
+	<Animated.View entering={FadeInDown} exiting={FadeOutDown}>
+		<ToolBar>
+			<ToolBar.Action
+				icon="undo"
+				label="Undo"
+				disabled={!history.canUndo}
+				onPress={history.undo}
+			/>
+			<ToolBar.Action
+				icon="redo"
+				label="Redo"
+				disabled={!history.canRedo}
+				onPress={history.redo}
+			/>
+			<ToolBar.Action
+				icon="check"
+				label="Save"
+				disabled={!draft.dirty || !draft.valid}
+				onPress={save}
+			/>
+		</ToolBar>;
+	</Animated.View>
+) : null}
 ```
 
 ## Accessibility
@@ -104,6 +109,6 @@ useLayoutEffect(() => {
 
 ## Related
 
-- [ToolBar](/docs/templates/tool-bar)
-- [BottomTabBar](/docs/templates/bottom-tab-bar)
+- [ToolBar](/docs/components/tool-bar)
+- [BottomTabBar](/docs/components/bottom-tab-bar)
 - [Selection mode](/docs/patterns/selection-mode)

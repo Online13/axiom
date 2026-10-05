@@ -78,11 +78,11 @@ Swipe a row a little, then all the way. What happens after the row leaves, with 
 
 Crossing back under 55% before releasing disarms it: the user can change their mind until the last moment.
 
-Only use a full swipe for an action that can be undone. Deleting something that can't be restored (a folder with its content, an account) needs a [Dialog](/docs/atoms/dialog) first.
+Only use a full swipe for an action that can be undone. Deleting something that can't be restored (a folder with its content, an account) needs a [Dialog](/docs/components/dialog) first.
 
 ## Implementation
 
-Axiom implements it with one hook, [`useSwipeActions`](/docs/hooks/use-swipe-actions), and a `SwipeableRow` that renders the actions behind any [Item](/docs/atoms/item).
+Axiom implements it with one hook, [`useSwipeActions`](/docs/hooks/use-swipe-actions), and a `SwipeableRow` that renders the actions behind any [Item](/docs/components/item).
 
 | Library                        | Used for                                                                                                                                                                                                                                                          |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -146,4 +146,4 @@ Options and return value are documented in [useSwipeActions](/docs/hooks/use-swi
 - [Undoable action](/docs/patterns/undoable-action)
 - [Long press](/docs/behaviors/long-press)
 - [useSwipeActions](/docs/hooks/use-swipe-actions)
-- [Item](/docs/atoms/item)
+- [Item](/docs/components/item)

@@ -4,8 +4,8 @@ description: "A standard way to handle loading, content, empty, error, offline a
 ---
 
 <Callout title="Draft">
-	Specified, not implemented yet. It relies on [Skeleton](/docs/atoms/skeleton),
-	[Empty](/docs/atoms/empty) and a data library such as TanStack Query. The API may
+	Specified, not implemented yet. It relies on [Skeleton](/docs/components/skeleton),
+	[Empty](/docs/components/empty) and a data library such as TanStack Query. The API may
 	change.
 </Callout>
 
@@ -29,8 +29,8 @@ A screen is in exactly one state at a time. Content already on screen stays visi
 
 The first load, before any content exists.
 
-- Use a [Skeleton](/docs/atoms/skeleton) shaped like the content when the layout is known, such as a list or a card grid.
-- Use a [Spinner](/docs/atoms/spinner) when the layout isn't known, or for short, blocking actions.
+- Use a [Skeleton](/docs/components/skeleton) shaped like the content when the layout is known, such as a list or a card grid.
+- Use a [Spinner](/docs/components/spinner) when the layout isn't known, or for short, blocking actions.
 - A refresh of existing content is not a loading state. Use [pull-to-refresh](/docs/behaviors/pull-to-refresh) and keep the content on screen.
 
 ## Empty
@@ -53,7 +53,7 @@ The user searched or filtered, and nothing matched. The screen isn't empty in ge
 - Offer a way out: clear the search, reset filters.
 - No primary "create" action: the user was looking for something, not trying to add it.
 
-Both cases are built with [Empty](/docs/atoms/empty).
+Both cases are built with [Empty](/docs/components/empty).
 
 ## Error
 
@@ -61,7 +61,7 @@ The request failed.
 
 - Say what couldn't be loaded, in plain language. No error codes on screen.
 - Offer a retry action.
-- If content was already on screen, keep it and report the error with a [Snackbar](/docs/atoms/snackbar) or a [Toast](/docs/atoms/toast) instead of replacing the screen.
+- If content was already on screen, keep it and report the error with a [Snackbar](/docs/components/snackbar) or a [Toast](/docs/components/toast) instead of replacing the screen.
 
 ## Offline
 
@@ -81,9 +81,9 @@ Retry is a transition, not a screen: it sends the user back to loading.
 
 ## Related
 
-- [Skeleton](/docs/atoms/skeleton)
-- [Spinner](/docs/atoms/spinner)
-- [Empty](/docs/atoms/empty)
+- [Skeleton](/docs/components/skeleton)
+- [Spinner](/docs/components/spinner)
+- [Empty](/docs/components/empty)
 - [Pull-to-refresh](/docs/behaviors/pull-to-refresh)
 - [Pagination](/docs/behaviors/pagination)
 - [Search experience](/docs/patterns/search-experience)

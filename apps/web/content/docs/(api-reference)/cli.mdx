@@ -22,7 +22,7 @@ Sets up a project for Axiom:
 1. Asks for the styling tool: `stylesheet`, `unistyles`, `nativewind` or `uniwind`. Only the ones the registry has a variant for are offered.
 2. Checks that `tsconfig.json` resolves the aliases, and offers to add the missing `paths` entries (see [Aliases](#aliases)).
 3. Copies the foundations (theme, tokens, `light` / `dark`) and the headless core.
-4. Installs the styling dependency and what the copied files need.
+4. Asks, then installs the styling dependency and what the copied files need.
 5. Writes `axiom.json`, with everything it copied listed in `items`.
 
 Nothing is copied before step 2 passes: a project with half its aliases resolved is worse than one with none.
@@ -30,6 +30,7 @@ Nothing is copied before step 2 passes: a project with half its aliases resolved
 | Option             | What it does                                                                 |
 | ------------------ | ---------------------------------------------------------------------------- |
 | `--styling <tool>` | Answers the styling question, for a script or a CI job.                      |
+| `--install`        | Installs without asking.                                                     |
 | `--no-install`     | Prints the install command instead of running it.                            |
 | `--force`          | Sets up a project that already has an `axiom.json`. Existing files are kept. |
 
@@ -46,7 +47,17 @@ Answer `n`, or keep a `tsconfig.json` the CLI can't rewrite safely — one with 
 
 ### Installing
 
-`init` installs with the package manager of your project, from its lockfile, and goes through `expo install` when the project has Expo, so the versions match your SDK. `add` prints the command instead of running it; pass `--install` to have it install too.
+Before installing anything, `init` and `add` list the packages and ask. Answer yes and the CLI says what it is installing, with the command it runs:
+
+```txt title="Terminal" noCopy
+Install react-native-reanimated, react-native-gesture-handler? npx expo install react-native-reanimated react-native-gesture-handler
+◇ Installing react-native-reanimated, react-native-gesture-handler
+  npx expo install react-native-reanimated react-native-gesture-handler
+```
+
+Answer no and it prints the command instead. `--install` skips the question, `--no-install` answers no. Without a terminal to ask, `init` installs and `add` prints the command.
+
+The CLI uses the package manager of your project, from its lockfile, and goes through `expo install` when the project has Expo, so the versions match your SDK.
 
 ## add
 
@@ -100,17 +111,17 @@ Copied files belong to your project, so `add` protects your changes. A file iden
 | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | A file of the component you named                                                              | The CLI asks, per file: keep yours, overwrite it, overwrite all of the remaining ones, or keep all of yours. |
 | A file of an internal dependency already in your project                                       | Kept. `add button` never touches your `tappable.tsx`. Name the dependency to update it: `add tappable`.      |
-| A file your project owns once created, like the [icon registry](/docs/atoms/icon#the-registry) | Kept, always.                                                                                                |
+| A file your project owns once created, like the [icon registry](/docs/components/icon#the-registry) | Kept, always.                                                                                                |
 
 ```npm
 npx axiom add button --overwrite
 ```
 
-`--overwrite` replaces the files of the components you named without asking. Dependencies and owned files are still kept.
+`--overwrite` replaces the files of the components you named without asking. Dependencies and owned files are still kept, and theme files (`theme/`, including each component's tokens) are still asked about, since that is where you customize them. Without a terminal to ask in, they are kept.
 
 ### Icons
 
-The first item that needs icons asks where they come from (`expo-symbols` or `custom`) and saves the answer as [`icons`](/docs/configuration#icons). Pass `--icons <source>` to answer without a prompt. When a component draws icons your registry doesn't have, `add` lists them. See [Icon](/docs/atoms/icon#icons-that-components-need).
+The first item that needs icons asks where they come from (`expo-symbols` or `custom`) and saves the answer as [`icons`](/docs/configuration#icons). Pass `--icons <source>` to answer without a prompt. When a component draws icons your registry doesn't have, `add` lists them. See [Icon](/docs/components/icon#icons-that-components-need).
 
 ### Navigation
 

@@ -5,6 +5,7 @@
 		"use-controllable-state",
 		"use-overlay-back-handler",
 		"use-refresh-control",
+		"use-keyboard-visible",
 		"use-hide-on-scroll",
 		"use-collapsible-header",
 		"use-scroll-to-top",

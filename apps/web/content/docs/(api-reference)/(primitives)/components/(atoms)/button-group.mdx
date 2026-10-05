@@ -1,0 +1,278 @@
+---
+title: ButtonGroup
+description: "Rounds and clips a row of buttons into one control."
+---
+
+<PhonePreview>
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Calendar</span>
+		<span class="ax-icon-btn">
+			<Glyph name="plus" />
+		</span>
+	</div>
+	<div class="ax-body" style={{ gap: "20px" }}>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">Attached outline buttons</span>
+			<div class="ax-btn-group" data-block>
+				<span class="ax-btn" data-variant="outline">
+					Day
+				</span>
+				<span
+					class="ax-btn"
+					data-variant="outline"
+					style={{ background: "var(--ax-background-subtle)" }}
+				>
+					Week
+				</span>
+				<span class="ax-btn" data-variant="outline">
+					Month
+				</span>
+			</div>
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">Split button</span>
+			<div class="ax-btn-group">
+				<span class="ax-btn">Export</span>
+				<span class="ax-btn" style={{ padding: "0 12px" }}>
+					<Glyph name="chevron-down" size={18} />
+				</span>
+			</div>
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">Small, with icons</span>
+			<div class="ax-btn-group" data-size="sm">
+				<span class="ax-btn" data-size="sm" data-variant="outline">
+					<Glyph name="chevron-left" size={16} />
+				</span>
+				<span class="ax-btn" data-size="sm" data-variant="outline">
+					Today
+				</span>
+				<span class="ax-btn" data-size="sm" data-variant="outline">
+					<Glyph name="chevron-right" size={16} />
+				</span>
+			</div>
+		</div>
+		<div class="ax-stack" data-gap="8">
+			<span class="ax-footnote ax-muted">Spaced</span>
+			<div class="ax-row">
+				<span class="ax-btn ax-grow" data-variant="outline">
+					Cancel
+				</span>
+				<span class="ax-btn ax-grow">Confirm</span>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add button-group
+```
+
+Also copies: [`button`](/docs/components/button). The group reads the button `radius` token for its corners, unless you pass `radius`.
+
+## Usage
+
+```tsx
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
+import { Separator } from "@/components/ui/separator";
+
+<ButtonGroup bordered>
+	<Button variant="ghost" style={{ borderRadius: 0 }}>
+		Day
+	</Button>
+	<Separator orientation="vertical" />
+	<Button variant="ghost" style={{ borderRadius: 0 }}>
+		Week
+	</Button>
+	<Separator orientation="vertical" />
+	<Button variant="ghost" style={{ borderRadius: 0 }}>
+		Month
+	</Button>
+</ButtonGroup>;
+```
+
+The group is a `View` that rounds its corners and clips what's inside. It doesn't touch its children: every button keeps its own `size`, `variant` and `disabled`, and it can sit inside a wrapper such as `Menu.Trigger`. Square the buttons with `style={{ borderRadius: 0 }}` so only the outer corners stay round, and put a [Separator](/docs/components/separator) where you want a line.
+
+## Props
+
+| Prop          | Type                         | Default        | Description                                                                       |
+| ------------- | ---------------------------- | -------------- | --------------------------------------------------------------------------------- |
+| `children`    | `ReactNode`                  | —              | Buttons, and a `Separator` between them where you want a line.                    |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Direction of the group.                                                           |
+| `bordered`    | `boolean`                    | `false`        | Draws a hairline around the group, so ghost buttons read as one outlined control. |
+| `radius`      | `number`                     | button radius  | Radius of the group's outer corners. Defaults to `components.button.radius`.      |
+| `style`       | `StyleProp<ViewStyle>`       | —              | Extra styles for the container. `alignSelf: 'stretch'` makes it fill the row.     |
+
+The group hugs its content. To fill the row, stretch it with `style` and give the button that should grow `flex: 1`.
+
+`ButtonGroup` only handles the shape. It doesn't track a selection: for one choice among several, use [SegmentedControl](/docs/components/segmented-control). For two spaced buttons, such as dialog actions, use a plain row: there's nothing to clip.
+
+## Use cases
+
+### Split button
+
+The main action and a chevron that opens a [Menu](/docs/components/menu) of alternatives.
+
+<PhonePreview size="sm">
+	<div class="ax-appbar" data-border>
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Q3 report</span>
+		<span class="ax-icon-btn" />
+	</div>
+	<div class="ax-body">
+		<div class="ax-attachment">
+			<span class="ax-attachment-thumb" data-kind="pdf">
+				<Glyph name="file" size={20} />
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-headline">q3-report.pdf</span>
+				<span class="ax-footnote ax-muted">12 pages · 2.4 MB</span>
+			</div>
+		</div>
+		<div class="ax-btn-group" data-block>
+			<span class="ax-btn">Download PDF</span>
+			<span class="ax-btn" style={{ flex: "none", padding: "0 14px" }}>
+				<Glyph name="chevron-down" size={18} />
+			</span>
+		</div>
+	</div>
+	<div
+		class="ax-layer"
+		style={{
+			alignItems: "flex-start",
+			justifyContent: "flex-end",
+			padding: "176px 16px 0",
+		}}
+	>
+		<div class="ax-menu" style={{ width: "200px" }}>
+			<span class="ax-menu-item">Download CSV</span>
+			<span class="ax-menu-item">Download XLSX</span>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<Menu.Root>
+	<ButtonGroup style={{ alignSelf: "stretch" }}>
+		<Button style={{ borderRadius: 0, flex: 1 }} onPress={downloadPdf}>
+			Download PDF
+		</Button>
+		<Separator orientation="vertical" />
+		<Menu.Trigger asChild>
+			<IconButton
+				icon="chevron-down"
+				accessibilityLabel="Other formats"
+				variant="solid"
+				shape="square"
+				style={{ borderRadius: 0 }}
+			/>
+		</Menu.Trigger>
+	</ButtonGroup>
+	<Menu.Content>…</Menu.Content>
+</Menu.Root>
+```
+
+### Stepper
+
+Minus and plus around a value, read as one control.
+
+<PhonePreview half="bottom" size="sm">
+	<div class="ax-body">
+		<div class="ax-row">
+			<span class="ax-tile" data-size="lg" data-color="orange">
+				<Glyph name="bag" />
+			</span>
+			<div class="ax-item-content">
+				<span class="ax-headline">Cold brew</span>
+				<span class="ax-subhead ax-muted">$4.50 each</span>
+			</div>
+		</div>
+		<div class="ax-row" data-justify="between">
+			<span class="ax-text">Quantity</span>
+			<div class="ax-btn-group" data-size="sm">
+				<span class="ax-btn" data-size="sm" data-variant="outline">
+					<Glyph name="minus" size={16} />
+				</span>
+				<span
+					class="ax-btn"
+					data-size="sm"
+					data-variant="outline"
+					style={{ minWidth: "44px" }}
+				>
+					2
+				</span>
+				<span class="ax-btn" data-size="sm" data-variant="outline">
+					<Glyph name="plus" size={16} />
+				</span>
+			</div>
+		</div>
+	</div>
+	<div class="ax-fill" />
+	<div class="ax-body" style={{ paddingBottom: "40px" }}>
+		<span class="ax-btn" data-size="lg" data-block>
+			Add · $9.00
+		</span>
+	</div>
+</PhonePreview>
+
+```tsx
+<ButtonGroup bordered>
+	<IconButton
+		icon="minus"
+		variant="ghost"
+		shape="square"
+		size="sm"
+		accessibilityLabel="Remove one"
+		style={{ borderRadius: 0 }}
+		onPress={decrement}
+	/>
+	<Separator orientation="vertical" />
+	<Button variant="ghost" size="sm" disabled style={{ borderRadius: 0 }}>
+		{quantity}
+	</Button>
+	<Separator orientation="vertical" />
+	<IconButton
+		icon="plus"
+		variant="ghost"
+		shape="square"
+		size="sm"
+		accessibilityLabel="Add one"
+		style={{ borderRadius: 0 }}
+		onPress={increment}
+	/>
+</ButtonGroup>
+```
+
+### Pill
+
+A large `radius` turns the group into a pill. The buttons stay square: the group clips them.
+
+```tsx
+<ButtonGroup radius={999} bordered>
+	<Button variant="ghost" style={{ borderRadius: 0 }}>
+		Day
+	</Button>
+	<Separator orientation="vertical" />
+	<Button variant="ghost" style={{ borderRadius: 0 }}>
+		Week
+	</Button>
+	<Separator orientation="vertical" />
+	<Button variant="ghost" style={{ borderRadius: 0 }}>
+		Month
+	</Button>
+</ButtonGroup>
+```
+
+## Related
+
+- [Button](/docs/components/button)
+- [Separator](/docs/components/separator)
+- [SegmentedControl](/docs/components/segmented-control), for a single selection among options

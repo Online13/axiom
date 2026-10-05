@@ -16,10 +16,10 @@ One list of notes, and any note can turn into a checklist. No folders, no tags, 
 
 A notes app spends most of its life with the keyboard open. Noty checks that the system handles that without special cases in the app:
 
-- The editor is a [TextArea](/docs/atoms/text-area) that grows with its content and keeps the caret above the keyboard.
-- A todo is a line with a [Checkbox](/docs/atoms/checkbox). Return adds the next one, backspace on an empty one removes it.
+- The editor is a [TextArea](/docs/components/text-area) that grows with its content and keeps the caret above the keyboard.
+- A todo is a line with a [Checkbox](/docs/components/checkbox). Return adds the next one, backspace on an empty one removes it.
 - [Swipe](/docs/behaviors/swipe-actions) on a note archives or deletes it, and the delete stays [undoable](/docs/patterns/undoable-action).
-- Search filters the list as you type, from a [SearchBar](/docs/molecules/search-bar) at the top.
+- Search filters the list as you type, from a [SearchBar](/docs/components/search-bar) at the top.
 
 ## Screens
 
@@ -31,10 +31,10 @@ A notes app spends most of its life with the keyboard open. Noty checks that the
 
 ## Built with
 
-- [TextArea](/docs/atoms/text-area) and [Input](/docs/atoms/input) for the editor.
-- [Item](/docs/atoms/item) and [Checkbox](/docs/atoms/checkbox) for notes and todos.
-- [SearchBar](/docs/molecules/search-bar) and [Empty](/docs/atoms/empty) for the list and its empty state.
-- [FloatingButton](/docs/atoms/floating-button) to start a note.
+- [TextArea](/docs/components/text-area) and [Input](/docs/components/input) for the editor.
+- [Item](/docs/components/item) and [Checkbox](/docs/components/checkbox) for notes and todos.
+- [SearchBar](/docs/components/search-bar) and [Empty](/docs/components/empty) for the list and its empty state.
+- [FloatingButton](/docs/components/floating-button) to start a note.
 - [useSwipeActions](/docs/hooks/use-swipe-actions) and [undoable action](/docs/patterns/undoable-action) for archive and delete.
 
 ## What it checks

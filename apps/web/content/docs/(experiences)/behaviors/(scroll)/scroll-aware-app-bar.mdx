@@ -57,11 +57,11 @@ title                                        0 hidden ────────�
 
 ## Implementation
 
-Axiom implements it with one hook, [`useScrollAwareAppBar`](/docs/hooks/use-scroll-aware-app-bar), and two [AppBar](/docs/templates/app-bar) props that read its values.
+Axiom implements it with one hook, [`useScrollAwareAppBar`](/docs/hooks/use-scroll-aware-app-bar), whose values the screen applies to the parts of a static [AppBar](/docs/components/app-bar).
 
 | Library                   | Used for                                                                                                                                                                            |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `react-native-reanimated` | `offset`, `elevation` and `title` as shared values computed in `useAnimatedScrollHandler`. `interpolateColor` for the background and the hairline. No React render while scrolling. |
+| `react-native-reanimated` | `offset`, `elevation` and `title` as shared values computed in `useAnimatedScrollHandler`. An animated `opacity` on the surface layer the screen puts in the bar. No React render while scrolling. |
 | React Native layout       | `onLayout` on the in-content title gives `titleTop` and `titleHeight`. The bar is positioned over the content, which starts at the top of the screen.                               |
 
 ### In a screen
@@ -74,10 +74,20 @@ const bar = useScrollAwareAppBar({ distance: COVER_HEIGHT - 44 });
   <Text variant="title" {...bar.titleProps}>The last lighthouse keeper</Text>
 </Animated.ScrollView>
 
-<AppBar elevationProgress={bar.elevation} titleProgress={bar.title} style={styles.overlay}>
-  <AppBar.Title>The last lighthouse keeper</AppBar.Title>
+<AppBar style={[styles.overlay, { backgroundColor: "transparent" }]}>
+  <Animated.View pointerEvents="none" style={[styles.surface, surfaceStyle]} />
+  <AppBar.Row>
+    <BackButton />
+    <AppBar.Center>
+      <Animated.View style={titleStyle}>
+        <AppBar.Title>The last lighthouse keeper</AppBar.Title>
+      </Animated.View>
+    </AppBar.Center>
+  </AppBar.Row>
 </AppBar>
 ```
+
+`surfaceStyle` sets `opacity` from `bar.elevation`, `titleStyle` from `bar.title`. The bar itself has no animation: the surface layer and the title wrapper are the screen's.
 
 Installation, options and return value are documented in [useScrollAwareAppBar](/docs/hooks/use-scroll-aware-app-bar).
 
@@ -91,5 +101,5 @@ Installation, options and return value are documented in [useScrollAwareAppBar](
 
 - [Collapsible header](/docs/behaviors/collapsible-header)
 - [Hide-on-scroll](/docs/behaviors/hide-on-scroll)
-- [AppBar](/docs/templates/app-bar)
+- [AppBar](/docs/components/app-bar)
 - [useScrollAwareAppBar](/docs/hooks/use-scroll-aware-app-bar)

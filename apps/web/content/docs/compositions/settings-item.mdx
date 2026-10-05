@@ -53,9 +53,9 @@ description: "Settings row with an icon, a label, a value and a chevron or a swi
 npx axiom add settings-item
 ```
 
-Also copies: [`item`](/docs/atoms/item), [`icon`](/docs/atoms/icon), [`switch`](/docs/atoms/switch), [`text`](/docs/atoms/text), the [`use-controllable-state`](/docs/hooks/use-controllable-state) hook and their dependencies. The file lands in `components/compositions/settings-item.tsx`.
+Also copies: [`item`](/docs/components/item), [`icon`](/docs/components/icon), [`switch`](/docs/components/switch), [`text`](/docs/components/text), the [`use-controllable-state`](/docs/hooks/use-controllable-state) hook and their dependencies. The file lands in `components/compositions/settings-item.tsx`.
 
-Requires the `chevron-right` icon in your [icon registry](/docs/atoms/icon#icons-that-components-need). Settings Item brings no tokens of its own: colors come from [Item](/docs/atoms/item) and [Switch](/docs/atoms/switch).
+Requires the `chevron-right` icon in your [icon registry](/docs/components/icon#icons-that-components-need). Settings Item brings no tokens of its own: colors come from [Item](/docs/components/item) and [Switch](/docs/components/switch).
 
 ## Usage
 
@@ -86,13 +86,14 @@ Group rows with the [Settings Section](/docs/blocks/settings-section) block, whi
 | ----------------- | ------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | `title`           | `string`                  | —           | Label of the setting.                                                                                                              |
 | `description`     | `string`                  | —           | Second line under the title, up to two lines. Read with the title by screen readers.                                               |
-| `icon`            | `IconName`                | —           | Leading [Icon](/docs/atoms/icon), in the muted color.                                                                              |
+| `icon`            | `IconName`                | —           | Leading [Icon](/docs/components/icon), in the muted color.                                                                              |
 | `value`           | `string`                  | —           | Current value in muted text, before the chevron or the switch: `"English"`, `"On"`.                                                |
 | `trailing`        | `'chevron' \| 'switch'`   | `'chevron'` | `chevron` for a row that opens a screen. `switch` for a setting toggled in place.                                                  |
 | `checked`         | `boolean`                 | —           | State of the switch. Without it, the switch manages its own state.                                                                 |
 | `onCheckedChange` | `(checked: boolean) => void` | —        | Called when the switch changes.                                                                                                    |
 | `onPress`         | `() => void`              | —           | Called when the row is pressed. With `trailing="switch"` and no `onPress`, pressing anywhere on the row toggles the switch, with a light haptic. |
 | `disabled`        | `boolean`                 | `false`     | Blocks presses and uses the disabled color for the icon, the value and the switch.                                                 |
+| `divider`         | `boolean \| 'inset'`      | `false`     | Hairline under the row, from [Item](/docs/components/item). Set it on every row of a section but the last.                            |
 
 ## Accessibility
 
@@ -100,10 +101,10 @@ A switch row is announced as a switch with its checked state: the row carries th
 
 ## Built with
 
-- [Item](/docs/atoms/item): the pressable row, its leading, content and trailing slots.
-- [Icon](/docs/atoms/icon): the leading icon and the chevron.
-- [Switch](/docs/atoms/switch): the trailing toggle.
-- [Text](/docs/atoms/text): the value.
+- [Item](/docs/components/item): the pressable row, its leading, content and trailing slots.
+- [Icon](/docs/components/icon): the leading icon and the chevron.
+- [Switch](/docs/components/switch): the trailing toggle.
+- [Text](/docs/components/text): the value.
 - [useControllableState](/docs/hooks/use-controllable-state): controlled or uncontrolled switch state.
 
 ## Used in
@@ -113,4 +114,4 @@ A switch row is announced as a switch with its checked state: the row carries th
 ## Related
 
 - [Compositions](/docs/compositions)
-- [OptionItem](/docs/atoms/option-item): a row for picking one value in a list.
+- [OptionItem](/docs/components/option-item): a row for picking one value in a list.

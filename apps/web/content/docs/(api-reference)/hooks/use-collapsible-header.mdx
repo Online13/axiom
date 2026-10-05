@@ -19,17 +19,26 @@ Installs: `react-native-reanimated`.
 
 ## Usage
 
-With [AppBar](/docs/templates/app-bar), pass `progress` to `collapseProgress`:
+With [AppBar](/docs/components/app-bar), turn `progress` into styles on its parts: `AppBar.Expanded` folds away and the row title fades in.
 
 ```tsx title="Conceptual"
-import Animated from "react-native-reanimated";
+import Animated, { interpolate, useAnimatedStyle } from "react-native-reanimated";
 import { useCollapsibleHeader } from "@/hooks/use-collapsible-header";
+
+const EXPANDED_TITLE = 68;
 
 function Inbox() {
 	const header = useCollapsibleHeader({
-		expandedHeight: 96,
-		collapsedHeight: 44,
+		expandedHeight: 64 + EXPANDED_TITLE,
+		collapsedHeight: 64,
 	});
+	const expanded = useAnimatedStyle(() => ({
+		height: interpolate(header.progress.value, [0, 1], [EXPANDED_TITLE, 0]),
+		opacity: interpolate(header.progress.value, [0, 0.6], [1, 0], "clamp"),
+	}));
+	const rowTitle = useAnimatedStyle(() => ({
+		opacity: interpolate(header.progress.value, [0.6, 1], [0, 1], "clamp"),
+	}));
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -38,12 +47,25 @@ function Inbox() {
 				renderItem={renderMessage}
 				{...header.scrollProps}
 			/>
-			<AppBar
-				variant="large"
-				collapseProgress={header.progress}
-				style={styles.overlay}
-			>
-				<AppBar.Title>Inbox</AppBar.Title>
+			<AppBar style={styles.overlay}>
+				<AppBar.Row>
+					<BackButton />
+					{/* The large title is the one read out, so the row copy stays silent. */}
+					<AppBar.Center
+						accessibilityElementsHidden
+						importantForAccessibility="no-hide-descendants"
+					>
+						<Animated.View style={rowTitle}>
+							<AppBar.Title>Inbox</AppBar.Title>
+						</Animated.View>
+					</AppBar.Center>
+				</AppBar.Row>
+				{/* Clips the large title and anchors it to the bottom, so it rises as the block folds. */}
+				<Animated.View style={[{ justifyContent: "flex-end", overflow: "hidden" }, expanded]}>
+					<AppBar.Expanded>
+						<AppBar.Title size="large">Inbox</AppBar.Title>
+					</AppBar.Expanded>
+				</Animated.View>
 			</AppBar>
 		</View>
 	);
@@ -54,7 +76,7 @@ function Inbox() {
 
 ### A custom header
 
-For a cover image or a profile, read the shared values and build the styles yourself:
+The same shared values draw any header. For a cover image or a profile, build other styles from them:
 
 ```tsx title="Conceptual"
 function ProfileHeader({ header }: { header: CollapsibleHeader }) {
@@ -103,7 +125,7 @@ function ProfileHeader({ header }: { header: CollapsibleHeader }) {
 | Option            | Type      | Default | Description                                                               |
 | ----------------- | --------- | ------- | ------------------------------------------------------------------------- |
 | `expandedHeight`  | `number`  | —       | Header height at the top of the list, in pt, safe area excluded.          |
-| `collapsedHeight` | `number`  | `44`    | Height of the compact bar, in pt.                                         |
+| `collapsedHeight` | `number`  | `64`    | Height of the compact bar, in pt.                                         |
 | `snap`            | `boolean` | `true`  | When the scroll ends between the two heights, scrolls to the nearest end. |
 | `stretch`         | `boolean` | `true`  | Adds the overscroll to `height`. Turned off with Reduce Motion.           |
 
@@ -121,5 +143,5 @@ function ProfileHeader({ header }: { header: CollapsibleHeader }) {
 ## Related
 
 - [Collapsible header](/docs/behaviors/collapsible-header)
-- [AppBar](/docs/templates/app-bar)
+- [AppBar](/docs/components/app-bar)
 - [useHideOnScroll](/docs/hooks/use-hide-on-scroll)

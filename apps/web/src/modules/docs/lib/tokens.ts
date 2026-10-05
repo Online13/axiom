@@ -246,6 +246,7 @@ export const sizes = {
 	icon: { sm: 16, md: 20, lg: 24 },
 	avatar: { sm: 32, md: 40, lg: 56 },
 	control: { sm: 32, md: 44, lg: 52 },
+	input: { sm: 50, md: 56, lg: 64 },
 };
 
 export const metrics = {
@@ -787,7 +788,10 @@ export const componentTokens = {
 	skeleton: {
 		default: {
 			// `content.default` at 8% and 16%: see the registry's skeleton tokens.
-			default: { background: "content.default", highlight: "content.default" },
+			default: {
+				background: "content.default",
+				highlight: "content.default",
+			},
 		},
 	},
 	alert: {

@@ -1,0 +1,241 @@
+---
+title: Menu
+description: "A menu that hangs from a button, modeled on iOS."
+---
+
+<PhonePreview>
+	<div class="ax-large-heading" style={{ paddingTop: "8px" }}>
+		Library
+	</div>
+	<div
+		style={{
+			display: "grid",
+			gridTemplateColumns: "repeat(3, 1fr)",
+			gap: "2px",
+		}}
+	>
+		<span class="ax-media" data-tone="1" style={{ height: "128px" }} />
+		<span class="ax-media" data-tone="2" style={{ height: "128px" }} />
+		<span class="ax-media" data-tone="3" style={{ height: "128px" }} />
+		<span class="ax-media" data-tone="4" style={{ height: "128px" }} />
+		<span class="ax-media" data-tone="5" style={{ height: "128px" }} />
+		<span class="ax-media" data-tone="6" style={{ height: "128px" }} />
+	</div>
+	<div
+		class="ax-scrim"
+		style={{ background: "rgb(0 0 0 / 0.25)", backdropFilter: "blur(6px)" }}
+	/>
+	<div
+		class="ax-layer"
+		style={{
+			flexDirection: "column",
+			gap: "10px",
+			alignItems: "flex-start",
+			justifyContent: "flex-start",
+			padding: "40px 0 0 131px",
+		}}
+	>
+		<span
+			class="ax-media"
+			data-tone="2"
+			style={{
+				width: "150px",
+				height: "150px",
+				borderRadius: "12px",
+				boxShadow: "0 12px 30px rgb(0 0 0 / 0.3)",
+			}}
+		/>
+		<div class="ax-menu" style={{ width: "230px" }}>
+			<span class="ax-menu-item">
+				Copy
+				<Glyph name="copy" size={20} />
+			</span>
+			<span class="ax-menu-item" data-state="pressed">
+				Share
+				<Glyph name="share" size={20} />
+			</span>
+			<span class="ax-menu-item">
+				Favorite
+				<Glyph name="heart" size={20} />
+			</span>
+			<span class="ax-menu-gap" />
+			<span class="ax-menu-item" data-destructive>
+				Delete
+				<Glyph name="trash" size={20} />
+			</span>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add menu
+```
+
+Also copies: [`portal`](/docs/core/portal), [`overlay`](/docs/core/overlay), `use-overlay-back-handler`, which closes the menu on a back action. See [navigation](/docs/configuration#navigation). And `overlay-stack`: a menu opened from a [BottomSheet](/docs/components/bottom-sheet#dialog-and-menu) takes the back action and the touches from the sheet, without scaling it.
+
+Installs: `react-native-reanimated`, `react-native-safe-area-context`, `react-native-worklets`.
+
+Requires the `arrow-left`, `check` and `chevron-right` icons in your [icon registry](/docs/components/icon#icons-that-components-need). Positioning and the animation live in `use-menu.ts`. Colors come from `menu.default.{default,pressed,destructive,disabled}` in the [component tokens](/docs/foundations/component-tokens).
+
+## Usage
+
+```tsx
+import { Menu } from "@/components/ui/menu";
+
+<Menu.Root>
+	<Menu.Trigger asChild>
+		<IconButton icon="more" accessibilityLabel="More options" />
+	</Menu.Trigger>
+	<Menu.Content align="end">
+		<Menu.Item icon="share" onPress={share}>
+			Share
+		</Menu.Item>
+		<Menu.Separator />
+		<Menu.Item icon="trash" destructive onPress={remove}>
+			Delete
+		</Menu.Item>
+	</Menu.Content>
+</Menu.Root>;
+```
+
+`Menu.Trigger` opens the menu on a press. For a menu opened by a long press on content, with the content lifted above the backdrop, use [ContextMenu](/docs/components/context-menu): it takes the same parts.
+
+## Props
+
+### Menu.Root
+
+| Prop           | Type                      | Default | Description                                             |
+| -------------- | ------------------------- | ------- | ------------------------------------------------------- |
+| `open`         | `boolean`                 | —       | Controlled visibility.                                  |
+| `defaultOpen`  | `boolean`                 | `false` | Initial visibility when the menu manages its own state. |
+| `onOpenChange` | `(open: boolean) => void` | —       | Called when the menu opens or closes.                   |
+| `children`     | `ReactNode`               | —       | `Trigger` and `Content`.                                |
+
+### Menu.Trigger
+
+| Prop                 | Type                   | Default | Description                                               |
+| -------------------- | ---------------------- | ------- | --------------------------------------------------------- |
+| `haptic`             | `HapticKind \| false`  | —       | Haptic played when the menu opens. Off unless you pass a kind. |
+| `asChild`            | `boolean`              | `false` | Uses the child as the trigger.                            |
+| `accessibilityLabel` | `string`               | —       | Label of the trigger, when its content has no text.       |
+| `children`           | `ReactNode`            | —       | The element that opens the menu.                          |
+| `style`              | `StyleProp<ViewStyle>` | —       | Extra styles for the trigger.                             |
+
+### Menu.Content
+
+| Prop        | Type                           | Default   | Description                                                                                                                             |
+| ----------- | ------------------------------ | --------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `placement` | `'auto' \| 'top' \| 'bottom'`  | `'auto'`  | Side of the trigger. `auto` picks the side with more room and keeps the menu inside the safe area.                                      |
+| `align`     | `'start' \| 'center' \| 'end'` | `'start'` | Horizontal alignment against the trigger.                                                                                               |
+| `width`     | `number`                       | `250`     | Menu width.                                                                                                                             |
+| `overlay`   | `'dim' \| 'none'`              | `'dim'`   | Backdrop behind the menu. Pressing it closes the menu, even when `none`. A blur needs `expo-blur`: add it in your copy if you want one. |
+| `children`  | `ReactNode`                    | —         | Items, groups and separators.                                                                                                           |
+| `style`     | `StyleProp<ViewStyle>`         | —         | Extra styles for the menu surface.                                                                                                      |
+
+### Menu.Item
+
+| Prop          | Type         | Default | Description                                                                                 |
+| ------------- | ------------ | ------- | ------------------------------------------------------------------------------------------- |
+| `children`    | `string`     | —       | The label.                                                                                  |
+| `icon`        | `IconName`   | —       | Icon on the right, iOS style.                                                               |
+| `subtitle`    | `string`     | —       | Second line under the label.                                                                |
+| `onPress`     | `() => void` | —       | Called after the menu closes, so a navigation or a sheet doesn't fight the close animation. |
+| `destructive` | `boolean`    | `false` | Label and icon in `feedback.error`.                                                         |
+| `disabled`    | `boolean`    | `false` | Dims the item and ignores presses.                                                          |
+| `checked`     | `boolean`    | —       | Shows a checkmark, for a menu that picks a sort order or a view.                            |
+| `keepOpen`    | `boolean`    | `false` | Runs `onPress` right away without closing the menu, for a toggle inside the menu.           |
+
+### Menu.Group, Menu.Separator, Menu.Sub
+
+| Part        | Props                       | Description                                 |
+| ----------- | --------------------------- | ------------------------------------------- |
+| `Group`     | `label`                     | Groups items under an optional small label. |
+| `Separator` | —                           | A thick gap between groups, like iOS.       |
+| `Sub`       | `label`, `icon`, `children` | An item that opens a nested menu in place.  |
+
+`Menu.Sub` replaces the items in place and adds a back row at the top. `Menu.Item` also takes `keepOpen`, to run `onPress` without closing the menu. The menu has `accessibilityRole="menu"`, its items `menuitem`, and a back action closes it.
+
+Not implemented yet: dragging from the trigger to an item, and haptics (the haptics library depends on the project, see the roadmap).
+
+## Haptics
+
+A menu opened by a press plays nothing by default. Pass a kind to `haptic` on `Menu.Trigger` if your app wants one. [ContextMenu](/docs/components/context-menu) plays `medium` on a long press. Nothing plays until your app connects a haptics library: see [Haptics](/docs/integrations/haptics).
+
+## Use cases
+
+### "More" button in an app bar
+
+An [IconButton](/docs/components/icon-button) as the trigger. The menu hangs from the button.
+
+<PhonePreview size="sm">
+	<div class="ax-appbar">
+		<span class="ax-icon-btn">
+			<Glyph name="chevron-left" />
+		</span>
+		<span class="ax-appbar-title">Q3 planning</span>
+		<span class="ax-icon-btn" data-variant="tinted">
+			<Glyph name="more" />
+		</span>
+	</div>
+	<div class="ax-body">
+		<div class="ax-placeholder-block" style={{ height: "200px" }} />
+	</div>
+	<div
+		class="ax-layer"
+		style={{
+			alignItems: "flex-start",
+			justifyContent: "flex-end",
+			padding: "46px 12px 0",
+		}}
+	>
+		<div class="ax-menu" style={{ width: "230px" }}>
+			<span class="ax-menu-label">Sort by</span>
+			<span class="ax-menu-item" style={{ borderTop: "none" }}>
+				Date
+				<Glyph name="check" size={20} class="ax-link" />
+			</span>
+			<span class="ax-menu-item">Name</span>
+			<span class="ax-menu-gap" />
+			<span class="ax-menu-item">
+				Rename
+				<Glyph name="edit" size={20} />
+			</span>
+			<span class="ax-menu-item" data-destructive>
+				Delete
+				<Glyph name="trash" size={20} />
+			</span>
+		</div>
+	</div>
+</PhonePreview>
+
+```tsx
+<Menu.Root>
+	<Menu.Trigger asChild>
+		<IconButton icon="more" accessibilityLabel="More options" />
+	</Menu.Trigger>
+	<Menu.Content align="end">
+		<Menu.Group label="Sort by">
+			<Menu.Item checked={sort === "date"} onPress={() => setSort("date")}>
+				Date
+			</Menu.Item>
+			<Menu.Item checked={sort === "name"} onPress={() => setSort("name")}>
+				Name
+			</Menu.Item>
+		</Menu.Group>
+		<Menu.Separator />
+		<Menu.Item icon="edit" onPress={rename}>
+			Rename
+		</Menu.Item>
+		<Menu.Item icon="trash" destructive onPress={confirmDelete}>
+			Delete
+		</Menu.Item>
+	</Menu.Content>
+</Menu.Root>
+```
+
+## Related
+
+- [BottomSheet](/docs/components/bottom-sheet)
+- [ContextMenu](/docs/components/context-menu), the same menu opened by a long press on content

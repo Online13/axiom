@@ -1,0 +1,343 @@
+---
+title: AppBar
+description: "Mobile top bar made of plain parts: a surface, a row of controls and an optional block for a large title."
+---
+
+<PhonePreview>
+	<div class="ax-topbar">
+		<span class="ax-topbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="chevron-left" />
+			</span>
+		</span>
+		<span class="ax-topbar-center" />
+		<span class="ax-topbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="search" />
+			</span>
+			<span class="ax-icon-btn">
+				<Glyph name="calendar" />
+			</span>
+		</span>
+	</div>
+	<div class="ax-topbar-expanded" data-size="large">
+		<span class="ax-topbar-title">Inbox</span>
+		<span class="ax-topbar-subtitle">3 unread</span>
+	</div>
+	<div class="ax-body">
+		<div class="ax-list" data-variant="plain" data-inset>
+			<div class="ax-item">
+				<span class="ax-avatar" data-photo="1" />
+				<div class="ax-item-content">
+					<span class="ax-item-title">Maya Chen</span>
+					<span class="ax-item-desc">Can we move the review to 3?</span>
+				</div>
+				<span class="ax-footnote ax-muted">09:42</span>
+			</div>
+			<div class="ax-item">
+				<span class="ax-avatar" data-photo="2" />
+				<div class="ax-item-content">
+					<span class="ax-item-title">Design team</span>
+					<span class="ax-item-desc">Nora shared a file.</span>
+				</div>
+				<span class="ax-badge" data-kind="count">
+					4
+				</span>
+			</div>
+		</div>
+	</div>
+</PhonePreview>
+
+## Installation
+
+```npm
+npx axiom add app-bar
+```
+
+Also copies: [`text`](/docs/components/text), [`title`](/docs/components/title) and their dependencies. Installs `react-native-safe-area-context`.
+
+Colors come from `appBar.default` in the [component tokens](/docs/foundations/component-tokens). The controls are yours: [IconButton](/docs/components/icon-button), [Avatar](/docs/components/avatar), [SearchBar](/docs/components/search-bar) or anything else.
+
+## Usage
+
+```tsx
+import { AppBar } from "@/components/ui/app-bar";
+
+<AppBar>
+	<AppBar.Row>
+		<IconButton
+			icon="arrow-left"
+			accessibilityLabel="Back"
+			onPress={goBack}
+		/>
+		<AppBar.Center>
+			<AppBar.Title>Inbox</AppBar.Title>
+			<AppBar.Subtitle>3 unread</AppBar.Subtitle>
+		</AppBar.Center>
+		<IconButton
+			icon="search"
+			accessibilityLabel="Search"
+			onPress={openSearch}
+		/>
+	</AppBar.Row>
+</AppBar>;
+```
+
+Every part is a plain `View` or text that renders its children where you write them. The bar doesn't look for a title or sort its children: the row shows what you put in it, in that order. To change the structure, change what you write, not the bar.
+
+| Part                              | What it is                                                                             |
+| --------------------------------- | -------------------------------------------------------------------------------------- |
+| `AppBar`                          | The surface: background, top safe-area inset and an optional hairline.                 |
+| `AppBar.Row`                      | The 64pt row of controls.                                                              |
+| `AppBar.Center`                   | Fills the row between the controls. Empty, it pushes the controls after it to the end. |
+| `AppBar.Expanded`                 | The block under the row, for a medium or large title.                                  |
+| `AppBar.Title`, `AppBar.Subtitle` | Text in the bar colors, at the `small`, `medium` or `large` size.                      |
+
+## Variants
+
+### Search
+
+`AppBar.Center` holds anything, not only a title: here a search field between the navigation and the avatar.
+
+<PhonePreview size="sm">
+	<div class="ax-topbar" data-border>
+		<span class="ax-topbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="chevron-left" />
+			</span>
+		</span>
+		<span class="ax-topbar-center">
+			<span class="ax-searchbar">
+				<span class="ax-muted">Search product</span>
+			</span>
+		</span>
+		<span class="ax-topbar-slot">
+			<span class="ax-avatar" data-photo="3" />
+		</span>
+	</div>
+	<div class="ax-body" />
+</PhonePreview>
+
+```tsx
+<AppBar bordered>
+	<AppBar.Row>
+		<IconButton
+			icon="arrow-left"
+			accessibilityLabel="Back"
+			onPress={goBack}
+		/>
+		<AppBar.Center>
+			<SearchBar
+				value={query}
+				onChangeText={setQuery}
+				placeholder="Search product"
+				size="sm"
+			/>
+		</AppBar.Center>
+		<Avatar name="Ada Lovelace" size="sm" />
+	</AppBar.Row>
+</AppBar>
+```
+
+### Small
+
+The title and its subtitle sit in the row, after the navigation. Use it for most screens.
+
+<PhonePreview size="sm">
+	<div class="ax-topbar" data-border>
+		<span class="ax-topbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="chevron-left" />
+			</span>
+		</span>
+		<span class="ax-topbar-center">
+			<span class="ax-topbar-title">Headline</span>
+			<span class="ax-topbar-subtitle">Subtitle</span>
+		</span>
+		<span class="ax-topbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="search" />
+			</span>
+			<span class="ax-icon-btn">
+				<Glyph name="calendar" />
+			</span>
+		</span>
+	</div>
+	<div class="ax-body" />
+</PhonePreview>
+
+```tsx
+<AppBar bordered>
+	<AppBar.Row>
+		<IconButton
+			icon="arrow-left"
+			accessibilityLabel="Back"
+			onPress={goBack}
+		/>
+		<AppBar.Center>
+			<AppBar.Title>Headline</AppBar.Title>
+			<AppBar.Subtitle>Subtitle</AppBar.Subtitle>
+		</AppBar.Center>
+		<IconButton
+			icon="search"
+			accessibilityLabel="Search"
+			onPress={openSearch}
+		/>
+		<IconButton
+			icon="calendar"
+			accessibilityLabel="Pick a date"
+			onPress={pickDate}
+		/>
+	</AppBar.Row>
+</AppBar>
+```
+
+Without a control before it, give the center `inset` so the title lines up with the screen margin:
+
+```tsx
+<AppBar>
+	<AppBar.Row>
+		<AppBar.Center inset>
+			<AppBar.Title>Settings</AppBar.Title>
+		</AppBar.Center>
+	</AppBar.Row>
+</AppBar>
+```
+
+### Medium
+
+The title moves to its own line under the row, in `AppBar.Expanded`, and can wrap to two lines. An empty `AppBar.Center` keeps the actions at the end of the row.
+
+<PhonePreview size="sm">
+	<div class="ax-topbar">
+		<span class="ax-topbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="chevron-left" />
+			</span>
+		</span>
+		<span class="ax-topbar-center" />
+		<span class="ax-topbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="search" />
+			</span>
+			<span class="ax-icon-btn">
+				<Glyph name="calendar" />
+			</span>
+		</span>
+	</div>
+	<div class="ax-topbar-expanded" data-size="medium" data-border>
+		<span class="ax-topbar-title">Headline</span>
+		<span class="ax-topbar-subtitle">Subtitle</span>
+	</div>
+	<div class="ax-body" />
+</PhonePreview>
+
+```tsx
+<AppBar bordered>
+	<AppBar.Row>
+		<IconButton
+			icon="arrow-left"
+			accessibilityLabel="Back"
+			onPress={goBack}
+		/>
+		<AppBar.Center />
+		<IconButton
+			icon="search"
+			accessibilityLabel="Search"
+			onPress={openSearch}
+		/>
+	</AppBar.Row>
+	<AppBar.Expanded>
+		<AppBar.Title size="medium">Headline</AppBar.Title>
+		<AppBar.Subtitle size="medium">Subtitle</AppBar.Subtitle>
+	</AppBar.Expanded>
+</AppBar>
+```
+
+### Large
+
+A larger title for the first screen of a section. To fold it into the row as the list scrolls, see [Collapsible header](/docs/behaviors/collapsible-header).
+
+<PhonePreview size="sm">
+	<div class="ax-topbar">
+		<span class="ax-topbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="chevron-left" />
+			</span>
+		</span>
+		<span class="ax-topbar-center" />
+		<span class="ax-topbar-slot">
+			<span class="ax-icon-btn">
+				<Glyph name="search" />
+			</span>
+			<span class="ax-icon-btn">
+				<Glyph name="calendar" />
+			</span>
+		</span>
+	</div>
+	<div class="ax-topbar-expanded" data-size="large" data-border>
+		<span class="ax-topbar-title">Headline</span>
+		<span class="ax-topbar-subtitle">Subtitle</span>
+	</div>
+	<div class="ax-body" />
+</PhonePreview>
+
+```tsx
+<AppBar bordered>
+	<AppBar.Row>{/* Same row as Medium */}</AppBar.Row>
+	<AppBar.Expanded>
+		<AppBar.Title size="large">Headline</AppBar.Title>
+		<AppBar.Subtitle size="large">Subtitle</AppBar.Subtitle>
+	</AppBar.Expanded>
+</AppBar>
+```
+
+## Props
+
+### AppBar
+
+Takes every `View` prop.
+
+| Prop       | Type                   | Default | Description                                                                              |
+| ---------- | ---------------------- | ------- | ---------------------------------------------------------------------------------------- |
+| `bordered` | `boolean`              | `false` | Draws a hairline under the bar. Useful when content can scroll behind it.                |
+| `safeArea` | `boolean`              | `true`  | Adds the top safe-area inset. Set it to `false` when `Scaffold` already owns that inset. |
+| `style`    | `StyleProp<ViewStyle>` | —       | Overrides the surface, for example `backgroundColor` to match the screen.                |
+
+### AppBar.Row, AppBar.Expanded
+
+Take every `View` prop. The row is `APP_BAR_HEIGHT` (64pt) tall, with a small gap between its children. `APP_BAR_HEIGHT` is exported next to the bar.
+
+### AppBar.Center
+
+Takes every `View` prop.
+
+| Prop    | Type      | Default | Description                                                                     |
+| ------- | --------- | ------- | ------------------------------------------------------------------------------- |
+| `inset` | `boolean` | `false` | Lines the start up with the screen margin, for a row without a leading control. |
+
+### AppBar.Title, AppBar.Subtitle
+
+Take every [Title](/docs/components/title) and [Text](/docs/components/text) prop, except `variant`.
+
+| Prop            | Type                             | Default                                               | Description                                       |
+| --------------- | -------------------------------- | ----------------------------------------------------- | ------------------------------------------------- |
+| `size`          | `'small' \| 'medium' \| 'large'` | `'small'`                                             | `small` in the row, `medium` or `large` under it. |
+| `numberOfLines` | `number`                         | Title: `1` when `small`, `2` otherwise. Subtitle: `1` | Maximum lines before truncation.                  |
+
+The title is announced as a heading.
+
+## Scroll behavior
+
+The bar has no animation of its own. A screen that animates it wraps the parts in `Animated.View` and drives them from its scroll handler, so a static bar costs nothing and the animation stays readable in the screen that owns it:
+
+- [Collapsible header](/docs/behaviors/collapsible-header) folds `AppBar.Expanded` into the row.
+- [Scroll-aware AppBar](/docs/behaviors/scroll-aware-app-bar) fades in a surface layer and the row title.
+- [Hide-on-scroll](/docs/behaviors/hide-on-scroll) moves the whole bar.
+
+## Related
+
+- [Scaffold](/docs/components/scaffold)
+- [SearchBar](/docs/components/search-bar)
+- [SearchAppBar](/docs/compositions/search-app-bar)
+- [IconButton](/docs/components/icon-button)

@@ -16,6 +16,7 @@ const meta = defineCollection({
 		title: z.string().optional(),
 		description: z.string().optional(),
 		pages: z.array(z.string()).optional(),
+		pagesIndex: z.string().optional(),
 		root: z.boolean().optional(),
 		defaultOpen: z.boolean().optional(),
 		icon: z.string().optional(),

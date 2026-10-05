@@ -31,7 +31,7 @@ The home of an app: who's signed in on the left, notifications and menu on the r
 npx axiom add profile-app-bar
 ```
 
-Also copies: [`app-bar`](/docs/templates/app-bar), [`avatar`](/docs/atoms/avatar), [`icon-button`](/docs/atoms/icon-button), [`tappable`](/docs/core/tappable), [`title`](/docs/atoms/title), [`text`](/docs/atoms/text) and their dependencies. The file lands in `components/compositions/profile-app-bar.tsx`. It brings no tokens of its own.
+Also copies: [`app-bar`](/docs/components/app-bar), [`avatar`](/docs/components/avatar), [`icon-button`](/docs/components/icon-button), [`tappable`](/docs/core/tappable), [`title`](/docs/components/title), [`text`](/docs/components/text) and their dependencies. The file lands in `components/compositions/profile-app-bar.tsx`. It brings no tokens of its own.
 
 ## Usage
 
@@ -43,30 +43,32 @@ import { ProfileAppBar } from "@/components/compositions/profile-app-bar";
 	avatar={{ uri: user.avatarUrl }}
 	greeting={greetingFor(new Date())}
 	onProfilePress={() => router.push("/account")}
-	actions={[
-		{ icon: "notification", label: "Notifications", badge: unreadCount, onPress: () => router.push("/notifications") },
-		{ icon: "menu", label: "Menu", onPress: openMenu },
-	]}
-/>;
+>
+	<IconButton
+		icon="notification"
+		badge={unreadCount}
+		accessibilityLabel="Notifications"
+		onPress={() => router.push("/notifications")}
+	/>
+	<IconButton icon="menu" accessibilityLabel="Menu" onPress={openMenu} />
+</ProfileAppBar>;
 ```
 
-`icon` takes a name from your [icon registry](/docs/atoms/icon): add `notification` and `menu` to `icons.tsx` first. The greeting is yours to compute, in the user's language: the bar only shows it.
+The actions are the bar's children: write the buttons you need, as many as fit. `icon` takes a name from your [icon registry](/docs/components/icon): add `notification` and `menu` to `icons.tsx` first. The greeting is yours to compute, in the user's language: the bar only shows it.
 
 ## Props
 
 | Prop             | Type                   | Default     | Description                                                                              |
 | ---------------- | ---------------------- | ----------- | ---------------------------------------------------------------------------------------- |
 | `name`           | `string`               | —           | The signed-in user. Gives the avatar its initials when there is no photo.                |
-| `avatar`         | `ImageSourcePropType`  | —           | The photo, in an `sm` [Avatar](/docs/atoms/avatar).                                      |
+| `avatar`         | `ImageSourcePropType`  | —           | The photo, in an `sm` [Avatar](/docs/components/avatar).                                      |
 | `greeting`       | `string`               | —           | Small line above the name: `"Good morning"`.                                             |
 | `onProfilePress` | `() => void`           | —           | Makes the avatar and the name one pressable, to open the profile or an account switcher. |
 | `profileLabel`   | `string`               | `"Profile"` | Read before the name when pressable: "Profile, Lena Moreau".                             |
-| `actions`        | `AppBarAction[]`       | —           | Up to two buttons at the end: `{ icon, label, onPress, badge? }`.                        |
+| `children`       | `ReactNode`            | —           | Buttons at the end, such as notifications or a menu. Rendered as written.                |
 | `bordered`       | `boolean`              | `false`     | Hairline under the bar.                                                                  |
-| `safeArea`       | `boolean`              | `true`      | Adds the top safe-area inset. `false` inside [Scaffold](/docs/templates/scaffold).       |
+| `safeArea`       | `boolean`              | `true`      | Adds the top safe-area inset. `false` inside [Scaffold](/docs/components/scaffold).       |
 | `style`          | `StyleProp<ViewStyle>` | —           | Styles for the bar.                                                                      |
-
-An action's `badge` is a number for a counter, or `true` for a dot.
 
 ## Accessibility
 
@@ -74,11 +76,11 @@ The avatar, the greeting and the name are one element. Pressable, it's a button:
 
 ## Built with
 
-- [AppBar](/docs/templates/app-bar): the bar, its safe area and its slots.
-- [Avatar](/docs/atoms/avatar): the photo or the initials.
-- [Title](/docs/atoms/title) and [Text](/docs/atoms/text): the name and the greeting.
+- [AppBar](/docs/components/app-bar): the bar, its safe area and its slots.
+- [Avatar](/docs/components/avatar): the photo or the initials.
+- [Title](/docs/components/title) and [Text](/docs/components/text): the name and the greeting.
 - [Tappable](/docs/core/tappable): the pressable identity.
-- [IconButton](/docs/atoms/icon-button) and [Badge](/docs/atoms/badge): the actions and their counters.
+- [IconButton](/docs/components/icon-button) and [Badge](/docs/components/badge): the actions and their counters.
 
 ## Used in
 
