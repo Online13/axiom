@@ -10,7 +10,7 @@ import { scheduleOnRN } from "react-native-worklets";
 
 import { Tappable } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
-import type { IconName } from "@/components/ui/icons";
+import type { IconName } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { useTheme } from "@/theme";
 

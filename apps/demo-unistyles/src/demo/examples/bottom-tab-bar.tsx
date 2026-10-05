@@ -101,22 +101,13 @@ export default function BottomTabBarScreen() {
 
 			<Section
 				title="Main action"
-				description="A raised action in the middle. It never becomes the selected route."
+				description="A raised action placed among the items. It never becomes the selected route."
 			>
 				<Frame>
 					<BottomTabBar
 						safeArea={false}
 						value={withMain}
 						onValueChange={setWithMain}
-						mainAction={
-							<IconButton
-								icon="add"
-								variant="solid"
-								size="lg"
-								accessibilityLabel="New entry"
-								onPress={() => {}}
-							/>
-						}
 					>
 						<BottomTabBar.Item
 							value="home"
@@ -128,6 +119,15 @@ export default function BottomTabBarScreen() {
 							icon="search"
 							label="Search"
 						/>
+						<BottomTabBar.Action>
+							<IconButton
+								icon="add"
+								variant="solid"
+								size="lg"
+								accessibilityLabel="New entry"
+								onPress={() => {}}
+							/>
+						</BottomTabBar.Action>
 						<BottomTabBar.Item value="inbox" icon="file" label="Inbox" />
 						<BottomTabBar.Item
 							value="profile"
@@ -137,7 +137,7 @@ export default function BottomTabBarScreen() {
 					</BottomTabBar>
 				</Frame>
 				<Text variant="footnote" color="muted">
-					The action sits between the second and third item.
+					The action sits where it is written: here, between Search and Inbox.
 				</Text>
 			</Section>
 		</Screen>

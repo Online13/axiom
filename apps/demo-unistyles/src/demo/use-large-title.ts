@@ -1,26 +1,52 @@
+import type { LayoutChangeEvent } from "react-native";
 import {
+	interpolate,
 	useAnimatedScrollHandler,
+	useAnimatedStyle,
 	useDerivedValue,
 	useSharedValue,
 } from "react-native-reanimated";
 
-import { LARGE_TITLE_HEIGHT } from "@/components/ui/app-bar";
-
 /**
- * Drives an `AppBar variant="large"` from the scroll of its content: the large title folds into the
- * compact bar over its own height, and comes back at the top.
+ * Folds a large title into the bar row as its list scrolls, and brings it back at the top.
  *
- * The list has to be an `Animated` one, since `onScroll` is a Reanimated handler.
+ * The bar stays static: wrap `AppBar.Expanded` in an `Animated.View` with `expandedStyle`, and the
+ * row title in one with `rowTitleStyle`. The list has to be an `Animated` one, since `onScroll` is a
+ * Reanimated handler.
  */
-export function useLargeTitle(distance = LARGE_TITLE_HEIGHT) {
+export function useLargeTitle() {
 	const offset = useSharedValue(0);
-	const collapse = useDerivedValue(() =>
-		Math.min(Math.max(offset.value / distance, 0), 1),
-	);
+	// Measured, so a subtitle or a larger font still folds all the way.
+	const expandedHeight = useSharedValue(0);
+
+	// 0 at the top of the list, 1 once it has scrolled by the height of the large title.
+	const collapse = useDerivedValue(() => {
+		const height = expandedHeight.value;
+		if (height === 0) return 0;
+		return Math.min(Math.max(offset.value / height, 0), 1);
+	});
 
 	const onScroll = useAnimatedScrollHandler((event) => {
 		offset.value = event.contentOffset.y;
 	});
 
-	return { collapse, onScroll };
+	const onExpandedLayout = (event: LayoutChangeEvent) => {
+		expandedHeight.value = event.nativeEvent.layout.height;
+	};
+
+	const expandedStyle = useAnimatedStyle(() => {
+		const height = expandedHeight.value;
+		if (height === 0) return {};
+		return {
+			height: interpolate(collapse.value, [0, 1], [height, 0]),
+			opacity: interpolate(collapse.value, [0, 0.6], [1, 0], "clamp"),
+		};
+	});
+
+	// The row title waits for the large one to fade, so the two never show at full opacity.
+	const rowTitleStyle = useAnimatedStyle(() => ({
+		opacity: interpolate(collapse.value, [0.6, 1], [0, 1], "clamp"),
+	}));
+
+	return { onScroll, onExpandedLayout, expandedStyle, rowTitleStyle };
 }

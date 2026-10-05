@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 import { Tappable } from "@/components/core/tappable";
@@ -105,40 +106,43 @@ export default function SelectionModeScreen() {
 					})}
 				</View>
 				<View style={styles.bottom}>
-					<ToolBar
-						visible={selecting}
-						accessibilityLabel="Selection actions"
-						style={styles.bar}
-					>
-						<ToolBar.Action
-							icon="share"
-							label="Share"
-							disabled={selected.length === 0}
-						/>
-						<ToolBar.Action
-							icon="favorite"
-							label="Favorite"
-							disabled={selected.length === 0}
-						/>
-						<ToolBar.Separator />
-						<ToolBar.Action
-							icon="delete"
-							label="Delete"
-							destructive
-							disabled={selected.length === 0}
-							onPress={() => {
-								const count = selected.length;
-								setPhotos((current) =>
-									current.filter(
-										(photo) => !selected.includes(photo.id),
-									),
-								);
-								leave(
-									`${count} photo${count > 1 ? "s" : ""} deleted. Selection mode off.`,
-								);
-							}}
-						/>
-					</ToolBar>
+					{selecting ? (
+						<Animated.View entering={FadeInDown} exiting={FadeOutDown}>
+							<ToolBar
+								accessibilityLabel="Selection actions"
+								style={styles.bar}
+							>
+								<ToolBar.Action
+									icon="share"
+									label="Share"
+									disabled={selected.length === 0}
+								/>
+								<ToolBar.Action
+									icon="favorite"
+									label="Favorite"
+									disabled={selected.length === 0}
+								/>
+								<ToolBar.Separator />
+								<ToolBar.Action
+									icon="delete"
+									label="Delete"
+									destructive
+									disabled={selected.length === 0}
+									onPress={() => {
+										const count = selected.length;
+										setPhotos((current) =>
+											current.filter(
+												(photo) => !selected.includes(photo.id),
+											),
+										);
+										leave(
+											`${count} photo${count > 1 ? "s" : ""} deleted. Selection mode off.`,
+										);
+									}}
+								/>
+							</ToolBar>
+						</Animated.View>
+					) : null}
 				</View>
 			</View>
 		</ExperienceScreen>

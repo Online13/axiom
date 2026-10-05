@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
-import { Attachment } from "@/components/ui/attachment";
+import { Attachment, AttachmentTile } from "@/components/ui/attachment";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label, Panel, Row, Section } from "@/demo/section";
@@ -133,18 +133,15 @@ export default function AttachmentScreen() {
 			>
 				<Panel>
 					<View style={styles.tiles}>
-						<Attachment
-							variant="tile"
+						<AttachmentTile
 							file={PHOTO}
 							onRemove={removable ? () => {} : undefined}
 						/>
-						<Attachment
-							variant="tile"
+						<AttachmentTile
 							file={{ ...PHOTO, name: "street.jpg" }}
 							progress={progress}
 						/>
-						<Attachment
-							variant="tile"
+						<AttachmentTile
 							file={{ ...PHOTO, name: "dinner.heic" }}
 							error
 							onRetry={() => {}}

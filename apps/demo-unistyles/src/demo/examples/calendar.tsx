@@ -12,7 +12,11 @@ import {
 	type CalendarSelection,
 	type DateRange,
 } from "@/components/ui/calendar";
-import { Carousel, type CarouselRef } from "@/components/ui/carousel";
+import {
+	Carousel,
+	useCarousel,
+	type CarouselRef,
+} from "@/components/ui/carousel";
 import { IconButton } from "@/components/ui/icon-button";
 import { Text } from "@/components/ui/text";
 import { Label, Panel, Section } from "@/demo/section";
@@ -53,6 +57,20 @@ function Slide({
 				{title}
 			</Text>
 		</Animated.View>
+	);
+}
+
+/** "2 / 4" under the list: any component inside a Carousel can read it. */
+function Counter() {
+	const { active, count } = useCarousel();
+	return (
+		<Text
+			variant="footnote"
+			color="muted"
+			style={{ alignSelf: "center", marginTop: 12 }}
+		>
+			{active + 1} / {count}
+		</Text>
 	);
 }
 
@@ -159,7 +177,7 @@ export default function CalendarScreen() {
 
 			<Section
 				title="Carousel"
-				description={`Item ${index + 1} of ${SLIDES.length}. Autoplay every 4s, loops, dots.`}
+				description={`Item ${index + 1} of ${SLIDES.length}. Autoplay every 4s, loops, dots: each one a part you add.`}
 			>
 				<View style={styles.bleed}>
 					<Carousel
@@ -167,9 +185,6 @@ export default function CalendarScreen() {
 						data={SLIDES}
 						keyExtractor={(item) => item.id}
 						itemWidth={280}
-						pagination="dots"
-						loop
-						autoPlay={4000}
 						onIndexChange={setIndex}
 						renderItem={({ item, progress }) => (
 							<Slide
@@ -178,7 +193,11 @@ export default function CalendarScreen() {
 								progress={progress}
 							/>
 						)}
-					/>
+					>
+						<Carousel.List />
+						<Carousel.Pagination />
+						<Carousel.AutoPlay interval={4000} loop />
+					</Carousel>
 				</View>
 				<View style={styles.controls}>
 					<IconButton
@@ -194,11 +213,10 @@ export default function CalendarScreen() {
 						onPress={() => carousel.current?.next()}
 					/>
 				</View>
-				<Label muted>Full-width items with a counter:</Label>
+				<Label muted>Full-width items with a counter written with useCarousel:</Label>
 				<View style={styles.bleed}>
 					<Carousel
 						data={SLIDES.slice(0, 4)}
-						pagination="counter"
 						renderItem={({ item, progress }) => (
 							<Slide
 								title={item.title}
@@ -206,7 +224,10 @@ export default function CalendarScreen() {
 								progress={progress}
 							/>
 						)}
-					/>
+					>
+						<Carousel.List />
+						<Counter />
+					</Carousel>
 				</View>
 			</Section>
 		</Screen>

@@ -3,7 +3,7 @@ import { TabList, TabSlot, TabTrigger, Tabs } from "expo-router/ui";
 import { StyleSheet } from "react-native";
 
 import { BottomTabBar } from "@/components/ui/bottom-tab-bar";
-import type { IconName } from "@/components/ui/icons";
+import type { IconName } from "@/components/ui/icon";
 import { useTheme } from "@/theme";
 
 type Destination = {

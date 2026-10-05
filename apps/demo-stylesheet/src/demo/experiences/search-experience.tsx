@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 
+import { SearchAppBar } from "@/components/compositions/search-app-bar";
 import { Empty } from "@/components/ui/empty";
 import { Icon } from "@/components/ui/icon";
-import { SearchBar } from "@/components/ui/search-bar";
 import { Text } from "@/components/ui/text";
 import { useTheme } from "@/theme";
 
@@ -95,25 +95,25 @@ export default function SearchExperienceScreen() {
 
 	return (
 		<ExperienceScreen>
-			<View style={{ padding: tokens.metrics.screenMargin }}>
-				<SearchBar
-					value={query}
-					onChangeText={(text) => {
-						setQuery(text);
-						setCounts((current) => ({
-							...current,
-							keystrokes: current.keystrokes + 1,
-						}));
-					}}
-					onFocus={() => setFocused(true)}
-					onCancel={() => {
-						setFocused(false);
-						setQuery("");
-					}}
-					loading={loading}
-					placeholder="Search a city"
-				/>
-			</View>
+			<SearchAppBar
+				safeArea={false}
+				bordered={false}
+				value={query}
+				onChangeText={(text) => {
+					setQuery(text);
+					setCounts((current) => ({
+						...current,
+						keystrokes: current.keystrokes + 1,
+					}));
+				}}
+				onFocus={() => setFocused(true)}
+				onCancel={() => {
+					setFocused(false);
+					setQuery("");
+				}}
+				loading={loading}
+				placeholder="Search a city"
+			/>
 
 			<ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }}>
 				{showRecents ? (

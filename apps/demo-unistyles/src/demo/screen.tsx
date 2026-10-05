@@ -50,7 +50,7 @@ export function Screen({
 	actions,
 	scrollable = true,
 }: ScreenProps) {
-	// The bar takes its background as a prop, and the scroll view its offset as a number.
+	// The scroll view takes its offset as a number, not a style.
 	const { theme } = useUnistyles();
 	const routeTitle = useRouteTitle();
 
@@ -58,18 +58,15 @@ export function Screen({
 		<Scaffold
 			background="subtle"
 			safeAreaEdges={["top"]}
-			keyboardAvoiding={false}
 		>
-			<AppBar
-				safeArea={false}
-				bordered
-				backgroundColor={theme.colors.background.subtle}
-			>
-				<AppBar.Leading>
+			<AppBar safeArea={false} bordered style={styles.body}>
+				<AppBar.Row>
 					<BackButton />
-				</AppBar.Leading>
-				<AppBar.Title>{title ?? routeTitle}</AppBar.Title>
-				{actions ? <AppBar.Actions>{actions}</AppBar.Actions> : null}
+					<AppBar.Center>
+						<AppBar.Title>{title ?? routeTitle}</AppBar.Title>
+					</AppBar.Center>
+					{actions}
+				</AppBar.Row>
 			</AppBar>
 			{scrollable ? (
 				<KeyboardAwareScrollView

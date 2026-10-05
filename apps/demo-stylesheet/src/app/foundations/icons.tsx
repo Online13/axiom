@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 
 import { Icon } from "@/components/ui/icon";
-import { icons, type IconName } from "@/components/ui/icons";
+import { icons, type IconName } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { Screen } from "@/demo/screen";
 import { Label, Panel } from "@/demo/section";

@@ -3,7 +3,9 @@ import { View, type DimensionValue } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 import { AppBar } from "@/components/ui/app-bar";
+import { Avatar } from "@/components/ui/avatar";
 import { IconButton } from "@/components/ui/icon-button";
+import { SearchBar } from "@/components/ui/search-bar";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Text } from "@/components/ui/text";
@@ -25,8 +27,35 @@ function Body({ lines = 2 }: { lines?: number }) {
 	);
 }
 
+function Back() {
+	return (
+		<IconButton
+			icon="arrow-left"
+			accessibilityLabel="Back"
+			onPress={() => {}}
+		/>
+	);
+}
+
+/** The trailing controls every example shares. */
+function Actions() {
+	return (
+		<>
+			<IconButton
+				icon="search"
+				accessibilityLabel="Search"
+				onPress={() => {}}
+			/>
+			<IconButton
+				icon="calendar"
+				accessibilityLabel="Pick a date"
+				onPress={() => {}}
+			/>
+		</>
+	);
+}
+
 export default function AppBarScreen() {
-	const [collapse, setCollapse] = useState(0);
 	const [elevation, setElevation] = useState(1);
 	const [bordered, setBordered] = useState(true);
 	const [query, setQuery] = useState("");
@@ -34,8 +63,31 @@ export default function AppBarScreen() {
 	return (
 		<Screen>
 			<Section
-				title="AppBar"
-				description="A leading control, a centered title and up to two actions."
+				title="Search"
+				description="AppBar.Center holds anything, not only a title: here a search field between the navigation and the avatar."
+			>
+				<Frame>
+					<AppBar safeArea={false} bordered>
+						<AppBar.Row>
+							<Back />
+							<AppBar.Center>
+								<SearchBar
+									value={query}
+									onChangeText={setQuery}
+									placeholder="Search product"
+									size="sm"
+								/>
+							</AppBar.Center>
+							<Avatar name="Ada Lovelace" size="sm" colorFromName />
+						</AppBar.Row>
+					</AppBar>
+					<Body />
+				</Frame>
+			</Section>
+
+			<Section
+				title="Small"
+				description="The title and its subtitle sit in the row, after the navigation."
 			>
 				<Panel>
 					<Row label="Bordered">
@@ -48,69 +100,54 @@ export default function AppBarScreen() {
 				</Panel>
 				<Frame>
 					<AppBar safeArea={false} bordered={bordered}>
-						<AppBar.Leading>
-							<IconButton
-								icon="chevron-left"
-								accessibilityLabel="Back"
-								onPress={() => {}}
-							/>
-						</AppBar.Leading>
-						<AppBar.Title>Order #1842</AppBar.Title>
-						<AppBar.Actions>
-							<IconButton
-								icon="share"
-								accessibilityLabel="Share order"
-								onPress={() => {}}
-							/>
-							<IconButton
-								icon="settings"
-								accessibilityLabel="More actions"
-								onPress={() => {}}
-							/>
-						</AppBar.Actions>
+						<AppBar.Row>
+							<Back />
+							<AppBar.Center>
+								<AppBar.Title>Headline</AppBar.Title>
+								<AppBar.Subtitle>Subtitle</AppBar.Subtitle>
+							</AppBar.Center>
+							<Actions />
+						</AppBar.Row>
 					</AppBar>
 					<Body />
 				</Frame>
 			</Section>
 
 			<Section
-				title="Large title and search"
-				description="Drag the slider: the large title folds into the bar."
+				title="Medium"
+				description="AppBar.Expanded puts the title on its own line under the row. An empty Center keeps the actions at the end."
 			>
-				<Panel>
-					<Text variant="bodySm" weight="medium">
-						collapseProgress · {collapse.toFixed(2)}
-					</Text>
-					<Slider
-						value={collapse}
-						onValueChange={setCollapse}
-						min={0}
-						max={1}
-						step={0.01}
-						accessibilityLabel="Collapse progress"
-					/>
-				</Panel>
 				<Frame>
-					<AppBar
-						safeArea={false}
-						variant="large"
-						collapseProgress={collapse}
-						bordered
-					>
-						<AppBar.Title>Messages</AppBar.Title>
-						<AppBar.Actions>
-							<IconButton
-								icon="edit"
-								accessibilityLabel="New message"
-								onPress={() => {}}
-							/>
-						</AppBar.Actions>
-						<AppBar.Search
-							value={query}
-							onChangeText={setQuery}
-							placeholder="Search"
-							showCancel={false}
-						/>
+					<AppBar safeArea={false} bordered>
+						<AppBar.Row>
+							<Back />
+							<AppBar.Center />
+							<Actions />
+						</AppBar.Row>
+						<AppBar.Expanded>
+							<AppBar.Title size="medium">Headline</AppBar.Title>
+							<AppBar.Subtitle size="medium">Subtitle</AppBar.Subtitle>
+						</AppBar.Expanded>
+					</AppBar>
+					<Body />
+				</Frame>
+			</Section>
+
+			<Section
+				title="Large"
+				description="The same parts, with the large title size. The Collapsible header experience folds it as the list scrolls."
+			>
+				<Frame>
+					<AppBar safeArea={false} bordered>
+						<AppBar.Row>
+							<Back />
+							<AppBar.Center />
+							<Actions />
+						</AppBar.Row>
+						<AppBar.Expanded>
+							<AppBar.Title size="large">Headline</AppBar.Title>
+							<AppBar.Subtitle size="large">Subtitle</AppBar.Subtitle>
+						</AppBar.Expanded>
 					</AppBar>
 					<Body lines={3} />
 				</Frame>
@@ -118,11 +155,11 @@ export default function AppBarScreen() {
 
 			<Section
 				title="Elevation"
-				description="The background and the hairline fade in as content scrolls under the bar."
+				description="A transparent bar with its own surface layer: the screen decides how opaque the surface is."
 			>
 				<Panel>
 					<Text variant="bodySm" weight="medium">
-						elevationProgress · {elevation.toFixed(2)}
+						Surface opacity · {elevation.toFixed(2)}
 					</Text>
 					<Slider
 						value={elevation}
@@ -130,7 +167,7 @@ export default function AppBarScreen() {
 						min={0}
 						max={1}
 						step={0.01}
-						accessibilityLabel="Elevation progress"
+						accessibilityLabel="Surface opacity"
 					/>
 					<Label muted>
 						At 0 the bar is transparent: the content shows through.
@@ -142,15 +179,21 @@ export default function AppBarScreen() {
 							Content behind the bar
 						</Text>
 					</View>
-					<AppBar safeArea={false} elevationProgress={elevation}>
-						<AppBar.Leading>
+					<AppBar safeArea={false} style={styles.transparent}>
+						<View
+							pointerEvents="none"
+							style={styles.surface(elevation)}
+						/>
+						<AppBar.Row>
 							<IconButton
 								icon="chevron-left"
 								accessibilityLabel="Back"
 								onPress={() => {}}
 							/>
-						</AppBar.Leading>
-						<AppBar.Title>Profile</AppBar.Title>
+							<AppBar.Center>
+								<AppBar.Title>Profile</AppBar.Title>
+							</AppBar.Center>
+						</AppBar.Row>
 					</AppBar>
 					<Body />
 				</Frame>
@@ -175,4 +218,13 @@ const styles = StyleSheet.create((theme) => ({
 		backgroundColor: theme.colors.background.subtle,
 	}),
 	behind: { padding: theme.tokens.spacing[3] },
+	transparent: { backgroundColor: "transparent" },
+	// The bar's own surface, as opaque as the screen decides.
+	surface: (opacity: number) => ({
+		...StyleSheet.absoluteFillObject,
+		opacity,
+		backgroundColor: theme.components.appBar.default.default.background,
+		borderBottomWidth: theme.tokens.metrics.hairline,
+		borderBottomColor: theme.components.appBar.default.default.border,
+	}),
 }));

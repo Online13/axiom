@@ -48,12 +48,14 @@ export default function HideOnScrollScreen() {
 					<AppBar
 						safeArea={false}
 						bordered
-						backgroundColor={colors.background.subtle}
+						style={{ backgroundColor: colors.background.subtle }}
 					>
-						<AppBar.Leading>
+						<AppBar.Row>
 							<BackButton />
-						</AppBar.Leading>
-						<AppBar.Title>Hide-on-scroll</AppBar.Title>
+							<AppBar.Center>
+								<AppBar.Title>Hide-on-scroll</AppBar.Title>
+							</AppBar.Center>
+						</AppBar.Row>
 					</AppBar>
 				</Animated.View>
 			}

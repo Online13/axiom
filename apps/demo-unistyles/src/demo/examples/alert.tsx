@@ -14,7 +14,6 @@ import { Label, Panel, Row, Section } from "@/demo/section";
 import { Screen } from "@/demo/screen";
 
 export default function AlertScreen() {
-
 	const [loading, setLoading] = useState(true);
 	const [animation, setAnimation] = useState<"shimmer" | "pulse">("shimmer");
 	const [dismissed, setDismissed] = useState(false);
@@ -119,21 +118,19 @@ export default function AlertScreen() {
 					<Alert
 						variant="warning"
 						title="Storage almost full"
-						action={{ label: "Manage storage", onPress: () => {} }}
 						onDismiss={() => setDismissed(true)}
 					>
-						Free up space to keep syncing your photos.
+						<Alert.Description>
+							Free up space to keep syncing your photos.
+						</Alert.Description>
+						<Alert.Action onPress={() => {}}>Manage storage</Alert.Action>
 					</Alert>
 				)}
-				<Alert
-					variant="error"
-					title="Payment failed"
-					action={{
-						label: `Retry (${retries})`,
-						onPress: () => setRetries((r) => r + 1),
-					}}
-				>
-					Your card was declined.
+				<Alert variant="error" title="Payment failed">
+					<Alert.Description>Your card was declined.</Alert.Description>
+					<Alert.Action
+						onPress={() => setRetries((r) => r + 1)}
+					>{`Retry (${retries})`}</Alert.Action>
 				</Alert>
 				<Alert variant="neutral" icon={null}>
 					Neutral, without an icon or a title.

@@ -33,6 +33,7 @@ export default function SettingsSectionScreen() {
 							footer="Location shows listings near you."
 						>
 							<SettingsItem
+								divider
 								icon="theme-dark"
 								title="Dark mode"
 								trailing="switch"
@@ -48,6 +49,7 @@ export default function SettingsSectionScreen() {
 						</SettingsSection>
 						<SettingsSection title="Notifications">
 							<SettingsItem
+								divider
 								icon="notifications"
 								title="Push notifications"
 								trailing="switch"

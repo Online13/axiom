@@ -33,19 +33,20 @@ export function ExperienceScreen({
 		<Scaffold
 			background={background}
 			safeAreaEdges={["top"]}
-			keyboardAvoiding={false}
 		>
 			{appBar ?? (
 				<AppBar
 					safeArea={false}
 					bordered
-					backgroundColor={colors.background[background]}
+					style={{ backgroundColor: colors.background[background] }}
 				>
-					<AppBar.Leading>
+					<AppBar.Row>
 						<BackButton />
-					</AppBar.Leading>
-					<AppBar.Title>{title ?? routeTitle}</AppBar.Title>
-					{actions ? <AppBar.Actions>{actions}</AppBar.Actions> : null}
+						<AppBar.Center>
+							<AppBar.Title>{title ?? routeTitle}</AppBar.Title>
+						</AppBar.Center>
+						{actions}
+					</AppBar.Row>
 				</AppBar>
 			)}
 			{children}

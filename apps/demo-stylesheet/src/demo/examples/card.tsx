@@ -6,10 +6,13 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { CheckboxIndicator } from "@/components/ui/checkbox";
 import { Icon } from "@/components/ui/icon";
 import { IconButton } from "@/components/ui/icon-button";
 import { Item } from "@/components/ui/item";
 import { OptionItem } from "@/components/ui/option-item";
+import { RadioIndicator } from "@/components/ui/radio";
+import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Text } from "@/components/ui/text";
 import { Label, Panel, Section } from "@/demo/section";
@@ -145,6 +148,7 @@ export default function CardScreen() {
 							selected={language === value}
 							divider
 							onPress={() => setLanguage(value)}
+							trailing={language === value ? <Icon name="check" color="link" /> : null}
 						/>
 					))}
 				</Surface>
@@ -167,16 +171,16 @@ export default function CardScreen() {
 						icon="warning"
 						iconColor="red"
 						value="Mentions"
-						chevron
 						divider="inset"
 						onPress={() => {}}
+						trailing={<Icon name="chevron-right" size="sm" color="subtle" />}
 					/>
 					<OptionItem
 						label="Favorites"
 						icon="favorite"
 						iconColor="pink"
-						chevron
 						onPress={() => {}}
+						trailing={<Icon name="chevron-right" size="sm" color="subtle" />}
 					/>
 				</Surface>
 				<Surface>
@@ -190,8 +194,6 @@ export default function CardScreen() {
 										? "Mentions only"
 										: "Nothing"
 							}
-							indicator="checkbox"
-							selected={notify.has(value)}
 							divider
 							onPress={() =>
 								setNotify((previous) => {
@@ -201,15 +203,19 @@ export default function CardScreen() {
 									return next;
 								})
 							}
+							leading={<CheckboxIndicator checked={notify.has(value)} />}
+							accessibilityRole="checkbox"
+							accessibilityState={{ checked: notify.has(value) }}
 						/>
 					))}
 					<OptionItem
 						label="Radio indicator"
 						description="With a description"
-						indicator="radio"
-						selected
 						divider
 						onPress={() => {}}
+						leading={<RadioIndicator checked />}
+						accessibilityRole="radio"
+						accessibilityState={{ checked: true }}
 					/>
 					<OptionItem label="Sign out" destructive onPress={() => {}} />
 				</Surface>
@@ -232,6 +238,7 @@ export default function CardScreen() {
 								in Lyon.
 							</Accordion.Content>
 						</Accordion.Item>
+						<Separator />
 						<Accordion.Item value="returns">
 							<Accordion.Trigger>Returns</Accordion.Trigger>
 							<Accordion.Content>
@@ -246,6 +253,7 @@ export default function CardScreen() {
 								</View>
 							</Accordion.Content>
 						</Accordion.Item>
+						<Separator />
 						<Accordion.Item value="gift" disabled>
 							<Accordion.Trigger>
 								Gift cards (disabled)
@@ -263,6 +271,7 @@ export default function CardScreen() {
 								Opening another section closes this one.
 							</Accordion.Content>
 						</Accordion.Item>
+						<Separator />
 						<Accordion.Item value="b">
 							<Accordion.Trigger>Second</Accordion.Trigger>
 							<Accordion.Content forceMount>

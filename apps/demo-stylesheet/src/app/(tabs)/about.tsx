@@ -3,7 +3,7 @@ import { Platform, View } from "react-native";
 
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
-import type { IconName } from "@/components/ui/icons";
+import type { IconName } from "@/components/ui/icon";
 import { Scaffold } from "@/components/ui/scaffold";
 import { Separator } from "@/components/ui/separator";
 import { Text } from "@/components/ui/text";
@@ -38,11 +38,7 @@ export default function AboutScreen() {
 	const version = Constants.expoConfig?.version ?? "1.0.0";
 
 	return (
-		<Scaffold
-			background="subtle"
-			safeAreaEdges={["top"]}
-			keyboardAvoiding={false}
-		>
+		<Scaffold background="subtle" safeAreaEdges={["top"]}>
 			<Scaffold.Content
 				contentContainerStyle={{
 					padding: tokens.metrics.screenMargin,

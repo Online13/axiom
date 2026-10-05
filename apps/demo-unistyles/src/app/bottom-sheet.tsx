@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/bottom-sheet";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { Field, Input } from "@/components/ui/input";
 import { Menu } from "@/components/ui/menu";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { Switch } from "@/components/ui/switch";
@@ -151,13 +151,15 @@ export default function BottomSheetScreen() {
 						<BottomSheet.Handle />
 						<BottomSheet.Header title="New list" closeButton />
 						<View style={styles.form}>
-							<Input
-								autoFocus
-								label="Name"
-								placeholder="Groceries"
-								value={listName}
-								onChangeText={setListName}
-							/>
+							<Field>
+								<Field.Label>Name</Field.Label>
+								<Input
+									autoFocus
+									placeholder="Groceries"
+									value={listName}
+									onChangeText={setListName}
+								/>
+							</Field>
 						</View>
 					</BottomSheet.Content>
 				</BottomSheet.Root>
@@ -298,7 +300,7 @@ export default function BottomSheetScreen() {
 						<BottomSheet.Header title="Weekend trip" closeButton />
 						<View style={styles.stackBody}>
 							<Menu.Root>
-								<Menu.Trigger action="press" asChild>
+								<Menu.Trigger asChild>
 									<Button variant="outline" fullWidth>
 										Sort
 									</Button>

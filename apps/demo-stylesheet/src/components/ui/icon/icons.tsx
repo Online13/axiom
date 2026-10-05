@@ -13,8 +13,8 @@ import type { IconComponent, IconRegistry } from "./icon-types";
 // - every entry takes { size, color, strokeWidth? }: wrap a set with other props in an adapter, like `symbol` below;
 // - to change set, change the entries here. Nothing else in the app moves.
 //
-// This default uses SF Symbols on iOS and Material Symbols on Android through `expo-symbols`.
-// Replace it with any set: Lucide, Phosphor, your own SVGs…
+// Source: `expo-symbols` (SF Symbols on iOS, Material Symbols on Android).
+// Add entries with `symbol(iosName, androidName)`. To move to another set, replace the entries: nothing else changes.
 
 type SymbolName = ComponentProps<typeof SymbolView>["name"];
 type IosSymbol = Extract<SymbolName, string>;

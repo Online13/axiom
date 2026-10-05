@@ -1,6 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import Animated, {
 	useAnimatedScrollHandler,
+	useAnimatedStyle,
 	useDerivedValue,
 	useSharedValue,
 } from "react-native-reanimated";
@@ -27,11 +28,12 @@ const PARAGRAPHS = [
 ];
 
 export default function ScrollAwareAppBarScreen() {
-	const { tokens, colors } = useTheme();
+	const { tokens, colors, components } = useTheme();
+	const barColors = components.appBar.default.default;
 
 	const offset = useSharedValue(0);
 	const elevation = useDerivedValue(() =>
-		Math.min(offset.value / ELEVATION_DISTANCE, 1),
+		Math.min(Math.max(offset.value / ELEVATION_DISTANCE, 0), 1),
 	);
 	const titleProgress = useDerivedValue(() =>
 		Math.min(Math.max((offset.value - TITLE_OFFSET) / 32, 0), 1),
@@ -41,20 +43,38 @@ export default function ScrollAwareAppBarScreen() {
 		offset.value = event.contentOffset.y;
 	});
 
+	const surfaceStyle = useAnimatedStyle(() => ({ opacity: elevation.value }));
+	const titleStyle = useAnimatedStyle(() => ({
+		opacity: titleProgress.value,
+	}));
+
 	return (
 		<ExperienceScreen
 			background="default"
 			appBar={
 				<View style={styles.floatingBar}>
-					<AppBar
-						safeArea={false}
-						elevationProgress={elevation}
-						titleProgress={titleProgress}
-					>
-						<AppBar.Leading>
+					<AppBar safeArea={false} style={styles.transparent}>
+						{/* The bar's own surface, faded in as content passes under it. */}
+						<Animated.View
+							pointerEvents="none"
+							style={[
+								StyleSheet.absoluteFill,
+								{
+									backgroundColor: barColors.background,
+									borderBottomWidth: tokens.metrics.hairline,
+									borderBottomColor: barColors.border,
+								},
+								surfaceStyle,
+							]}
+						/>
+						<AppBar.Row>
 							<BackButton />
-						</AppBar.Leading>
-						<AppBar.Title>Scroll-aware AppBar</AppBar.Title>
+							<AppBar.Center>
+								<Animated.View style={titleStyle}>
+									<AppBar.Title>Scroll-aware AppBar</AppBar.Title>
+								</Animated.View>
+							</AppBar.Center>
+						</AppBar.Row>
 					</AppBar>
 				</View>
 			}
@@ -88,6 +108,7 @@ export default function ScrollAwareAppBarScreen() {
 }
 
 const styles = StyleSheet.create({
+	transparent: { backgroundColor: "transparent" },
 	// The bar sits over the content instead of pushing it down: that's what makes it scroll-aware.
 	floatingBar: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 1 },
 });

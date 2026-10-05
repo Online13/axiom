@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 import { Button } from "@/components/ui/button";
+import { ContextMenu } from "@/components/ui/context-menu";
 import { Dialog } from "@/components/ui/dialog";
 import { Icon } from "@/components/ui/icon";
 import { IconButton } from "@/components/ui/icon-button";
@@ -140,7 +141,7 @@ export default function DialogScreen() {
 					>
 						<Text weight="semibold">Documents</Text>
 						<Menu.Root>
-							<Menu.Trigger action="press" asChild>
+							<Menu.Trigger asChild>
 								<IconButton
 									icon="settings"
 									variant="tinted"
@@ -177,12 +178,12 @@ export default function DialogScreen() {
 					</View>
 				</Panel>
 
-				<Menu.Root
+				<ContextMenu.Root
 					onOpenChange={(open) =>
 						log(`context menu: ${open ? "open" : "closed"}`)
 					}
 				>
-					<Menu.Trigger>
+					<ContextMenu.Trigger>
 						<View style={styles.menuTrigger}>
 							<Text weight="semibold">Launch announcement</Text>
 							<Text variant="bodySm" color="muted">
@@ -190,24 +191,24 @@ export default function DialogScreen() {
 								backdrop.
 							</Text>
 						</View>
-					</Menu.Trigger>
-					<Menu.Content>
-						<Menu.Item icon="share" onPress={() => log("share")}>
+					</ContextMenu.Trigger>
+					<ContextMenu.Content>
+						<ContextMenu.Item icon="share" onPress={() => log("share")}>
 							Share
-						</Menu.Item>
-						<Menu.Item icon="favorite" onPress={() => log("favorite")}>
+						</ContextMenu.Item>
+						<ContextMenu.Item icon="favorite" onPress={() => log("favorite")}>
 							Add to favorites
-						</Menu.Item>
-						<Menu.Separator />
-						<Menu.Item
+						</ContextMenu.Item>
+						<ContextMenu.Separator />
+						<ContextMenu.Item
 							icon="delete"
 							destructive
 							onPress={() => log("delete")}
 						>
 							Delete
-						</Menu.Item>
-					</Menu.Content>
-				</Menu.Root>
+						</ContextMenu.Item>
+					</ContextMenu.Content>
+				</ContextMenu.Root>
 			</Section>
 		</Screen>
 	);

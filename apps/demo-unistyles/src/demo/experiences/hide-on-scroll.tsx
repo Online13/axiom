@@ -5,7 +5,7 @@ import Animated, {
 	useSharedValue,
 	withTiming,
 } from "react-native-reanimated";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 
 import { AppBar } from "@/components/ui/app-bar";
 import { ToolBar } from "@/components/ui/tool-bar";
@@ -18,8 +18,6 @@ const BAR_HEIGHT = 96;
 const DELTA = 6;
 
 export default function HideOnScrollScreen() {
-	// The bar takes its background as a prop, not as a style.
-	const { theme } = useUnistyles();
 	const rows = fakeRows(40);
 
 	// 0: bars in place, 1: bars off screen.
@@ -46,15 +44,13 @@ export default function HideOnScrollScreen() {
 		<ExperienceScreen
 			appBar={
 				<Animated.View style={topStyle}>
-					<AppBar
-						safeArea={false}
-						bordered
-						backgroundColor={theme.colors.background.subtle}
-					>
-						<AppBar.Leading>
+					<AppBar safeArea={false} bordered style={styles.bar}>
+						<AppBar.Row>
 							<BackButton />
-						</AppBar.Leading>
-						<AppBar.Title>Hide-on-scroll</AppBar.Title>
+							<AppBar.Center>
+								<AppBar.Title>Hide-on-scroll</AppBar.Title>
+							</AppBar.Center>
+						</AppBar.Row>
 					</AppBar>
 				</Animated.View>
 			}
@@ -85,17 +81,13 @@ function HidingToolBar({
 }: {
 	hidden: ReturnType<typeof useSharedValue<number>>;
 }) {
-
 	const style = useAnimatedStyle(() => ({
 		transform: [{ translateY: hidden.value * BAR_HEIGHT }],
 	}));
 
 	return (
 		<Animated.View style={[styles.bottom, style]}>
-			<ToolBar
-				safeArea={false}
-				style={styles.bar}
-			>
+			<ToolBar safeArea={false} style={styles.bar}>
 				<ToolBar.Action icon="search" label="Search" />
 				<ToolBar.Action icon="add" label="New" />
 				<ToolBar.Action icon="settings" label="Settings" />

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { View } from "react-native";
 
+import { AppBar } from "@/components/ui/app-bar";
 import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
-import { Input } from "@/components/ui/input";
+import { Field, Input } from "@/components/ui/input";
 import { Item } from "@/components/ui/item";
 import { Scaffold } from "@/components/ui/scaffold";
 import { Switch } from "@/components/ui/switch";
@@ -69,24 +70,23 @@ export default function ScaffoldScreen() {
 				<Frame>
 					{/* The frame isn't the screen: the scaffold owns no safe area here. */}
 					<Scaffold safeAreaEdges={[]} background="subtle">
-						<Scaffold.AppBar
-							title="Settings"
-							bordered
-							leading={
+						<Scaffold.AppBar bordered>
+							<AppBar.Row>
 								<IconButton
 									icon="chevron-left"
 									accessibilityLabel="Back"
 									onPress={() => {}}
 								/>
-							}
-							actions={
+								<AppBar.Center>
+									<AppBar.Title>Settings</AppBar.Title>
+								</AppBar.Center>
 								<IconButton
 									icon="search"
 									accessibilityLabel="Search settings"
 									onPress={() => {}}
 								/>
-							}
-						/>
+							</AppBar.Row>
+						</Scaffold.AppBar>
 						<Scaffold.Content
 							contentContainerStyle={{
 								padding: tokens.metrics.screenMargin,
@@ -122,34 +122,46 @@ export default function ScaffoldScreen() {
 
 			<Section
 				title="A form"
-				description="The footer rises above the keyboard; tapping the content dismisses it."
+				description="Scaffold.KeyboardAvoiding lifts the footer above the keyboard; tapping the content dismisses it."
 			>
 				<Frame height={300}>
 					<Scaffold safeAreaEdges={[]}>
-						<Scaffold.AppBar title="New contact" />
-						<Scaffold.Content
-							contentContainerStyle={{
-								padding: tokens.metrics.screenMargin,
-								gap: tokens.spacing[3],
-							}}
-						>
-							<Input
-								label="Name"
-								value={name}
-								onChangeText={setName}
-								placeholder="Ada Lovelace"
-							/>
-							<Input
-								label="Email"
-								placeholder="ada@example.com"
-								keyboardType="email-address"
-							/>
-						</Scaffold.Content>
-						<Scaffold.Footer safeArea={false}>
-							<Button fullWidth disabled={name === ""}>
-								Add contact
-							</Button>
-						</Scaffold.Footer>
+						<Scaffold.AppBar>
+							<AppBar.Row>
+								<AppBar.Center inset>
+									<AppBar.Title>New contact</AppBar.Title>
+								</AppBar.Center>
+							</AppBar.Row>
+						</Scaffold.AppBar>
+						<Scaffold.KeyboardAvoiding>
+							<Scaffold.Content
+								contentContainerStyle={{
+									padding: tokens.metrics.screenMargin,
+									gap: tokens.spacing[3],
+								}}
+							>
+								<Field>
+									<Field.Label>Name</Field.Label>
+									<Input
+										value={name}
+										onChangeText={setName}
+										placeholder="Ada Lovelace"
+									/>
+								</Field>
+								<Field>
+									<Field.Label>Email</Field.Label>
+									<Input
+										placeholder="ada@example.com"
+										keyboardType="email-address"
+									/>
+								</Field>
+							</Scaffold.Content>
+							<Scaffold.Footer safeArea={false}>
+								<Button fullWidth disabled={name === ""}>
+									Add contact
+								</Button>
+							</Scaffold.Footer>
+						</Scaffold.KeyboardAvoiding>
 					</Scaffold>
 				</Frame>
 			</Section>
@@ -160,7 +172,13 @@ export default function ScaffoldScreen() {
 			>
 				<Frame height={220}>
 					<Scaffold safeAreaEdges={[]} background="subtle">
-						<Scaffold.AppBar title="Map" />
+						<Scaffold.AppBar>
+							<AppBar.Row>
+								<AppBar.Center inset>
+									<AppBar.Title>Map</AppBar.Title>
+								</AppBar.Center>
+							</AppBar.Row>
+						</Scaffold.AppBar>
 						<Scaffold.Content scrollable={false}>
 							<View
 								style={{

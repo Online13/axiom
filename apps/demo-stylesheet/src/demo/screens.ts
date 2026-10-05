@@ -17,7 +17,7 @@ export const SCREENS = [
 		name: "button-group",
 		title: "ButtonGroup",
 		group: "Actions",
-		description: "Split button, stepper and dialog actions",
+		description: "Split button, stepper and vertical stack",
 	},
 	{
 		name: "icon-button",
@@ -275,7 +275,7 @@ export const SCREENS = [
 		name: "app-bar",
 		title: "AppBar",
 		group: "Templates",
-		description: "Back navigation, large title, search and elevation",
+		description: "Small, medium and large titles, search and elevation",
 	},
 
 	{

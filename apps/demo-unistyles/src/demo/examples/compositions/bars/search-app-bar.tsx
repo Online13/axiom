@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { SearchAppBar } from "@/components/compositions/search-app-bar";
+import { IconButton } from "@/components/ui/icon-button";
 import { Section } from "@/demo/section";
 import { Screen } from "@/demo/screen";
 import { Bleed, notify } from "../shared";
@@ -8,6 +9,7 @@ import { Bleed, notify } from "../shared";
 export default function SearchAppBarScreen() {
 	const [query, setQuery] = useState("");
 	const [modalQuery, setModalQuery] = useState("");
+	const [cancelQuery, setCancelQuery] = useState("");
 
 	return (
 		<Screen>
@@ -22,15 +24,14 @@ export default function SearchAppBarScreen() {
 						placeholder="Search products"
 						safeArea={false}
 						onNavigate={notify("Back")}
-						actions={[
-							{
-								icon: "filter",
-								label: "Filters",
-								badge: 2,
-								onPress: notify("Filters"),
-							},
-						]}
-					/>
+					>
+						<IconButton
+							icon="filter"
+							badge={2}
+							accessibilityLabel="Filters"
+							onPress={notify("Filters")}
+						/>
+					</SearchAppBar>
 				</Bleed>
 			</Section>
 
@@ -46,6 +47,20 @@ export default function SearchAppBarScreen() {
 						safeArea={false}
 						navigation="close"
 						onNavigate={notify("Close")}
+					/>
+				</Bleed>
+			</Section>
+			<Section
+				title="With Cancel"
+				description="onCancel slides a Cancel button in while the field is focused."
+			>
+				<Bleed>
+					<SearchAppBar
+						value={cancelQuery}
+						onChangeText={setCancelQuery}
+						placeholder="Search messages"
+						safeArea={false}
+						onCancel={() => setCancelQuery("")}
 					/>
 				</Bleed>
 			</Section>

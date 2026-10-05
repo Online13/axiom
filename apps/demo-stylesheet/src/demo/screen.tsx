@@ -57,18 +57,19 @@ export function Screen({
 		<Scaffold
 			background="subtle"
 			safeAreaEdges={["top"]}
-			keyboardAvoiding={false}
 		>
 			<AppBar
 				safeArea={false}
 				bordered
-				backgroundColor={colors.background.subtle}
+				style={{ backgroundColor: colors.background.subtle }}
 			>
-				<AppBar.Leading>
+				<AppBar.Row>
 					<BackButton />
-				</AppBar.Leading>
-				<AppBar.Title>{title ?? routeTitle}</AppBar.Title>
-				{actions ? <AppBar.Actions>{actions}</AppBar.Actions> : null}
+					<AppBar.Center>
+						<AppBar.Title>{title ?? routeTitle}</AppBar.Title>
+					</AppBar.Center>
+					{actions}
+				</AppBar.Row>
 			</AppBar>
 			{scrollable ? (
 				<KeyboardAwareScrollView

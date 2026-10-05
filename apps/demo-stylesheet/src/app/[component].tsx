@@ -49,7 +49,7 @@ const EXAMPLES = {
 	empty: { Component: AlertExamples, titles: ["Empty"] },
 	"app-bar": {
 		Component: AppBarExamples,
-		titles: ["AppBar", "Large title and search", "Elevation"],
+		titles: ["Search", "Small", "Medium", "Large", "Elevation"],
 	},
 	attachment: {
 		Component: AttachmentExamples,

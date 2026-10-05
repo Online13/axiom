@@ -39,7 +39,6 @@ export default function AboutScreen() {
 		<Scaffold
 			background="subtle"
 			safeAreaEdges={["top"]}
-			keyboardAvoiding={false}
 		>
 			<Scaffold.Content contentContainerStyle={styles.content}>
 				<Card variant="outlined" padding={4}>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -55,25 +56,29 @@ export default function ToolBarScreen() {
 					</Label>
 				</Panel>
 				<Frame>
-					<ToolBar safeArea={false} visible={selection > 0}>
-						<ToolBar.Action
-							icon="share"
-							label="Share"
-							onPress={() => setLast("Share")}
-						/>
-						<ToolBar.Action
-							icon="file"
-							label="Archive"
-							onPress={() => setLast("Archive")}
-						/>
-						<ToolBar.Separator />
-						<ToolBar.Action
-							icon="delete"
-							label="Delete"
-							destructive
-							onPress={() => setLast("Delete")}
-						/>
-					</ToolBar>
+					{selection > 0 ? (
+						<Animated.View entering={FadeInDown} exiting={FadeOutDown}>
+							<ToolBar safeArea={false}>
+								<ToolBar.Action
+									icon="share"
+									label="Share"
+									onPress={() => setLast("Share")}
+								/>
+								<ToolBar.Action
+									icon="file"
+									label="Archive"
+									onPress={() => setLast("Archive")}
+								/>
+								<ToolBar.Separator />
+								<ToolBar.Action
+									icon="delete"
+									label="Delete"
+									destructive
+									onPress={() => setLast("Delete")}
+								/>
+							</ToolBar>
+						</Animated.View>
+					) : null}
 				</Frame>
 			</Section>
 

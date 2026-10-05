@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { StyleSheet } from "react-native-unistyles";
 
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { Dialog } from "@/components/ui/dialog";
 import { IconButton } from "@/components/ui/icon-button";
 import { Menu } from "@/components/ui/menu";
+import { Separator } from "@/components/ui/separator";
 import { Label, Panel, Section } from "@/demo/section";
 import { Screen } from "@/demo/screen";
 
@@ -20,35 +21,23 @@ export default function ButtonGroupScreen() {
 			>
 				<Panel>
 					<Menu.Root>
-						<ButtonGroup fullWidth>
-							<Button onPress={() => setLastAction("Download PDF")}>
+						<ButtonGroup style={styles.fill}>
+							<Button
+								style={[styles.square, styles.grow]}
+								onPress={() => setLastAction("Download PDF")}
+							>
 								Download PDF
 							</Button>
-							<ButtonGroup.Item
-								grow={false}
-								render={({
-									containerStyle,
-									buttonStyle,
-									size,
-									disabled,
-								}) => (
-									<Menu.Trigger
-										action="press"
-										asChild
-										style={containerStyle}
-									>
-										<IconButton
-											icon="chevron-down"
-											accessibilityLabel="Other formats"
-											variant="solid"
-											shape="square"
-											size={size}
-											disabled={disabled}
-											style={buttonStyle}
-										/>
-									</Menu.Trigger>
-								)}
-							/>
+							<Separator orientation="vertical" />
+							<Menu.Trigger asChild>
+								<IconButton
+									icon="chevron-down"
+									accessibilityLabel="Other formats"
+									variant="solid"
+									shape="square"
+									style={styles.square}
+								/>
+							</Menu.Trigger>
 						</ButtonGroup>
 						<Menu.Content>
 							<Menu.Item onPress={() => setLastAction("Download CSV")}>
@@ -65,22 +54,37 @@ export default function ButtonGroupScreen() {
 
 			<Section
 				title="Stepper"
-				description="Three attached controls for one quantity."
+				description="Ghost buttons in a bordered group read as one control."
 			>
 				<Panel>
-					<ButtonGroup variant="outline" size="sm">
+					<ButtonGroup bordered>
 						<IconButton
 							icon="minus"
+							variant="ghost"
 							shape="square"
+							size="sm"
 							accessibilityLabel="Remove one"
 							disabled={quantity <= 1}
+							style={styles.square}
 							onPress={() => setQuantity((value) => value - 1)}
 						/>
-						<Button disabled>{quantity}</Button>
+						<Separator orientation="vertical" />
+						<Button
+							variant="ghost"
+							size="sm"
+							disabled
+							style={styles.square}
+						>
+							{quantity}
+						</Button>
+						<Separator orientation="vertical" />
 						<IconButton
 							icon="add"
+							variant="ghost"
 							shape="square"
+							size="sm"
 							accessibilityLabel="Add one"
+							style={styles.square}
 							onPress={() => setQuantity((value) => value + 1)}
 						/>
 					</ButtonGroup>
@@ -88,37 +92,58 @@ export default function ButtonGroupScreen() {
 			</Section>
 
 			<Section
-				title="Dialog actions"
-				description="Two spaced actions share the dialog width."
+				title="Pill"
+				description="A large radius rounds the group's outer corners into a pill."
 			>
 				<Panel>
-					<Dialog.Root>
-						<Dialog.Trigger asChild>
-							<Button variant="outline">Leave the call</Button>
-						</Dialog.Trigger>
-						<Dialog.Content>
-							<Dialog.Title>Leave the call?</Dialog.Title>
-							<Dialog.Description>
-								The others can keep talking.
-							</Dialog.Description>
-							<Dialog.Actions>
-								<ButtonGroup
-									attached={false}
-									fullWidth
-									style={{ flex: 1 }}
-								>
-									<Dialog.Cancel>Stay</Dialog.Cancel>
-									<Dialog.Action
-										onPress={() => setLastAction("Left the call")}
-									>
-										Leave
-									</Dialog.Action>
-								</ButtonGroup>
-							</Dialog.Actions>
-						</Dialog.Content>
-					</Dialog.Root>
+					<ButtonGroup radius={999} bordered>
+						<Button variant="ghost" style={styles.square}>
+							Day
+						</Button>
+						<Separator orientation="vertical" />
+						<Button variant="ghost" style={styles.square}>
+							Week
+						</Button>
+						<Separator orientation="vertical" />
+						<Button variant="ghost" style={styles.square}>
+							Month
+						</Button>
+					</ButtonGroup>
+				</Panel>
+			</Section>
+
+			<Section
+				title="Vertical"
+				description="A stack of actions with a line between each."
+			>
+				<Panel>
+					<ButtonGroup orientation="vertical" bordered style={styles.fill}>
+						<Button variant="ghost" fullWidth style={styles.square}>
+							Edit
+						</Button>
+						<Separator />
+						<Button variant="ghost" fullWidth style={styles.square}>
+							Duplicate
+						</Button>
+						<Separator />
+						<Button variant="ghost" fullWidth style={styles.square}>
+							Archive
+						</Button>
+					</ButtonGroup>
 				</Panel>
 			</Section>
 		</Screen>
 	);
 }
+
+const styles = StyleSheet.create({
+	square: {
+		borderRadius: 0,
+	},
+	fill: {
+		alignSelf: "stretch",
+	},
+	grow: {
+		flex: 1,
+	},
+});

@@ -1,16 +1,19 @@
 import { useRef, useState } from "react";
-import type { TextInput } from "react-native";
+import { View, type TextInput } from "react-native";
 
 import { IconButton } from "@/components/ui/icon-button";
-import { Input } from "@/components/ui/input";
+import { Field, Input } from "@/components/ui/input";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { Switch } from "@/components/ui/switch";
+import { Text } from "@/components/ui/text";
 import { TextArea } from "@/components/ui/text-area";
 import { Panel, Row, Section } from "@/demo/section";
 import { Screen } from "@/demo/screen";
 
 const isPostcode = (value: string) =>
 	/^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i.test(value.trim());
+
+const REVIEW_LENGTH = 120;
 
 export default function InputScreen() {
 	const [disabled, setDisabled] = useState(false);
@@ -47,62 +50,63 @@ export default function InputScreen() {
 				description="Keyboard types, autofill, a visibility toggle as suffix."
 			>
 				<Panel>
-					<Input
-						label="Email"
-						placeholder="name@example.com"
-						keyboardType="email-address"
-						autoComplete="email"
-						autoCapitalize="none"
-						value={email}
-						onChangeText={setEmail}
-						variant={variant}
-						disabled={disabled}
-						required
-					/>
-					<Input
-						label="Password"
-						secureTextEntry={!visible}
-						autoComplete="current-password"
-						value={password}
-						onChangeText={setPassword}
-						variant={variant}
-						disabled={disabled}
-						suffix={
-							<IconButton
-								icon={visible ? "hidden" : "visible"}
-								size="sm"
-								accessibilityLabel={
-									visible ? "Hide password" : "Show password"
-								}
-								disabled={disabled}
-								onPress={() => setVisible(!visible)}
-							/>
-						}
-					/>
+					<Field required disabled={disabled}>
+						<Field.Label>Email</Field.Label>
+						<Input
+							placeholder="name@example.com"
+							keyboardType="email-address"
+							autoComplete="email"
+							autoCapitalize="none"
+							value={email}
+							onChangeText={setEmail}
+							variant={variant}
+						/>
+					</Field>
+					<Field disabled={disabled}>
+						<Field.Label>Password</Field.Label>
+						<Input
+							secureTextEntry={!visible}
+							autoComplete="current-password"
+							value={password}
+							onChangeText={setPassword}
+							variant={variant}
+							suffix={
+								<IconButton
+									icon={visible ? "hidden" : "visible"}
+									size="sm"
+									accessibilityLabel={
+										visible ? "Hide password" : "Show password"
+									}
+									disabled={disabled}
+									onPress={() => setVisible(!visible)}
+								/>
+							}
+						/>
+					</Field>
 				</Panel>
 			</Section>
 
 			<Section
 				title="Validation on blur"
-				description="The error replaces the helper once the field is left."
+				description="The error replaces the description once the field is left."
 			>
 				<Panel>
-					<Input
-						label="Postcode"
-						helper="Postcodes look like NW1 6XE."
-						autoCapitalize="characters"
-						value={postcode}
-						onChangeText={setPostcode}
-						onFocus={() => setTouched(false)}
-						onBlur={() => setTouched(true)}
-						error={
-							touched && !isPostcode(postcode)
-								? "Enter a valid postcode, like NW1 6XE."
-								: undefined
-						}
-						variant={variant}
-						disabled={disabled}
-					/>
+					<Field disabled={disabled}>
+						<Field.Label>Postcode</Field.Label>
+						<Input
+							autoCapitalize="characters"
+							value={postcode}
+							onChangeText={setPostcode}
+							onFocus={() => setTouched(false)}
+							onBlur={() => setTouched(true)}
+							variant={variant}
+						/>
+						{touched && !isPostcode(postcode) ? (
+							<Field.Error>Enter a valid postcode, like NW1 6XE.</Field.Error>
+						) : (
+							<Field.Description>Postcodes look like NW1 6XE.</Field.Description>
+						)}
+					</Field>
 				</Panel>
 			</Section>
 
@@ -116,24 +120,22 @@ export default function InputScreen() {
 						disabled={disabled}
 						accessibilityLabel="Tag"
 					/>
-					<Input
-						label="Username"
-						prefix="@"
-						defaultValue="kjohnson"
-						variant={variant}
-						disabled={disabled}
-					/>
-					<Input
-						label="Amount"
-						size="lg"
-						keyboardType="decimal-pad"
-						prefix="$"
-						suffix="USD"
-						defaultValue="120.00"
-						helper="Balance: $1,240.18"
-						variant={variant}
-						disabled={disabled}
-					/>
+					<Field disabled={disabled}>
+						<Field.Label>Username</Field.Label>
+						<Input prefix="@" defaultValue="kjohnson" variant={variant} />
+					</Field>
+					<Field disabled={disabled}>
+						<Field.Label>Amount</Field.Label>
+						<Input
+							size="lg"
+							keyboardType="decimal-pad"
+							prefix="$"
+							suffix="USD"
+							defaultValue="120.00"
+							variant={variant}
+						/>
+						<Field.Description>Balance: $1,240.18</Field.Description>
+					</Field>
 				</Panel>
 			</Section>
 
@@ -142,21 +144,19 @@ export default function InputScreen() {
 				description="The return key moves to the next field."
 			>
 				<Panel>
-					<Input
-						label="First name"
-						returnKeyType="next"
-						submitBehavior="submit"
-						onSubmitEditing={() => lastName.current?.focus()}
-						variant={variant}
-						disabled={disabled}
-					/>
-					<Input
-						ref={lastName}
-						label="Last name"
-						returnKeyType="done"
-						variant={variant}
-						disabled={disabled}
-					/>
+					<Field disabled={disabled}>
+						<Field.Label>First name</Field.Label>
+						<Input
+							returnKeyType="next"
+							submitBehavior="submit"
+							onSubmitEditing={() => lastName.current?.focus()}
+							variant={variant}
+						/>
+					</Field>
+					<Field disabled={disabled}>
+						<Field.Label>Last name</Field.Label>
+						<Input ref={lastName} returnKeyType="done" variant={variant} />
+					</Field>
 				</Panel>
 			</Section>
 
@@ -174,23 +174,31 @@ export default function InputScreen() {
 						variant={variant}
 						disabled={disabled}
 					/>
-					<TextArea
-						label="Your review"
-						helper="Be specific, it helps others."
-						maxLength={120}
-						showCount
-						value={review}
-						onChangeText={setReview}
-						variant={variant}
-						disabled={disabled}
-					/>
-					<TextArea
-						label="Owner reply"
-						defaultValue="No reply yet."
-						minRows={2}
-						disabled
-						variant={variant}
-					/>
+					<Field disabled={disabled}>
+						<Field.Label>Your review</Field.Label>
+						<TextArea
+							maxLength={REVIEW_LENGTH}
+							value={review}
+							onChangeText={setReview}
+							variant={variant}
+						/>
+						{/* A row you write: the description and a count next to it. */}
+						<View style={{ flexDirection: "row", gap: 12 }}>
+							<Field.Description style={{ flex: 1 }}>
+								Be specific, it helps others.
+							</Field.Description>
+							<Text
+								variant="footnote"
+								color={review.length >= REVIEW_LENGTH ? "error" : "muted"}
+							>
+								{review.length} / {REVIEW_LENGTH}
+							</Text>
+						</View>
+					</Field>
+					<Field disabled>
+						<Field.Label>Owner reply</Field.Label>
+						<TextArea defaultValue="No reply yet." minRows={2} variant={variant} />
+					</Field>
 				</Panel>
 			</Section>
 		</Screen>

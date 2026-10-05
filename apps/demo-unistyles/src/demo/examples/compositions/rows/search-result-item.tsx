@@ -54,7 +54,6 @@ export default function SearchResultItemScreen() {
 					value={query}
 					onChangeText={setQuery}
 					placeholder="Search music"
-					showCancel={false}
 				/>
 				{results.length === 0 ? (
 					<Text color="muted">{`No results for "${query.trim()}".`}</Text>

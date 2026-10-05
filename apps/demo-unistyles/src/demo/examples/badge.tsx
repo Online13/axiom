@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+
+import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated";
 
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -32,7 +34,7 @@ const PEOPLE = [
 export default function BadgeScreen() {
 
 	const [count, setCount] = useState(3);
-	const [invisible, setInvisible] = useState(false);
+	const [hidden, setHidden] = useState(false);
 	const [filters, setFilters] = useState<Set<string>>(new Set(["Unread"]));
 	const [tags, setTags] = useState(["Travel", "Food", "Family"]);
 
@@ -75,17 +77,19 @@ export default function BadgeScreen() {
 
 			<Section
 				title="Counter on an anchor"
-				description="0 hides the counter; above 99 it shows 99+."
+				description="0 hides the counter; above 99 it shows 99+. The dot animates in and out."
 			>
 				<Panel>
 					<View style={styles.anchors}>
+						{/* Static: the badge appears and disappears at once. */}
 						<Badge.Anchor
-							invisible={invisible}
 							badge={
-								<Badge
-									count={count}
-									accessibilityLabel={`${count} unread messages`}
-								/>
+								hidden ? null : (
+									<Badge
+										count={count}
+										accessibilityLabel={`${count} unread messages`}
+									/>
+								)
 							}
 						>
 							<IconButton
@@ -95,10 +99,16 @@ export default function BadgeScreen() {
 								onPress={() => setCount((c) => c + 1)}
 							/>
 						</Badge.Anchor>
+						{/* Animated: opt in by wrapping the badge in an Animated.View. */}
 						<Badge.Anchor
-							badge={<Badge dot />}
+							badge={
+								hidden ? null : (
+									<Animated.View entering={ZoomIn} exiting={ZoomOut}>
+										<Badge dot />
+									</Animated.View>
+								)
+							}
 							placement="bottom-right"
-							invisible={invisible}
 						>
 							<Avatar name="Jane Cooper" colorFromName />
 						</Badge.Anchor>
@@ -109,8 +119,8 @@ export default function BadgeScreen() {
 					</View>
 					<Row label="Hide badges">
 						<Switch
-							value={invisible}
-							onValueChange={setInvisible}
+							value={hidden}
+							onValueChange={setHidden}
 							accessibilityLabel="Hide badges"
 						/>
 					</Row>
@@ -159,10 +169,13 @@ export default function BadgeScreen() {
 					</View>
 					<Separator />
 					<Label muted>Group, max 4</Label>
-					<Avatar.Group max={4}>
-						{PEOPLE.map((name) => (
-							<Avatar key={name} name={name} colorFromName />
+					<Avatar.Group>
+						{PEOPLE.slice(0, 4).map((name) => (
+							<Avatar key={name} name={name} size="sm" colorFromName />
 						))}
+						{PEOPLE.length > 4 ? (
+							<Avatar.Overflow count={PEOPLE.length - 4} size="sm" />
+						) : null}
 					</Avatar.Group>
 				</Panel>
 			</Section>
@@ -171,20 +184,25 @@ export default function BadgeScreen() {
 				<Panel>
 					<Label muted>Filters, scrolling</Label>
 				</Panel>
-				<Chip.Group
-					layout="scroll"
+				{/* A horizontal ScrollView gives the group no width to wrap at: one line that scrolls. */}
+				<ScrollView
+					horizontal
+					showsHorizontalScrollIndicator={false}
 					style={styles.bleed}
+					contentContainerStyle={styles.rail}
 				>
-					{FILTERS.map((filter) => (
-						<Chip
-							key={filter}
-							selected={filters.has(filter)}
-							onPress={() => toggleFilter(filter)}
-						>
-							{filter}
-						</Chip>
-					))}
-				</Chip.Group>
+					<Chip.Group>
+						{FILTERS.map((filter) => (
+							<Chip
+								key={filter}
+								selected={filters.has(filter)}
+								onPress={() => toggleFilter(filter)}
+							>
+								{filter}
+							</Chip>
+						))}
+					</Chip.Group>
+				</ScrollView>
 				<Panel>
 					<Label muted>Tags, wrapping</Label>
 					<Chip.Group>
@@ -242,7 +260,7 @@ export default function BadgeScreen() {
 	);
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
 	wrap: {
 		flexDirection: "row",
 		flexWrap: "wrap",
@@ -259,6 +277,11 @@ const styles = StyleSheet.create((theme) => ({
 		gap: theme.tokens.spacing[3],
 	},
 	bleed: { marginHorizontal: -theme.tokens.metrics.screenMargin },
+	// Half a screen of trailing room, so the last chip never scrolls into a wall.
+	rail: {
+		paddingHorizontal: theme.tokens.metrics.screenMargin,
+		paddingEnd: rt.screen.width / 2,
+	},
 	inline: {
 		flexDirection: "row",
 		alignItems: "center",

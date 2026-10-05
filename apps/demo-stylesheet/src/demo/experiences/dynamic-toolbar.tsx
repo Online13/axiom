@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
+import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -77,37 +78,40 @@ export default function DynamicToolbarScreen() {
 				</ScrollView>
 				{/* The bar takes the place of navigation for as long as the mode lasts. */}
 				<View style={styles.bottom}>
-					<ToolBar
-						visible={selecting}
-						accessibilityLabel="Selection actions"
-						style={{ backgroundColor: colors.background.subtle }}
-					>
-						<ToolBar.Action
-							icon="share"
-							label="Share"
-							disabled={!any}
-							onPress={() => setLog(`Shared ${selected.length}`)}
-						/>
-						<ToolBar.Action
-							icon="edit"
-							label="Rename"
-							disabled={!one}
-							onPress={() => setLog("Renamed one file")}
-						/>
-						<ToolBar.Separator />
-						<ToolBar.Action
-							icon="delete"
-							label="Delete"
-							destructive
-							disabled={!any}
-							onPress={() => {
-								setLog(
-									`Deleted ${selected.length} file${selected.length > 1 ? "s" : ""}`,
-								);
-								leave();
-							}}
-						/>
-					</ToolBar>
+					{selecting ? (
+						<Animated.View entering={FadeInDown} exiting={FadeOutDown}>
+							<ToolBar
+								accessibilityLabel="Selection actions"
+								style={{ backgroundColor: colors.background.subtle }}
+							>
+								<ToolBar.Action
+									icon="share"
+									label="Share"
+									disabled={!any}
+									onPress={() => setLog(`Shared ${selected.length}`)}
+								/>
+								<ToolBar.Action
+									icon="edit"
+									label="Rename"
+									disabled={!one}
+									onPress={() => setLog("Renamed one file")}
+								/>
+								<ToolBar.Separator />
+								<ToolBar.Action
+									icon="delete"
+									label="Delete"
+									destructive
+									disabled={!any}
+									onPress={() => {
+										setLog(
+											`Deleted ${selected.length} file${selected.length > 1 ? "s" : ""}`,
+										);
+										leave();
+									}}
+								/>
+							</ToolBar>
+						</Animated.View>
+					) : null}
 				</View>
 			</View>
 			{!selecting ? (

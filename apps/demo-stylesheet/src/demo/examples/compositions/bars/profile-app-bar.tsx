@@ -1,4 +1,5 @@
 import { ProfileAppBar } from "@/components/compositions/profile-app-bar";
+import { IconButton } from "@/components/ui/icon-button";
 import { Section } from "@/demo/section";
 import { Screen } from "@/demo/screen";
 import { avatars } from "../fixtures";
@@ -18,20 +19,19 @@ export default function ProfileAppBarScreen() {
 						greeting="Good morning"
 						safeArea={false}
 						onProfilePress={notify("Account")}
-						actions={[
-							{
-								icon: "notifications",
-								label: "Notifications",
-								badge: 3,
-								onPress: notify("Notifications"),
-							},
-							{
-								icon: "settings",
-								label: "Settings",
-								onPress: notify("Settings"),
-							},
-						]}
-					/>
+					>
+						<IconButton
+							icon="notifications"
+							badge={3}
+							accessibilityLabel="Notifications"
+							onPress={notify("Notifications")}
+						/>
+						<IconButton
+							icon="settings"
+							accessibilityLabel="Settings"
+							onPress={notify("Settings")}
+						/>
+					</ProfileAppBar>
 				</Bleed>
 			</Section>
 
@@ -46,15 +46,14 @@ export default function ProfileAppBarScreen() {
 						safeArea={false}
 						bordered
 						onProfilePress={notify("Account")}
-						actions={[
-							{
-								icon: "notifications",
-								label: "Notifications",
-								badge: true,
-								onPress: notify("Notifications"),
-							},
-						]}
-					/>
+					>
+						<IconButton
+							icon="notifications"
+							badge
+							accessibilityLabel="Notifications"
+							onPress={notify("Notifications")}
+						/>
+					</ProfileAppBar>
 				</Bleed>
 			</Section>
 		</Screen>

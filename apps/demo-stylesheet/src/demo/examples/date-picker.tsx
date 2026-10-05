@@ -1,10 +1,15 @@
 import { useState } from "react";
+import { StyleSheet, View } from "react-native";
 
+import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { DatePicker, type DatePickerValue } from "@/components/ui/date-picker";
+import { Field } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label, Panel, Row, Section } from "@/demo/section";
 import { Screen } from "@/demo/screen";
+import { useTheme } from "@/theme";
 
 const today = () => new Date();
 const inDays = (days: number) => {
@@ -13,7 +18,27 @@ const inDays = (days: number) => {
 	return date;
 };
 
+/** The calendar parts every sheet below shows. Change them here, or write them inline. */
+function Month() {
+	return (
+		<>
+			<Calendar.Header>
+				<Calendar.Title />
+				<Calendar.Nav>
+					<Calendar.PrevButton />
+					<Calendar.NextButton />
+				</Calendar.Nav>
+			</Calendar.Header>
+			<Calendar.Grid>
+				<Calendar.Weekdays />
+				<Calendar.Days />
+			</Calendar.Grid>
+		</>
+	);
+}
+
 export default function DatePickerScreen() {
+	const { tokens } = useTheme();
 	const [disabled, setDisabled] = useState(false);
 	const [departure, setDeparture] = useState<DatePickerValue>(null);
 	const [due, setDue] = useState<DatePickerValue>(today());
@@ -22,6 +47,11 @@ export default function DatePickerScreen() {
 		to: inDays(4),
 	});
 	const [submitted, setSubmitted] = useState(false);
+	const body = {
+		paddingHorizontal: tokens.metrics.screenMargin,
+		paddingBottom: tokens.spacing[4],
+		gap: tokens.spacing[3],
+	};
 
 	return (
 		<Screen>
@@ -37,23 +67,33 @@ export default function DatePickerScreen() {
 
 			<Section
 				title="DatePicker"
-				description="The field opens a calendar in a sheet. Cancel reverts, Done applies."
+				description="A Field around a trigger that opens a calendar in a sheet. Cancel reverts, Done applies."
 			>
 				<Panel>
-					<DatePicker
-						label="Departure"
-						placeholder="Select a date"
-						value={departure}
-						onChange={setDeparture}
-						minDate={today()}
-						disabled={disabled}
-						error={
-							submitted && departure === null
-								? "Pick a departure date."
-								: undefined
-						}
-						helper="No date before today."
-					/>
+					<Field disabled={disabled}>
+						<Field.Label>Departure</Field.Label>
+						<DatePicker value={departure} onChange={setDeparture}>
+							<DatePicker.Trigger />
+							<BottomSheet.Content>
+								<BottomSheet.Handle />
+								<BottomSheet.Header
+									title="Departure"
+									leading={<DatePicker.Cancel />}
+									trailing={<DatePicker.Done />}
+								/>
+								<View style={body}>
+									<DatePicker.Calendar minDate={today()}>
+										<Month />
+									</DatePicker.Calendar>
+								</View>
+							</BottomSheet.Content>
+						</DatePicker>
+						{submitted && departure === null ? (
+							<Field.Error>Pick a departure date.</Field.Error>
+						) : (
+							<Field.Description>No date before today.</Field.Description>
+						)}
+					</Field>
 					<Button
 						fullWidth
 						disabled={disabled}
@@ -69,19 +109,34 @@ export default function DatePickerScreen() {
 				description="Closes on the first press, with shortcuts above the calendar."
 			>
 				<Panel>
-					<DatePicker
-						label="Due"
-						confirm="instant"
-						clearable
-						value={due}
-						onChange={setDue}
-						disabled={disabled}
-						presets={[
-							{ label: "Today", value: today() },
-							{ label: "Tomorrow", value: inDays(1) },
-							{ label: "Next week", value: inDays(7) },
-						]}
-					/>
+					<Field disabled={disabled}>
+						<Field.Label>Due</Field.Label>
+						<DatePicker confirm="instant" value={due} onChange={setDue}>
+							<DatePicker.Trigger />
+							<BottomSheet.Content>
+								<BottomSheet.Handle />
+								<BottomSheet.Header
+									title="Due"
+									leading={<DatePicker.Cancel />}
+								/>
+								<View style={body}>
+									<View style={[styles.presets, { gap: tokens.spacing[2] }]}>
+										<DatePicker.Preset value={today()}>Today</DatePicker.Preset>
+										<DatePicker.Preset value={inDays(1)}>
+											Tomorrow
+										</DatePicker.Preset>
+										<DatePicker.Preset value={inDays(7)}>
+											Next week
+										</DatePicker.Preset>
+									</View>
+									<DatePicker.Calendar>
+										<Month />
+									</DatePicker.Calendar>
+									<DatePicker.Clear fullWidth />
+								</View>
+							</BottomSheet.Content>
+						</DatePicker>
+					</Field>
 					<Label muted>
 						{due === null
 							? "No due date."
@@ -95,36 +150,62 @@ export default function DatePickerScreen() {
 				description="A start and an end date, written as one line in the field."
 			>
 				<Panel>
-					<DatePicker
-						mode="range"
-						label="Stay"
-						placeholder="Select your dates"
-						value={stay}
-						onChange={setStay}
-						disabled={disabled}
-						calendarProps={{ minRange: 1 }}
-					/>
+					<Field disabled={disabled}>
+						<Field.Label>Stay</Field.Label>
+						<DatePicker mode="range" value={stay} onChange={setStay}>
+							<DatePicker.Trigger placeholder="Select your dates" />
+							<BottomSheet.Content>
+								<BottomSheet.Handle />
+								<BottomSheet.Header
+									title="Stay"
+									leading={<DatePicker.Cancel />}
+									trailing={<DatePicker.Done />}
+								/>
+								<View style={body}>
+									<DatePicker.Calendar minRange={1}>
+										<Month />
+									</DatePicker.Calendar>
+								</View>
+							</BottomSheet.Content>
+						</DatePicker>
+					</Field>
 				</Panel>
 			</Section>
 
 			<Section
 				title="Custom trigger"
-				description="Any element can open the sheet in place of the field."
+				description="Any element can open the sheet: the picker is a bottom sheet."
 			>
 				<Panel>
-					<DatePicker
-						value={due}
-						onChange={setDue}
-						disabled={disabled}
-						title="Pick a day"
-						trigger={
+					<DatePicker value={due} onChange={setDue}>
+						<BottomSheet.Trigger asChild disabled={disabled}>
 							<Button variant="outline" fullWidth disabled={disabled}>
 								Change the date
 							</Button>
-						}
-					/>
+						</BottomSheet.Trigger>
+						<BottomSheet.Content>
+							<BottomSheet.Handle />
+							<BottomSheet.Header
+								title="Pick a day"
+								leading={<DatePicker.Cancel />}
+								trailing={<DatePicker.Done />}
+							/>
+							<View style={body}>
+								<DatePicker.Calendar>
+									<Month />
+								</DatePicker.Calendar>
+							</View>
+						</BottomSheet.Content>
+					</DatePicker>
 				</Panel>
 			</Section>
 		</Screen>
 	);
 }
+
+const styles = StyleSheet.create({
+	presets: {
+		flexDirection: "row",
+		flexWrap: "wrap",
+	},
+});

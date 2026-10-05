@@ -45,6 +45,7 @@ export default function InputGroupScreen() {
 				<Panel>
 					<InputGroup error={error} disabled={disabled}>
 						<InputGroup.Addon>https://</InputGroup.Addon>
+						<InputGroup.Separator />
 						<InputGroup.Input
 							placeholder="example.com"
 							autoCapitalize="none"
@@ -57,14 +58,15 @@ export default function InputGroupScreen() {
 							keyboardType="decimal-pad"
 							accessibilityLabel="Weight"
 						/>
+						<InputGroup.Separator />
 						<InputGroup.Addon variant="plain">kg</InputGroup.Addon>
 					</InputGroup>
-					<InputGroup error={error} disabled={disabled} divided={false}>
+					<InputGroup error={error} disabled={disabled}>
 						<InputGroup.Addon variant="plain">
 							<Icon name="search" size="sm" color="muted" />
 						</InputGroup.Addon>
 						<InputGroup.Input
-							placeholder="Search, not divided"
+							placeholder="Search, no separator"
 							style={{ paddingLeft: 0 }}
 						/>
 					</InputGroup>
@@ -88,6 +90,7 @@ export default function InputGroupScreen() {
 							</Label>
 							<Icon name="chevron-down" size="sm" color="muted" />
 						</InputGroup.Addon>
+						<InputGroup.Separator />
 						<InputGroup.Input
 							keyboardType="phone-pad"
 							autoComplete="tel"
@@ -111,6 +114,7 @@ export default function InputGroupScreen() {
 							onChangeText={setCode}
 							accessibilityLabel="Promo code"
 						/>
+						<InputGroup.Separator />
 						<InputGroup.Button
 							variant="ghost"
 							disabled={!code}
@@ -133,6 +137,7 @@ export default function InputGroupScreen() {
 							placeholder="MM / YY"
 							keyboardType="number-pad"
 						/>
+						<InputGroup.Separator />
 						<InputGroup.Input
 							placeholder="CVC"
 							keyboardType="number-pad"

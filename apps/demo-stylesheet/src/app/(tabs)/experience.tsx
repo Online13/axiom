@@ -26,7 +26,6 @@ export default function ExperienceScreen() {
 		<Scaffold
 			background="subtle"
 			safeAreaEdges={["top"]}
-			keyboardAvoiding={false}
 		>
 			<View
 				style={{
@@ -50,7 +49,6 @@ export default function ExperienceScreen() {
 					placeholder="Search components"
 					value={query}
 					onChangeText={setQuery}
-					showCancel={false}
 				/>
 			</View>
 			<Tab

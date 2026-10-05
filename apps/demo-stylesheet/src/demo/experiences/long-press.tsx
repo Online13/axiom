@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ScrollView, View } from "react-native";
 
 import { Icon } from "@/components/ui/icon";
-import { Menu } from "@/components/ui/menu";
+import { ContextMenu } from "@/components/ui/context-menu";
 import { Text } from "@/components/ui/text";
 import { useTheme } from "@/theme";
 
@@ -29,9 +29,9 @@ export default function LongPressScreen() {
 				}}
 			>
 				{FILES.map((file) => (
-					<Menu.Root key={file.name}>
+					<ContextMenu.Root key={file.name}>
 						{/* No `action`: the trigger opens on a long press, and a tap stays a tap. */}
-						<Menu.Trigger>
+						<ContextMenu.Trigger>
 							<View
 								style={{
 									flexDirection: "row",
@@ -52,32 +52,32 @@ export default function LongPressScreen() {
 									</Text>
 								</View>
 							</View>
-						</Menu.Trigger>
-						<Menu.Content>
-							<Menu.Item
+						</ContextMenu.Trigger>
+						<ContextMenu.Content>
+							<ContextMenu.Item
 								icon="share"
 								onPress={() => setLog(`Shared ${file.name}`)}
 							>
 								Share
-							</Menu.Item>
-							<Menu.Item
+							</ContextMenu.Item>
+							<ContextMenu.Item
 								icon="favorite"
 								onPress={() =>
 									setLog(`${file.name} added to favorites`)
 								}
 							>
 								Add to favorites
-							</Menu.Item>
-							<Menu.Separator />
-							<Menu.Item
+							</ContextMenu.Item>
+							<ContextMenu.Separator />
+							<ContextMenu.Item
 								icon="delete"
 								destructive
 								onPress={() => setLog(`Deleted ${file.name}`)}
 							>
 								Delete
-							</Menu.Item>
-						</Menu.Content>
-					</Menu.Root>
+							</ContextMenu.Item>
+						</ContextMenu.Content>
+					</ContextMenu.Root>
 				))}
 				<Text variant="footnote" color="muted">
 					Release early and it&apos;s a tap. Move before the delay and the

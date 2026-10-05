@@ -35,7 +35,6 @@ export default function SearchBarScreen() {
 	const [disabled, setDisabled] = useState(false);
 	const [query, setQuery] = useState("");
 	const [submitted, setSubmitted] = useState<string | null>(null);
-	const [cancelled, setCancelled] = useState(0);
 
 	const [live, setLive] = useState("");
 	const [settled, setSettled] = useState("");
@@ -73,7 +72,7 @@ export default function SearchBarScreen() {
 
 			<Section
 				title="SearchBar"
-				description="Cancel slides in while the field is focused."
+				description="The field alone. A Cancel button belongs to SearchAppBar."
 			>
 				<Panel>
 					<SearchBar
@@ -81,7 +80,6 @@ export default function SearchBarScreen() {
 						value={query}
 						onChangeText={setQuery}
 						onSubmit={setSubmitted}
-						onCancel={() => setCancelled((count) => count + 1)}
 						disabled={disabled}
 						trailing={
 							<IconButton
@@ -96,7 +94,6 @@ export default function SearchBarScreen() {
 						{submitted
 							? `Submitted “${submitted}”`
 							: "Press the search key to submit."}
-						{cancelled > 0 ? ` · cancelled ${cancelled}×` : ""}
 					</Label>
 				</Panel>
 			</Section>
@@ -148,7 +145,6 @@ export default function SearchBarScreen() {
 				<Panel>
 					<SearchBar
 						variant="outline"
-						showCancel={false}
 						placeholder="Search countries"
 						value={filter}
 						onChangeText={setFilter}
@@ -175,13 +171,11 @@ export default function SearchBarScreen() {
 				<Panel>
 					<SearchBar
 						size="sm"
-						showCancel={false}
 						placeholder="Small"
 						disabled={disabled}
 					/>
 					<SearchBar
 						size="md"
-						showCancel={false}
 						placeholder="Medium"
 						disabled={disabled}
 					/>

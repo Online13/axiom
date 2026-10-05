@@ -5,7 +5,7 @@ import { Overlay } from "@/components/core/overlay";
 import { Tappable } from "@/components/core/tappable";
 import { FloatingButton } from "@/components/ui/floating-button";
 import { Icon } from "@/components/ui/icon";
-import type { IconName } from "@/components/ui/icons";
+import type { IconName } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { useOverlayBackHandler } from "@/hooks/use-overlay-back-handler";
 import { useTheme } from "@/theme";

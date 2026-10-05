@@ -20,7 +20,6 @@ export default function ComponentsScreen() {
 		<Scaffold
 			background="subtle"
 			safeAreaEdges={["top"]}
-			keyboardAvoiding={false}
 		>
 			<View
 				style={{
@@ -40,7 +39,6 @@ export default function ComponentsScreen() {
 					placeholder="Search components"
 					value={query}
 					onChangeText={setQuery}
-					showCancel={false}
 				/>
 			</View>
 			<Tab

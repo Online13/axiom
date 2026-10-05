@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { View } from "react-native";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 
 import { Tappable } from "@/components/core/tappable";
 import { AppBar } from "@/components/ui/app-bar";
@@ -26,27 +26,22 @@ export function ExperienceScreen({
 	appBar,
 	background = "subtle",
 }: ExperienceScreenProps) {
-	// The bar takes its background as a prop, not as a style.
-	const { theme } = useUnistyles();
 	const routeTitle = useRouteTitle("Experience");
 
 	return (
 		<Scaffold
 			background={background}
 			safeAreaEdges={["top"]}
-			keyboardAvoiding={false}
 		>
 			{appBar ?? (
-				<AppBar
-					safeArea={false}
-					bordered
-					backgroundColor={theme.colors.background[background]}
-				>
-					<AppBar.Leading>
+				<AppBar safeArea={false} bordered style={styles.bar(background)}>
+					<AppBar.Row>
 						<BackButton />
-					</AppBar.Leading>
-					<AppBar.Title>{title ?? routeTitle}</AppBar.Title>
-					{actions ? <AppBar.Actions>{actions}</AppBar.Actions> : null}
+						<AppBar.Center>
+							<AppBar.Title>{title ?? routeTitle}</AppBar.Title>
+						</AppBar.Center>
+						{actions}
+					</AppBar.Row>
 				</AppBar>
 			)}
 			{children}
@@ -138,6 +133,9 @@ export function fakeRows(count: number, offset = 0) {
 }
 
 const styles = StyleSheet.create((theme) => ({
+	bar: (background: "default" | "subtle") => ({
+		backgroundColor: theme.colors.background[background],
+	}),
 	note: {
 		paddingHorizontal: theme.tokens.metrics.screenMargin,
 		paddingVertical: theme.tokens.spacing[3],
