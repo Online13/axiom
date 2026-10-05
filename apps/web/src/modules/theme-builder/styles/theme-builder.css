@@ -1,21 +1,23 @@
 /*
- * The builder's own chrome. Same language as the landing and the docs:
- * near-black ground, grey hairlines, square corners, Inter + JetBrains Mono.
+ * The builder's own chrome. Same palettes as the landing and the docs:
+ * ink and navy ground, blue-grey hairlines, square corners, Inter + JetBrains Mono.
  * Nothing here leaks into the phones — those read the generated `--ax-*` vars.
  */
 
 :root {
-	--bg: #0a0a0a;
-	--fg: #f5f5f5;
-	--muted: #8a8a8a;
-	--line: #262626;
-	--line-strong: #3a3a3a;
-	--raised: #101010;
+	--bg: #0b1016;
+	--fg: #f2f5f8;
+	--muted: #8a97a8;
+	--line: #1f2c3b;
+	--line-strong: #2e3f52;
+	--raised: #0f1822;
 	/* The worktable under the screens: a step lighter than the floating panel,
 	   so the panel reads as a separate sheet on top of it. */
-	--canvas: #1c1c1c;
+	--canvas: #13202e;
 	--accent: #61dafb;
-	--hover: #1a1a1a;
+	/* Text on an accent fill. */
+	--on-accent: #0b1016;
+	--hover: #182636;
 	--pass: #6ee7a0;
 	--pass-line: #2f6b3f;
 	--warn: #f5cd6e;
@@ -279,7 +281,7 @@ input[type="color"] {
 .tb-btn:hover {
 	border-color: var(--accent);
 	background: var(--accent);
-	color: #0a0a0a;
+	color: var(--on-accent);
 }
 
 .tb-btn--ghost {

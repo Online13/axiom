@@ -23,17 +23,18 @@
 			if (PREFERENCES.includes(saved)) preference = saved;
 		} catch {}
 
-		const apply = () => {
+		const apply = (target = root) => {
 			const theme = preference === 'system' ? (light.matches ? 'light' : 'dark') : preference;
-			root.dataset.themePref = preference;
-			root.dataset.theme = theme;
-			root.classList.toggle('dark', theme !== 'light');
-			root.style.colorScheme = theme === 'light' ? 'light' : 'dark';
+			target.dataset.themePref = preference;
+			target.dataset.theme = theme;
+			target.classList.toggle('dark', theme !== 'light');
+			target.style.colorScheme = theme === 'light' ? 'light' : 'dark';
 		};
 
-		light.addEventListener('change', apply);
-		// The docs' view transitions swap <html> attributes; put the theme back.
-		document.addEventListener('astro:after-swap', apply);
+		light.addEventListener('change', () => apply());
+		// The docs' view transitions copy the incoming page's <html> attributes onto this one.
+		// Theme the incoming page first, or the swap shows the light palette until it's restored.
+		document.addEventListener('astro:before-swap', (event) => apply(event.newDocument.documentElement));
 		apply();
 
 		window.axiomTheme = {

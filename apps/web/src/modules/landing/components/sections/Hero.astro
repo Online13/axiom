@@ -11,7 +11,7 @@ import { docs } from "../../lib/links";
 		<div class="hero__copy">
 			<p class="eyebrow">React Native · Expo</p>
 			<Title variant="headline" as="h1"
-				>The mobile UI kit for <br /> React Native.</Title
+				>The mobile UI kit for <br /> <span class="hero__accent">React Native</span>.</Title
 			>
 			<p class="hero__lede">
 				Axiom gives you a theme, components, hooks, gestures, patterns and
@@ -52,6 +52,10 @@ import { docs } from "../../lib/links";
 		flex-direction: column;
 		gap: 2rem;
 		max-width: 36rem;
+	}
+
+	.hero__accent {
+		color: var(--accent-text);
 	}
 
 	.hero__lede {

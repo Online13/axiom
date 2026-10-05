@@ -23,55 +23,58 @@
 	--radius-3xl: 0;
 }
 
-/* Light is the dark ramp inverted: paper ground, grey lines, same near-black ink. */
+/*
+ * Same palettes as the landing (src/modules/landing/styles/global.css): light is paper
+ * on grey hairlines, dark is the ink and navy ramp.
+ */
 :root {
-	--color-fd-background: #ffffff;
+	--color-fd-background: #fafafa;
 	--color-fd-foreground: #0a0a0a;
-	--color-fd-muted: #f5f5f5;
+	--color-fd-muted: #f2f2f2;
 	--color-fd-muted-foreground: #6b6b6b;
 	--color-fd-popover: #ffffff;
 	--color-fd-popover-foreground: #0a0a0a;
-	--color-fd-card: #fafafa;
+	--color-fd-card: #ffffff;
 	--color-fd-card-foreground: #0a0a0a;
-	--color-fd-border: #e5e5e5;
+	--color-fd-border: #dedede;
 	--color-fd-primary: #0a0a0a;
-	--color-fd-primary-foreground: #ffffff;
-	--color-fd-secondary: #f5f5f5;
+	--color-fd-primary-foreground: #fafafa;
+	--color-fd-secondary: #f2f2f2;
 	--color-fd-secondary-foreground: #0a0a0a;
-	--color-fd-accent: #f0f0f0;
+	--color-fd-accent: #ebebeb;
 	--color-fd-accent-foreground: #0a0a0a;
 	--color-fd-ring: #a3a3a3;
 }
 
 #nd-sidebar {
-	--color-fd-muted: #f5f5f5;
-	--color-fd-secondary: #f0f0f0;
+	--color-fd-muted: #f2f2f2;
+	--color-fd-secondary: #ebebeb;
 	--color-fd-muted-foreground: #6b6b6b;
 }
 
 .dark {
-	--color-fd-background: #0a0a0a;
-	--color-fd-foreground: #f5f5f5;
-	--color-fd-muted: #141414;
-	--color-fd-muted-foreground: #8a8a8a;
-	--color-fd-popover: #0f0f0f;
-	--color-fd-popover-foreground: #f5f5f5;
-	--color-fd-card: #0f0f0f;
-	--color-fd-card-foreground: #f5f5f5;
-	--color-fd-border: #262626;
-	--color-fd-primary: #f5f5f5;
-	--color-fd-primary-foreground: #0a0a0a;
-	--color-fd-secondary: #141414;
-	--color-fd-secondary-foreground: #f5f5f5;
-	--color-fd-accent: #1a1a1a;
-	--color-fd-accent-foreground: #f5f5f5;
-	--color-fd-ring: #525252;
+	--color-fd-background: #0b1016;
+	--color-fd-foreground: #f2f5f8;
+	--color-fd-muted: #0f1822;
+	--color-fd-muted-foreground: #8a97a8;
+	--color-fd-popover: #0f1822;
+	--color-fd-popover-foreground: #f2f5f8;
+	--color-fd-card: #0d141c;
+	--color-fd-card-foreground: #f2f5f8;
+	--color-fd-border: #1f2c3b;
+	--color-fd-primary: #f2f5f8;
+	--color-fd-primary-foreground: #0b1016;
+	--color-fd-secondary: #0f1822;
+	--color-fd-secondary-foreground: #f2f5f8;
+	--color-fd-accent: #13202e;
+	--color-fd-accent-foreground: #f2f5f8;
+	--color-fd-ring: #3a4d63;
 }
 
 .dark #nd-sidebar {
-	--color-fd-muted: #141414;
-	--color-fd-secondary: #1a1a1a;
-	--color-fd-muted-foreground: #8a8a8a;
+	--color-fd-muted: #0f1822;
+	--color-fd-secondary: #13202e;
+	--color-fd-muted-foreground: #8a97a8;
 }
 
 /* Mystery: the site's secret palette, a night-violet take on dark. It keeps `.dark` too. */
@@ -102,10 +105,10 @@
 
 /*
  * The landing's cyan accent, kept for actions and hover. Dark uses it as is; light takes
- * a deeper cyan so it stays readable as text on white.
+ * the landing's deeper cyan (--accent-text) so it stays readable as text on paper.
  */
 :root {
-	--docs-accent: #0e7490;
+	--docs-accent: #087ea4;
 }
 
 .dark {

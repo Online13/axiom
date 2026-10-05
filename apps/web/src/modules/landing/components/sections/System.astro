@@ -27,11 +27,11 @@ const layers = [
 	},
 ];
 
-const swatches = ["#f5f5f5", "#8a8a8a", "#262626", "#0a0a0a", "#61dafb"];
+const swatches = ["#0b1016", "#13202e", "#61dafb", "#8b5cf6", "#14b8a6", "#ff8a65"];
 const blocks = ["Settings", "Profile", "Checkout", "Paywall", "Login"];
 ---
 
-<section class="section section--full system" id="system">
+<section class="section section--full section--calm system" id="system">
 	<div class="container system__inner">
 		<header class="system__header">
 			<p class="eyebrow">05 / System</p>
@@ -190,7 +190,6 @@ const blocks = ["Settings", "Profile", "Checkout", "Paywall", "Login"];
 
 	/* Each layer grows wider as it builds on the previous one. */
 	.system__block {
-		--accent: #61dafb;
 		height: 3.75rem;
 		width: calc(40% + var(--i) * 20%);
 		display: flex;
@@ -225,7 +224,9 @@ const blocks = ["Settings", "Profile", "Checkout", "Paywall", "Login"];
 		margin-right: -0.35rem;
 		border-radius: 50%;
 		background: var(--c);
-		box-shadow: 0 0 0 2px var(--bg);
+		box-shadow:
+			inset 0 0 0 1px var(--line),
+			0 0 0 2px var(--bg);
 	}
 	.type {
 		display: flex;
@@ -260,7 +261,7 @@ const blocks = ["Settings", "Profile", "Checkout", "Paywall", "Login"];
 		padding: 0.5rem 0.9rem;
 		border-radius: 999px;
 		background: var(--accent);
-		color: #0a0a0a;
+		color: var(--on-accent);
 		font-weight: 600;
 	}
 	.s-switch {
@@ -366,7 +367,7 @@ const blocks = ["Settings", "Profile", "Checkout", "Paywall", "Login"];
 		padding: 0.3rem 0.65rem;
 		border-radius: 999px;
 		background: var(--accent);
-		color: #0a0a0a;
+		color: var(--on-accent);
 		font-weight: 600;
 	}
 	.s-item {

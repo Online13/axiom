@@ -12,8 +12,8 @@
 
 export const GROUP_WIDTH = 640;
 export const TILE_HEIGHT = 4800;
-export const CARD_RADIUS = 32;
-export const TILE_RADIUS = 14;
+export const CARD_RADIUS = 0;
+export const TILE_RADIUS = 0;
 export const LINE_RADIUS = 32;
 
 type Point = [x: number, y: number];

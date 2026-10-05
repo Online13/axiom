@@ -1,66 +1,125 @@
 ---
-import {
-	CARD_RADIUS,
-	GROUP_WIDTH,
-	TILE_HEIGHT,
-	TILE_RADIUS,
-	left,
-	right,
-	route,
-	type Shape,
-} from '../lib/backdrops';
+/*
+ * The page background, built like the original square backdrop: a tall tile repeated down
+ * the page. Each tile holds light ribbons in the brand colours: translucent bands with one
+ * bright glowing edge, pinched at both ends, sweeping across the page in large S curves.
+ *
+ * The tile is wider than any common screen and centred, so ribbons enter and leave past the
+ * viewport edges; the content column (1440px) sits in its middle, x 480 → 1920.
+ */
 
-const groups: { side: 'left' | 'right'; shapes: Shape[] }[] = [
-	{ side: 'left', shapes: left },
-	{ side: 'right', shapes: right },
+const TILE_WIDTH = 2400;
+const TILE_HEIGHT = 4800;
+
+type Point = [x: number, y: number];
+type Ribbon = {
+	/** The bright edge: a cubic curve from `from` to `to`. */
+	from: Point;
+	c1: Point;
+	c2: Point;
+	to: Point;
+	/** How far the faint edge's control points sit from the bright edge's: the ribbon's width. */
+	spread: Point;
+	colors: string[];
+	opacity?: number;
+};
+
+const BLUE = '#3b6cff';
+const MAGENTA = '#c026d3';
+const PINK = '#ec4899';
+
+const ribbons: Ribbon[] = [
+	// Hero: rises behind the phone and arcs off the top right.
+	{ from: [1000, 1400], c1: [1300, 400], c2: [1900, 150], to: [2500, 500], spread: [80, 260], colors: ['var(--indigo)', BLUE, 'var(--accent)', 'var(--teal)'] },
+	{ from: [1300, 1500], c1: [1600, 820], c2: [2000, 620], to: [2500, 900], spread: [20, 80], colors: ['var(--indigo)', PINK, 'var(--coral)'], opacity: 0.8 },
+	{ from: [-100, 1200], c1: [600, 1300], c2: [1000, 600], to: [1100, -200], spread: [-80, -220], colors: [BLUE, 'var(--indigo)'], opacity: 0.5 },
+	// Rises from the bottom left to the top right.
+	{ from: [-100, 3000], c1: [900, 3300], c2: [1500, 2700], to: [2500, 1900], spread: [0, -280], colors: [BLUE, 'var(--accent)', 'var(--teal)'] },
+	{ from: [500, 3300], c1: [1300, 3320], c2: [1800, 2820], to: [2500, 2300], spread: [0, -80], colors: ['var(--indigo)', MAGENTA, 'var(--coral)'], opacity: 0.8 },
+	// Falls from the right back across to the left.
+	{ from: [2500, 3500], c1: [1700, 3700], c2: [1000, 4500], to: [-100, 4400], spread: [0, 240], colors: ['var(--teal)', BLUE, 'var(--indigo)'], opacity: 0.85 },
+	{ from: [2500, 3820], c1: [1800, 3960], c2: [1200, 4720], to: [-100, 4780], spread: [0, 70], colors: ['var(--coral)', PINK, MAGENTA], opacity: 0.6 },
 ];
+
+const add = ([x, y]: Point, [dx, dy]: Point): Point => [x + dx, y + dy];
+const pt = ([x, y]: Point) => `${x} ${y}`;
+
+const edge = (r: Ribbon) => `M ${pt(r.from)} C ${pt(r.c1)}, ${pt(r.c2)}, ${pt(r.to)}`;
+// Bright edge out, faint edge back; sharing end points pinches the ribbon at both ends.
+const shape = (r: Ribbon) =>
+	`${edge(r)} C ${pt(add(r.c2, r.spread))}, ${pt(add(r.c1, r.spread))}, ${pt(r.from)} Z`;
+const faintEdge = (r: Ribbon) => `M ${pt(r.to)} C ${pt(add(r.c2, r.spread))}, ${pt(add(r.c1, r.spread))}, ${pt(r.from)}`;
+
 ---
 
 <div class="backdrop" aria-hidden="true">
-	{
-		groups.map(({ side, shapes }) => (
-			<svg class={`backdrop__group backdrop__group--${side}`} width={GROUP_WIDTH} fill="none">
-				<defs>
-					<pattern
-						id={`backdrop-${side}`}
-						patternUnits="userSpaceOnUse"
-						width={GROUP_WIDTH}
-						height={TILE_HEIGHT}
-					>
-						{shapes.map((shape) => {
-							switch (shape.kind) {
-								case 'card':
-									return (
-										<rect
-											class="backdrop__card"
-											x={shape.x}
-											y={shape.y}
-											width={shape.w}
-											height={shape.h}
-											rx={CARD_RADIUS}
-										/>
-									);
-								case 'tile':
-									return (
-										<rect
-											class="backdrop__tile"
-											x={shape.x}
-											y={shape.y}
-											width={shape.s}
-											height={shape.s}
-											rx={TILE_RADIUS}
-										/>
-									);
-								case 'line':
-									return <path class="backdrop__line" d={route(shape.points)} />;
-							}
-						})}
-					</pattern>
-				</defs>
-				<rect width="100%" height="100%" fill={`url(#backdrop-${side})`} />
-			</svg>
-		))
-	}
+	<svg class="backdrop__scene" width={TILE_WIDTH} fill="none">
+		<defs>
+			<filter id="backdrop-soft" x="-20%" y="-20%" width="140%" height="140%">
+				<feGaussianBlur stdDeviation="36" />
+			</filter>
+			<!-- Neon glow: the line itself over a tight and a wide blurred copy of it. -->
+			<filter id="backdrop-neon" x="-20%" y="-20%" width="140%" height="140%">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="4" result="tight" />
+				<feGaussianBlur in="SourceGraphic" stdDeviation="14" result="wide" />
+				<feMerge>
+					<feMergeNode in="wide" />
+					<feMergeNode in="wide" />
+					<feMergeNode in="tight" />
+					<feMergeNode in="tight" />
+					<feMergeNode in="SourceGraphic" />
+				</feMerge>
+			</filter>
+			<filter id="backdrop-bloom" x="-20%" y="-20%" width="140%" height="140%">
+				<feGaussianBlur stdDeviation="28" />
+			</filter>
+			{
+				ribbons.map((r, i) => (
+					<>
+						<linearGradient
+							id={`ribbon-${i}`}
+							gradientUnits="userSpaceOnUse"
+							x1={r.from[0]}
+							y1={r.from[1]}
+							x2={r.to[0]}
+							y2={r.to[1]}
+						>
+							{r.colors.map((color, j) => (
+								<stop offset={j / (r.colors.length - 1)} stop-color={color} />
+							))}
+						</linearGradient>
+						<clipPath id={`ribbon-clip-${i}`}>
+							<path d={shape(r)} />
+						</clipPath>
+					</>
+				))
+			}
+			<pattern id="backdrop-tile" patternUnits="userSpaceOnUse" width={TILE_WIDTH} height={TILE_HEIGHT}>
+				{
+					// Drawn a tile above and below too, so ribbons crossing the tile edge wrap seamlessly.
+					[-TILE_HEIGHT, 0, TILE_HEIGHT].map((shift) => (
+						<g transform={`translate(0 ${shift})`}>
+							{ribbons.map((r, i) => (
+								<g opacity={r.opacity ?? 1}>
+									{/* Body: a faint tint, lit from the bright edge by a soft inner glow. */}
+									<path d={shape(r)} fill={`url(#ribbon-${i})`} fill-opacity="0.1" />
+									<g clip-path={`url(#ribbon-clip-${i})`}>
+										<path d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="140" stroke-opacity="0.45" filter="url(#backdrop-soft)" />
+									</g>
+									{/* Edges: the faint one, then the glowing one with a white-hot core. */}
+									<path d={faintEdge(r)} stroke={`url(#ribbon-${i})`} stroke-width="1" stroke-opacity="0.3" />
+									<path d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="36" stroke-opacity="0.35" filter="url(#backdrop-bloom)" />
+									<path d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="3" filter="url(#backdrop-neon)" />
+									<path d={edge(r)} stroke="#ffffff" stroke-width="1" stroke-opacity="0.8" />
+								</g>
+							))}
+						</g>
+					))
+				}
+			</pattern>
+		</defs>
+		<rect width="100%" height="100%" fill="url(#backdrop-tile)" />
+	</svg>
 </div>
 
 <style>
@@ -71,49 +130,24 @@ const groups: { side: 'left' | 'right'; shapes: Shape[] }[] = [
 		z-index: -1;
 		overflow: hidden;
 		pointer-events: none;
+		opacity: var(--glow);
 	}
 
-	.backdrop__group {
+	/* Centred on the page, so the content column lines up with the middle of the tile. */
+	.backdrop__scene {
 		position: absolute;
 		top: 0;
+		left: 50%;
 		height: 100%;
+		translate: -50% 0;
+		transform-origin: top center;
 	}
 
-	.backdrop__group--left {
-		left: 0;
-		transform-origin: top left;
-	}
-
-	.backdrop__group--right {
-		right: 0;
-		transform-origin: top right;
-	}
-
-	.backdrop__card,
-	.backdrop__tile,
-	.backdrop__line {
-		stroke-width: 1;
-	}
-
-	.backdrop__card {
-		fill: var(--surface);
-		stroke: var(--line-soft);
-	}
-
-	.backdrop__tile {
-		fill: var(--surface-raised);
-		stroke: var(--line);
-	}
-
-	.backdrop__line {
-		stroke: var(--line-soft);
-	}
-
-	/* Smaller shapes on phones; the taller box keeps the scaled strip full height. */
+	/* Smaller ribbons on phones; the taller box keeps the scaled scene full height. */
 	@media (max-width: 900px) {
-		.backdrop__group {
-			height: calc(100% / 0.55);
-			scale: 0.55;
+		.backdrop__scene {
+			height: calc(100% / 0.5);
+			scale: 0.5;
 		}
 	}
 </style>

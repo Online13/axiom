@@ -1,15 +1,27 @@
 :root {
-	--bg: #0a0a0a;
-	--fg: #f5f5f5;
-	--muted: #8a8a8a;
-	--line: #262626;
-	--line-soft: #222222;
-	--surface: #111111;
-	--surface-raised: #161616;
-	--card: #0d0d0d;
-	--grid: #ffffff04;
+	/* Brand palette: Ink 950, Navy 800, React Native Blue 400, Indigo 500, Teal 400, Coral 400. */
+	--ink: #0b1016;
+	--navy: #13202e;
 	--accent: #61dafb;
-	--accent-text: #61dafb;
+	--indigo: #8b5cf6;
+	--teal: #14b8a6;
+	--coral: #ff8a65;
+
+	--bg: var(--ink);
+	--fg: #f2f5f8;
+	--muted: #8a97a8;
+	--eyebrow: #c3ccd7;
+	--line: #1f2c3b;
+	--line-soft: #18232f;
+	--surface: #0f1822;
+	--surface-raised: var(--navy);
+	--card: #0d141c;
+	--grid: #8fb4ff06;
+	--accent-text: var(--accent);
+	/* Text on an accent fill. */
+	--on-accent: var(--ink);
+	/* Strength of the backdrop's light streaks and glows. */
+	--glow: 1;
 	color-scheme: dark;
 
 	--nav-h: 80px;
@@ -33,8 +45,10 @@
 	--surface: #f2f2f2;
 	--surface-raised: #ebebeb;
 	--card: #ffffff;
+	--eyebrow: #4a5563;
 	--grid: #00000006;
 	--accent-text: #087ea4;
+	--glow: 0.35;
 	color-scheme: light;
 }
 
@@ -47,6 +61,7 @@
 	--surface: #120f26;
 	--surface-raised: #1a1634;
 	--card: #100d21;
+	--eyebrow: #c9c2ec;
 	--grid: #b9a8ff08;
 	--accent-text: #c4b5fd;
 }
@@ -71,6 +86,8 @@ body {
 	font-family: var(--font-sans);
 	font-size: 16px;
 	line-height: 1.5;
+	/* Inter's opsz axis switches large text to its Display cut. */
+	font-optical-sizing: auto;
 	-webkit-font-smoothing: antialiased;
 }
 
@@ -97,6 +114,28 @@ p {
 	position: relative;
 }
 
+/*
+ * Dense sections dim the backdrop behind them so the content reads first. The veil is
+ * strongest over the content column, thins toward the page edges and fades out above and
+ * below, so the ribbons stay bright between sections and in the open ones (hero, experience).
+ */
+.section--calm::before {
+	content: "";
+	position: absolute;
+	inset: -8rem 0;
+	z-index: -1;
+	pointer-events: none;
+	background: linear-gradient(
+		90deg,
+		color-mix(in srgb, var(--bg) 35%, transparent),
+		var(--bg) 25%,
+		var(--bg) 75%,
+		color-mix(in srgb, var(--bg) 35%, transparent)
+	);
+	opacity: 0.75;
+	mask-image: linear-gradient(transparent, #000 8rem, #000 calc(100% - 8rem), transparent);
+}
+
 .section--full {
 	height: var(--full-h);
 	min-height: fit-content;
@@ -108,10 +147,11 @@ p {
 
 .eyebrow {
 	font-family: var(--font-sans);
-	font-size: 0.75rem;
-	letter-spacing: 0.08em;
+	font-size: 0.6875rem;
+	font-weight: 500;
+	letter-spacing: 0.24em;
 	text-transform: uppercase;
-	color: var(--accent-text);
+	color: var(--eyebrow);
 }
 
 .section .eyebrow + .title {
@@ -136,7 +176,7 @@ p {
 
 .btn {
 	--btn-hover-bg: var(--accent);
-	--btn-hover-fg: #0a0a0a;
+	--btn-hover-fg: var(--on-accent);
 
 	position: relative;
 	display: inline-flex;
@@ -150,11 +190,6 @@ p {
 	transition:
 		color 0.25s ease,
 		border-color 0.25s ease;
-}
-
-.btn--hover-white {
-	--btn-hover-bg: var(--fg);
-	--btn-hover-fg: var(--bg);
 }
 
 .btn::before {
@@ -213,6 +248,11 @@ p {
 	background: transparent;
 	color: var(--fg);
 	border: 1px solid var(--line);
+}
+
+.btn--hover-white {
+	--btn-hover-bg: var(--fg);
+	--btn-hover-fg: var(--bg);
 }
 
 @media (prefers-reduced-motion: reduce) {
