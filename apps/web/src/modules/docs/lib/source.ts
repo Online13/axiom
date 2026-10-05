@@ -12,7 +12,17 @@ export const source = loader({
 export function getStructuredData(
 	entry: CollectionEntry<"docs">,
 ): StructuredData {
-	return structure(entry.body ?? "");
+	// One search entry per table row instead of one per cell: props tables
+	// otherwise flood the index with "—", "`string`" and header cells.
+	const data = structure(entry.body ?? "", undefined, {
+		types: ["heading", "paragraph", "blockquote", "tableRow", "mdxJsxFlowElement"],
+	});
+	for (const item of data.contents) {
+		item.content = item.content
+			.replace(/^\|\s*|\s*\|$/g, "")
+			.replace(/\s+\|\s+/g, " · ");
+	}
+	return data;
 }
 
 async function createMySource() {
