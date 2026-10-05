@@ -1,10 +1,11 @@
-import { createContext, use, useState, type ReactNode } from "react";
 import {
-	ScrollView,
-	View,
-	type StyleProp,
-	type ViewStyle,
-} from "react-native";
+	createContext,
+	use,
+	useState,
+	type ComponentPropsWithRef,
+	type ReactNode,
+} from "react";
+import { ScrollView, View, type StyleProp, type ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import {
 	StyleSheet,
@@ -14,9 +15,9 @@ import {
 
 import { Overlay } from "@/components/core/overlay";
 import { Portal } from "@/components/core/portal";
-import { Slot } from "@/components/core/slot";
+import { composeRefs, Slot } from "@/components/core/slot";
 import { haptic, type HapticKind } from "@/components/core/haptics";
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
 import { Text } from "@/components/ui/text";
@@ -38,56 +39,50 @@ function MenuRoot({ children, ...options }: MenuRootProps) {
 	return <MenuContext value={menu}>{children}</MenuContext>;
 }
 
-export type MenuTriggerProps = {
-	/** `longPress` for context menus on content, `press` for a "more" button. */
-	action?: "longPress" | "press";
-	/** Lifts a copy of the trigger above the backdrop. A node shows that node in its place instead. */
-	preview?: boolean | ReactNode;
-	/** Played when the menu opens. Defaults to `medium` for a long press, nothing for a press. `false` turns it off. */
+export type MenuTriggerProps = Omit<
+	TappableProps,
+	"children" | "style" | "onPress"
+> & {
+	/** Played when the menu opens. Off unless you pass a kind. */
 	haptic?: HapticKind | false;
 	asChild?: boolean;
-	accessibilityLabel?: string;
 	children?: ReactNode;
 	style?: StyleProp<ViewStyle>;
 };
 
+/** Opens the menu on a press, like a "more" button. For a long press on content, see ContextMenu. */
 function MenuTrigger({
-	action = "longPress",
-	preview,
-	haptic: hapticKind = action === "longPress" ? "medium" : false,
+	haptic: hapticKind,
 	asChild = false,
-	accessibilityLabel,
 	children,
 	style,
+	ref,
+	...props
 }: MenuTriggerProps) {
 	const { triggerRef, openFromTrigger } = useMenuContext();
-	const lifted = preview ?? action === "longPress";
-	const previewNode =
-		lifted === true ? children : lifted === false ? null : lifted;
 	const open = () => {
 		if (hapticKind) haptic(hapticKind);
-		openFromTrigger(previewNode);
+		openFromTrigger(null);
 	};
-	const handlers =
-		action === "press" ? { onPress: open } : { onLongPress: open };
 
 	if (asChild) {
 		return (
-			<View ref={triggerRef} collapsable={false} style={style}>
-				<Slot {...handlers}>{children}</Slot>
+			<View
+				{...props}
+				ref={composeRefs(triggerRef, ref)}
+				collapsable={false}
+				style={style}
+			>
+				<Slot onPress={open}>{children}</Slot>
 			</View>
 		);
 	}
 
 	return (
 		<Tappable
-			ref={triggerRef}
-			{...handlers}
-			accessibilityLabel={accessibilityLabel}
-			// Screen readers reach a long-press menu through the long press action.
-			accessibilityHint={
-				action === "longPress" ? "Long press for options" : undefined
-			}
+			{...props}
+			ref={composeRefs(triggerRef, ref)}
+			onPress={open}
 			style={style}
 		>
 			{children}
@@ -116,7 +111,10 @@ function menuItemColors(
 // to map the theme to that prop through `uniProps`.
 const ThemedIcon = withUnistyles(Icon);
 
-export type MenuContentProps = {
+export type MenuContentProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	placement?: MenuPlacement;
 	align?: "start" | "center" | "end";
 	width?: number;
@@ -133,6 +131,8 @@ function MenuContent({
 	overlay = "dim",
 	children,
 	style,
+	onLayout,
+	...props
 }: MenuContentProps) {
 	// The placement is computed in plain numbers, so the spacing tokens are read here rather than
 	// resolved by the shadow tree. This is the theme-in-logic case.
@@ -169,6 +169,7 @@ function MenuContent({
 					onPress={content.close}
 					opacity={overlay === "none" ? 0 : 0.25}
 				/>
+				{/* Set by ContextMenu.Trigger: the pressed content, lifted above the backdrop. */}
 				{menu.preview !== null && menu.preview !== undefined ? (
 					<Animated.View
 						style={[
@@ -184,9 +185,13 @@ function MenuContent({
 					</Animated.View>
 				) : null}
 				<Animated.View
+					{...props}
 					accessibilityViewIsModal={content.isTop}
 					accessibilityRole="menu"
-					onLayout={content.onLayout}
+					onLayout={(event) => {
+						content.onLayout(event);
+						onLayout?.(event);
+					}}
 					style={[
 						styles.menu(content.transformOrigin),
 						content.position,
@@ -229,7 +234,10 @@ function MenuContent({
 	);
 }
 
-export type MenuItemProps = {
+export type MenuItemProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress"
+> & {
 	children: string;
 	/** Icon on the right, iOS style. */
 	icon?: IconName;
@@ -242,6 +250,7 @@ export type MenuItemProps = {
 	checked?: boolean;
 	/** Runs `onPress` without closing the menu. */
 	keepOpen?: boolean;
+	style?: StyleProp<ViewStyle>;
 };
 
 function MenuItem({
@@ -253,6 +262,8 @@ function MenuItem({
 	disabled = false,
 	checked,
 	keepOpen = false,
+	style,
+	...props
 }: MenuItemProps) {
 	const menu = useMenuContext();
 	const foreground = (uniTheme: Theme) => ({
@@ -262,21 +273,18 @@ function MenuItem({
 
 	return (
 		<Tappable
+			{...props}
 			disabled={disabled}
 			accessibilityRole="menuitem"
 			accessibilityLabel={subtitle ? `${children}, ${subtitle}` : children}
 			accessibilityState={checked === undefined ? undefined : { checked }}
 			onPress={() => (keepOpen ? onPress?.() : menu.select(onPress))}
-			style={({ pressed }) => styles.item(pressed)}
+			style={({ pressed }) => [styles.item(pressed), style]}
 		>
 			{checked !== undefined ? (
 				<View style={styles.check}>
 					{checked ? (
-						<ThemedIcon
-							name="check"
-							size="sm"
-							uniProps={foreground}
-						/>
+						<ThemedIcon name="check" size="sm" uniProps={foreground} />
 					) : null}
 				</View>
 			) : null}
@@ -302,19 +310,22 @@ function MenuItem({
 	);
 }
 
-export type MenuSubProps = {
+export type MenuSubProps = Omit<
+	MenuItemProps,
+	"children" | "onPress" | "keepOpen" | "checked"
+> & {
 	label: string;
-	icon?: IconName;
 	/** The items of the nested menu. */
 	children?: ReactNode;
 };
 
 /** An item that opens a nested menu in place. */
-function MenuSub({ label, icon, children }: MenuSubProps) {
+function MenuSub({ label, icon, children, ...props }: MenuSubProps) {
 	const stack = use(StackContext);
 
 	return (
 		<MenuItem
+			{...props}
 			icon={icon ?? "chevron-right"}
 			keepOpen
 			onPress={() => stack?.push(label, children)}
@@ -324,15 +335,17 @@ function MenuSub({ label, icon, children }: MenuSubProps) {
 	);
 }
 
-function MenuGroup({
-	label,
-	children,
-}: {
+export type MenuGroupProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	label?: string;
 	children?: ReactNode;
-}) {
+};
+
+function MenuGroup({ label, children, ...props }: MenuGroupProps) {
 	return (
-		<View>
+		<View {...props}>
 			{label ? (
 				<Text variant="footnote" color="muted" style={styles.groupLabel}>
 					{label}
@@ -344,8 +357,13 @@ function MenuGroup({
 }
 
 /** A thick gap between groups, like iOS. */
-function MenuSeparator() {
-	return <View style={styles.separator} />;
+export type MenuSeparatorProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+>;
+
+function MenuSeparator({ style, ...props }: MenuSeparatorProps) {
+	return <View {...props} style={[styles.separator, style]} />;
 }
 
 export const Menu = {
@@ -391,8 +409,7 @@ const styles = StyleSheet.create((theme) => ({
 			: undefined,
 	}),
 	itemText: (destructive: boolean, disabled: boolean) => ({
-		color: menuItemColors(theme.components, destructive, disabled)
-			.foreground,
+		color: menuItemColors(theme.components, destructive, disabled).foreground,
 	}),
 	check: {
 		width: 16,

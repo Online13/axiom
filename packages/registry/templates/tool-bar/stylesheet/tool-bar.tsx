@@ -1,30 +1,34 @@
-import { createContext, use, isValidElement, type ReactNode } from "react";
+import {
+	createContext,
+	use,
+	isValidElement,
+	type ComponentPropsWithRef,
+	type ReactNode,
+} from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
-import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
 import { MAX_FONT_SCALE, Text } from "@/components/ui/text";
 import type { IconName } from "@/components/ui/icons";
 import { useTheme } from "@/theme";
-
-import { useToolBar } from "../use-tool-bar";
 
 export type ToolBarPlacement = "docked" | "floating";
 export type ToolBarJustify = "start" | "center" | "between" | "around";
 
 const PlacementContext = createContext<ToolBarPlacement>("docked");
 
-export type ToolBarProps = {
+export type ToolBarProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	/** Actions and optional separators. */
 	children?: ReactNode;
 	/** Attached to the bottom edge, or an inset capsule over the content. */
 	placement?: ToolBarPlacement;
 	/** Adds the bottom safe-area inset for a docked bar. Floating bars use a margin instead. */
 	safeArea?: boolean;
-	/** Shows or hides the bar with its transition. */
-	visible?: boolean;
 	justify?: ToolBarJustify;
 	accessibilityLabel?: string;
 	style?: StyleProp<ViewStyle>;
@@ -37,29 +41,31 @@ const JUSTIFY = {
 	around: "space-around",
 } as const;
 
+/**
+ * A static bar of actions. To show it only in a mode, such as a selection, render it conditionally
+ * and animate it where you render it: `<Animated.View entering={FadeInDown} exiting={FadeOutDown}>`.
+ */
 function ToolBarRoot({
 	children,
 	placement = "docked",
 	safeArea = true,
-	visible = true,
 	justify = "around",
 	accessibilityLabel = "Actions",
 	style,
+	...props
 }: ToolBarProps) {
 	const { tokens, components } = useTheme();
 	const insets = useSafeAreaInsets();
-	const { animatedStyle } = useToolBar(visible);
 	const colors = components.toolBar[placement].default;
 
 	const floating = placement === "floating";
 
 	return (
 		<PlacementContext value={placement}>
-			<Animated.View
+			<View
+				{...props}
 				accessibilityRole="toolbar"
 				accessibilityLabel={accessibilityLabel}
-				// Hidden bars keep their space but take no touches.
-				pointerEvents={visible ? "box-none" : "none"}
 				style={[
 					floating ? styles.floating : styles.docked,
 					{
@@ -79,22 +85,24 @@ function ToolBarRoot({
 								? insets.bottom + tokens.spacing[2]
 								: 0,
 					},
-					animatedStyle,
 					style,
 				]}
 			>
 				{children}
-			</Animated.View>
+			</View>
 		</PlacementContext>
 	);
 }
 
-export type ToolBarActionProps = {
+export type ToolBarActionProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress"
+> & {
 	/** An icon of your registry, or your own node. */
 	icon: IconName | ReactNode;
 	/** Visible name in a docked bar, and the default accessible name. */
 	label: string;
-	onPress?: () => void;
+	onPress?: TappableProps["onPress"];
 	disabled?: boolean;
 	/** Error color, for an action such as Delete. It adds no confirmation by itself. */
 	destructive?: boolean;
@@ -102,7 +110,6 @@ export type ToolBarActionProps = {
 	selected?: boolean;
 	/** Defaults to `true` on a docked bar. The accessible name stays either way. */
 	showLabel?: boolean;
-	accessibilityLabel?: string;
 	style?: StyleProp<ViewStyle>;
 };
 
@@ -116,6 +123,7 @@ function ToolBarAction({
 	showLabel,
 	accessibilityLabel,
 	style,
+	...props
 }: ToolBarActionProps) {
 	const { tokens, components } = useTheme();
 	const placement = use(PlacementContext);
@@ -131,6 +139,7 @@ function ToolBarAction({
 
 	return (
 		<Tappable
+			{...props}
 			accessibilityLabel={accessibilityLabel ?? label}
 			accessibilityState={{ selected, disabled }}
 			disabled={disabled}
@@ -167,16 +176,18 @@ function ToolBarAction({
 	);
 }
 
-export type ToolBarSeparatorProps = {
-	style?: StyleProp<ViewStyle>;
-};
+export type ToolBarSeparatorProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+>;
 
-function ToolBarSeparator({ style }: ToolBarSeparatorProps) {
+function ToolBarSeparator({ style, ...props }: ToolBarSeparatorProps) {
 	const { components } = useTheme();
 	const placement = use(PlacementContext);
 
 	return (
 		<View
+			{...props}
 			accessibilityElementsHidden
 			importantForAccessibility="no-hide-descendants"
 			style={[

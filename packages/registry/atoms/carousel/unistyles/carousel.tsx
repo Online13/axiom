@@ -1,5 +1,17 @@
-import type { ReactElement, Ref } from "react";
-import { View, type StyleProp, type ViewStyle } from "react-native";
+import {
+	createContext,
+	use,
+	type ReactElement,
+	type ReactNode,
+	type Ref,
+} from "react";
+import {
+	View,
+	type FlatListProps,
+	type StyleProp,
+	type ViewProps,
+	type ViewStyle,
+} from "react-native";
 import Animated, {
 	interpolate,
 	useAnimatedStyle,
@@ -8,16 +20,23 @@ import Animated, {
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 import type { HapticKind } from "@/components/core/haptics";
-import { Text } from "@/components/ui/text";
 import type { Spacing } from "@/theme";
 
 import {
+	CarouselContext,
 	useCarousel,
+	useCarouselAutoPlay,
 	useCarouselItemProgress,
+	useCarouselRoot,
 	type CarouselRef,
+	type UseCarouselAutoPlayOptions,
 } from "../use-carousel";
 
-export type { CarouselRef } from "../use-carousel";
+export {
+	useCarousel,
+	useCarouselAutoPlay,
+	type CarouselRef,
+} from "../use-carousel";
 
 export type CarouselRenderInfo<T> = {
 	item: T;
@@ -26,7 +45,8 @@ export type CarouselRenderInfo<T> = {
 	progress: SharedValue<number>;
 };
 
-export type CarouselProps<T> = {
+/** `ref` is the imperative handle, not the root `View`. */
+export type CarouselProps<T> = Omit<ViewProps, "children"> & {
 	data: T[];
 	renderItem: (info: CarouselRenderInfo<T>) => ReactElement;
 	keyExtractor?: (item: T, index: number) => string;
@@ -36,21 +56,30 @@ export type CarouselProps<T> = {
 	/** Padding at the start and end. Defaults to the screen margin. */
 	contentInset?: keyof Spacing;
 	snap?: "item" | "page" | "none";
-	pagination?: boolean | "dots" | "counter";
 	index?: number;
 	onIndexChange?: (index: number) => void;
-	loop?: boolean;
-	autoPlay?: number;
 	/** Played when a swipe lands on another item. Off unless you pass a kind, e.g. `"selection"`. */
 	haptic?: HapticKind | false;
-	/** Items rendered around the visible ones, in viewport widths. */
-	windowSize?: number;
 	ref?: Ref<CarouselRef>;
-	accessibilityLabel?: string;
+	/** Carousel.List, and Carousel.Pagination or Carousel.AutoPlay where you want them. */
+	children?: ReactNode;
 	style?: StyleProp<ViewStyle>;
 };
 
-export function Carousel<T>({
+type ItemRenderer = (info: CarouselRenderInfo<unknown>) => ReactElement;
+type KeyExtractor = (item: unknown, index: number) => string;
+
+// The list reads the data and its renderer from the root, which needs the count for snapping.
+type ListSource = {
+	data: unknown[];
+	renderItem: ItemRenderer;
+	keyExtractor?: KeyExtractor;
+};
+
+const ListContext = createContext<ListSource | null>(null);
+
+/** Holds the scroll position and the active item. Renders its children where you write them. */
+function CarouselRoot<T>({
 	data,
 	renderItem,
 	keyExtractor,
@@ -58,16 +87,13 @@ export function Carousel<T>({
 	gap = 3,
 	contentInset,
 	snap = "item",
-	pagination = false,
 	index,
 	onIndexChange,
-	loop = false,
-	autoPlay,
 	haptic,
-	windowSize = 5,
 	ref,
-	accessibilityLabel,
-	style,
+	children,
+	onLayout: onLayoutProp,
+	...props
 }: CarouselProps<T>) {
 	// The hook and `getItemLayout` measure in plain numbers, so the spacing tokens are read here
 	// rather than resolved by the shadow tree. This is the theme-in-logic case.
@@ -77,20 +103,7 @@ export function Carousel<T>({
 		contentInset === undefined
 			? theme.tokens.metrics.screenMargin
 			: theme.tokens.spacing[contentInset];
-	const {
-		listRef,
-		scrollX,
-		scrollHandler,
-		active,
-		itemWidth: width,
-		interval,
-		snapToOffsets,
-		endPadding,
-		onLayout,
-		onMomentumScrollEnd,
-		onTouchStart,
-		onTouchEnd,
-	} = useCarousel({
+	const carousel = useCarouselRoot({
 		count: data.length,
 		itemWidth,
 		gap: spacing,
@@ -98,78 +111,100 @@ export function Carousel<T>({
 		snap,
 		index,
 		onIndexChange,
-		loop,
-		autoPlay,
 		haptic,
 		ref,
 	});
+	const source: ListSource = {
+		data,
+		renderItem: renderItem as ItemRenderer,
+		keyExtractor: keyExtractor as KeyExtractor | undefined,
+	};
 
 	return (
-		<View style={style} onLayout={onLayout}>
-			<Animated.FlatList
-				ref={listRef}
-				data={data as unknown[]}
-				horizontal
-				showsHorizontalScrollIndicator={false}
-				decelerationRate={snapToOffsets ? "fast" : "normal"}
-				snapToOffsets={snapToOffsets}
-				snapToEnd={false}
-				disableIntervalMomentum={snap === "item"}
-				windowSize={windowSize}
-				initialNumToRender={3}
-				scrollEventThrottle={16}
-				onScroll={scrollHandler}
-				onMomentumScrollEnd={onMomentumScrollEnd}
-				onTouchStart={onTouchStart}
-				onTouchEnd={onTouchEnd}
-				onTouchCancel={onTouchEnd}
-				accessibilityLabel={accessibilityLabel}
-				contentContainerStyle={styles.content(inset, endPadding, spacing)}
-				getItemLayout={(_, i) => ({
-					length: interval,
-					offset: inset + interval * i,
-					index: i,
-				})}
-				keyExtractor={(item, i) =>
-					keyExtractor ? keyExtractor(item as T, i) : String(i)
-				}
-				renderItem={({ item, index: i }) => (
-					<CarouselItem
-						width={width}
-						index={i}
-						interval={interval}
-						scrollX={scrollX}
-						render={(progress) =>
-							renderItem({ item: item as T, index: i, progress })
-						}
-					/>
-				)}
-			/>
-			{pagination && data.length > 1 ? (
-				<View style={styles.pagination}>
-					{pagination === "counter" ? (
-						<Text variant="footnote" color="muted">
-							{active + 1} / {data.length}
-						</Text>
-					) : (
-						<View
-							accessible
-							accessibilityLabel={`Page ${active + 1} of ${data.length}`}
-							style={styles.dots}
-						>
-							{data.map((_, i) => (
-								<Dot
-									key={i}
-									index={i}
-									interval={interval}
-									scrollX={scrollX}
-								/>
-							))}
-						</View>
-					)}
+		<CarouselContext value={{ ...carousel, gap: spacing, inset }}>
+			<ListContext value={source}>
+				<View
+					{...props}
+					onLayout={(event) => {
+						carousel.onLayout(event);
+						onLayoutProp?.(event);
+					}}
+				>
+					{children}
 				</View>
-			) : null}
-		</View>
+			</ListContext>
+		</CarouselContext>
+	);
+}
+
+export type CarouselListProps = Pick<
+	FlatListProps<unknown>,
+	| "windowSize"
+	| "initialNumToRender"
+	| "accessibilityLabel"
+	| "testID"
+	| "style"
+	| "contentContainerStyle"
+>;
+
+/** The horizontal list of items. */
+function CarouselList({
+	windowSize = 5,
+	initialNumToRender = 3,
+	contentContainerStyle,
+	...props
+}: CarouselListProps) {
+	const carousel = useCarousel();
+	const source = use(ListContext);
+	if (!source) throw new Error("Carousel.List must be rendered inside <Carousel>.");
+
+	return (
+		<Animated.FlatList
+			{...props}
+			ref={carousel.listRef}
+			data={source.data}
+			horizontal
+			showsHorizontalScrollIndicator={false}
+			decelerationRate={carousel.snapToOffsets ? "fast" : "normal"}
+			snapToOffsets={carousel.snapToOffsets}
+			snapToEnd={false}
+			disableIntervalMomentum={carousel.snap === "item"}
+			windowSize={windowSize}
+			initialNumToRender={initialNumToRender}
+			scrollEventThrottle={16}
+			onScroll={carousel.scrollHandler}
+			onMomentumScrollEnd={carousel.onMomentumScrollEnd}
+			onTouchStart={carousel.onTouchStart}
+			onTouchEnd={carousel.onTouchEnd}
+			onTouchCancel={carousel.onTouchEnd}
+			contentContainerStyle={[
+				{
+					paddingStart: carousel.inset,
+					paddingEnd: carousel.endPadding,
+					gap: carousel.gap,
+				},
+				contentContainerStyle,
+			]}
+			getItemLayout={(_, i) => ({
+				length: carousel.interval,
+				offset: carousel.inset + carousel.interval * i,
+				index: i,
+			})}
+			keyExtractor={(item, i) =>
+				source.keyExtractor ? source.keyExtractor(item, i) : String(i)
+			}
+			renderItem={({ item, index: i }) => (
+				<CarouselItem
+					width={carousel.itemWidth}
+					index={i}
+					interval={carousel.interval}
+					scrollX={carousel.scrollX}
+					render={(progress) =>
+						source.renderItem({ item, index: i, progress })
+					}
+				/>
+			)}
+		/>
 	);
 }
 
@@ -188,6 +223,35 @@ function CarouselItem({
 }) {
 	const progress = useCarouselItemProgress(scrollX, index, interval);
 	return <View style={styles.item(width)}>{render(progress)}</View>;
+}
+
+export type CarouselPaginationProps = Omit<ViewProps, "children"> & {
+	style?: StyleProp<ViewStyle>;
+};
+
+/** One dot per item; the active one stretches into a pill as the list scrolls. */
+function CarouselPagination({ style, ...props }: CarouselPaginationProps) {
+	const carousel = useCarousel();
+
+	if (carousel.count < 2) return null;
+
+	return (
+		<View
+			accessible
+			accessibilityLabel={`Page ${carousel.active + 1} of ${carousel.count}`}
+			{...props}
+			style={[styles.dots, style]}
+		>
+			{Array.from({ length: carousel.count }, (_, i) => (
+				<Dot
+					key={i}
+					index={i}
+					interval={carousel.interval}
+					scrollX={carousel.scrollX}
+				/>
+			))}
+		</View>
+	);
 }
 
 function Dot({
@@ -213,21 +277,28 @@ function Dot({
 	return <Animated.View style={[styles.dot, animatedStyle]} />;
 }
 
+export type CarouselAutoPlayProps = UseCarouselAutoPlayOptions;
+
+/** Moves to the next item on a timer. Renders nothing: it's `useCarouselAutoPlay` as a part. */
+function CarouselAutoPlay(props: CarouselAutoPlayProps) {
+	useCarouselAutoPlay(props);
+	return null;
+}
+
+export const Carousel = Object.assign(CarouselRoot, {
+	List: CarouselList,
+	Pagination: CarouselPagination,
+	AutoPlay: CarouselAutoPlay,
+});
+
 const styles = StyleSheet.create((theme) => ({
-	content: (inset: number, endPadding: number, gap: number) => ({
-		paddingStart: inset,
-		paddingEnd: endPadding,
-		gap,
-	}),
 	item: (width: number) => ({ width }),
-	pagination: {
-		alignItems: "center",
-		marginTop: theme.tokens.spacing[3],
-	},
 	dots: {
 		flexDirection: "row",
 		alignItems: "center",
+		alignSelf: "center",
 		gap: theme.tokens.spacing[1] + 2,
+		marginTop: theme.tokens.spacing[3],
 	},
 	dot: {
 		height: 6,

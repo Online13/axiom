@@ -1,7 +1,6 @@
-import { Children, Fragment, isValidElement, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { View } from "react-native";
 
-import { Separator } from "@/components/ui/separator";
 import { Text } from "@/components/ui/text";
 import { useTheme } from "@/theme";
 
@@ -10,7 +9,7 @@ export type SettingsSectionProps = {
 	title?: string;
 	/** Note under the rows, to explain a setting. */
 	footer?: string;
-	/** `SettingsItem` rows. A hairline separates them. */
+	/** `SettingsItem` rows. Give each one but the last a `divider`. */
 	children: ReactNode;
 };
 
@@ -22,6 +21,7 @@ export type SettingsSectionProps = {
  * <SettingsSection title="Notifications" footer="Quiet hours mute every alert.">
  *   <SettingsItem
  *     title="Push notifications"
+ *     divider
  *     trailing="switch"
  *     checked={push}
  *     onCheckedChange={setPush}
@@ -41,7 +41,6 @@ export function SettingsSection({
 	children,
 }: SettingsSectionProps) {
 	const { tokens } = useTheme();
-	const rows = Children.toArray(children).filter(isValidElement);
 	const text = { paddingHorizontal: tokens.metrics.screenMargin };
 
 	return (
@@ -57,17 +56,7 @@ export function SettingsSection({
 					{title}
 				</Text>
 			) : null}
-			<View>
-				{/* The line starts at the rows' margin (spacing 4, the default screen margin). */}
-				{rows.map((row, index) => (
-					<Fragment key={row.key ?? index}>
-						{index > 0 ? (
-							<Separator variant="subtle" inset={{ start: 4 }} />
-						) : null}
-						{row}
-					</Fragment>
-				))}
-			</View>
+			<View>{children}</View>
 			{footer ? (
 				<Text variant="footnote" color="muted" style={text}>
 					{footer}

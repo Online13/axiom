@@ -27,6 +27,18 @@ Write each file as it will look **in the user's project**, not as it sits here:
 - import other items through the default aliases (`@/theme`, `@/components/core`, `@/hooks`, `@/components/ui`, `@/components/compositions`, `@/components/blocks`);
 - import files of the same item with a relative path to where they are in the registry (`../use-switch`). The CLI turns it into `./use-switch`.
 
+### Reusable primitives
+
+Every primitive, and every part of a compound primitive, forwards the props of the element it renders at its root. A developer should never have to copy a component to set a `testID`, an `onLayout` or a `contentContainerStyle`:
+
+- type the props as the root's props plus the component's own: `Omit<ComponentPropsWithRef<typeof View>, "children"> & { … }`, `Omit<TappableProps, "children" | "style" | "disabled" | "onPress"> & { … }`, or a union when the root depends on a prop (see `Chip.Group` and `Tab.List`);
+- collect the rest with `...props` and spread it on the root **before** the props the component controls, so its role, state and style merging stay intact;
+- when the component needs a handler the caller may also pass (`onLayout`, a `ref`), call both: `composeRefs` from `@/components/core/slot` merges refs;
+- hook options are destructured by name rather than collected in a rest object, so they never leak onto the element;
+- controlled and uncontrolled state go through `useControllableState`. An effect may drive an animation or subscribe to something native, but it never copies a prop into state.
+
+Compositions and blocks are fixed assemblies and don't follow this rule.
+
 ### Component tokens
 
 A component with colors has a `<item>-tokens.ts` exporting `<item>Tokens(colors, tokens)` (camelCase), declared in `tokens` and in `files`. It stays next to the component here, but `axiom add` copies it to the project's `theme/components/<item>.ts`: the theme is its only reader. Don't add it to `foundations/theme/components/index.ts`: that file is a template, and `axiom add` registers tokens between its markers in the project. The typecheck uses `.generated/components/`, the template with every item's tokens registered.

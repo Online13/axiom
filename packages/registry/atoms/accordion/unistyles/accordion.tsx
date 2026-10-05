@@ -1,9 +1,12 @@
-import { Children, Fragment, isValidElement, type ReactNode } from "react";
+import {
+	type ComponentPropsWithRef,
+	type ReactNode,
+} from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
 
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 
@@ -18,39 +21,49 @@ import {
 	type UseAccordionOptions,
 } from "../use-accordion";
 
-export type AccordionProps = UseAccordionOptions & {
-	/** Hairline between sections. */
-	divider?: boolean;
-	children?: ReactNode;
-	style?: StyleProp<ViewStyle>;
-};
+export type AccordionProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> &
+	UseAccordionOptions & {
+		/** Items, with a Separator between them where you want a line. */
+		children?: ReactNode;
+		style?: StyleProp<ViewStyle>;
+	};
 
 function AccordionRoot({
-	divider = true,
 	children,
 	style,
-	...options
+	type,
+	value,
+	defaultValue,
+	onValueChange,
+	collapsible,
+	disabled,
+	...props
 }: AccordionProps) {
-	const accordion = useAccordion(options);
-	const items = Children.toArray(children).filter(isValidElement);
+	const accordion = useAccordion({
+		type,
+		value,
+		defaultValue,
+		onValueChange,
+		collapsible,
+		disabled,
+	});
 
 	return (
 		<AccordionContext value={accordion}>
-			<View style={style}>
-				{items.map((item, i) => (
-					<Fragment key={item.key ?? i}>
-						{divider && i > 0 ? (
-							<View style={styles.divider} />
-						) : null}
-						{item}
-					</Fragment>
-				))}
+			<View {...props} style={style}>
+				{children}
 			</View>
 		</AccordionContext>
 	);
 }
 
-export type AccordionItemProps = {
+export type AccordionItemProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	value: string;
 	disabled?: boolean;
 	children?: ReactNode;
@@ -62,6 +75,7 @@ function AccordionItem({
 	disabled = false,
 	children,
 	style,
+	...props
 }: AccordionItemProps) {
 	const accordion = useAccordionContext();
 	const inactive = disabled || accordion.disabled;
@@ -75,12 +89,17 @@ function AccordionItem({
 				toggle: () => accordion.toggle(value),
 			}}
 		>
-			<View style={style}>{children}</View>
+			<View {...props} style={style}>
+				{children}
+			</View>
 		</AccordionItemContext>
 	);
 }
 
-export type AccordionTriggerProps = {
+export type AccordionTriggerProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress"
+> & {
 	children?: ReactNode;
 	/** Indicator on the right, rotated when open. `null` hides it. */
 	icon?: ReactNode | null;
@@ -93,12 +112,14 @@ function AccordionTrigger({
 	icon,
 	leading,
 	style,
+	...props
 }: AccordionTriggerProps) {
 	const { open, disabled, toggle } = useAccordionItem();
 	const indicatorStyle = useAccordionIndicator(open);
 
 	return (
 		<Tappable
+			{...props}
 			disabled={disabled}
 			accessibilityState={{ expanded: open }}
 			onPress={toggle}
@@ -129,7 +150,10 @@ function AccordionTrigger({
 	);
 }
 
-export type AccordionContentProps = {
+export type AccordionContentProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	children?: ReactNode;
 	/** Keeps the content mounted while closed, to preserve its state. */
 	forceMount?: boolean;
@@ -140,6 +164,8 @@ function AccordionContent({
 	children,
 	forceMount = false,
 	style,
+	onLayout,
+	...props
 }: AccordionContentProps) {
 	const { open } = useAccordionItem();
 	const content = useAccordionContent(open, forceMount);
@@ -153,7 +179,14 @@ function AccordionContent({
 			style={[styles.clip, content.containerStyle]}
 		>
 			{/* Absolute, so it keeps its natural height while the container animates. */}
-			<View onLayout={content.onLayout} style={[styles.measure, style]}>
+			<View
+				{...props}
+				onLayout={(event) => {
+					content.onLayout(event);
+					onLayout?.(event);
+				}}
+				style={[styles.measure, style]}
+			>
 				{typeof children === "string" ? (
 					<Text variant="bodySm" color="muted">
 						{children}
@@ -173,10 +206,6 @@ export const Accordion = Object.assign(AccordionRoot, {
 });
 
 const styles = StyleSheet.create((theme) => ({
-	divider: {
-		height: theme.tokens.metrics.hairline,
-		backgroundColor: theme.colors.border.default,
-	},
 	trigger: (pressed: boolean) => ({
 		flexDirection: "row",
 		alignItems: "center",

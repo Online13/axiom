@@ -15,8 +15,7 @@ import { MAX_FONT_SCALE } from "@/components/ui/text";
 import { useInputOTP, type UseInputOTPOptions } from "../use-input-otp";
 
 export type InputOTPSize = "sm" | "md";
-type CellState =
-	"default" | "active" | "invalid" | "success" | "disabled";
+type CellState = "default" | "active" | "invalid" | "success" | "disabled";
 
 export type InputOTPProps = UseInputOTPOptions &
 	Pick<
@@ -29,13 +28,13 @@ export type InputOTPProps = UseInputOTPOptions &
 		secure?: boolean;
 		/** Green cells, once the code is accepted. */
 		success?: boolean;
-		/** Cell size: 40×48 or 48×56pt. */
+		/** Cell size: 40×50 or 48×56pt. The height comes from the `input` size tokens. */
 		size?: InputOTPSize;
 		accessibilityLabel?: string;
 		style?: StyleProp<ViewStyle>;
 	};
 
-const CELL = { sm: { width: 40, height: 48 }, md: { width: 48, height: 56 } };
+const CELL_WIDTH = { sm: 40, md: 48 };
 
 export function InputOTP({
 	groups,
@@ -151,7 +150,8 @@ const styles = StyleSheet.create((theme) => {
 				alignItems: "center",
 				justifyContent: "center",
 				borderCurve: "continuous",
-				...CELL[size],
+				width: CELL_WIDTH[size],
+				height: theme.tokens.sizes.input[size],
 				borderRadius: theme.tokens.radius.md,
 				backgroundColor: colors.background,
 				borderColor: colors.border,

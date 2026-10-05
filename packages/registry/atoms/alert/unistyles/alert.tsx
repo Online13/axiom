@@ -1,8 +1,13 @@
-import type { ReactNode } from "react";
+import {
+	createContext,
+	use,
+	type ComponentPropsWithRef,
+	type ReactNode,
+} from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
 import { IconButton } from "@/components/ui/icon-button";
@@ -10,16 +15,17 @@ import { FONT_WEIGHT, Text } from "@/components/ui/text";
 
 export type AlertVariant = "info" | "success" | "warning" | "error" | "neutral";
 
-export type AlertProps = {
+export type AlertProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	variant?: AlertVariant;
 	/** Short, bold summary. */
 	title?: ReactNode;
-	/** Description under the title. */
+	/** Description under the title: a string, or Alert.Description and Alert.Action where you want them. */
 	children?: ReactNode;
 	/** Each variant has a default icon; `null` removes it. */
 	icon?: IconName | null;
-	/** A text action under the description. */
-	action?: { label: string; onPress: () => void };
 	/** Shows a close button. Hiding the alert is up to you. */
 	onDismiss?: () => void;
 	/** Defaults to `assertive` for errors, so they are announced when they appear. */
@@ -39,69 +45,101 @@ const DEFAULT_ICON: Record<AlertVariant, IconName> = {
 // to map the theme to that prop through `uniProps`.
 const ThemedIcon = withUnistyles(Icon);
 
-export function Alert({
+const VariantContext = createContext<AlertVariant>("info");
+
+function AlertRoot({
 	variant = "info",
 	title,
 	children,
 	icon,
-	action,
 	onDismiss,
 	accessibilityLiveRegion,
 	style,
+	...props
 }: AlertProps) {
 	const leading = icon === undefined ? DEFAULT_ICON[variant] : icon;
 	const live =
 		accessibilityLiveRegion ?? (variant === "error" ? "assertive" : "none");
 
 	return (
-		<View
-			accessibilityRole={variant === "error" ? "alert" : undefined}
-			accessibilityLiveRegion={live}
-			style={[styles.container(variant, onDismiss !== undefined), style]}
-		>
-			{leading ? (
-				<ThemedIcon
-					name={leading}
-					uniProps={(theme) => ({
-						color: theme.components.alert[variant].default.icon,
-					})}
-				/>
-			) : null}
-			<View style={styles.body}>
-				{typeof title === "string" ? (
-					<Text variant="bodySm" weight="semibold">
-						{title}
-					</Text>
-				) : (
-					title
-				)}
-				{typeof children === "string" ? (
-					<Text variant="bodySm" color="muted">
-						{children}
-					</Text>
-				) : (
-					children
-				)}
-				{action ? (
-					<Tappable onPress={action.onPress} style={styles.action}>
-						<Text variant="bodySm" style={styles.actionLabel(variant)}>
-							{action.label}
+		<VariantContext value={variant}>
+			<View
+				{...props}
+				accessibilityRole={variant === "error" ? "alert" : undefined}
+				accessibilityLiveRegion={live}
+				style={[styles.container(variant, onDismiss !== undefined), style]}
+			>
+				{leading ? (
+					<ThemedIcon
+						name={leading}
+						uniProps={(theme) => ({
+							color: theme.components.alert[variant].default.icon,
+						})}
+					/>
+				) : null}
+				<View style={styles.body}>
+					{typeof title === "string" ? (
+						<Text variant="bodySm" weight="semibold">
+							{title}
 						</Text>
-					</Tappable>
+					) : (
+						title
+					)}
+					{typeof children === "string" ? (
+						<Text variant="bodySm" color="muted">
+							{children}
+						</Text>
+					) : (
+						children
+					)}
+				</View>
+				{onDismiss ? (
+					<IconButton
+						icon="close"
+						size="sm"
+						accessibilityLabel="Dismiss"
+						onPress={onDismiss}
+						style={styles.dismiss}
+					/>
 				) : null}
 			</View>
-			{onDismiss ? (
-				<IconButton
-					icon="close"
-					size="sm"
-					accessibilityLabel="Dismiss"
-					onPress={onDismiss}
-					style={styles.dismiss}
-				/>
-			) : null}
-		</View>
+		</VariantContext>
 	);
 }
+
+export type AlertDescriptionProps = ComponentPropsWithRef<typeof Text>;
+
+/** The description, when it sits next to an action. A plain string child is wrapped in one for you. */
+function AlertDescription(props: AlertDescriptionProps) {
+	return <Text variant="bodySm" color="muted" {...props} />;
+}
+
+export type AlertActionProps = Omit<TappableProps, "children" | "style"> & {
+	children: string;
+	style?: StyleProp<ViewStyle>;
+};
+
+/** A text button in the alert's color. For a filled button, put a Button in its place. */
+function AlertAction({ children, style, ...props }: AlertActionProps) {
+	const variant = use(VariantContext);
+
+	return (
+		<Tappable
+			accessibilityRole="button"
+			{...props}
+			style={[styles.action, style]}
+		>
+			<Text variant="bodySm" style={styles.actionLabel(variant)}>
+				{children}
+			</Text>
+		</Tappable>
+	);
+}
+
+export const Alert = Object.assign(AlertRoot, {
+	Description: AlertDescription,
+	Action: AlertAction,
+});
 
 const styles = StyleSheet.create((theme) => ({
 	container: (variant: AlertVariant, dismissible: boolean) => {

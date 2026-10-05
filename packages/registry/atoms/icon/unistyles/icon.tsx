@@ -1,3 +1,4 @@
+import type { ComponentPropsWithRef } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
@@ -21,7 +22,7 @@ export type IconColor =
 	| "warning"
 	| "error";
 
-export type IconProps = {
+export type IconProps = Omit<ComponentPropsWithRef<typeof View>, "children"> & {
 	name: IconName;
 	/** From the `icon` size tokens (16, 20, 24), or a number. */
 	size?: IconSize | number;
@@ -51,6 +52,7 @@ export function Icon({
 	strokeWidth,
 	accessibilityLabel,
 	style,
+	...props
 }: IconProps) {
 	// The glyph takes its size and color as props, not as styles, and it comes from the project's
 	// icon registry: it can't be wrapped once with `withUnistyles`. This is the theme-in-logic case.
@@ -64,6 +66,7 @@ export function Icon({
 
 	return (
 		<View
+			{...props}
 			accessible={!decorative}
 			accessibilityRole={decorative ? undefined : "image"}
 			accessibilityLabel={accessibilityLabel}

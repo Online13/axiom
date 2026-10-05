@@ -33,9 +33,8 @@ export type RecipeCardProps = {
 	badge?: string;
 	/** Time, servings, difficulty. Three fit on one line. */
 	stats?: RecipeStat[];
+	/** The first `SHOWN_INGREDIENTS` are shown as chips; the rest are counted in a "+n" chip. */
 	ingredients?: string[];
-	/** Ingredients shown as chips; the rest are counted in a "+n" chip. */
-	maxIngredients?: number;
 	actionLabel?: string;
 	/** Shows the action button. */
 	onAction?: () => void;
@@ -43,6 +42,9 @@ export type RecipeCardProps = {
 	onPress?: () => void;
 	style?: StyleProp<ViewStyle>;
 };
+
+// Ingredient chips shown before the "+n" chip. Change it here: the card never hides more than this.
+const SHOWN_INGREDIENTS = 2;
 
 /** Designed for a vertical feed: it takes the full width of its list, one recipe per row. */
 export function RecipeCard({
@@ -52,13 +54,12 @@ export function RecipeCard({
 	badge,
 	stats,
 	ingredients,
-	maxIngredients = 2,
 	actionLabel = "Start cooking",
 	onAction,
 	onPress,
 	style,
 }: RecipeCardProps) {
-	const shown = ingredients?.slice(0, maxIngredients) ?? [];
+	const shown = ingredients?.slice(0, SHOWN_INGREDIENTS) ?? [];
 	const hidden = (ingredients?.length ?? 0) - shown.length;
 
 	return (

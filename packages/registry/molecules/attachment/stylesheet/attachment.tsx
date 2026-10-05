@@ -6,7 +6,7 @@ import {
 	type ViewStyle,
 } from "react-native";
 
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
 import { IconButton } from "@/components/ui/icon-button";
 import { Spinner } from "@/components/ui/spinner";
@@ -24,16 +24,17 @@ export { formatBytes } from "../use-attachment";
 
 export type AttachmentVariant = "row" | "tile";
 
-export type AttachmentProps = {
+export type AttachmentProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress"
+> & {
 	file: AttachmentFile;
 	/** Upload state. Derived from `progress` and `error` when not set. */
 	status?: AttachmentStatus;
-	/** Upload progress from 0 to 1. Shows a bar (row) or a spinner (tile). */
+	/** Upload progress from 0 to 1. Shows a bar on a row, a spinner on a tile. */
 	progress?: number;
 	/** Error state: red border and the message instead of the size. */
 	error?: string | boolean;
-	/** `row` for documents with a name, `tile` for a square thumbnail in a grid. */
-	variant?: AttachmentVariant;
 	/** Opens the file, for example in a preview. */
 	onPress?: () => void;
 	/** Shows a remove button. While uploading, cancelling the request is up to you. */
@@ -60,17 +61,53 @@ export function attachmentColors(
 const THUMBNAIL = 40;
 const TILE = 72;
 
+function Thumbnail({
+	uri,
+	icon,
+	size,
+	radius,
+	colors,
+}: {
+	uri: string | undefined;
+	icon: ReturnType<typeof useAttachment>["icon"];
+	size: number;
+	radius: number;
+	colors: ReturnType<typeof attachmentColors>;
+}) {
+	return uri ? (
+		<Image
+			source={{ uri }}
+			style={{ width: size, height: size, borderRadius: radius }}
+		/>
+	) : (
+		<View
+			style={[
+				styles.center,
+				{
+					width: size,
+					height: size,
+					borderRadius: radius,
+					backgroundColor: colors.thumbnail,
+				},
+			]}
+		>
+			<Icon name={icon} size="md" color={colors.icon} />
+		</View>
+	);
+}
+
+/** A document in a row: thumbnail, name, size or error, and a progress bar while it uploads. */
 export function Attachment({
 	file,
 	status: statusProp,
 	progress,
 	error,
-	variant = "row",
 	onPress,
 	onRemove,
 	onRetry,
 	formatSize,
 	style,
+	...props
 }: AttachmentProps) {
 	const { tokens, components } = useTheme();
 	const attachment = useAttachment({
@@ -82,90 +119,12 @@ export function Attachment({
 		onPress,
 		formatSize,
 	});
-	const colors = attachmentColors(components, variant, attachment.status);
+	const colors = attachmentColors(components, "row", attachment.status);
 	const retrying = attachment.status === "error" && onRetry !== undefined;
-
-	const thumbnail = (size: number, radius: number) =>
-		attachment.thumbnail ? (
-			<Image
-				source={{ uri: attachment.thumbnail }}
-				style={{ width: size, height: size, borderRadius: radius }}
-			/>
-		) : (
-			<View
-				style={[
-					styles.center,
-					{
-						width: size,
-						height: size,
-						borderRadius: radius,
-						backgroundColor: colors.thumbnail,
-					},
-				]}
-			>
-				<Icon name={attachment.icon} size="md" color={colors.icon} />
-			</View>
-		);
-
-	if (variant === "tile") {
-		return (
-			<Tappable
-				accessibilityLabel={attachment.accessibilityLabel}
-				accessibilityRole={attachment.press ? "button" : "image"}
-				disabled={!attachment.press}
-				onPress={attachment.press}
-				style={[
-					styles.tile,
-					{
-						width: TILE,
-						height: TILE,
-						borderRadius: tokens.radius.md,
-						backgroundColor: colors.background,
-						borderColor:
-							attachment.status === "error"
-								? colors.border
-								: "transparent",
-					},
-					style,
-				]}
-			>
-				{thumbnail(TILE, tokens.radius.md)}
-				{attachment.status === "uploading" ? (
-					<View
-						style={[StyleSheet.absoluteFill, styles.center, styles.scrim]}
-					>
-						<Spinner size="sm" color="inverse" label="Uploading" />
-					</View>
-				) : null}
-				{attachment.status === "error" ? (
-					<View
-						style={[StyleSheet.absoluteFill, styles.center, styles.scrim]}
-					>
-						<Icon
-							name={retrying ? "refresh" : "error"}
-							size="md"
-							color="inverse"
-						/>
-					</View>
-				) : null}
-				{onRemove ? (
-					<View style={[styles.remove, { margin: tokens.spacing[1] }]}>
-						<IconButton
-							icon="close"
-							size="sm"
-							variant="solid"
-							shape="circle"
-							accessibilityLabel={`Remove ${file.name}`}
-							onPress={onRemove}
-						/>
-					</View>
-				) : null}
-			</Tappable>
-		);
-	}
 
 	return (
 		<Tappable
+			{...props}
 			accessibilityLabel={attachment.accessibilityLabel}
 			accessibilityHint={retrying ? "Retries the upload" : undefined}
 			accessibilityRole={attachment.press ? "button" : "none"}
@@ -185,7 +144,13 @@ export function Attachment({
 				style,
 			]}
 		>
-			{thumbnail(THUMBNAIL, tokens.radius.sm)}
+			<Thumbnail
+				uri={attachment.thumbnail}
+				icon={attachment.icon}
+				size={THUMBNAIL}
+				radius={tokens.radius.sm}
+				colors={colors}
+			/>
 			<View style={[styles.content, { gap: 2 }]}>
 				<Text
 					variant="bodySm"
@@ -242,6 +207,95 @@ export function Attachment({
 					accessibilityLabel={`Remove ${file.name}`}
 					onPress={onRemove}
 				/>
+			) : null}
+		</Tappable>
+	);
+}
+
+/** A square thumbnail for a grid of photos: a spinner while it uploads, a remove button in the corner. */
+export function AttachmentTile({
+	file,
+	status: statusProp,
+	progress,
+	error,
+	onPress,
+	onRemove,
+	onRetry,
+	formatSize,
+	style,
+	...props
+}: AttachmentProps) {
+	const { tokens, components } = useTheme();
+	const attachment = useAttachment({
+		file,
+		status: statusProp,
+		progress,
+		error,
+		onRetry,
+		onPress,
+		formatSize,
+	});
+	const colors = attachmentColors(components, "tile", attachment.status);
+	const retrying = attachment.status === "error" && onRetry !== undefined;
+
+	return (
+		<Tappable
+			{...props}
+			accessibilityLabel={attachment.accessibilityLabel}
+			accessibilityRole={attachment.press ? "button" : "image"}
+			disabled={!attachment.press}
+			onPress={attachment.press}
+			style={[
+				styles.tile,
+				{
+					width: TILE,
+					height: TILE,
+					borderRadius: tokens.radius.md,
+					backgroundColor: colors.background,
+					borderColor:
+						attachment.status === "error"
+							? colors.border
+							: "transparent",
+				},
+				style,
+			]}
+		>
+			<Thumbnail
+				uri={attachment.thumbnail}
+				icon={attachment.icon}
+				size={TILE}
+				radius={tokens.radius.md}
+				colors={colors}
+			/>
+			{attachment.status === "uploading" ? (
+				<View
+					style={[StyleSheet.absoluteFill, styles.center, styles.scrim]}
+				>
+					<Spinner size="sm" color="inverse" label="Uploading" />
+				</View>
+			) : null}
+			{attachment.status === "error" ? (
+				<View
+					style={[StyleSheet.absoluteFill, styles.center, styles.scrim]}
+				>
+					<Icon
+						name={retrying ? "refresh" : "error"}
+						size="md"
+						color="inverse"
+					/>
+				</View>
+			) : null}
+			{onRemove ? (
+				<View style={[styles.remove, { margin: tokens.spacing[1] }]}>
+					<IconButton
+						icon="close"
+						size="sm"
+						variant="solid"
+						shape="circle"
+						accessibilityLabel={`Remove ${file.name}`}
+						onPress={onRemove}
+					/>
+				</View>
 			) : null}
 		</Tappable>
 	);

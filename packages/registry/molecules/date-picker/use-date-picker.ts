@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { createContext, use, useState } from "react";
 
 import { haptic, type HapticKind } from "@/components/core/haptics";
 import type {
@@ -17,8 +17,6 @@ export type UseDatePickerOptions = {
 	value?: DatePickerValue;
 	onChange?: (value: DatePickerValue) => void;
 	confirm?: DatePickerConfirm;
-	format?: (value: DatePickerValue) => string;
-	locale?: string;
 	/** Played when the user picks a day or a preset. `false` turns it off. */
 	haptic?: HapticKind | false;
 };
@@ -61,7 +59,7 @@ const fromSelection = (selection: CalendarSelection): DatePickerValue => {
 };
 
 /**
- * Opening, draft selection and confirmation of a date field, shared by every styling variant.
+ * Opening, draft selection and confirmation of a date picker, shared by every styling variant.
  * The draft lives here so Cancel returns to the value the screen already had.
  */
 export function useDatePicker({
@@ -69,8 +67,6 @@ export function useDatePicker({
 	value = null,
 	onChange,
 	confirm = "done",
-	format,
-	locale,
 	haptic: hapticKind = "selection",
 }: UseDatePickerOptions) {
 	const [open, setOpenState] = useState(false);
@@ -97,6 +93,9 @@ export function useDatePicker({
 	};
 
 	return {
+		mode,
+		/** The committed value, as the screen has it. */
+		value,
 		open,
 		setOpen,
 		draft,
@@ -117,6 +116,17 @@ export function useDatePicker({
 			setOpenState(false);
 		},
 		isEmpty: value === null,
-		text: format ? format(value) : formatDateValue(value, locale),
 	};
+}
+
+export type DatePickerContextValue = ReturnType<typeof useDatePicker>;
+
+export const DatePickerContext = createContext<DatePickerContextValue | null>(
+	null,
+);
+
+export function useDatePickerContext() {
+	const context = use(DatePickerContext);
+	if (!context) throw new Error("This part must be rendered inside <DatePicker>.");
+	return context;
 }

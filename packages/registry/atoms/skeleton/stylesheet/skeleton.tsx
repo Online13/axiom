@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import {
 	StyleSheet,
 	View,
@@ -11,9 +11,17 @@ import Animated from "react-native-reanimated";
 import { TEXT_VARIANT_TOKEN, type TextVariant } from "@/components/ui/text";
 import { useTheme, type Radius } from "@/theme";
 
-import { useSkeleton, type SkeletonAnimation } from "../use-skeleton";
+import {
+	usePulseStyle,
+	useShimmer,
+	useSkeleton,
+	type SkeletonAnimation,
+} from "../use-skeleton";
 
-export type SkeletonProps = {
+export type SkeletonProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	width?: DimensionValue;
 	height?: DimensionValue;
 	radius?: keyof Radius;
@@ -33,23 +41,22 @@ function SkeletonBlock({
 	loading = true,
 	children,
 	style,
+	...props
 }: SkeletonProps) {
 	const { tokens, components } = useTheme();
-	const { animation, pulseStyle, shimmerStyle, onLayout } = useSkeleton(
-		variant,
-		loading,
-	);
+	const animation = useSkeleton(variant, loading);
 
 	if (!loading) return <>{children}</>;
 
 	const colors = components.skeleton.default.default;
+	const Container = animation === "pulse" ? SkeletonPulse : View;
 
 	return (
-		<Animated.View
+		<Container
+			{...props}
 			// Placeholders say nothing: announce the loading state once on their container.
 			accessibilityElementsHidden
 			importantForAccessibility="no-hide-descendants"
-			onLayout={onLayout}
 			style={[
 				styles.block,
 				{
@@ -59,33 +66,51 @@ function SkeletonBlock({
 					backgroundColor: colors.background,
 				},
 				style,
-				pulseStyle,
 			]}
 		>
 			{animation === "shimmer" ? (
-				<Animated.View
-					style={[
-						styles.band,
-						// Soft edges: the band fades in and out instead of showing a hard rectangle.
-						{
-							experimental_backgroundImage: `linear-gradient(90deg, transparent, ${colors.highlight}, transparent)`,
-						},
-						shimmerStyle,
-					]}
-				/>
+				<SkeletonShimmer color={colors.highlight} />
 			) : null}
-		</Animated.View>
+		</Container>
+	);
+}
+
+/** Only mounted for `pulse`: other placeholders build no animated style. */
+function SkeletonPulse({ style, ...props }: ComponentPropsWithRef<typeof View>) {
+	const pulseStyle = usePulseStyle();
+	return <Animated.View {...props} style={[style, pulseStyle]} />;
+}
+
+/** Only mounted for `shimmer`. Fills the placeholder to measure the width the band crosses. */
+function SkeletonShimmer({ color }: { color: string }) {
+	const { style, onLayout } = useShimmer();
+	return (
+		<View style={styles.fill} onLayout={onLayout}>
+			<Animated.View
+				style={[
+					styles.band,
+					// Soft edges: the band fades in and out instead of showing a hard rectangle.
+					{
+						experimental_backgroundImage: `linear-gradient(90deg, transparent, ${color}, transparent)`,
+					},
+					style,
+				]}
+			/>
+		</View>
 	);
 }
 
 export type SkeletonTextProps = Omit<
-	SkeletonProps,
-	"width" | "height" | "radius" | "variant"
+	ComponentPropsWithRef<typeof View>,
+	"children"
 > & {
 	lines?: number;
 	/** Uses the line height of this Text variant. */
 	variant?: TextVariant;
 	animation?: SkeletonAnimation;
+	/** When `false`, renders `children` instead of the placeholder. */
+	loading?: boolean;
+	children?: ReactNode;
 };
 
 function SkeletonText({
@@ -95,6 +120,7 @@ function SkeletonText({
 	loading = true,
 	children,
 	style,
+	...props
 }: SkeletonTextProps) {
 	const { tokens } = useTheme();
 	if (!loading) return <>{children}</>;
@@ -102,7 +128,7 @@ function SkeletonText({
 		tokens.typography[TEXT_VARIANT_TOKEN[variant]];
 
 	return (
-		<View style={style}>
+		<View {...props} style={style}>
 			{Array.from({ length: lines }, (_, i) => (
 				<SkeletonBlock
 					key={i}
@@ -122,6 +148,13 @@ export const Skeleton = Object.assign(SkeletonBlock, { Text: SkeletonText });
 const styles = StyleSheet.create({
 	block: {
 		overflow: "hidden",
+	},
+	fill: {
+		position: "absolute",
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0,
 	},
 	band: {
 		position: "absolute",

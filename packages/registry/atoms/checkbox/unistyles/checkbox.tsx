@@ -3,7 +3,7 @@ import { View, type StyleProp, type ViewStyle } from "react-native";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
 import { haptic, type HapticKind } from "@/components/core/haptics";
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { useControllableState } from "@/hooks/use-controllable-state";
@@ -11,7 +11,10 @@ import type { Theme } from "@/theme";
 
 export type CheckedState = boolean | "indeterminate";
 
-export type CheckboxProps = {
+export type CheckboxProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress"
+> & {
 	checked?: CheckedState;
 	defaultChecked?: boolean;
 	/** Called with the new state. Pressing an indeterminate checkbox calls it with `true`. */
@@ -61,6 +64,7 @@ export function Checkbox({
 	haptic: hapticKind,
 	accessibilityLabel,
 	style,
+	...props
 }: CheckboxProps) {
 	const [value, setValue] = useControllableState<CheckedState>({
 		value: checked,
@@ -70,6 +74,7 @@ export function Checkbox({
 
 	return (
 		<Tappable
+			{...props}
 			disabled={disabled}
 			accessibilityRole="checkbox"
 			accessibilityLabel={

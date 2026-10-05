@@ -1,3 +1,4 @@
+import type { ComponentPropsWithRef } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
@@ -11,13 +12,17 @@ import {
 
 export type { SliderValue } from "../use-slider";
 
-export type SliderProps<T extends SliderValue> = UseSliderOptions<T> & {
-	/** Draws a tick for each step. Only use it when there are few steps. */
-	showSteps?: boolean;
-	/** What the slider controls. */
-	accessibilityLabel?: string;
-	style?: StyleProp<ViewStyle>;
-};
+export type SliderProps<T extends SliderValue> = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> &
+	UseSliderOptions<T> & {
+		/** Draws a tick for each step. Only use it when there are few steps. */
+		showSteps?: boolean;
+		/** What the slider controls. Read on each thumb. */
+		accessibilityLabel?: string;
+		style?: StyleProp<ViewStyle>;
+	};
 
 const THUMB = 20;
 const TRACK = 4;
@@ -27,13 +32,35 @@ export function Slider<T extends SliderValue>({
 	showSteps = false,
 	accessibilityLabel,
 	style,
-	...options
+	value,
+	defaultValue,
+	onValueChange,
+	onSlidingComplete,
+	min,
+	max,
+	step,
+	minRange,
+	disabled = false,
+	getAccessibilityValue,
+	haptic,
+	...props
 }: SliderProps<T>) {
-	const slider = useSlider(options);
-	const disabled = options.disabled ?? false;
+	const slider = useSlider({
+		value,
+		defaultValue,
+		onValueChange,
+		onSlidingComplete,
+		min,
+		max,
+		step,
+		minRange,
+		disabled,
+		getAccessibilityValue,
+		haptic,
+	});
 
 	return (
-		<View style={[styles.container, style]}>
+		<View {...props} style={[styles.container, style]}>
 			<GestureDetector gesture={slider.gestures.tap}>
 				<View style={styles.hitArea} onLayout={slider.onTrackLayout}>
 					<View style={styles.track(disabled)}>

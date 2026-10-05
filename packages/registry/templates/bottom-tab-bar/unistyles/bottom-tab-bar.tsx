@@ -1,30 +1,21 @@
 import {
-	Children,
 	createContext,
 	isValidElement,
 	use,
-	type ReactElement,
+	type ComponentPropsWithRef,
 	type ReactNode,
 } from "react";
-import {
-	Keyboard,
-	View,
-	type StyleProp,
-	type ViewStyle,
-} from "react-native";
+import { Keyboard, View, type StyleProp, type ViewStyle } from "react-native";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
 import { haptic, type HapticKind } from "@/components/core/haptics";
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/icon";
-import type { IconButtonProps } from "@/components/ui/icon-button";
 import type { IconName } from "@/components/ui/icons";
 import { MAX_FONT_SCALE, Text } from "@/components/ui/text";
 import { useControllableState } from "@/hooks/use-controllable-state";
 import type { Theme } from "@/theme";
-
-import { useKeyboardVisible } from "../use-bottom-tab-bar";
 
 export type BottomTabBarVariant = "fixed" | "floating";
 
@@ -60,7 +51,10 @@ function itemColors(
 // to map the theme to that prop through `uniProps`.
 const ThemedIcon = withUnistyles(Icon);
 
-export type BottomTabBarProps = {
+export type BottomTabBarProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	/** Value of the active item. Keep it aligned with the current route name. */
 	value?: string;
 	defaultValue?: string;
@@ -68,14 +62,10 @@ export type BottomTabBarProps = {
 	onValueChange?: (value: string) => void;
 	/** Pinned to the screen edge, or an inset pill. */
 	variant?: BottomTabBarVariant;
-	/** Hides the bar while the software keyboard is open. */
-	hideOnKeyboard?: boolean;
 	/** Played when the user switches to another item. Off unless you pass a kind, e.g. `"selection"`. */
 	haptic?: HapticKind | false;
 	safeArea?: boolean;
-	/** A raised action between the items. It never becomes the selected route. */
-	mainAction?: ReactElement<IconButtonProps>;
-	/** Two to five `BottomTabBar.Item` elements. */
+	/** Two to five `BottomTabBar.Item` elements, and a `BottomTabBar.Action` where you want it. */
 	children?: ReactNode;
 	style?: StyleProp<ViewStyle>;
 };
@@ -85,22 +75,17 @@ function BottomTabBarRoot({
 	defaultValue,
 	onValueChange,
 	variant = "fixed",
-	hideOnKeyboard = true,
 	haptic: hapticKind,
 	safeArea = true,
-	mainAction,
 	children,
 	style,
+	...props
 }: BottomTabBarProps) {
 	const [value, setValue] = useControllableState({
 		value: valueProp,
 		defaultValue: defaultValue ?? "",
 		onChange: onValueChange,
 	});
-	const keyboardVisible = useKeyboardVisible(hideOnKeyboard);
-
-	if (hideOnKeyboard && keyboardVisible) return null;
-
 	const select = (next: string) => {
 		if (next === value) return;
 		if (hapticKind) haptic(hapticKind);
@@ -111,29 +96,27 @@ function BottomTabBarRoot({
 	return (
 		<BottomTabBarContext value={{ value, select }}>
 			<View
+				{...props}
 				accessibilityRole="tablist"
 				style={[styles.bar(variant, safeArea), style]}
 			>
-				{mainAction ? withMainAction(children, mainAction) : children}
+				{children}
 			</View>
 		</BottomTabBarContext>
 	);
 }
 
-/** Drops the raised action in the middle of the row, whatever the number of items. */
-function withMainAction(children: ReactNode, mainAction: ReactNode): ReactNode {
-	const items = Children.toArray(children);
-	const middle = Math.ceil(items.length / 2);
-	return (
-		<>
-			{items.slice(0, middle)}
-			<View style={styles.mainAction}>{mainAction}</View>
-			{items.slice(middle)}
-		</>
-	);
+export type BottomTabBarActionProps = ComponentPropsWithRef<typeof View>;
+
+/** A raised action among the items, such as a compose button. It performs an action and is never the selected tab. */
+function BottomTabBarAction({ style, ...props }: BottomTabBarActionProps) {
+	return <View {...props} style={[styles.action, style]} />;
 }
 
-export type BottomTabBarItemProps = {
+export type BottomTabBarItemProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress"
+> & {
 	/** Stable value used by the root to identify this destination. */
 	value: string;
 	/** Short destination name, under the icon. */
@@ -144,8 +127,6 @@ export type BottomTabBarItemProps = {
 	/** Count, short text or dot. Counts above 99 show as `99+`. */
 	badge?: number | string | boolean;
 	disabled?: boolean;
-	accessibilityLabel?: string;
-	testID?: string;
 	style?: StyleProp<ViewStyle>;
 };
 
@@ -157,8 +138,8 @@ function BottomTabBarItem({
 	badge,
 	disabled = false,
 	accessibilityLabel,
-	testID,
 	style,
+	...props
 }: BottomTabBarItemProps) {
 	const bar = useBottomTabBar();
 
@@ -167,10 +148,10 @@ function BottomTabBarItem({
 
 	return (
 		<Tappable
+			{...props}
 			accessibilityRole="tab"
 			accessibilityLabel={accessibilityLabel ?? label}
 			accessibilityState={{ selected: active, disabled }}
-			testID={testID}
 			disabled={disabled}
 			onPress={() => bar.select(value)}
 			style={[styles.item, style]}
@@ -228,6 +209,7 @@ function WithBadge({
 
 export const BottomTabBar = Object.assign(BottomTabBarRoot, {
 	Item: BottomTabBarItem,
+	Action: BottomTabBarAction,
 });
 
 const styles = StyleSheet.create((theme, rt) => ({
@@ -270,7 +252,7 @@ const styles = StyleSheet.create((theme, rt) => ({
 	label: (active: boolean, disabled: boolean) => ({
 		color: itemColors(theme.components, active, disabled).content,
 	}),
-	mainAction: {
+	action: {
 		alignItems: "center",
 		justifyContent: "center",
 		paddingHorizontal: 4,

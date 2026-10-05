@@ -1,17 +1,25 @@
-import { createContext, use, type ReactNode } from "react";
+import {
+	createContext,
+	use,
+	type ComponentPropsWithRef,
+	type ReactNode,
+} from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
-import { Text } from "@/components/ui/text";
-import { Title } from "@/components/ui/title";
+import { Text, type TextProps } from "@/components/ui/text";
+import { Title, type TitleProps } from "@/components/ui/title";
 import { useTheme } from "@/theme";
 
 type EmptySize = "sm" | "md";
 
 const SizeContext = createContext<EmptySize>("md");
 
-export type EmptyProps = {
+export type EmptyProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	children?: ReactNode;
 	/** `md` for a full screen, `sm` for a section or a sheet. */
 	size?: EmptySize;
@@ -20,12 +28,19 @@ export type EmptyProps = {
 	style?: StyleProp<ViewStyle>;
 };
 
-function EmptyRoot({ children, size = "md", fill = true, style }: EmptyProps) {
+function EmptyRoot({
+	children,
+	size = "md",
+	fill = true,
+	style,
+	...props
+}: EmptyProps) {
 	const { tokens } = useTheme();
 
 	return (
 		<SizeContext value={size}>
 			<View
+				{...props}
 				style={[
 					styles.root,
 					fill && styles.fill,
@@ -42,13 +57,9 @@ function EmptyRoot({ children, size = "md", fill = true, style }: EmptyProps) {
 	);
 }
 
-function EmptyHeader({
-	children,
-	style,
-}: {
-	children?: ReactNode;
-	style?: StyleProp<ViewStyle>;
-}) {
+export type EmptyHeaderProps = ComponentPropsWithRef<typeof View>;
+
+function EmptyHeader({ children, style, ...props }: EmptyHeaderProps) {
 	const { tokens } = useTheme();
 	const size = use(SizeContext);
 
@@ -56,6 +67,7 @@ function EmptyHeader({
 		<View
 			// Read as one block: "No projects yet. Create one to get started."
 			accessible
+			{...props}
 			style={[
 				styles.header,
 				{ gap: tokens.spacing[size === "md" ? 2 : 1] },
@@ -67,7 +79,10 @@ function EmptyHeader({
 	);
 }
 
-export type EmptyMediaProps = {
+export type EmptyMediaProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	icon?: IconName;
 	/** `error` tints the tile, for failures. */
 	tone?: "neutral" | "error";
@@ -75,14 +90,26 @@ export type EmptyMediaProps = {
 	children?: ReactNode;
 };
 
-function EmptyMedia({ icon, tone = "neutral", children }: EmptyMediaProps) {
+function EmptyMedia({
+	icon,
+	tone = "neutral",
+	children,
+	style,
+	...props
+}: EmptyMediaProps) {
 	const { tokens, components } = useTheme();
 	const size = use(SizeContext);
 	const colors = components.empty[tone].default;
 	const tile = size === "md" ? 64 : 48;
 
 	return (
-		<View style={{ marginBottom: tokens.spacing[size === "md" ? 3 : 2] }}>
+		<View
+			{...props}
+			style={[
+				{ marginBottom: tokens.spacing[size === "md" ? 3 : 2] },
+				style,
+			]}
+		>
 			{children ?? (
 				<View
 					style={[
@@ -108,41 +135,38 @@ function EmptyMedia({ icon, tone = "neutral", children }: EmptyMediaProps) {
 	);
 }
 
-function EmptyTitle({ children }: { children?: ReactNode }) {
+function EmptyTitle(props: TitleProps) {
 	const size = use(SizeContext);
 	return (
 		<Title
 			variant={size === "md" ? "headingSm" : "subheading"}
 			align="center"
-		>
-			{children}
-		</Title>
+			{...props}
+		/>
 	);
 }
 
-function EmptyDescription({ children }: { children?: ReactNode }) {
+function EmptyDescription(props: TextProps) {
 	const size = use(SizeContext);
 	return (
 		<Text
 			variant={size === "md" ? "body" : "bodySm"}
 			color="muted"
 			align="center"
-		>
-			{children}
-		</Text>
+			{...props}
+		/>
 	);
 }
 
-function EmptyContent({
-	children,
-	style,
-}: {
-	children?: ReactNode;
-	style?: StyleProp<ViewStyle>;
-}) {
+export type EmptyContentProps = ComponentPropsWithRef<typeof View>;
+
+function EmptyContent({ children, style, ...props }: EmptyContentProps) {
 	const { tokens } = useTheme();
 	return (
-		<View style={[styles.content, { gap: tokens.spacing[2] }, style]}>
+		<View
+			{...props}
+			style={[styles.content, { gap: tokens.spacing[2] }, style]}
+		>
 			{children}
 		</View>
 	);

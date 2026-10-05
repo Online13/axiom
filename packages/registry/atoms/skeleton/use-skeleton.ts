@@ -33,23 +33,38 @@ function subscribe() {
 	};
 }
 
-/** Shared animation clock and the placeholder styles for each animation. Shared by every styling variant. */
-export function useSkeleton(animation: SkeletonAnimation, active: boolean) {
+/**
+ * Starts the shared clock while the placeholder is shown and animated. Returns the animation
+ * to render: Reduce Motion forces `none`. Shared by every styling variant.
+ */
+export function useSkeleton(
+	animation: SkeletonAnimation,
+	active: boolean,
+): SkeletonAnimation {
 	const reduceMotion = useReducedMotion();
 	const effective: SkeletonAnimation = reduceMotion ? "none" : animation;
 	const animated = active && effective !== "none";
-	const [width, setWidth] = useState(0);
 
 	useEffect(() => (animated ? subscribe() : undefined), [animated]);
 
-	const pulseStyle = useAnimatedStyle(() =>
-		effective === "pulse"
-			? { opacity: interpolate(clock.value, [0, 0.5, 1], [1, 0.5, 1]) }
-			: {},
-	);
+	return effective;
+}
 
-	// The highlight band crosses the placeholder from left to right.
-	const shimmerStyle = useAnimatedStyle(() => ({
+/** The `pulse` animation: the placeholder fades out and back. Only called by a pulsing placeholder. */
+export function usePulseStyle() {
+	return useAnimatedStyle(() => ({
+		opacity: interpolate(clock.value, [0, 0.5, 1], [1, 0.5, 1]),
+	}));
+}
+
+/**
+ * The `shimmer` animation: a highlight band crosses the placeholder from left to right.
+ * `onLayout` goes on a view that fills the placeholder, to measure its width.
+ */
+export function useShimmer() {
+	const [width, setWidth] = useState(0);
+
+	const style = useAnimatedStyle(() => ({
 		width: width * 0.6,
 		transform: [
 			{
@@ -63,5 +78,5 @@ export function useSkeleton(animation: SkeletonAnimation, active: boolean) {
 		setWidth((previous) => (previous === next ? previous : next));
 	};
 
-	return { animation: effective, pulseStyle, shimmerStyle, onLayout };
+	return { style, onLayout };
 }

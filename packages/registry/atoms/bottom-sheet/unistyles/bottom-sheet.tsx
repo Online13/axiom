@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, type ComponentPropsWithRef, type ReactNode } from "react";
 import {
 	View,
 	type FlatListProps,
@@ -26,18 +26,19 @@ import {
 export type { KeyboardBehavior, SnapPoint } from "../use-bottom-sheet";
 
 export type BottomSheetContentProps = Omit<
-	UseBottomSheetContentOptions,
-	"bottomOffset" | "stackScale"
-> & {
-	/** Dims the screen behind the sheet. The dimming follows the sheet position. */
-	overlay?: boolean;
-	/** Floats above the bottom edge with all corners rounded. */
-	detached?: boolean;
-	/** Floating actions pinned above the bottom safe area, visible at every snap point. */
-	footer?: ReactNode;
-	style?: StyleProp<ViewStyle>;
-	children?: ReactNode;
-};
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> &
+	Omit<UseBottomSheetContentOptions, "bottomOffset" | "stackScale"> & {
+		/** Dims the screen behind the sheet. The dimming follows the sheet position. */
+		overlay?: boolean;
+		/** Floats above the bottom edge with all corners rounded. */
+		detached?: boolean;
+		/** Floating actions pinned above the bottom safe area, visible at every snap point. */
+		footer?: ReactNode;
+		style?: StyleProp<ViewStyle>;
+		children?: ReactNode;
+	};
 
 function BottomSheetContent({
 	overlay = true,
@@ -45,7 +46,15 @@ function BottomSheetContent({
 	footer,
 	style,
 	children,
-	...options
+	snapPoints,
+	index,
+	onIndexChange,
+	dismissible,
+	onDismiss,
+	keyboardBehavior,
+	stack,
+	haptic,
+	...props
 }: BottomSheetContentProps) {
 	// The sheet is laid out in plain numbers by its hook, so the bottom inset and the spacing token
 	// are read here rather than resolved by the shadow tree. This is the theme-in-logic case.
@@ -55,7 +64,15 @@ function BottomSheetContent({
 		: 0;
 
 	const sheet = useBottomSheetContent({
-		...options,
+		snapPoints,
+		index,
+		onIndexChange,
+		dismissible,
+		onDismiss,
+		keyboardBehavior,
+		stack,
+		haptic,
+
 		bottomOffset,
 		stackScale: theme.tokens.metrics.stackScale,
 	});
@@ -73,6 +90,7 @@ function BottomSheetContent({
 				) : null}
 				<GestureDetector gesture={sheet.gesture}>
 					<Animated.View
+						{...props}
 						accessibilityViewIsModal={sheet.isTop}
 						importantForAccessibility={
 							sheet.isTop ? "yes" : "no-hide-descendants"
@@ -94,7 +112,9 @@ function BottomSheetContent({
 								style={styles.content(
 									sheet.fitsContent,
 									detached,
-									footer !== undefined ? sheet.footerHeight : undefined,
+									footer !== undefined
+										? sheet.footerHeight
+										: undefined,
 								)}
 							>
 								{children}
@@ -115,7 +135,12 @@ function BottomSheetContent({
 	);
 }
 
-function BottomSheetHandle({ style }: { style?: StyleProp<ViewStyle> }) {
+export type BottomSheetHandleProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+>;
+
+function BottomSheetHandle({ style, ...props }: BottomSheetHandleProps) {
 	const { index, snapCount, requestIndex } = useBottomSheetContentContext();
 
 	return (
@@ -123,6 +148,7 @@ function BottomSheetHandle({ style }: { style?: StyleProp<ViewStyle> }) {
 			accessible
 			accessibilityRole="adjustable"
 			accessibilityLabel="Resize sheet"
+			{...props}
 			accessibilityActions={[{ name: "increment" }, { name: "decrement" }]}
 			onAccessibilityAction={(event) => {
 				if (event.nativeEvent.actionName === "increment")
@@ -137,7 +163,10 @@ function BottomSheetHandle({ style }: { style?: StyleProp<ViewStyle> }) {
 	);
 }
 
-export type BottomSheetHeaderProps = {
+export type BottomSheetHeaderProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	title?: string;
 	leading?: ReactNode;
 	trailing?: ReactNode;
@@ -152,11 +181,12 @@ function BottomSheetHeader({
 	trailing,
 	closeButton = false,
 	style,
+	...props
 }: BottomSheetHeaderProps) {
 	const { close } = useBottomSheetContentContext();
 
 	return (
-		<View style={[styles.header, style]}>
+		<View {...props} style={[styles.header, style]}>
 			<View style={styles.start}>{leading}</View>
 			{title ? (
 				<Title

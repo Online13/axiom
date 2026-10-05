@@ -69,6 +69,8 @@ export type Sizes = {
 	icon: Scale;
 	avatar: Scale;
 	control: Scale;
+	/** Height of single-line text fields: inputs, search bars, pickers. Never under 50pt. */
+	input: Scale;
 };
 
 export type Metrics = {
@@ -367,6 +369,7 @@ export const sizes = {
 	icon: { sm: 16, md: 20, lg: 24 },
 	avatar: { sm: 32, md: 40, lg: 56 },
 	control: { sm: 32, md: 44, lg: 52 },
+	input: { sm: 50, md: 56, lg: 64 },
 } satisfies Sizes;
 
 export const metrics = {

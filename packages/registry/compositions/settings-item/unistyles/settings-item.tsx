@@ -2,7 +2,7 @@ import { View } from "react-native";
 
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
-import { Item } from "@/components/ui/item";
+import { Item, type ItemProps } from "@/components/ui/item";
 import { Switch } from "@/components/ui/switch";
 import { Text } from "@/components/ui/text";
 import { useControllableState } from "@/hooks/use-controllable-state";
@@ -23,6 +23,8 @@ export type SettingsItemProps = {
 	/** With a switch, replaces the toggle on row press. */
 	onPress?: () => void;
 	disabled?: boolean;
+	/** Hairline under the row. Set it on every row but the last of a section. */
+	divider?: ItemProps["divider"];
 };
 
 export function SettingsItem({
@@ -35,6 +37,7 @@ export function SettingsItem({
 	onCheckedChange,
 	onPress,
 	disabled = false,
+	divider,
 }: SettingsItemProps) {
 	const isSwitch = trailing === "switch";
 	const [on, setOn] = useControllableState({
@@ -46,6 +49,7 @@ export function SettingsItem({
 	return (
 		<Item
 			disabled={disabled}
+			divider={divider}
 			// A switch row toggles from anywhere on the row, like iOS settings.
 			onPress={onPress ?? (isSwitch ? () => setOn(!on) : undefined)}
 			haptic={isSwitch && !onPress ? "light" : undefined}

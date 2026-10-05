@@ -105,6 +105,13 @@
 			]
 		},
 		{
+			"name": "use-keyboard-visible",
+			"type": "hooks",
+			"files": [
+				"hooks/use-keyboard-visible/use-keyboard-visible.ts"
+			]
+		},
+		{
 			"name": "use-overlay-back-handler",
 			"type": "hooks",
 			"standalone": false,
@@ -698,9 +705,6 @@
 			"files": [
 				"atoms/badge/badge-tokens.ts"
 			],
-			"dependencies": [
-				"react-native-reanimated"
-			],
 			"internalDependencies": [
 				"icon",
 				"text",
@@ -727,7 +731,6 @@
 				"atoms/avatar/avatar-tokens.ts"
 			],
 			"internalDependencies": [
-				"tappable",
 				"text",
 				"theme"
 			],
@@ -830,15 +833,9 @@
 		{
 			"name": "option-item",
 			"type": "atoms",
-			"requiredIcons": [
-				"check",
-				"chevron-right"
-			],
 			"internalDependencies": [
-				"checkbox",
 				"icon",
 				"item",
-				"radio",
 				"text",
 				"theme"
 			],
@@ -1007,6 +1004,19 @@
 			}
 		},
 		{
+			"name": "context-menu",
+			"type": "atoms",
+			"files": [
+				"atoms/context-menu/context-menu.tsx"
+			],
+			"internalDependencies": [
+				"haptics",
+				"menu",
+				"slot",
+				"tappable"
+			]
+		},
+		{
 			"name": "menu",
 			"type": "atoms",
 			"tokens": "atoms/menu/menu-tokens.ts",
@@ -1066,7 +1076,6 @@
 			"dependencies": [
 				"react-native-gesture-handler",
 				"react-native-reanimated",
-				"react-native-safe-area-context",
 				"react-native-worklets"
 			],
 			"internalDependencies": [
@@ -1081,6 +1090,9 @@
 				"stylesheet": {
 					"files": [
 						"atoms/toast/stylesheet/toast.tsx"
+					],
+					"dependencies": [
+						"react-native-safe-area-context"
 					]
 				},
 				"unistyles": {
@@ -1101,7 +1113,6 @@
 			"dependencies": [
 				"react-native-gesture-handler",
 				"react-native-reanimated",
-				"react-native-safe-area-context",
 				"react-native-worklets"
 			],
 			"internalDependencies": [
@@ -1115,6 +1126,9 @@
 				"stylesheet": {
 					"files": [
 						"atoms/snackbar/stylesheet/snackbar.tsx"
+					],
+					"dependencies": [
+						"react-native-safe-area-context"
 					]
 				},
 				"unistyles": {
@@ -1171,7 +1185,6 @@
 			],
 			"internalDependencies": [
 				"haptics",
-				"text",
 				"theme"
 			],
 			"variants": {
@@ -1198,9 +1211,6 @@
 			"requiredIcons": [
 				"search",
 				"close"
-			],
-			"dependencies": [
-				"react-native-reanimated"
 			],
 			"internalDependencies": [
 				"icon",
@@ -1334,15 +1344,10 @@
 			"type": "templates",
 			"tokens": "templates/app-bar/app-bar-tokens.ts",
 			"files": [
-				"templates/app-bar/app-bar-tokens.ts",
-				"templates/app-bar/use-app-bar.ts"
-			],
-			"dependencies": [
-				"react-native-reanimated",
-				"react-native-safe-area-context"
+				"templates/app-bar/app-bar-tokens.ts"
 			],
 			"internalDependencies": [
-				"search-bar",
+				"text",
 				"title",
 				"theme"
 			],
@@ -1350,6 +1355,9 @@
 				"stylesheet": {
 					"files": [
 						"templates/app-bar/stylesheet/app-bar.tsx"
+					],
+					"dependencies": [
+						"react-native-safe-area-context"
 					]
 				},
 				"unistyles": {
@@ -1364,12 +1372,7 @@
 			"type": "templates",
 			"tokens": "templates/tool-bar/tool-bar-tokens.ts",
 			"files": [
-				"templates/tool-bar/tool-bar-tokens.ts",
-				"templates/tool-bar/use-tool-bar.ts"
-			],
-			"dependencies": [
-				"react-native-reanimated",
-				"react-native-safe-area-context"
+				"templates/tool-bar/tool-bar-tokens.ts"
 			],
 			"internalDependencies": [
 				"icon",
@@ -1381,6 +1384,9 @@
 				"stylesheet": {
 					"files": [
 						"templates/tool-bar/stylesheet/tool-bar.tsx"
+					],
+					"dependencies": [
+						"react-native-safe-area-context"
 					]
 				},
 				"unistyles": {
@@ -1395,17 +1401,12 @@
 			"type": "templates",
 			"tokens": "templates/bottom-tab-bar/bottom-tab-bar-tokens.ts",
 			"files": [
-				"templates/bottom-tab-bar/bottom-tab-bar-tokens.ts",
-				"templates/bottom-tab-bar/use-bottom-tab-bar.ts"
-			],
-			"dependencies": [
-				"react-native-safe-area-context"
+				"templates/bottom-tab-bar/bottom-tab-bar-tokens.ts"
 			],
 			"internalDependencies": [
 				"badge",
 				"haptics",
 				"icon",
-				"icon-button",
 				"tappable",
 				"text",
 				"theme",
@@ -1415,6 +1416,9 @@
 				"stylesheet": {
 					"files": [
 						"templates/bottom-tab-bar/stylesheet/bottom-tab-bar.tsx"
+					],
+					"dependencies": [
+						"react-native-safe-area-context"
 					]
 				},
 				"unistyles": {
@@ -2200,10 +2204,16 @@
 				"arrow-left",
 				"close"
 			],
+			"dependencies": [
+				"react-native-reanimated"
+			],
 			"internalDependencies": [
 				"app-bar",
 				"icon-button",
 				"search-bar",
+				"slot",
+				"tappable",
+				"text",
 				"theme"
 			],
 			"variants": {
@@ -2225,7 +2235,6 @@
 			"internalDependencies": [
 				"app-bar",
 				"avatar",
-				"icon-button",
 				"tappable",
 				"text",
 				"theme",
@@ -2248,7 +2257,6 @@
 			"name": "settings-section",
 			"type": "blocks",
 			"internalDependencies": [
-				"separator",
 				"settings-item",
 				"text",
 				"theme"

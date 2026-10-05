@@ -1,7 +1,5 @@
 import {
-	Children,
-	Fragment,
-	isValidElement,
+	type ComponentPropsWithRef,
 	type ReactNode,
 	type Ref,
 } from "react";
@@ -14,7 +12,7 @@ import {
 } from "react-native";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { inputColors } from "@/components/ui/field";
 import { MAX_FONT_SCALE, Text } from "@/components/ui/text";
@@ -30,12 +28,15 @@ import {
 
 export type InputGroupAddonVariant = "subtle" | "plain";
 
-export type InputGroupProps = UseInputGroupOptions & {
-	children: ReactNode;
-	/** Draws a separator between adjacent parts. */
-	divided?: boolean;
-	style?: StyleProp<ViewStyle>;
-};
+export type InputGroupProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> &
+	UseInputGroupOptions & {
+		/** Inputs, addons and buttons, with an `InputGroup.Separator` where you want a line. */
+		children: ReactNode;
+		style?: StyleProp<ViewStyle>;
+	};
 
 const TEXT = { sm: "subheadline", md: "callout", lg: "body" } as const;
 
@@ -45,29 +46,21 @@ const ThemedTextInput = withUnistyles(TextInput);
 
 function InputGroupRoot({
 	children,
-	divided = true,
 	style,
-	...options
+	size,
+	error,
+	disabled,
+	...props
 }: InputGroupProps) {
-	const group = useInputGroup(options);
-	const parts = Children.toArray(children).filter(isValidElement);
+	const group = useInputGroup({ size, error, disabled });
 
 	return (
 		<InputGroupContext value={group.context}>
 			<View
-				style={[
-					styles.group(group.context.size, group.state),
-					style,
-				]}
+				{...props}
+				style={[styles.group(group.context.size, group.state), style]}
 			>
-				{parts.map((part, index) => (
-					<Fragment key={part.key ?? index}>
-						{divided && index > 0 ? (
-							<View style={styles.divider(group.state)} />
-						) : null}
-						{part}
-					</Fragment>
-				))}
+				{children}
 			</View>
 		</InputGroupContext>
 	);
@@ -136,14 +129,16 @@ function InputGroupInput({
 	);
 }
 
-export type InputGroupAddonProps = {
+export type InputGroupAddonProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress"
+> & {
 	/** Static text or an icon. A string is drawn in the affix color. */
 	children: ReactNode;
 	/** Makes the addon pressable, for example to open a picker. */
-	onPress?: () => void;
+	onPress?: TappableProps["onPress"];
 	/** `subtle` fills the addon, `plain` leaves it transparent. */
 	variant?: InputGroupAddonVariant;
-	accessibilityLabel?: string;
 	style?: StyleProp<ViewStyle>;
 };
 
@@ -153,6 +148,7 @@ function InputGroupAddon({
 	variant = "subtle",
 	accessibilityLabel,
 	style,
+	...props
 }: InputGroupAddonProps) {
 	const group = useInputGroupContext();
 
@@ -174,11 +170,16 @@ function InputGroupAddon({
 	];
 
 	if (!onPress) {
-		return <View style={addonStyle(false)}>{content}</View>;
+		return (
+			<View {...props} style={addonStyle(false)}>
+				{content}
+			</View>
+		);
 	}
 
 	return (
 		<Tappable
+			{...props}
 			disabled={group.disabled}
 			onPress={onPress}
 			accessibilityLabel={
@@ -210,10 +211,30 @@ function InputGroupButton({
 	);
 }
 
+export type InputGroupSeparatorProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+>;
+
+/** A vertical line between two parts, in the group's divider color. */
+function InputGroupSeparator({ style, ...props }: InputGroupSeparatorProps) {
+	const group = useInputGroupContext();
+
+	return (
+		<View
+			accessibilityElementsHidden
+			importantForAccessibility="no-hide-descendants"
+			{...props}
+			style={[styles.divider(group.state), style]}
+		/>
+	);
+}
+
 export const InputGroup = Object.assign(InputGroupRoot, {
 	Input: InputGroupInput,
 	Addon: InputGroupAddon,
 	Button: InputGroupButton,
+	Separator: InputGroupSeparator,
 });
 
 const styles = StyleSheet.create((theme) => ({
@@ -225,7 +246,7 @@ const styles = StyleSheet.create((theme) => ({
 			borderWidth: 1,
 			borderCurve: "continuous",
 			overflow: "hidden",
-			minHeight: theme.tokens.sizes.control[size],
+			height: theme.tokens.sizes.input[size],
 			borderRadius: theme.tokens.radius.md,
 			backgroundColor: colors.background ?? "transparent",
 			borderColor: colors.border ?? "transparent",

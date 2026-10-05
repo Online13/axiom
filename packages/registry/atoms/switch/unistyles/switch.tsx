@@ -6,17 +6,20 @@ import Animated, {
 } from "react-native-reanimated";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
 
 import { useSwitch, type UseSwitchOptions } from "../use-switch";
 
 export type SwitchSize = "sm" | "md";
 
-export type SwitchProps = UseSwitchOptions & {
-	size?: SwitchSize;
-	accessibilityLabel?: string;
-	style?: StyleProp<ViewStyle>;
-};
+export type SwitchProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress"
+> &
+	UseSwitchOptions & {
+		size?: SwitchSize;
+		style?: StyleProp<ViewStyle>;
+	};
 
 // md matches the iOS system switch.
 const DIMENSIONS: Record<
@@ -30,15 +33,21 @@ const DIMENSIONS: Record<
 export function Switch({
 	size = "md",
 	disabled = false,
-	accessibilityLabel,
 	style,
-	...options
+	value,
+	defaultValue,
+	onValueChange,
+	haptic,
+	...props
 }: SwitchProps) {
 	// The track color is interpolated between its off and on values inside a worklet, so both are
 	// read here as plain values rather than resolved by the shadow tree. This is the theme-in-logic case.
 	const { theme } = useUnistyles();
 	const { progress, toggle, accessibilityProps } = useSwitch({
-		...options,
+		value,
+		defaultValue,
+		onValueChange,
+		haptic,
 		disabled,
 	});
 
@@ -72,15 +81,13 @@ export function Switch({
 
 	return (
 		<Tappable
+			{...props}
 			{...accessibilityProps}
-			accessibilityLabel={accessibilityLabel}
 			disabled={disabled}
 			onPress={toggle}
 		>
 			<Animated.View style={[styles.track(size), style, trackStyle]}>
-				<Animated.View
-					style={[styles.thumb(size, disabled), thumbStyle]}
-				/>
+				<Animated.View style={[styles.thumb(size, disabled), thumbStyle]} />
 			</Animated.View>
 		</Tappable>
 	);

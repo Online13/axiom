@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import {
 	Image,
 	StyleSheet,
@@ -9,13 +9,13 @@ import {
 } from "react-native";
 
 import { Tappable } from "@/components/core/tappable";
-import { Text } from "@/components/ui/text";
-import { Title } from "@/components/ui/title";
+import { Text, type TextProps } from "@/components/ui/text";
+import { Title, type TitleProps } from "@/components/ui/title";
 import { useTheme, type Radius, type Spacing } from "@/theme";
 
 export type CardVariant = "elevated" | "outlined" | "filled";
 
-export type CardProps = {
+export type CardProps = Omit<ComponentPropsWithRef<typeof View>, "children"> & {
 	variant?: CardVariant;
 	/** Inner padding for a card without sub-components. The sub-components pad themselves. */
 	padding?: keyof Spacing | "none";
@@ -23,7 +23,6 @@ export type CardProps = {
 	/** Makes the whole card pressable. Buttons inside still receive their own presses. */
 	onPress?: () => void;
 	disabled?: boolean;
-	accessibilityLabel?: string;
 	children?: ReactNode;
 	style?: StyleProp<ViewStyle>;
 };
@@ -34,9 +33,9 @@ function CardRoot({
 	radius = "lg",
 	onPress,
 	disabled = false,
-	accessibilityLabel,
 	children,
 	style,
+	...props
 }: CardProps) {
 	const { tokens, components } = useTheme();
 	const states = components.card[variant];
@@ -66,8 +65,8 @@ function CardRoot({
 	if (onPress) {
 		return (
 			<Tappable
+				{...props}
 				disabled={disabled}
-				accessibilityLabel={accessibilityLabel}
 				onPress={onPress}
 				style={({ pressed }) => containerStyle(pressed)}
 			>
@@ -77,16 +76,16 @@ function CardRoot({
 	}
 
 	return (
-		<View
-			accessibilityLabel={accessibilityLabel}
-			style={containerStyle(false)}
-		>
+		<View {...props} style={containerStyle(false)}>
 			{children}
 		</View>
 	);
 }
 
-export type CardMediaProps = {
+export type CardMediaProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	source: ImageSourcePropType;
 	aspectRatio?: number;
 	/** Overlay content on the image, like a Badge. */
@@ -99,16 +98,13 @@ function CardMedia({
 	aspectRatio = 16 / 9,
 	children,
 	style,
+	...props
 }: CardMediaProps) {
 	const { tokens } = useTheme();
 
 	return (
-		<View style={[{ aspectRatio }, style]}>
-			<Image
-				source={source}
-				style={styles.mediaImage}
-				resizeMode="cover"
-			/>
+		<View {...props} style={[{ aspectRatio }, style]}>
+			<Image source={source} style={styles.mediaImage} resizeMode="cover" />
 			{children ? (
 				<View style={[styles.mediaOverlay, { padding: tokens.spacing[3] }]}>
 					{children}
@@ -118,7 +114,7 @@ function CardMedia({
 	);
 }
 
-type PartProps = { children?: ReactNode; style?: StyleProp<ViewStyle> };
+export type CardPartProps = ComponentPropsWithRef<typeof View>;
 
 function usePartStyle() {
 	const { tokens } = useTheme();
@@ -128,35 +124,39 @@ function usePartStyle() {
 	};
 }
 
-function CardHeader({ children, style }: PartProps) {
+function CardHeader({ children, style, ...props }: CardPartProps) {
 	const { tokens } = useTheme();
 	return (
-		<View style={[usePartStyle(), { gap: tokens.spacing[1] }, style]}>
+		<View
+			{...props}
+			style={[usePartStyle(), { gap: tokens.spacing[1] }, style]}
+		>
 			{children}
 		</View>
 	);
 }
 
-function CardTitle({ children }: { children?: ReactNode }) {
-	return <Title variant="subheading">{children}</Title>;
+function CardTitle(props: TitleProps) {
+	return <Title variant="subheading" {...props} />;
 }
 
-function CardDescription({ children }: { children?: ReactNode }) {
+function CardDescription(props: TextProps) {
+	return <Text variant="bodySm" color="muted" {...props} />;
+}
+
+function CardContent({ children, style, ...props }: CardPartProps) {
 	return (
-		<Text variant="bodySm" color="muted">
+		<View {...props} style={[usePartStyle(), style]}>
 			{children}
-		</Text>
+		</View>
 	);
 }
 
-function CardContent({ children, style }: PartProps) {
-	return <View style={[usePartStyle(), style]}>{children}</View>;
-}
-
-function CardFooter({ children, style }: PartProps) {
+function CardFooter({ children, style, ...props }: CardPartProps) {
 	const { tokens } = useTheme();
 	return (
 		<View
+			{...props}
 			style={[
 				usePartStyle(),
 				styles.footer,

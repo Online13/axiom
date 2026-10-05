@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import {
 	View,
 	type GestureResponderEvent,
@@ -13,8 +13,13 @@ import { Portal } from "@/components/core/portal";
 import { Slot } from "@/components/core/slot";
 import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Button, type ButtonProps } from "@/components/ui/button";
-import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from "@/components/ui/text";
-import { Title } from "@/components/ui/title";
+import {
+	FONT_WEIGHT,
+	MAX_FONT_SCALE,
+	Text,
+	type TextProps,
+} from "@/components/ui/text";
+import { Title, type TitleProps } from "@/components/ui/title";
 
 import {
 	DialogContext,
@@ -62,23 +67,29 @@ function DialogTrigger({
 	);
 }
 
-export type DialogContentProps = UseDialogContentOptions & {
-	/** Icon or illustration above the title. */
-	media?: ReactNode;
-	/** Capped by the screen margins. */
-	width?: number;
-	children?: ReactNode;
-	style?: StyleProp<ViewStyle>;
-};
+export type DialogContentProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> &
+	UseDialogContentOptions & {
+		/** Icon or illustration above the title. */
+		media?: ReactNode;
+		/** Capped by the screen margins. */
+		width?: number;
+		children?: ReactNode;
+		style?: StyleProp<ViewStyle>;
+	};
 
 function DialogContent({
 	media,
 	width = 290,
 	children,
 	style,
-	...options
+	dismissible,
+	onDismiss,
+	...props
 }: DialogContentProps) {
-	const dialog = useDialogContent(options);
+	const dialog = useDialogContent({ dismissible, onDismiss });
 
 	if (!dialog.mounted) return null;
 
@@ -95,8 +106,9 @@ function DialogContent({
 					onPress={dialog.dismissible ? dialog.close : undefined}
 				/>
 				<Animated.View
-					accessibilityViewIsModal={dialog.isTop}
 					accessibilityRole="alert"
+					{...props}
+					accessibilityViewIsModal={dialog.isTop}
 					style={[styles.surface(width), style, dialog.surfaceStyle]}
 				>
 					{media ? <View style={styles.media}>{media}</View> : null}
@@ -107,25 +119,20 @@ function DialogContent({
 	);
 }
 
-function DialogTitle({ children }: { children?: ReactNode }) {
-	return (
-		<Title variant="subheading" align="center">
-			{children}
-		</Title>
-	);
+function DialogTitle(props: TitleProps) {
+	return <Title variant="subheading" align="center" {...props} />;
 }
 
-function DialogDescription({ children }: { children?: ReactNode }) {
-	return (
-		<Text variant="bodySm" color="muted" align="center">
-			{children}
-		</Text>
-	);
+function DialogDescription(props: TextProps) {
+	return <Text variant="bodySm" color="muted" align="center" {...props} />;
 }
 
 export type DialogActionsOrientation = "horizontal" | "vertical";
 
-export type DialogActionsProps = {
+export type DialogActionsProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	/** `horizontal` for two short actions, `vertical` for three or long labels. */
 	orientation?: DialogActionsOrientation;
 	children?: ReactNode;
@@ -134,8 +141,14 @@ export type DialogActionsProps = {
 function DialogActions({
 	orientation = "horizontal",
 	children,
+	style,
+	...props
 }: DialogActionsProps) {
-	return <View style={styles.actions(orientation)}>{children}</View>;
+	return (
+		<View {...props} style={[styles.actions(orientation), style]}>
+			{children}
+		</View>
+	);
 }
 
 export type DialogActionProps = ButtonProps & {

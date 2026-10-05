@@ -9,48 +9,39 @@ import {
 	type ViewStyle,
 } from "react-native";
 
-import { Field, inputColors } from "@/components/ui/field";
-import { MAX_FONT_SCALE, Text } from "@/components/ui/text";
+import { inputColors } from "@/components/ui/field";
+import { MAX_FONT_SCALE } from "@/components/ui/text";
 import { useInput } from "@/components/ui/use-input";
 import { useTheme } from "@/theme";
 
 export type TextAreaVariant = "outline" | "filled" | "plain";
 
 export type TextAreaProps = Omit<TextInputProps, "editable" | "multiline"> & {
-	label?: string;
-	helper?: string;
-	/** Puts the field in the `invalid` state. A string also replaces `helper`. */
-	error?: string | boolean;
+	/** Puts the field in the `invalid` state. Inside a Field, it follows the Field. */
+	invalid?: boolean;
 	/** `plain` has no border, background or padding, for full-screen editors. */
 	variant?: TextAreaVariant;
+	/** Inside a Field, it follows the Field. */
 	disabled?: boolean;
-	/** Adds a marker to the label and a hint for screen readers. It doesn't validate. */
-	required?: boolean;
 	/** Grows with its content between `minRows` and `maxRows`, then scrolls. */
 	autoGrow?: boolean;
 	/** Height when empty, in lines. */
 	minRows?: number;
 	/** Height limit with `autoGrow`, in lines. */
 	maxRows?: number;
-	/** Shows `length / maxLength` under the field. Needs `maxLength`. */
-	showCount?: boolean;
-	/** The wrapper holding the label, the field and the helper. */
+	/** The box around the text. `style` goes to the TextInput. */
 	containerStyle?: StyleProp<ViewStyle>;
 	ref?: Ref<TextInput>;
 };
 
+/** The multiline control alone. Wrap it in a Field for a label, a description, an error or a count. */
 export function TextArea({
-	label,
-	helper,
-	error,
+	invalid,
 	variant = "outline",
-	disabled = false,
-	required = false,
+	disabled,
 	autoGrow = false,
 	minRows = 3,
 	maxRows = 8,
-	showCount = false,
-	maxLength,
 	containerStyle,
 	style,
 	value,
@@ -71,10 +62,7 @@ export function TextArea({
 		onChangeText,
 		onFocus,
 		onBlur,
-		label,
-		helper,
-		error,
-		required,
+		invalid,
 		disabled,
 		accessibilityLabel,
 		accessibilityHint,
@@ -94,77 +82,54 @@ export function TextArea({
 	const rowsHeight = (rows: number) =>
 		rows * typography.lineHeight * scale + paddingVertical * 2;
 
-	const length = input.value.length;
-	const count =
-		showCount && maxLength !== undefined ? (
-			<Text
-				variant="footnote"
-				color={
-					length >= maxLength ? "error" : disabled ? "disabled" : "muted"
-				}
-			>
-				{length} / {maxLength}
-			</Text>
-		) : undefined;
-
 	return (
-		<Field
-			label={label}
-			required={required}
-			helper={helper}
-			message={input.message}
-			disabled={disabled}
-			meta={count}
-			style={containerStyle}
+		<Pressable
+			accessible={false}
+			onPress={input.focus}
+			style={[
+				plain ? styles.plain : styles.control,
+				!plain && {
+					paddingHorizontal: tokens.spacing[3],
+					borderRadius: tokens.radius.md,
+					backgroundColor: colors.background ?? "transparent",
+					borderColor: colors.border ?? "transparent",
+				},
+				containerStyle,
+			]}
 		>
-			<Pressable
-				accessible={false}
-				onPress={input.focus}
+			<TextInput
+				placeholderTextColor={colors.placeholder}
+				selectionColor={colors.caret}
+				cursorColor={colors.caret}
+				textAlignVertical="top"
+				maxFontSizeMultiplier={MAX_FONT_SCALE.control}
+				{...props}
+				{...input.inputProps}
+				multiline
 				style={[
-					plain ? styles.plain : styles.control,
-					!plain && {
-						paddingHorizontal: tokens.spacing[3],
-						borderRadius: tokens.radius.md,
-						backgroundColor: colors.background ?? "transparent",
-						borderColor: colors.border ?? "transparent",
+					styles.text,
+					{
+						paddingVertical,
+						fontSize: typography.fontSize,
+						lineHeight: typography.lineHeight,
+						fontWeight: typography.fontWeight,
+						color: colors.text,
 					},
+					typography.fontFamily
+						? { fontFamily: typography.fontFamily }
+						: undefined,
+					plain
+						? styles.fill
+						: autoGrow
+							? {
+									minHeight: rowsHeight(minRows),
+									maxHeight: rowsHeight(maxRows),
+								}
+							: { height: rowsHeight(minRows) },
+					style,
 				]}
-			>
-				<TextInput
-					placeholderTextColor={colors.placeholder}
-					selectionColor={colors.caret}
-					cursorColor={colors.caret}
-					textAlignVertical="top"
-					maxFontSizeMultiplier={MAX_FONT_SCALE.control}
-					{...props}
-					{...input.inputProps}
-					multiline
-					maxLength={maxLength}
-					style={[
-						styles.text,
-						{
-							paddingVertical,
-							fontSize: typography.fontSize,
-							lineHeight: typography.lineHeight,
-							fontWeight: typography.fontWeight,
-							color: colors.text,
-						},
-						typography.fontFamily
-							? { fontFamily: typography.fontFamily }
-							: undefined,
-						plain
-							? styles.fill
-							: autoGrow
-								? {
-										minHeight: rowsHeight(minRows),
-										maxHeight: rowsHeight(maxRows),
-									}
-								: { height: rowsHeight(minRows) },
-						style,
-					]}
-				/>
-			</Pressable>
-		</Field>
+			/>
+		</Pressable>
 	);
 }
 

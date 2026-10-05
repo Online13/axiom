@@ -1,11 +1,8 @@
 import {
-	Children,
-	cloneElement,
 	createContext,
-	isValidElement,
 	use,
 	useState,
-	type ReactElement,
+	type ComponentPropsWithRef,
 	type ReactNode,
 } from "react";
 import {
@@ -17,14 +14,16 @@ import {
 	type ViewStyle,
 } from "react-native";
 
-import { Tappable } from "@/components/core/tappable";
 import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from "@/components/ui/text";
-import { useTheme, type Hue, type Theme } from "@/theme";
+import { useTheme, type Hue, type Spacing, type Theme } from "@/theme";
 
 export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl" | number;
 export type AvatarStatus = "online" | "away" | "busy" | "offline";
 
-export type AvatarProps = {
+export type AvatarProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	/** While it loads, or if it fails, the fallback is shown. */
 	source?: ImageSourcePropType;
 	/** Shown without an image: 1–2 initials, or an icon. */
@@ -36,7 +35,6 @@ export type AvatarProps = {
 	status?: AvatarStatus;
 	/** Stable hue from `name` for the fallback background. */
 	colorFromName?: boolean;
-	onPress?: () => void;
 	style?: StyleProp<ViewStyle>;
 };
 
@@ -79,26 +77,28 @@ function hueOf(name: string): Hue {
 	return HUES[Math.abs(hash) % HUES.length];
 }
 
-// Set by Avatar.Group: its size and the ring that separates overlapping avatars.
-const GroupContext = createContext<{ size: AvatarSize } | null>(null);
+// Set by Avatar.Group: how far each avatar slides under the previous one. Grouped avatars also
+// get a ring that separates them.
+const GroupContext = createContext<{ overlap: number } | null>(null);
 
 function AvatarRoot({
 	source,
 	fallback,
 	name,
-	size: sizeProp,
+	size = "md",
 	shape = "circle",
 	status,
 	colorFromName = false,
-	onPress,
 	style,
+	accessibilityLabel: accessibilityLabelProp,
+	...props
 }: AvatarProps) {
 	const { tokens, components } = useTheme();
 	const group = use(GroupContext);
 	const [loaded, setLoaded] = useState(false);
 	const [failed, setFailed] = useState(false);
 
-	const dimension = avatarDimension(tokens, group?.size ?? sizeProp ?? "md");
+	const dimension = avatarDimension(tokens, size);
 	const colors = components.avatar.default.default;
 	const radius = shape === "circle" ? dimension / 2 : tokens.radius.md;
 	const tinted = colorFromName && name !== undefined;
@@ -153,7 +153,7 @@ function AvatarRoot({
 	);
 
 	const withStatus = (
-		<View style={[styles.wrapper, style]}>
+		<View style={styles.wrapper}>
 			{content}
 			{status ? (
 				<View
@@ -172,96 +172,114 @@ function AvatarRoot({
 		</View>
 	);
 
-	const accessibilityLabel = name
-		? status
-			? `${name}, ${status}`
-			: name
-		: undefined;
-
-	if (onPress) {
-		return (
-			<Tappable accessibilityLabel={accessibilityLabel} onPress={onPress}>
-				{withStatus}
-			</Tappable>
-		);
-	}
+	const accessibilityLabel =
+		accessibilityLabelProp ??
+		(name ? (status ? `${name}, ${status}` : name) : undefined);
 
 	return (
 		<View
 			accessible={accessibilityLabel !== undefined}
 			accessibilityRole="image"
+			{...props}
 			accessibilityLabel={accessibilityLabel}
+			style={[group && { marginStart: -group.overlap }, style]}
 		>
 			{withStatus}
 		</View>
 	);
 }
 
-export type AvatarGroupProps = {
+export type AvatarGroupProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
+	/** Avatars, and an Avatar.Overflow for the people not shown. */
 	children?: ReactNode;
-	/** Avatars shown before a `+N` counter. */
-	max?: number;
-	size?: AvatarSize;
+	/** How far each avatar slides under the previous one, from the spacing scale. */
+	overlap?: keyof Spacing;
 	style?: StyleProp<ViewStyle>;
 };
 
-function AvatarGroup({ children, max, size = "sm", style }: AvatarGroupProps) {
-	const { tokens, components } = useTheme();
-	const avatars = Children.toArray(children).filter(
-		isValidElement,
-	) as ReactElement<AvatarProps>[];
-	const shown = max !== undefined ? avatars.slice(0, max) : avatars;
-	const hidden = avatars.length - shown.length;
-	const dimension = avatarDimension(tokens, size);
-	const overlap = -Math.round(dimension / 4);
-	const colors = components.avatar.default.default;
+/** Overlaps the avatars inside it and rings each one. It shows every child: slice the list yourself. */
+function AvatarGroup({
+	children,
+	overlap = 2,
+	style,
+	...props
+}: AvatarGroupProps) {
+	const { tokens } = useTheme();
+	const offset = tokens.spacing[overlap];
 
 	return (
-		<GroupContext value={{ size }}>
-			<View style={[styles.group, style]}>
-				{shown.map((avatar, i) =>
-					cloneElement(avatar, {
-						key: avatar.key ?? i,
-						style: [
-							avatar.props.style,
-							i > 0 && { marginStart: overlap },
-						],
-					}),
-				)}
-				{hidden > 0 ? (
-					<View
-						accessible
-						accessibilityLabel={`${hidden} more`}
-						style={[
-							styles.frame,
-							{
-								marginStart: overlap,
-								width: dimension,
-								height: dimension,
-								borderRadius: dimension / 2,
-								borderWidth: 2,
-								borderColor: colors.ring,
-								backgroundColor: colors.background,
-							},
-						]}
-					>
-						<Text
-							style={{
-								fontSize: dimension * 0.36,
-								color: colors.foreground,
-								fontWeight: FONT_WEIGHT.semibold,
-							}}
-						>
-							+{hidden}
-						</Text>
-					</View>
-				) : null}
+		<GroupContext value={{ overlap: offset }}>
+			{/* The padding cancels the first avatar's negative margin. */}
+			<View {...props} style={[styles.group, { paddingStart: offset }, style]}>
+				{children}
 			</View>
 		</GroupContext>
 	);
 }
 
-export const Avatar = Object.assign(AvatarRoot, { Group: AvatarGroup });
+export type AvatarOverflowProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
+	/** People not shown, read as `+count`. */
+	count: number;
+	size?: AvatarSize;
+	style?: StyleProp<ViewStyle>;
+};
+
+/** The `+N` counter at the end of an Avatar.Group. */
+function AvatarOverflow({
+	count,
+	size = "md",
+	style,
+	...props
+}: AvatarOverflowProps) {
+	const { tokens, components } = useTheme();
+	const group = use(GroupContext);
+	const dimension = avatarDimension(tokens, size);
+	const colors = components.avatar.default.default;
+
+	return (
+		<View
+			accessible
+			accessibilityLabel={`${count} more`}
+			{...props}
+			style={[
+				styles.frame,
+				{
+					width: dimension,
+					height: dimension,
+					borderRadius: dimension / 2,
+					borderWidth: 2,
+					borderColor: colors.ring,
+					backgroundColor: colors.background,
+				},
+				group && { marginStart: -group.overlap },
+				style,
+			]}
+		>
+			<Text
+				numberOfLines={1}
+				maxFontSizeMultiplier={MAX_FONT_SCALE.fixed}
+				style={{
+					fontSize: dimension * 0.36,
+					color: colors.foreground,
+					fontWeight: FONT_WEIGHT.semibold,
+				}}
+			>
+				+{count}
+			</Text>
+		</View>
+	);
+}
+
+export const Avatar = Object.assign(AvatarRoot, {
+	Group: AvatarGroup,
+	Overflow: AvatarOverflow,
+});
 
 const styles = StyleSheet.create({
 	wrapper: {

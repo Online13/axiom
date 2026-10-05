@@ -1,3 +1,4 @@
+import type { ComponentPropsWithRef } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
@@ -17,13 +18,17 @@ export type { SegmentOption } from "../use-segmented-control";
 
 export type SegmentedControlSize = "md" | "lg";
 
-export type SegmentedControlProps = UseSegmentedControlOptions & {
-	/** Minimum height: 32 or 40pt. Grows with larger system text. */
-	size?: SegmentedControlSize;
-	/** Stretches to the parent width with equal segments. `false` sizes it to its content. */
-	fullWidth?: boolean;
-	style?: StyleProp<ViewStyle>;
-};
+export type SegmentedControlProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> &
+	Omit<UseSegmentedControlOptions, "inset"> & {
+		/** Minimum height: 32 or 40pt. Grows with larger system text. */
+		size?: SegmentedControlSize;
+		/** Stretches to the parent width with equal segments. `false` sizes it to its content. */
+		fullWidth?: boolean;
+		style?: StyleProp<ViewStyle>;
+	};
 
 const INSET = 2;
 
@@ -47,7 +52,13 @@ export function SegmentedControl({
 	fullWidth = true,
 	disabled = false,
 	style,
-	...options
+	options,
+	value,
+	defaultValue,
+	onValueChange,
+	haptic,
+	onLayout,
+	...props
 }: SegmentedControlProps) {
 	const {
 		segments,
@@ -57,13 +68,26 @@ export function SegmentedControl({
 		onSegmentLayout,
 		gesture,
 		indicatorStyle,
-	} = useSegmentedControl({ ...options, disabled, fullWidth, inset: INSET });
+	} = useSegmentedControl({
+		options,
+		value,
+		defaultValue,
+		onValueChange,
+		haptic,
+		disabled,
+		fullWidth,
+		inset: INSET,
+	});
 
 	return (
 		<GestureDetector gesture={gesture}>
 			<View
+				{...props}
 				accessibilityRole="tablist"
-				onLayout={onTrackLayout}
+				onLayout={(event) => {
+					onTrackLayout(event);
+					onLayout?.(event);
+				}}
 				style={[styles.track(size, fullWidth), style]}
 			>
 				<Animated.View style={[styles.indicator, indicatorStyle]} />

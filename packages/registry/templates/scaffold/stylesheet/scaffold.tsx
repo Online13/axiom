@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import {
 	ScrollView,
 	StatusBar,
@@ -9,21 +9,25 @@ import {
 	type StyleProp,
 	type ViewStyle,
 } from "react-native";
-import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import {
+	KeyboardAvoidingView,
+	type KeyboardAvoidingViewProps,
+} from "react-native-keyboard-controller";
 import { useSafeAreaInsets, type Edge } from "react-native-safe-area-context";
 
 import { AppBar, type AppBarProps } from "@/components/ui/app-bar";
 import { useTheme } from "@/theme";
 
-export type ScaffoldProps = {
+export type ScaffoldProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	/** Screen regions, usually `AppBar`, `Content` and an optional `Footer`. */
 	children?: ReactNode;
 	/** Safe-area edges the screen owns, so its regions don't apply the same inset twice. */
 	safeAreaEdges?: Edge[];
 	/** The standard screen background, or the grouped-list one. */
 	background?: "default" | "subtle";
-	/** Moves the footer above the keyboard and leaves the content its room. */
-	keyboardAvoiding?: boolean;
 	/** `auto` follows the resolved color scheme. */
 	statusBarStyle?: "auto" | "light" | "dark";
 	style?: StyleProp<ViewStyle>;
@@ -33,9 +37,9 @@ function ScaffoldRoot({
 	children,
 	safeAreaEdges = ["top", "bottom"],
 	background = "default",
-	keyboardAvoiding = true,
 	statusBarStyle = "auto",
 	style,
+	...props
 }: ScaffoldProps) {
 	const { colors } = useTheme();
 	const insets = useSafeAreaInsets();
@@ -65,49 +69,40 @@ function ScaffoldRoot({
 	];
 
 	return (
-		<View style={container}>
+		<View {...props} style={container}>
 			<StatusBar
 				barStyle={resolved === "light" ? "light-content" : "dark-content"}
 			/>
-			{keyboardAvoiding ? (
-				<KeyboardAvoidingView behavior="padding" style={styles.fill}>
-					{children}
-				</KeyboardAvoidingView>
-			) : (
-				children
-			)}
+			{children}
 		</View>
 	);
 }
 
-export type ScaffoldAppBarProps = Omit<AppBarProps, "children" | "safeArea"> & {
-	/** Shortcut for a standard compact bar. */
-	title?: string;
-	leading?: ReactNode;
-	actions?: ReactNode;
-	/** The compound slots, when `title` isn't enough. */
-	children?: ReactNode;
-};
+export type ScaffoldKeyboardAvoidingProps = KeyboardAvoidingViewProps;
+
+/**
+ * Wrap the Content and the Footer of a screen with a field: the footer rises above the keyboard and
+ * the content keeps its room. Screens without a field leave it out.
+ */
+function ScaffoldKeyboardAvoiding({
+	behavior = "padding",
+	style,
+	...props
+}: ScaffoldKeyboardAvoidingProps) {
+	return (
+		<KeyboardAvoidingView
+			{...props}
+			behavior={behavior}
+			style={[styles.fill, style]}
+		/>
+	);
+}
+
+export type ScaffoldAppBarProps = Omit<AppBarProps, "safeArea">;
 
 /** The bar of the screen. The root already owns the top inset, so the bar doesn't add it again. */
-function ScaffoldAppBar({
-	title,
-	leading,
-	actions,
-	children,
-	...props
-}: ScaffoldAppBarProps) {
-	return (
-		<AppBar safeArea={false} {...props}>
-			{children ?? (
-				<>
-					{leading ? <AppBar.Leading>{leading}</AppBar.Leading> : null}
-					{title ? <AppBar.Title>{title}</AppBar.Title> : null}
-					{actions ? <AppBar.Actions>{actions}</AppBar.Actions> : null}
-				</>
-			)}
-		</AppBar>
-	);
+function ScaffoldAppBar(props: ScaffoldAppBarProps) {
+	return <AppBar {...props} safeArea={false} />;
 }
 
 export type ScaffoldContentProps = Omit<ScrollViewProps, "children"> & {
@@ -138,7 +133,10 @@ function ScaffoldContent({
 	);
 }
 
-export type ScaffoldFooterProps = {
+export type ScaffoldFooterProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	/** Fixed actions after the content region. */
 	children?: ReactNode;
 	/** Hairline above the footer, when content scrolls behind it. */
@@ -153,12 +151,14 @@ function ScaffoldFooter({
 	bordered = false,
 	safeArea = false,
 	style,
+	...props
 }: ScaffoldFooterProps) {
 	const { tokens, colors } = useTheme();
 	const insets = useSafeAreaInsets();
 
 	return (
 		<View
+			{...props}
 			style={[
 				{
 					padding: tokens.metrics.screenMargin,
@@ -181,6 +181,7 @@ export const Scaffold = Object.assign(ScaffoldRoot, {
 	AppBar: ScaffoldAppBar,
 	Content: ScaffoldContent,
 	Footer: ScaffoldFooter,
+	KeyboardAvoiding: ScaffoldKeyboardAvoiding,
 });
 
 const styles = StyleSheet.create({

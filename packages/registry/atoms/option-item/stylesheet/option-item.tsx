@@ -1,17 +1,15 @@
 import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { CheckboxIndicator } from "@/components/ui/checkbox";
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
 import { Item, type ItemProps } from "@/components/ui/item";
-import { RadioIndicator } from "@/components/ui/radio";
 import { Text } from "@/components/ui/text";
 import { useTheme, type Hue } from "@/theme";
 
-export type OptionItemProps = Pick<
+export type OptionItemProps = Omit<
 	ItemProps,
-	"size" | "divider" | "disabled" | "style" | "onLongPress"
+	"children" | "selected" | "asChild" | "onPress"
 > & {
 	label: string;
 	description?: string;
@@ -19,17 +17,16 @@ export type OptionItemProps = Pick<
 	icon?: IconName;
 	/** Tile color from the palette. */
 	iconColor?: Hue;
+	/** Announced to screen readers. What shows it on screen is yours: a check in `trailing`, a radio in `leading`. */
 	selected?: boolean;
-	/** How `selected` is drawn: a trailing check, a leading radio or a leading checkbox. */
-	indicator?: "check" | "radio" | "checkbox" | "none";
+	/** Before the icon: a RadioIndicator or a CheckboxIndicator for a list of choices. */
+	leading?: ReactNode;
 	/** Current value on the right, for rows that open a picker. */
 	value?: ReactNode;
-	/** Replaces the indicator: a Switch, a Badge… */
+	/** After the value: a check, a chevron, a Switch, a Badge. */
 	trailing?: ReactNode;
-	/** Adds a chevron, for rows that navigate. */
-	chevron?: boolean;
 	destructive?: boolean;
-	onPress?: () => void;
+	onPress?: ItemProps["onPress"];
 };
 
 const TILE = 30;
@@ -40,23 +37,15 @@ export function OptionItem({
 	icon,
 	iconColor = "gray",
 	selected = false,
-	indicator = "check",
+	leading,
 	value,
 	trailing,
-	chevron = false,
 	destructive = false,
 	disabled = false,
 	onPress,
 	...props
 }: OptionItemProps) {
 	const { tokens } = useTheme();
-
-	const leadingIndicator =
-		indicator === "radio" ? (
-			<RadioIndicator checked={selected} disabled={disabled} />
-		) : indicator === "checkbox" ? (
-			<CheckboxIndicator checked={selected} disabled={disabled} />
-		) : null;
 
 	const tile = icon ? (
 		<View
@@ -72,36 +61,22 @@ export function OptionItem({
 		</View>
 	) : null;
 
-	const hasLeading = leadingIndicator !== null || tile !== null;
-	const hasTrailing =
-		trailing !== undefined ||
-		value !== undefined ||
-		chevron ||
-		(selected && indicator === "check");
+	const hasLeading = leading !== undefined || tile !== null;
+	const hasTrailing = trailing !== undefined || value !== undefined;
 
 	return (
 		<Item
-			{...props}
 			disabled={disabled}
 			onPress={onPress}
-			// The indicator shows the selection: the row itself isn't tinted.
-			accessibilityRole={
-				indicator === "radio"
-					? "radio"
-					: indicator === "checkbox"
-						? "checkbox"
-						: undefined
-			}
-			accessibilityState={
-				indicator === "radio" || indicator === "checkbox"
-					? { checked: selected }
-					: { selected }
-			}
+			// What you put in `leading` or `trailing` shows the selection: the row itself isn't tinted.
+			// A radio or checkbox list passes its own role and `{ checked }` state.
+			accessibilityState={{ selected }}
 			accessibilityLabel={description ? `${label}, ${description}` : label}
+			{...props}
 		>
 			{hasLeading ? (
 				<Item.Leading style={{ gap: tokens.spacing[3] }}>
-					{leadingIndicator}
+					{leading}
 					{tile}
 				</Item.Leading>
 			) : null}
@@ -128,16 +103,7 @@ export function OptionItem({
 					) : (
 						value
 					)}
-					{trailing ??
-						(selected && indicator === "check" ? (
-							<Icon
-								name="check"
-								color={disabled ? "disabled" : "link"}
-							/>
-						) : null)}
-					{chevron ? (
-						<Icon name="chevron-right" size="sm" color="subtle" />
-					) : null}
+					{trailing}
 				</Item.Trailing>
 			) : null}
 		</Item>

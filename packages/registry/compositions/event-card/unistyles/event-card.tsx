@@ -34,7 +34,7 @@ export type EventCardProps = {
 	date: Date;
 	/** Time, place: one line each. */
 	details?: EventDetail[];
-	/** The first three are shown as avatars. */
+	/** The first `SHOWN_ATTENDEES` are shown as avatars; the count covers the rest. */
 	attendees?: EventAttendee[];
 	/** Total shown in "124 going". Defaults to the number of `attendees`. */
 	attendeeCount?: number;
@@ -47,6 +47,9 @@ export type EventCardProps = {
 	onPress?: () => void;
 	style?: StyleProp<ViewStyle>;
 };
+
+// Avatars shown before the count. Change it here: the card never hides more than this.
+const SHOWN_ATTENDEES = 3;
 
 /** Designed for a vertical feed: it takes the full width of its list, one event per row. */
 export function EventCard({
@@ -105,10 +108,11 @@ export function EventCard({
 				<Card.Footer style={styles.footer}>
 					<View style={styles.attendees}>
 						{attendees?.length ? (
-							<Avatar.Group size="sm">
-								{attendees.slice(0, 3).map((attendee, index) => (
+							<Avatar.Group>
+								{attendees.slice(0, SHOWN_ATTENDEES).map((attendee, index) => (
 									<Avatar
 										key={index}
+										size="sm"
 										source={attendee.avatar}
 										name={attendee.name}
 										colorFromName

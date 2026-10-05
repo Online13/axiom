@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import {
 	StyleSheet,
 	View,
@@ -9,20 +10,9 @@ import {
 import { Tappable } from "@/components/core/tappable";
 import { AppBar } from "@/components/ui/app-bar";
 import { Avatar } from "@/components/ui/avatar";
-import { IconButton } from "@/components/ui/icon-button";
-import type { IconName } from "@/components/ui/icons";
 import { Text } from "@/components/ui/text";
 import { Title } from "@/components/ui/title";
 import { useTheme } from "@/theme";
-
-export type AppBarAction = {
-	icon: IconName;
-	/** Read by screen readers: "Notifications". */
-	label: string;
-	onPress: () => void;
-	/** A number shows a counter on the icon, `true` a dot. */
-	badge?: number | boolean;
-};
 
 export type ProfileAppBarProps = {
 	/** The signed-in user. Gives the avatar its initials when there is no photo. */
@@ -33,8 +23,8 @@ export type ProfileAppBarProps = {
 	/** Makes the avatar and the name pressable, to open the profile or the account switcher. */
 	onProfilePress?: () => void;
 	profileLabel?: string;
-	/** Up to two buttons at the end: notifications, menu. */
-	actions?: AppBarAction[];
+	/** Buttons at the end, such as notifications or a menu. Rendered as written, however many. */
+	children?: ReactNode;
 	/** Hairline under the bar. */
 	bordered?: boolean;
 	/** Adds the top safe-area inset. `false` when Scaffold already owns it. */
@@ -48,7 +38,7 @@ export function ProfileAppBar({
 	greeting,
 	onProfilePress,
 	profileLabel = "Profile",
-	actions,
+	children,
 	bordered = false,
 	safeArea = true,
 	style,
@@ -73,50 +63,44 @@ export function ProfileAppBar({
 
 	return (
 		<AppBar bordered={bordered} safeArea={safeArea} style={style}>
-			<AppBar.Leading
-				style={[
-					styles.shrink,
-					// The row pads by spacing[1] for icon buttons; the avatar lines up with the screen margin.
-					{ paddingStart: tokens.metrics.screenMargin - tokens.spacing[1] },
-				]}
-			>
-				{onProfilePress ? (
-					<Tappable
-						onPress={onProfilePress}
-						accessibilityRole="button"
-						accessibilityLabel={`${profileLabel}, ${name}`}
-						style={({ pressed }) => [styles.shrink, { opacity: pressed ? 0.6 : 1 }]}
-					>
-						{identity}
-					</Tappable>
-				) : (
-					<View
-						accessible
-						accessibilityLabel={greeting ? `${greeting}, ${name}` : name}
-						style={styles.shrink}
-					>
-						{identity}
-					</View>
-				)}
-			</AppBar.Leading>
-			{actions?.length ? (
-				<AppBar.Actions>
-					{actions.slice(0, 2).map((action, index) => (
-						<IconButton
-							key={index}
-							icon={action.icon}
-							badge={action.badge}
-							onPress={action.onPress}
-							accessibilityLabel={action.label}
-						/>
-					))}
-				</AppBar.Actions>
-			) : null}
+			<AppBar.Row>
+				{/* No leading control: the avatar lines up with the screen margin. */}
+				<AppBar.Center inset style={styles.start}>
+					{onProfilePress ? (
+						<Tappable
+							onPress={onProfilePress}
+							accessibilityRole="button"
+							accessibilityLabel={`${profileLabel}, ${name}`}
+							style={({ pressed }) => [
+								styles.shrink,
+								{ opacity: pressed ? 0.6 : 1 },
+							]}
+						>
+							{identity}
+						</Tappable>
+					) : (
+						<View
+							accessible
+							accessibilityLabel={
+								greeting ? `${greeting}, ${name}` : name
+							}
+							style={styles.shrink}
+						>
+							{identity}
+						</View>
+					)}
+				</AppBar.Center>
+				{children}
+			</AppBar.Row>
 		</AppBar>
 	);
 }
 
 const styles = StyleSheet.create({
+	// The pressable hugs the avatar and the name instead of stretching across the row.
+	start: {
+		alignItems: "flex-start",
+	},
 	identity: {
 		flexDirection: "row",
 		alignItems: "center",

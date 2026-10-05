@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ComponentPropsWithRef } from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import Animated, {
 	cancelAnimation,
@@ -13,7 +13,10 @@ import Animated, {
 import { textColor, type TextColor } from "@/components/ui/text";
 import { useTheme } from "@/theme";
 
-export type SpinnerProps = {
+export type SpinnerProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	/** From the `icon` size tokens (16, 20, 24), or a number. */
 	size?: "sm" | "md" | "lg" | number;
 	color?: TextColor;
@@ -33,6 +36,7 @@ export function Spinner({
 	animating = true,
 	delay = 0,
 	style,
+	...props
 }: SpinnerProps) {
 	const { tokens, colors } = useTheme();
 	const reduceMotion = useReducedMotion();
@@ -76,6 +80,7 @@ export function Spinner({
 
 	return (
 		<View
+			{...props}
 			accessible={visible}
 			accessibilityRole="progressbar"
 			accessibilityLabel={label}

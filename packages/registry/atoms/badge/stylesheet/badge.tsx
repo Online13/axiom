@@ -1,10 +1,10 @@
-import { useEffect, type ReactElement, type ReactNode } from "react";
+import {
+	createContext,
+	useContext,
+	type ComponentPropsWithRef,
+	type ReactNode,
+} from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
-import Animated, {
-	useAnimatedStyle,
-	useSharedValue,
-	withTiming,
-} from "react-native-reanimated";
 
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
@@ -21,7 +21,10 @@ export type BadgeVariant =
 	| "outline"
 	| "inverse";
 
-export type BadgeProps = {
+export type BadgeProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	/** The label. One or two words. */
 	children?: ReactNode;
 	variant?: BadgeVariant;
@@ -34,6 +37,11 @@ export type BadgeProps = {
 	/** Above this, the counter shows `99+`. */
 	max?: number;
 	size?: "sm" | "md";
+	/**
+	 * A ring in the surface color around a counter or lone dot, to detach it from what it sits on.
+	 * `Badge.Anchor` turns it on for its badge.
+	 */
+	ring?: boolean;
 	/** For counters, what is counted: "3 unread notifications". */
 	accessibilityLabel?: string;
 	style?: StyleProp<ViewStyle>;
@@ -41,6 +49,12 @@ export type BadgeProps = {
 
 const HEIGHT = { sm: 18, md: 22 };
 const DOT = 10;
+/** Width of the ring around an anchored counter or dot. */
+const RING = 2;
+
+// Set by `Badge.Anchor` around its badge, so the ring follows the badge: it animates with it and
+// disappears when the badge renders nothing.
+const RingContext = createContext(false);
 
 function BadgeRoot({
 	children,
@@ -50,10 +64,14 @@ function BadgeRoot({
 	count,
 	max = 99,
 	size = "md",
+	ring: ringProp,
 	accessibilityLabel,
 	style,
+	...props
 }: BadgeProps) {
 	const { tokens, components } = useTheme();
+	const anchored = useContext(RingContext);
+	const ring = ringProp ?? anchored;
 	const height = HEIGHT[size];
 	const typography = tokens.typography[size === "sm" ? "caption" : "footnote"];
 
@@ -67,22 +85,33 @@ function BadgeRoot({
 				: count > max
 					? `${max}+`
 					: String(count);
+		// The ring is drawn outside the badge: it grows the box, not the fill.
+		const ringWidth = ring ? RING : 0;
 
 		return (
 			<View
+				{...props}
 				accessible={accessibilityLabel !== undefined}
 				accessibilityLabel={accessibilityLabel}
 				style={[
 					styles.center,
 					label === undefined
-						? { width: DOT, height: DOT, borderRadius: DOT / 2 }
+						? {
+								width: DOT + 2 * ringWidth,
+								height: DOT + 2 * ringWidth,
+								borderRadius: tokens.radius.full,
+							}
 						: {
-								minWidth: height,
-								minHeight: height,
+								minWidth: height + 2 * ringWidth,
+								minHeight: height + 2 * ringWidth,
 								borderRadius: tokens.radius.full,
 								paddingHorizontal: tokens.spacing[1],
 							},
-					{ backgroundColor: colors.background },
+					{
+						backgroundColor: colors.background,
+						borderWidth: ringWidth,
+						borderColor: colors.border,
+					},
 					style,
 				]}
 			>
@@ -108,6 +137,7 @@ function BadgeRoot({
 
 	return (
 		<View
+			{...props}
 			accessible={accessibilityLabel !== undefined}
 			accessibilityLabel={accessibilityLabel}
 			style={[
@@ -153,14 +183,19 @@ function BadgeRoot({
 	);
 }
 
-export type BadgeAnchorProps = {
+export type BadgeAnchorProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	/** The element to decorate: an IconButton, an Avatar. */
 	children: ReactNode;
-	/** A `count` or `dot` badge. */
-	badge: ReactElement<BadgeProps>;
+	/**
+	 * A `count` or `dot` badge, drawn with its ring. `null` shows none. To animate it in and out,
+	 * wrap it in an `Animated.View` with `entering` and `exiting`: the anchor stays mounted, so the
+	 * exit plays, and the ring, being part of the badge, animates with it.
+	 */
+	badge: ReactNode;
 	placement?: "top-right" | "bottom-right";
-	/** Hides the badge with an animation, without unmounting. */
-	invisible?: boolean;
 	style?: StyleProp<ViewStyle>;
 };
 
@@ -168,42 +203,26 @@ function BadgeAnchor({
 	children,
 	badge,
 	placement = "top-right",
-	invisible = false,
 	style,
+	...props
 }: BadgeAnchorProps) {
-	const { components } = useTheme();
-	const progress = useSharedValue(invisible ? 0 : 1);
-
-	useEffect(() => {
-		progress.value = withTiming(invisible ? 0 : 1, { duration: 150 });
-	}, [invisible, progress]);
-
-	const animatedStyle = useAnimatedStyle(() => ({
-		opacity: progress.value,
-		transform: [{ scale: progress.value }],
-	}));
-
 	return (
-		<View style={[styles.anchor, style]}>
+		<View {...props} style={[styles.anchor, style]}>
 			{children}
-			<Animated.View
+			{/* Always mounted, so a badge animated out has a parent to play its exit in. */}
+			<View
 				style={[
 					styles.badge,
 					placement === "top-right" ? styles.top : styles.bottom,
-					// The ring detaches the badge from the element under it.
-					{ borderColor: components.badge.count.default.border },
-					animatedStyle,
 				]}
 			>
-				{badge}
-			</Animated.View>
+				<RingContext value>{badge}</RingContext>
+			</View>
 		</View>
 	);
 }
 
 export const Badge = Object.assign(BadgeRoot, { Anchor: BadgeAnchor });
-
-const RING = 2;
 
 const styles = StyleSheet.create({
 	center: {
@@ -223,12 +242,11 @@ const styles = StyleSheet.create({
 	anchor: {
 		alignSelf: "flex-start",
 	},
+	// Offset by the ring, so the badge's fill lands where it would without one.
 	badge: {
 		position: "absolute",
 		pointerEvents: "none",
 		right: -RING,
-		borderWidth: RING,
-		borderRadius: 9999,
 	},
 	top: {
 		top: -RING,

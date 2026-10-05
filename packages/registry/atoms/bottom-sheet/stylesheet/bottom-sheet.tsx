@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, type ComponentPropsWithRef, type ReactNode } from "react";
 import {
 	StyleSheet,
 	View,
@@ -28,18 +28,19 @@ import {
 export type { KeyboardBehavior, SnapPoint } from "../use-bottom-sheet";
 
 export type BottomSheetContentProps = Omit<
-	UseBottomSheetContentOptions,
-	"bottomOffset" | "stackScale"
-> & {
-	/** Dims the screen behind the sheet. The dimming follows the sheet position. */
-	overlay?: boolean;
-	/** Floats above the bottom edge with all corners rounded. */
-	detached?: boolean;
-	/** Floating actions pinned above the bottom safe area, visible at every snap point. */
-	footer?: ReactNode;
-	style?: StyleProp<ViewStyle>;
-	children?: ReactNode;
-};
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> &
+	Omit<UseBottomSheetContentOptions, "bottomOffset" | "stackScale"> & {
+		/** Dims the screen behind the sheet. The dimming follows the sheet position. */
+		overlay?: boolean;
+		/** Floats above the bottom edge with all corners rounded. */
+		detached?: boolean;
+		/** Floating actions pinned above the bottom safe area, visible at every snap point. */
+		footer?: ReactNode;
+		style?: StyleProp<ViewStyle>;
+		children?: ReactNode;
+	};
 
 function BottomSheetContent({
 	overlay = true,
@@ -47,7 +48,15 @@ function BottomSheetContent({
 	footer,
 	style,
 	children,
-	...options
+	snapPoints,
+	index,
+	onIndexChange,
+	dismissible,
+	onDismiss,
+	keyboardBehavior,
+	stack,
+	haptic,
+	...props
 }: BottomSheetContentProps) {
 	const { tokens, components } = useTheme();
 	const insets = useSafeAreaInsets();
@@ -55,7 +64,15 @@ function BottomSheetContent({
 	const bottomOffset = detached ? insets.bottom + tokens.spacing[2] : 0;
 
 	const sheet = useBottomSheetContent({
-		...options,
+		snapPoints,
+		index,
+		onIndexChange,
+		dismissible,
+		onDismiss,
+		keyboardBehavior,
+		stack,
+		haptic,
+
 		bottomOffset,
 		stackScale: tokens.metrics.stackScale,
 	});
@@ -76,6 +93,7 @@ function BottomSheetContent({
 				) : null}
 				<GestureDetector gesture={sheet.gesture}>
 					<Animated.View
+						{...props}
 						accessibilityViewIsModal={sheet.isTop}
 						importantForAccessibility={
 							sheet.isTop ? "yes" : "no-hide-descendants"
@@ -141,7 +159,12 @@ function BottomSheetContent({
 	);
 }
 
-function BottomSheetHandle({ style }: { style?: StyleProp<ViewStyle> }) {
+export type BottomSheetHandleProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+>;
+
+function BottomSheetHandle({ style, ...props }: BottomSheetHandleProps) {
 	const { tokens, components } = useTheme();
 	const { index, snapCount, requestIndex } = useBottomSheetContentContext();
 
@@ -150,6 +173,7 @@ function BottomSheetHandle({ style }: { style?: StyleProp<ViewStyle> }) {
 			accessible
 			accessibilityRole="adjustable"
 			accessibilityLabel="Resize sheet"
+			{...props}
 			accessibilityActions={[{ name: "increment" }, { name: "decrement" }]}
 			onAccessibilityAction={(event) => {
 				if (event.nativeEvent.actionName === "increment")
@@ -177,7 +201,10 @@ function BottomSheetHandle({ style }: { style?: StyleProp<ViewStyle> }) {
 	);
 }
 
-export type BottomSheetHeaderProps = {
+export type BottomSheetHeaderProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	title?: string;
 	leading?: ReactNode;
 	trailing?: ReactNode;
@@ -192,12 +219,14 @@ function BottomSheetHeader({
 	trailing,
 	closeButton = false,
 	style,
+	...props
 }: BottomSheetHeaderProps) {
 	const { tokens } = useTheme();
 	const { close } = useBottomSheetContentContext();
 
 	return (
 		<View
+			{...props}
 			style={[
 				styles.header,
 				{

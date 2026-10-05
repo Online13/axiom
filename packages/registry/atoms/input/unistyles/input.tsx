@@ -12,26 +12,23 @@ import { StyleSheet, withUnistyles } from "react-native-unistyles";
 import { MAX_FONT_SCALE, Text } from "@/components/ui/text";
 
 import { useInput, type InputState } from "../use-input";
-import { Field, inputColors, type InputVariant } from "./field";
+import { inputColors, type InputVariant } from "./field";
 
 export type InputSize = "sm" | "md" | "lg";
 
 export type InputProps = Omit<TextInputProps, "editable"> & {
-	label?: string;
-	helper?: string;
-	/** Puts the field in the `invalid` state. A string also replaces `helper`. */
-	error?: string | boolean;
+	/** Puts the field in the `invalid` state. Inside a Field, it follows the Field. */
+	invalid?: boolean;
 	/** Before the text: an icon, a currency sign, a country code. A string is drawn in the affix color. */
 	prefix?: ReactNode;
 	/** After the text: a unit, a clear button, a visibility toggle. */
 	suffix?: ReactNode;
-	/** Minimum height of the field: 32, 44 or 52pt, from the `control` size tokens. Label and helper come on top. */
+	/** Height of the field: 50, 56 or 64pt, from the `input` size tokens. */
 	size?: InputSize;
 	variant?: InputVariant;
+	/** Inside a Field, it follows the Field. */
 	disabled?: boolean;
-	/** Adds a marker to the label and a hint for screen readers. It doesn't validate. */
-	required?: boolean;
-	/** The wrapper holding the label, the field and the helper. */
+	/** The box around the text, prefix and suffix. `style` goes to the TextInput. */
 	containerStyle?: StyleProp<ViewStyle>;
 	ref?: Ref<TextInput>;
 };
@@ -42,16 +39,14 @@ const TEXT = { sm: "subheadline", md: "callout", lg: "body" } as const;
 // has to map the theme to those props through `uniProps`. Refs are forwarded.
 const ThemedTextInput = withUnistyles(TextInput);
 
+/** The text control alone. Wrap it in a Field for a label, a description or an error. */
 export function Input({
-	label,
-	helper,
-	error,
+	invalid,
 	prefix,
 	suffix,
 	size = "md",
 	variant = "outline",
-	disabled = false,
-	required = false,
+	disabled,
 	containerStyle,
 	style,
 	value,
@@ -70,10 +65,7 @@ export function Input({
 		onChangeText,
 		onFocus,
 		onBlur,
-		label,
-		helper,
-		error,
-		required,
+		invalid,
 		disabled,
 		accessibilityLabel,
 		accessibilityHint,
@@ -92,47 +84,38 @@ export function Input({
 			node
 		);
 
+	// Taps on the padding and the affixes focus the field.
 	return (
-		<Field
-			label={label}
-			required={required}
-			helper={helper}
-			message={input.message}
-			disabled={disabled}
-			style={containerStyle}
+		<Pressable
+			accessible={false}
+			onPress={input.focus}
+			style={[styles.control(size, variant, input.state), containerStyle]}
 		>
-			{/* Taps on the padding and the affixes focus the field. */}
-			<Pressable
-				accessible={false}
-				onPress={input.focus}
-				style={styles.control(size, variant, input.state)}
-			>
-				{prefix !== undefined ? (
-					<View style={styles.affix}>{affix(prefix)}</View>
-				) : null}
-				<ThemedTextInput
-					maxFontSizeMultiplier={MAX_FONT_SCALE.control}
-					uniProps={(theme) => {
-						const colors = inputColors(
-							theme.components,
-							variant,
-							input.state,
-						);
-						return {
-							placeholderTextColor: colors.placeholder,
-							selectionColor: colors.caret,
-							cursorColor: colors.caret,
-						};
-					}}
-					{...props}
-					{...input.inputProps}
-					style={[styles.text(size, variant, input.state), style]}
-				/>
-				{suffix !== undefined ? (
-					<View style={styles.affix}>{affix(suffix)}</View>
-				) : null}
-			</Pressable>
-		</Field>
+			{prefix !== undefined ? (
+				<View style={styles.affix}>{affix(prefix)}</View>
+			) : null}
+			<ThemedTextInput
+				maxFontSizeMultiplier={MAX_FONT_SCALE.control}
+				uniProps={(theme) => {
+					const colors = inputColors(
+						theme.components,
+						variant,
+						input.state,
+					);
+					return {
+						placeholderTextColor: colors.placeholder,
+						selectionColor: colors.caret,
+						cursorColor: colors.caret,
+					};
+				}}
+				{...props}
+				{...input.inputProps}
+				style={[styles.text(size, variant, input.state), style]}
+			/>
+			{suffix !== undefined ? (
+				<View style={styles.affix}>{affix(suffix)}</View>
+			) : null}
+		</Pressable>
 	);
 }
 
@@ -144,7 +127,7 @@ const styles = StyleSheet.create((theme) => ({
 			alignItems: "center",
 			borderWidth: 1,
 			borderCurve: "continuous",
-			minHeight: theme.tokens.sizes.control[size],
+			height: theme.tokens.sizes.input[size],
 			paddingHorizontal: theme.tokens.spacing[size === "sm" ? 2 : 3],
 			gap: theme.tokens.spacing[2],
 			borderRadius: theme.components.input.radius,
@@ -157,7 +140,7 @@ const styles = StyleSheet.create((theme) => ({
 		return {
 			flex: 1,
 			alignSelf: "stretch",
-			// Android adds vertical padding to TextInput; the control sets the minimum height.
+			// Android adds vertical padding to TextInput; the control sets the height.
 			paddingVertical: 0,
 			paddingHorizontal: 0,
 			fontSize: typography.fontSize,

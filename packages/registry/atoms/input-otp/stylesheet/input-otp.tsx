@@ -26,13 +26,13 @@ export type InputOTPProps = UseInputOTPOptions &
 		secure?: boolean;
 		/** Green cells, once the code is accepted. */
 		success?: boolean;
-		/** Cell size: 40×48 or 48×56pt. */
+		/** Cell size: 40×50 or 48×56pt. The height comes from the `input` size tokens. */
 		size?: "sm" | "md";
 		accessibilityLabel?: string;
 		style?: StyleProp<ViewStyle>;
 	};
 
-const CELL = { sm: { width: 40, height: 48 }, md: { width: 48, height: 56 } };
+const CELL_WIDTH = { sm: 40, md: 48 };
 
 export function InputOTP({
 	groups,
@@ -99,7 +99,10 @@ export function InputOTP({
 							<View
 								style={[
 									styles.cell,
-									CELL[size],
+									{
+										width: CELL_WIDTH[size],
+										height: tokens.sizes.input[size],
+									},
 									{
 										borderRadius: tokens.radius.md,
 										backgroundColor: colors.background,

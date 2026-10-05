@@ -45,6 +45,9 @@
       "@/hooks/use-controllable-state": [
         "./hooks/use-controllable-state/use-controllable-state.ts"
       ],
+      "@/hooks/use-keyboard-visible": [
+        "./hooks/use-keyboard-visible/use-keyboard-visible.ts"
+      ],
       "@/hooks/use-overlay-back-handler": [
         "./hooks/use-overlay-back-handler/sources/expo-router/use-overlay-back-handler.ts"
       ],
@@ -186,6 +189,9 @@
       "@/components/ui/dialog": [
         "./atoms/dialog/unistyles/dialog.tsx"
       ],
+      "@/components/ui/context-menu": [
+        "./atoms/context-menu/context-menu.tsx"
+      ],
       "@/components/ui/use-menu": [
         "./atoms/menu/use-menu.ts"
       ],
@@ -240,20 +246,11 @@
       "@/components/ui/passcode": [
         "./organisms/passcode/unistyles/passcode.tsx"
       ],
-      "@/components/ui/use-app-bar": [
-        "./templates/app-bar/use-app-bar.ts"
-      ],
       "@/components/ui/app-bar": [
         "./templates/app-bar/unistyles/app-bar.tsx"
       ],
-      "@/components/ui/use-tool-bar": [
-        "./templates/tool-bar/use-tool-bar.ts"
-      ],
       "@/components/ui/tool-bar": [
         "./templates/tool-bar/unistyles/tool-bar.tsx"
-      ],
-      "@/components/ui/use-bottom-tab-bar": [
-        "./templates/bottom-tab-bar/use-bottom-tab-bar.ts"
       ],
       "@/components/ui/bottom-tab-bar": [
         "./templates/bottom-tab-bar/unistyles/bottom-tab-bar.tsx"

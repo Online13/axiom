@@ -1,4 +1,6 @@
 import {
+	createContext,
+	use,
 	useEffect,
 	useImperativeHandle,
 	useRef,
@@ -38,9 +40,6 @@ export type UseCarouselOptions = {
 	snap?: "item" | "page" | "none";
 	index?: number;
 	onIndexChange?: (index: number) => void;
-	loop?: boolean;
-	/** Interval in ms. Paused while touched and with Reduce Motion. */
-	autoPlay?: number;
 	/**
 	 * Played when a swipe lands on another item. Autoplay and the imperative API don't play it.
 	 * Off unless you pass a kind, e.g. `"selection"`.
@@ -49,8 +48,8 @@ export type UseCarouselOptions = {
 	ref?: Ref<CarouselRef>;
 };
 
-/** Scroll position, active index, snapping, autoplay and the imperative API, shared by every styling variant. */
-export function useCarousel({
+/** Scroll position, active index, snapping and the imperative API, shared by every styling variant. */
+export function useCarouselRoot({
 	count,
 	itemWidth: itemWidthProp,
 	gap,
@@ -58,8 +57,6 @@ export function useCarousel({
 	snap = "item",
 	index: controlledIndex,
 	onIndexChange,
-	loop = false,
-	autoPlay,
 	haptic: hapticKind,
 	ref,
 }: UseCarouselOptions) {
@@ -72,7 +69,8 @@ export function useCarousel({
 	const scrollX = useSharedValue(0);
 	const [uncontrolledIndex, setUncontrolledIndex] = useState(0);
 	const active = controlledIndex ?? uncontrolledIndex;
-	const [touching, setTouching] = useState(false);
+	// Read by Carousel.AutoPlay, which skips a tick while the list is touched. A ref: no render per touch.
+	const touching = useRef(false);
 	const reduceMotion = useReducedMotion();
 	// Read by the autoplay timer and the imperative API, which outlive a render.
 	const activeRef = useRef(active);
@@ -87,9 +85,7 @@ export function useCarousel({
 	});
 
 	const scrollToIndex = (next: number, animated = true) => {
-		const target = loop
-			? (next + count) % count
-			: Math.max(0, Math.min(next, count - 1));
+		const target = Math.max(0, Math.min(next, count - 1));
 		listRef.current?.scrollToOffset({
 			offset: target * interval,
 			animated: animated && !reduceMotion,
@@ -118,15 +114,6 @@ export function useCarousel({
 	useEffect(() => {
 		if (controlledIndex !== undefined) scrollToIndex(controlledIndex);
 	}, [controlledIndex, interval]);
-
-	useEffect(() => {
-		if (!autoPlay || touching || reduceMotion || count < 2) return;
-		const timer = setInterval(() => {
-			if (!loop && activeRef.current >= count - 1) return;
-			scrollToIndex(activeRef.current + 1);
-		}, autoPlay);
-		return () => clearInterval(timer);
-	}, [autoPlay, touching, reduceMotion, count, loop, interval]);
 
 	useImperativeHandle(ref, () => ({
 		scrollToIndex,
@@ -164,15 +151,72 @@ export function useCarousel({
 		scrollX,
 		scrollHandler,
 		active,
+		activeRef,
+		count,
+		snap,
+		scrollToIndex,
+		touching,
 		itemWidth,
 		interval,
 		snapToOffsets,
 		endPadding,
 		onLayout,
 		onMomentumScrollEnd,
-		onTouchStart: () => setTouching(true),
-		onTouchEnd: () => setTouching(false),
+		onTouchStart: () => {
+			touching.current = true;
+		},
+		onTouchEnd: () => {
+			touching.current = false;
+		},
 	};
+}
+
+export type CarouselContextValue = ReturnType<typeof useCarouselRoot> & {
+	/** Space between items and at the start, in points. */
+	gap: number;
+	inset: number;
+};
+
+export const CarouselContext = createContext<CarouselContextValue | null>(null);
+
+/** The carousel around this component: active index, count, scroll position and `scrollToIndex`. */
+export function useCarousel() {
+	const context = use(CarouselContext);
+	if (!context) throw new Error("This part must be rendered inside <Carousel>.");
+	return context;
+}
+
+export type UseCarouselAutoPlayOptions = {
+	/** Time on each item, in ms. */
+	interval: number;
+	/** Goes back to the first item after the last one. Without it, autoplay stops at the end. */
+	loop?: boolean;
+};
+
+/**
+ * Moves to the next item on a timer. Skips a tick while the list is touched, and stays off with
+ * Reduce Motion. Call it inside a Carousel, or render `Carousel.AutoPlay`.
+ */
+export function useCarouselAutoPlay({
+	interval,
+	loop = false,
+}: UseCarouselAutoPlayOptions) {
+	const { count, interval: step, activeRef, touching, scrollToIndex } =
+		useCarousel();
+	const reduceMotion = useReducedMotion();
+
+	useEffect(() => {
+		if (reduceMotion || count < 2) return;
+		const timer = setInterval(() => {
+			if (touching.current) return;
+			const last = activeRef.current >= count - 1;
+			if (last && !loop) return;
+			scrollToIndex(last ? 0 : activeRef.current + 1);
+		}, interval);
+		return () => clearInterval(timer);
+		// `scrollToIndex` is a new function on each render but only changes meaning with the item
+		// size: the timer restarts on `step`, not on every render.
+	}, [interval, loop, reduceMotion, count, step]);
 }
 
 /** −1 before the center, 0 centered, 1 after. */

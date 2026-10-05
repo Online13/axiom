@@ -1,6 +1,5 @@
-import type { ReactElement, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactElement, ReactNode } from "react";
 import {
-	ScrollView,
 	StyleSheet,
 	View,
 	type StyleProp,
@@ -8,17 +7,21 @@ import {
 } from "react-native";
 
 import type { HapticKind } from "@/components/core/haptics";
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
 import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from "@/components/ui/text";
 import { useTheme, type Spacing } from "@/theme";
 
-export type ChipProps = {
+export type ChipProps = Omit<
+	TappableProps,
+	"children" | "style" | "onPress" | "disabled"
+> & {
 	children?: ReactNode;
 	/** Setting it makes the chip a toggle. */
 	selected?: boolean;
-	onPress?: () => void;
+	/** Makes the chip pressable. Without it, the chip renders a plain `View` and ignores press props. */
+	onPress?: TappableProps["onPress"];
 	/** Shows a close icon that calls it, with its own touch area. */
 	onRemove?: () => void;
 	/** `outline` for filters, `filled` for tags and entered values. */
@@ -31,7 +34,6 @@ export type ChipProps = {
 	disabled?: boolean;
 	/** Played on touch when the chip is pressable. Off unless you pass a kind. */
 	haptic?: HapticKind | false;
-	accessibilityLabel?: string;
 	style?: StyleProp<ViewStyle>;
 };
 
@@ -50,6 +52,7 @@ function ChipRoot({
 	haptic,
 	accessibilityLabel,
 	style,
+	...props
 }: ChipProps) {
 	const { tokens, components } = useTheme();
 	const states = components.chip[variant];
@@ -141,6 +144,7 @@ function ChipRoot({
 	if (!onPress) {
 		return (
 			<View
+				{...props}
 				accessible={!onRemove}
 				accessibilityLabel={label}
 				style={containerStyle(false)}
@@ -152,6 +156,7 @@ function ChipRoot({
 
 	return (
 		<Tappable
+			{...props}
 			disabled={disabled}
 			accessibilityRole={selected === undefined ? "button" : "togglebutton"}
 			accessibilityLabel={label}
@@ -167,47 +172,29 @@ function ChipRoot({
 	);
 }
 
-export type ChipGroupProps = {
+type ChipGroupSharedProps = {
 	children?: ReactNode;
-	/** `wrap` flows onto several lines, `scroll` keeps one line that scrolls. */
-	layout?: "wrap" | "scroll";
 	gap?: keyof Spacing;
-	style?: StyleProp<ViewStyle>;
 };
 
-function ChipGroup({
-	children,
-	layout = "wrap",
-	gap = 2,
-	style,
-}: ChipGroupProps) {
-	const { tokens } = useTheme();
+export type ChipGroupProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> &
+	ChipGroupSharedProps;
 
-	if (layout === "scroll") {
-		return (
-			<ScrollView
-				horizontal
-				showsHorizontalScrollIndicator={false}
-				style={style}
-				contentContainerStyle={[
-					styles.row,
-					{
-						gap: tokens.spacing[gap],
-						paddingHorizontal: tokens.metrics.screenMargin,
-					},
-				]}
-			>
-				{children}
-			</ScrollView>
-		);
-	}
+/**
+ * Lays chips out on as many lines as they need. For one line that scrolls, put the group in a
+ * horizontal ScrollView: it no longer has a width to wrap at.
+ */
+function ChipGroup({ gap = 2, style, ...props }: ChipGroupProps) {
+	const { tokens } = useTheme();
 
 	return (
 		<View
+			{...props}
 			style={[styles.row, styles.wrap, { gap: tokens.spacing[gap] }, style]}
-		>
-			{children}
-		</View>
+		/>
 	);
 }
 

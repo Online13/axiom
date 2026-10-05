@@ -1,10 +1,16 @@
-import type { ReactNode } from "react";
-import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
+import type { ComponentPropsWithRef, ReactNode } from "react";
+import { View, type StyleProp, type ViewStyle } from "react-native";
 
-import { Text } from "@/components/ui/text";
+import { Text, type TextProps } from "@/components/ui/text";
 import { useTheme, type Theme } from "@/theme";
 
-import type { InputState } from "../use-input";
+import {
+	FieldContext,
+	useField,
+	useFieldRoot,
+	useFieldText,
+	type InputState,
+} from "../use-input";
 
 export type InputVariant = "outline" | "filled";
 
@@ -21,79 +27,105 @@ export function inputColors(
 	};
 }
 
-export type FieldProps = {
-	label?: string;
-	required?: boolean;
-	helper?: string;
-	/** Error message. Replaces `helper`. */
-	message?: string;
+export type FieldProps = ComponentPropsWithRef<typeof View> & {
+	/** Puts the control inside in the `invalid` state. A rendered `Field.Error` does it too. */
+	invalid?: boolean;
+	/** Disables the control inside and dims the texts. */
 	disabled?: boolean;
-	/** Content at the end of the helper row, like a character count. */
-	meta?: ReactNode;
+	/** Adds a marker to `Field.Label` and a hint for screen readers. It doesn't validate. */
+	required?: boolean;
 	style?: StyleProp<ViewStyle>;
-	children: ReactNode;
 };
 
 /**
- * Label above a field, helper or error below it. The texts are hidden from screen readers:
- * the field announces them through its label and hint.
+ * Groups a control with its label and messages. Each part renders where you write it; the control
+ * inside (Input, TextArea) reads the texts and the state from here.
  */
-export function Field({
-	label,
-	required,
-	helper,
-	message,
+function FieldRoot({
+	invalid,
 	disabled,
-	meta,
+	required,
 	style,
 	children,
+	...props
 }: FieldProps) {
 	const { tokens } = useTheme();
-	const note = message ?? helper;
+	const field = useFieldRoot({ invalid, disabled, required });
 
 	return (
-		<View style={[{ gap: tokens.spacing[2] }, style]}>
-			{label ? (
-				<Text
-					variant="bodySm"
-					weight="medium"
-					color={disabled ? "disabled" : "default"}
-					accessibilityElementsHidden
-					importantForAccessibility="no-hide-descendants"
-				>
-					{label}
-					{required ? (
-						<Text color={disabled ? "disabled" : "error"}> *</Text>
-					) : null}
-				</Text>
-			) : null}
-			{children}
-			{note || meta ? (
-				<View
-					style={[styles.notes, { gap: tokens.spacing[3] }]}
-					accessibilityElementsHidden
-					importantForAccessibility="no-hide-descendants"
-				>
-					<Text
-						variant="footnote"
-						color={message ? "error" : disabled ? "disabled" : "muted"}
-						style={styles.note}
-					>
-						{note}
-					</Text>
-					{meta}
-				</View>
-			) : null}
-		</View>
+		<FieldContext value={field}>
+			<View {...props} style={[{ gap: tokens.spacing[2] }, style]}>
+				{children}
+			</View>
+		</FieldContext>
 	);
 }
 
-const styles = StyleSheet.create({
-	notes: {
-		flexDirection: "row",
-		alignItems: "flex-start",
-	},
-	note: {
-		flex: 1,
-	},
+export type FieldTextProps = Omit<TextProps, "variant" | "color"> & {
+	children?: ReactNode;
+};
+
+// Plain text is announced by the control, so the line itself is hidden from screen readers.
+const hidden = {
+	accessibilityElementsHidden: true,
+	importantForAccessibility: "no-hide-descendants",
+} as const;
+
+function FieldLabel({ children, ...props }: FieldTextProps) {
+	const field = useField();
+	const announced = useFieldText("label", children);
+
+	return (
+		<Text
+			variant="bodySm"
+			weight="medium"
+			color={field?.disabled ? "disabled" : "default"}
+			{...(announced && hidden)}
+			{...props}
+		>
+			{children}
+			{field?.required ? (
+				<Text color={field.disabled ? "disabled" : "error"}> *</Text>
+			) : null}
+		</Text>
+	);
+}
+
+/** Help under the control. Next to an error, the error is announced instead. */
+function FieldDescription({ children, ...props }: FieldTextProps) {
+	const field = useField();
+	const announced = useFieldText("description", children);
+
+	return (
+		<Text
+			variant="footnote"
+			color={field?.disabled ? "disabled" : "muted"}
+			{...(announced && hidden)}
+			{...props}
+		>
+			{children}
+		</Text>
+	);
+}
+
+/** Render it only when there's an error: it marks the field invalid. */
+function FieldError({ children, ...props }: FieldTextProps) {
+	const announced = useFieldText("error", children);
+
+	return (
+		<Text
+			variant="footnote"
+			color="error"
+			{...(announced && hidden)}
+			{...props}
+		>
+			{children}
+		</Text>
+	);
+}
+
+export const Field = Object.assign(FieldRoot, {
+	Label: FieldLabel,
+	Description: FieldDescription,
+	Error: FieldError,
 });

@@ -1,9 +1,14 @@
-import { createContext, use, type ReactNode } from "react";
+import {
+	createContext,
+	use,
+	type ComponentPropsWithRef,
+	type ReactNode,
+} from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 import { haptic, type HapticKind } from "@/components/core/haptics";
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Text } from "@/components/ui/text";
 import { useControllableState } from "@/hooks/use-controllable-state";
 import type { Spacing, Theme } from "@/theme";
@@ -18,7 +23,10 @@ const RadioGroupContext = createContext<RadioGroupContextValue | null>(null);
 
 export type RadioOrientation = "vertical" | "horizontal";
 
-export type RadioGroupProps = {
+export type RadioGroupProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	value?: string;
 	defaultValue?: string;
 	onValueChange?: (value: string) => void;
@@ -30,7 +38,6 @@ export type RadioGroupProps = {
 	haptic?: HapticKind | false;
 	/** Name of the question, announced once for the group. */
 	accessibilityLabel?: string;
-	style?: StyleProp<ViewStyle>;
 	children?: ReactNode;
 };
 
@@ -42,9 +49,9 @@ export function RadioGroup({
 	gap = 3,
 	disabled = false,
 	haptic: hapticKind,
-	accessibilityLabel,
 	style,
 	children,
+	...props
 }: RadioGroupProps) {
 	const [selected, select] = useControllableState<string | undefined>({
 		value,
@@ -60,7 +67,7 @@ export function RadioGroup({
 		<RadioGroupContext value={{ value: selected, select: pick, disabled }}>
 			<View
 				accessibilityRole="radiogroup"
-				accessibilityLabel={accessibilityLabel}
+				{...props}
 				style={[styles.group(orientation, gap), style]}
 			>
 				{children}
@@ -71,12 +78,14 @@ export function RadioGroup({
 
 export type RadioState = { checked: boolean; pressed: boolean };
 
-export type RadioProps = {
+export type RadioProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress"
+> & {
 	value: string;
 	label?: ReactNode;
 	description?: ReactNode;
 	disabled?: boolean;
-	accessibilityLabel?: string;
 	/** Replaces the default row, to build a selectable card around the radio. */
 	children?: (state: RadioState) => ReactNode;
 	style?: StyleProp<ViewStyle>;
@@ -90,6 +99,7 @@ export function Radio({
 	accessibilityLabel,
 	children,
 	style,
+	...props
 }: RadioProps) {
 	const group = use(RadioGroupContext);
 	if (!group) {
@@ -101,6 +111,7 @@ export function Radio({
 
 	return (
 		<Tappable
+			{...props}
 			disabled={disabled}
 			accessibilityRole="radio"
 			accessibilityLabel={

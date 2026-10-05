@@ -5,10 +5,9 @@ import type { States } from "@/theme/components/states";
 type AppBarColors = {
 	background: string;
 	border: string;
-	/** The compact title, centered in the bar. */
 	title: string;
-	/** The large title on its own row. */
-	largeTitle: string;
+	/** The line under the title. */
+	subtitle: string;
 };
 
 export type AppBarTokens = {
@@ -24,7 +23,7 @@ export const appBarTokens = (
 			background: colors.background.default,
 			border: colors.border.subtle,
 			title: colors.content.default,
-			largeTitle: colors.content.default,
+			subtitle: colors.content.muted,
 		},
 	},
 });

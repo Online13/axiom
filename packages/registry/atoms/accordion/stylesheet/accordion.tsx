@@ -1,8 +1,11 @@
-import { Children, Fragment, isValidElement, type ReactNode } from "react";
+import {
+	type ComponentPropsWithRef,
+	type ReactNode,
+} from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { useTheme } from "@/theme";
@@ -18,45 +21,49 @@ import {
 	type UseAccordionOptions,
 } from "../use-accordion";
 
-export type AccordionProps = UseAccordionOptions & {
-	/** Hairline between sections. */
-	divider?: boolean;
-	children?: ReactNode;
-	style?: StyleProp<ViewStyle>;
-};
+export type AccordionProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> &
+	UseAccordionOptions & {
+		/** Items, with a Separator between them where you want a line. */
+		children?: ReactNode;
+		style?: StyleProp<ViewStyle>;
+	};
 
 function AccordionRoot({
-	divider = true,
 	children,
 	style,
-	...options
+	type,
+	value,
+	defaultValue,
+	onValueChange,
+	collapsible,
+	disabled,
+	...props
 }: AccordionProps) {
-	const { tokens, colors } = useTheme();
-	const accordion = useAccordion(options);
-	const items = Children.toArray(children).filter(isValidElement);
+	const accordion = useAccordion({
+		type,
+		value,
+		defaultValue,
+		onValueChange,
+		collapsible,
+		disabled,
+	});
 
 	return (
 		<AccordionContext value={accordion}>
-			<View style={style}>
-				{items.map((item, i) => (
-					<Fragment key={item.key ?? i}>
-						{divider && i > 0 ? (
-							<View
-								style={{
-									height: tokens.metrics.hairline,
-									backgroundColor: colors.border.default,
-								}}
-							/>
-						) : null}
-						{item}
-					</Fragment>
-				))}
+			<View {...props} style={style}>
+				{children}
 			</View>
 		</AccordionContext>
 	);
 }
 
-export type AccordionItemProps = {
+export type AccordionItemProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	value: string;
 	disabled?: boolean;
 	children?: ReactNode;
@@ -68,6 +75,7 @@ function AccordionItem({
 	disabled = false,
 	children,
 	style,
+	...props
 }: AccordionItemProps) {
 	const accordion = useAccordionContext();
 	const inactive = disabled || accordion.disabled;
@@ -81,12 +89,17 @@ function AccordionItem({
 				toggle: () => accordion.toggle(value),
 			}}
 		>
-			<View style={style}>{children}</View>
+			<View {...props} style={style}>
+				{children}
+			</View>
 		</AccordionItemContext>
 	);
 }
 
-export type AccordionTriggerProps = {
+export type AccordionTriggerProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress"
+> & {
 	children?: ReactNode;
 	/** Indicator on the right, rotated when open. `null` hides it. */
 	icon?: ReactNode | null;
@@ -99,6 +112,7 @@ function AccordionTrigger({
 	icon,
 	leading,
 	style,
+	...props
 }: AccordionTriggerProps) {
 	const { tokens } = useTheme();
 	const { open, disabled, toggle } = useAccordionItem();
@@ -106,6 +120,7 @@ function AccordionTrigger({
 
 	return (
 		<Tappable
+			{...props}
 			disabled={disabled}
 			accessibilityState={{ expanded: open }}
 			onPress={toggle}
@@ -145,7 +160,10 @@ function AccordionTrigger({
 	);
 }
 
-export type AccordionContentProps = {
+export type AccordionContentProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	children?: ReactNode;
 	/** Keeps the content mounted while closed, to preserve its state. */
 	forceMount?: boolean;
@@ -156,6 +174,8 @@ function AccordionContent({
 	children,
 	forceMount = false,
 	style,
+	onLayout,
+	...props
 }: AccordionContentProps) {
 	const { tokens } = useTheme();
 	const { open } = useAccordionItem();
@@ -171,7 +191,11 @@ function AccordionContent({
 		>
 			{/* Absolute, so it keeps its natural height while the container animates. */}
 			<View
-				onLayout={content.onLayout}
+				{...props}
+				onLayout={(event) => {
+					content.onLayout(event);
+					onLayout?.(event);
+				}}
 				style={[
 					styles.measure,
 					{ paddingBottom: tokens.spacing[4] },

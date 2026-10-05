@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -10,10 +10,12 @@ type SpacingToken = keyof Spacing;
 export type SeparatorOrientation = "horizontal" | "vertical";
 export type SeparatorVariant = "default" | "subtle";
 export type SeparatorInset =
-	| SpacingToken
-	| { start?: SpacingToken; end?: SpacingToken };
+	SpacingToken | { start?: SpacingToken; end?: SpacingToken };
 
-export type SeparatorProps = {
+export type SeparatorProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	orientation?: SeparatorOrientation;
 	/** `default` between blocks, `subtle` inside a surface such as a card. */
 	variant?: SeparatorVariant;
@@ -44,6 +46,7 @@ export function Separator({
 	label,
 	decorative = true,
 	style,
+	...props
 }: SeparatorProps) {
 	const accessibility = decorative
 		? {
@@ -55,6 +58,7 @@ export function Separator({
 	if (orientation === "horizontal" && label !== undefined) {
 		return (
 			<View
+				{...props}
 				{...accessibility}
 				style={[styles.labelled(inset, spacing), style]}
 			>
@@ -73,6 +77,7 @@ export function Separator({
 
 	return (
 		<View
+			{...props}
 			{...accessibility}
 			style={[
 				styles.separator(orientation, variant, thickness, inset, spacing),

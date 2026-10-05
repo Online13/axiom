@@ -1,4 +1,10 @@
-import { createContext, use, useMemo, type ReactNode } from "react";
+import {
+	createContext,
+	use,
+	useMemo,
+	type ComponentPropsWithRef,
+	type ReactNode,
+} from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { scheduleOnRN } from "react-native-worklets";
@@ -29,32 +35,62 @@ export {
 	type DayState,
 } from "../use-calendar";
 
-export type CalendarRootProps = UseCalendarOptions & {
-	children?: ReactNode;
-	style?: StyleProp<ViewStyle>;
-};
+export type CalendarRootProps = ComponentPropsWithRef<typeof View> &
+	UseCalendarOptions;
 
-function CalendarRoot({ children, style, ...options }: CalendarRootProps) {
+function CalendarRoot({
+	children,
+	style,
+	mode,
+	selected,
+	defaultSelected,
+	onSelect,
+	month,
+	defaultMonth,
+	onMonthChange,
+	minDate,
+	maxDate,
+	isDateDisabled,
+	minRange,
+	maxRange,
+	weekStartsOn,
+	locale,
+	...props
+}: CalendarRootProps) {
 	const { tokens } = useTheme();
-	const calendar = useCalendarState(options);
+	const calendar = useCalendarState({
+		mode,
+		selected,
+		defaultSelected,
+		onSelect,
+		month,
+		defaultMonth,
+		onMonthChange,
+		minDate,
+		maxDate,
+		isDateDisabled,
+		minRange,
+		maxRange,
+		weekStartsOn,
+		locale,
+	});
 
 	return (
 		<CalendarContext value={calendar}>
-			<View style={[{ gap: tokens.spacing[3] }, style]}>{children}</View>
+			<View {...props} style={[{ gap: tokens.spacing[3] }, style]}>
+				{children}
+			</View>
 		</CalendarContext>
 	);
 }
 
-function CalendarHeader({
-	children,
-	style,
-}: {
-	children?: ReactNode;
-	style?: StyleProp<ViewStyle>;
-}) {
+export type CalendarHeaderProps = ComponentPropsWithRef<typeof View>;
+
+function CalendarHeader({ children, style, ...props }: CalendarHeaderProps) {
 	const { tokens } = useTheme();
 	return (
 		<View
+			{...props}
 			style={[
 				styles.header,
 				{ gap: tokens.spacing[2], paddingStart: tokens.spacing[2] },
@@ -66,7 +102,10 @@ function CalendarHeader({
 	);
 }
 
-export type CalendarTitleProps = {
+export type CalendarTitleProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	format?: "month" | "month-year";
 	/** A Text variant, or a system typography style such as `headline`. */
 	variant?: TextVariant | TypographyVariant;
@@ -77,6 +116,8 @@ function CalendarTitle({
 	format = "month-year",
 	variant = "headline",
 	children,
+	style,
+	...props
 }: CalendarTitleProps) {
 	const { tokens, colors } = useTheme();
 	const { month, locale } = useCalendar();
@@ -95,7 +136,11 @@ function CalendarTitle({
 
 	return (
 		// Announces the new month after navigation.
-		<View accessibilityLiveRegion="polite" style={styles.title}>
+		<View
+			accessibilityLiveRegion="polite"
+			{...props}
+			style={[styles.title, style]}
+		>
 			{children ? (
 				children(month)
 			) : (
@@ -110,10 +155,15 @@ function CalendarTitle({
 	);
 }
 
-function CalendarNav({ children }: { children?: ReactNode }) {
+export type CalendarNavProps = ComponentPropsWithRef<typeof View>;
+
+function CalendarNav({ children, style, ...props }: CalendarNavProps) {
 	const { tokens } = useTheme();
 	return (
-		<View style={[styles.header, { gap: tokens.spacing[1] }]}>
+		<View
+			{...props}
+			style={[styles.header, { gap: tokens.spacing[1] }, style]}
+		>
 			{children}
 		</View>
 	);
@@ -159,15 +209,16 @@ function CalendarNextButton({
 	);
 }
 
+export type CalendarGridProps = ComponentPropsWithRef<typeof View> & {
+	swipeable?: boolean;
+};
+
 function CalendarGrid({
 	swipeable = true,
 	children,
 	style,
-}: {
-	swipeable?: boolean;
-	children?: ReactNode;
-	style?: StyleProp<ViewStyle>;
-}) {
+	...props
+}: CalendarGridProps) {
 	const { tokens } = useTheme();
 	const { goToPrev, goToNext } = useCalendar();
 
@@ -188,21 +239,31 @@ function CalendarGrid({
 
 	return (
 		<GestureDetector gesture={gesture}>
-			<View style={[{ gap: tokens.spacing[1] }, style]}>{children}</View>
+			<View {...props} style={[{ gap: tokens.spacing[1] }, style]}>
+				{children}
+			</View>
 		</GestureDetector>
 	);
 }
 
+export type CalendarWeekdaysProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
+	format?: "short" | "narrow";
+};
+
 function CalendarWeekdays({
 	format = "short",
-}: {
-	format?: "short" | "narrow";
-}) {
+	style,
+	...props
+}: CalendarWeekdaysProps) {
 	const { weekdays } = useCalendar();
 
 	return (
 		<View
-			style={styles.week}
+			{...props}
+			style={[styles.week, style]}
 			accessibilityElementsHidden
 			importantForAccessibility="no-hide-descendants"
 		>
@@ -222,7 +283,10 @@ function CalendarWeekdays({
 	);
 }
 
-export type CalendarDaysProps = {
+export type CalendarDaysProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	/** `fit`: rows the month needs. `fixed`: always 6. A number: that many weeks. */
 	weeks?: "fit" | "fixed" | number;
 	showOutsideDays?: boolean;
@@ -233,11 +297,12 @@ function CalendarDays({
 	weeks = "fit",
 	showOutsideDays = true,
 	children,
+	...props
 }: CalendarDaysProps) {
 	const calendar = useCalendar();
 
 	return (
-		<View>
+		<View {...props}>
 			{calendar.weeks(weeks).map((week) => (
 				<View key={week[0].key} style={styles.week}>
 					{week.map((day) => (
@@ -259,7 +324,10 @@ const DayContext = createContext<{ selected: boolean } | null>(null);
 
 const CELL = 40;
 
-export type CalendarDayProps = {
+export type CalendarDayProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	day: DayState;
 	disabled?: boolean;
 	/** Content under the number, such as a `Calendar.Dot`. */
@@ -270,6 +338,8 @@ function CalendarDay({
 	day,
 	disabled = day.isDisabled,
 	children,
+	style,
+	...props
 }: CalendarDayProps) {
 	const { tokens, components } = useTheme();
 	const { select, locale } = useCalendar();
@@ -299,7 +369,7 @@ function CalendarDay({
 	}).format(day.date);
 
 	return (
-		<View style={styles.dayCell}>
+		<View {...props} style={[styles.dayCell, style]}>
 			{/* The range band runs behind the days, cut in half on its first and last day. */}
 			{inRangeBand ? (
 				<View
@@ -356,7 +426,15 @@ function CalendarDay({
 }
 
 /** A small dot under the day number, for days with events. */
-function CalendarDot({ color }: { color?: string }) {
+export type CalendarDotProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
+	/** Defaults to the `dot` color of the calendar tokens. */
+	color?: string;
+};
+
+function CalendarDot({ color, style, ...props }: CalendarDotProps) {
 	const { components } = useTheme();
 	const day = use(DayContext);
 	const states = components.calendar.day;
@@ -364,7 +442,9 @@ function CalendarDot({ color }: { color?: string }) {
 		? (states.selected?.dot ?? states.default.dot)
 		: (color ?? states.default.dot);
 
-	return <View style={[styles.dot, { backgroundColor: fill }]} />;
+	return (
+		<View {...props} style={[styles.dot, { backgroundColor: fill }, style]} />
+	);
 }
 
 export const Calendar = {

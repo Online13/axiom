@@ -1,3 +1,4 @@
+import type { ComponentPropsWithRef } from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 
 // The registry depends on the icon source chosen for the project, so it's imported through the alias.
@@ -20,7 +21,7 @@ export type IconColor =
 	| "warning"
 	| "error";
 
-export type IconProps = {
+export type IconProps = Omit<ComponentPropsWithRef<typeof View>, "children"> & {
 	name: IconName;
 	/** From the `icon` size tokens (16, 20, 24), or a number. */
 	size?: IconSize | number;
@@ -50,6 +51,7 @@ export function Icon({
 	strokeWidth,
 	accessibilityLabel,
 	style,
+	...props
 }: IconProps) {
 	const { tokens, colors } = useTheme();
 	// Read through `IconRegistry`: with an empty registry (`custom` source), `icons[name]` would be `never`.
@@ -60,6 +62,7 @@ export function Icon({
 
 	return (
 		<View
+			{...props}
 			accessible={!decorative}
 			accessibilityRole={decorative ? undefined : "image"}
 			accessibilityLabel={accessibilityLabel}

@@ -8,31 +8,26 @@ import {
 } from "react-native";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
-import { Field, inputColors, type InputVariant } from "@/components/ui/field";
-import { MAX_FONT_SCALE, Text } from "@/components/ui/text";
+import { inputColors, type InputVariant } from "@/components/ui/field";
+import { MAX_FONT_SCALE } from "@/components/ui/text";
 import { useInput, type InputState } from "@/components/ui/use-input";
 
 export type TextAreaVariant = "outline" | "filled" | "plain";
 
 export type TextAreaProps = Omit<TextInputProps, "editable" | "multiline"> & {
-	label?: string;
-	helper?: string;
-	/** Puts the field in the `invalid` state. A string also replaces `helper`. */
-	error?: string | boolean;
+	/** Puts the field in the `invalid` state. Inside a Field, it follows the Field. */
+	invalid?: boolean;
 	/** `plain` has no border, background or padding, for full-screen editors. */
 	variant?: TextAreaVariant;
+	/** Inside a Field, it follows the Field. */
 	disabled?: boolean;
-	/** Adds a marker to the label and a hint for screen readers. It doesn't validate. */
-	required?: boolean;
 	/** Grows with its content between `minRows` and `maxRows`, then scrolls. */
 	autoGrow?: boolean;
 	/** Height when empty, in lines. */
 	minRows?: number;
 	/** Height limit with `autoGrow`, in lines. */
 	maxRows?: number;
-	/** Shows `length / maxLength` under the field. Needs `maxLength`. */
-	showCount?: boolean;
-	/** The wrapper holding the label, the field and the helper. */
+	/** The box around the text. `style` goes to the TextInput. */
 	containerStyle?: StyleProp<ViewStyle>;
 	ref?: Ref<TextInput>;
 };
@@ -45,18 +40,14 @@ const colorVariant = (variant: TextAreaVariant): InputVariant =>
 // has to map the theme to those props through `uniProps`. Refs are forwarded.
 const ThemedTextInput = withUnistyles(TextInput);
 
+/** The multiline control alone. Wrap it in a Field for a label, a description, an error or a count. */
 export function TextArea({
-	label,
-	helper,
-	error,
+	invalid,
 	variant = "outline",
-	disabled = false,
-	required = false,
+	disabled,
 	autoGrow = false,
 	minRows = 3,
 	maxRows = 8,
-	showCount = false,
-	maxLength,
 	containerStyle,
 	style,
 	value,
@@ -75,76 +66,49 @@ export function TextArea({
 		onChangeText,
 		onFocus,
 		onBlur,
-		label,
-		helper,
-		error,
-		required,
+		invalid,
 		disabled,
 		accessibilityLabel,
 		accessibilityHint,
 		ref,
 	});
 
-	const length = input.value.length;
-	const count =
-		showCount && maxLength !== undefined ? (
-			<Text
-				variant="footnote"
-				color={
-					length >= maxLength ? "error" : disabled ? "disabled" : "muted"
-				}
-			>
-				{length} / {maxLength}
-			</Text>
-		) : undefined;
-
 	return (
-		<Field
-			label={label}
-			required={required}
-			helper={helper}
-			message={input.message}
-			disabled={disabled}
-			meta={count}
-			style={containerStyle}
+		<Pressable
+			accessible={false}
+			onPress={input.focus}
+			style={[styles.control(variant, input.state), containerStyle]}
 		>
-			<Pressable
-				accessible={false}
-				onPress={input.focus}
-				style={styles.control(variant, input.state)}
-			>
-				<ThemedTextInput
-					textAlignVertical="top"
-					maxFontSizeMultiplier={MAX_FONT_SCALE.control}
-					uniProps={(theme) => {
-						const colors = inputColors(
-							theme.components,
-							colorVariant(variant),
-							input.state,
-						);
-						return {
-							placeholderTextColor: colors.placeholder,
-							selectionColor: colors.caret,
-							cursorColor: colors.caret,
-						};
-					}}
-					{...props}
-					{...input.inputProps}
-					multiline
-					maxLength={maxLength}
-					style={[
-						styles.text(
-							variant,
-							input.state,
-							autoGrow,
-							minRows,
-							maxRows,
-						),
-						style,
-					]}
-				/>
-			</Pressable>
-		</Field>
+			<ThemedTextInput
+				textAlignVertical="top"
+				maxFontSizeMultiplier={MAX_FONT_SCALE.control}
+				uniProps={(theme) => {
+					const colors = inputColors(
+						theme.components,
+						colorVariant(variant),
+						input.state,
+					);
+					return {
+						placeholderTextColor: colors.placeholder,
+						selectionColor: colors.caret,
+						cursorColor: colors.caret,
+					};
+				}}
+				{...props}
+				{...input.inputProps}
+				multiline
+				style={[
+					styles.text(
+						variant,
+						input.state,
+						autoGrow,
+						minRows,
+						maxRows,
+					),
+					style,
+				]}
+			/>
+		</Pressable>
 	);
 }
 

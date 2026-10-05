@@ -1,18 +1,26 @@
-import { createContext, use, type ReactNode } from "react";
+import {
+	createContext,
+	use,
+	type ComponentPropsWithRef,
+	type ReactNode,
+} from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
-import { Text } from "@/components/ui/text";
-import { Title } from "@/components/ui/title";
+import { Text, type TextProps } from "@/components/ui/text";
+import { Title, type TitleProps } from "@/components/ui/title";
 
 type EmptySize = "sm" | "md";
 export type EmptyTone = "neutral" | "error";
 
 const SizeContext = createContext<EmptySize>("md");
 
-export type EmptyProps = {
+export type EmptyProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	children?: ReactNode;
 	/** `md` for a full screen, `sm` for a section or a sheet. */
 	size?: EmptySize;
@@ -25,27 +33,32 @@ export type EmptyProps = {
 // to map the theme to that prop through `uniProps`.
 const ThemedIcon = withUnistyles(Icon);
 
-function EmptyRoot({ children, size = "md", fill = true, style }: EmptyProps) {
+function EmptyRoot({
+	children,
+	size = "md",
+	fill = true,
+	style,
+	...props
+}: EmptyProps) {
 	return (
 		<SizeContext value={size}>
-			<View style={[styles.root(size, fill), style]}>{children}</View>
+			<View {...props} style={[styles.root(size, fill), style]}>
+				{children}
+			</View>
 		</SizeContext>
 	);
 }
 
-function EmptyHeader({
-	children,
-	style,
-}: {
-	children?: ReactNode;
-	style?: StyleProp<ViewStyle>;
-}) {
+export type EmptyHeaderProps = ComponentPropsWithRef<typeof View>;
+
+function EmptyHeader({ children, style, ...props }: EmptyHeaderProps) {
 	const size = use(SizeContext);
 
 	return (
 		<View
 			// Read as one block: "No projects yet. Create one to get started."
 			accessible
+			{...props}
 			style={[styles.header(size), style]}
 		>
 			{children}
@@ -53,7 +66,10 @@ function EmptyHeader({
 	);
 }
 
-export type EmptyMediaProps = {
+export type EmptyMediaProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	icon?: IconName;
 	/** `error` tints the tile, for failures. */
 	tone?: EmptyTone;
@@ -61,11 +77,17 @@ export type EmptyMediaProps = {
 	children?: ReactNode;
 };
 
-function EmptyMedia({ icon, tone = "neutral", children }: EmptyMediaProps) {
+function EmptyMedia({
+	icon,
+	tone = "neutral",
+	children,
+	style,
+	...props
+}: EmptyMediaProps) {
 	const size = use(SizeContext);
 
 	return (
-		<View style={styles.media(size)}>
+		<View {...props} style={[styles.media(size), style]}>
 			{children ?? (
 				<View style={styles.tile(size, tone)}>
 					{icon ? (
@@ -83,39 +105,37 @@ function EmptyMedia({ icon, tone = "neutral", children }: EmptyMediaProps) {
 	);
 }
 
-function EmptyTitle({ children }: { children?: ReactNode }) {
+function EmptyTitle(props: TitleProps) {
 	const size = use(SizeContext);
 	return (
 		<Title
 			variant={size === "md" ? "headingSm" : "subheading"}
 			align="center"
-		>
-			{children}
-		</Title>
+			{...props}
+		/>
 	);
 }
 
-function EmptyDescription({ children }: { children?: ReactNode }) {
+function EmptyDescription(props: TextProps) {
 	const size = use(SizeContext);
 	return (
 		<Text
 			variant={size === "md" ? "body" : "bodySm"}
 			color="muted"
 			align="center"
-		>
-			{children}
-		</Text>
+			{...props}
+		/>
 	);
 }
 
-function EmptyContent({
-	children,
-	style,
-}: {
-	children?: ReactNode;
-	style?: StyleProp<ViewStyle>;
-}) {
-	return <View style={[styles.content, style]}>{children}</View>;
+export type EmptyContentProps = ComponentPropsWithRef<typeof View>;
+
+function EmptyContent({ children, style, ...props }: EmptyContentProps) {
+	return (
+		<View {...props} style={[styles.content, style]}>
+			{children}
+		</View>
+	);
 }
 
 export const Empty = Object.assign(EmptyRoot, {

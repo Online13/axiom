@@ -1,8 +1,13 @@
-import { createContext, use, type ReactNode } from "react";
+import {
+	createContext,
+	use,
+	type ComponentPropsWithRef,
+	type ReactNode,
+} from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
 import { Icon } from "@/components/ui/icon";
 import { MAX_FONT_SCALE, Text } from "@/components/ui/text";
 import { useTheme, type Theme } from "@/theme";
@@ -62,27 +67,50 @@ function keyColors(
 	};
 }
 
-export type PasscodeProps = UsePasscodeOptions & {
-	/** Slots show dots. `false` shows the digits, for a code the user reads from somewhere. */
-	secure?: boolean;
-	/** `Group` and `Keyboard`, in any layout. Left out, both are rendered in order. */
-	children?: ReactNode;
-	style?: StyleProp<ViewStyle>;
-};
+export type PasscodeProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> &
+	UsePasscodeOptions & {
+		/** Slots show dots. `false` shows the digits, for a code the user reads from somewhere. */
+		secure?: boolean;
+		/** `Group` and `Keyboard`, in any layout. Left out, both are rendered in order. */
+		children?: ReactNode;
+		style?: StyleProp<ViewStyle>;
+	};
 
 function PasscodeRoot({
 	secure = true,
 	children,
 	style,
-	...options
+	length = 4,
+	value,
+	defaultValue,
+	onChange,
+	onComplete,
+	status,
+	disabled,
+	haptic,
+	...props
 }: PasscodeProps) {
 	const { tokens } = useTheme();
-	const passcode = usePasscode(options);
-	const length = options.length ?? 4;
+	const passcode = usePasscode({
+		length,
+		value,
+		defaultValue,
+		onChange,
+		onComplete,
+		status,
+		disabled,
+		haptic,
+	});
 
 	return (
 		<PasscodeContext value={{ ...passcode, length, secure }}>
-			<View style={[styles.root, { gap: tokens.spacing[8] }, style]}>
+			<View
+				{...props}
+				style={[styles.root, { gap: tokens.spacing[8] }, style]}
+			>
 				{children ?? (
 					<>
 						<PasscodeGroup />
@@ -94,7 +122,10 @@ function PasscodeRoot({
 	);
 }
 
-export type PasscodeGroupProps = {
+export type PasscodeGroupProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	/** Applied to the slots: iOS dots, or boxes like InputOTP. */
 	variant?: SlotVariant;
 	/** Space between slots, from the spacing tokens. */
@@ -109,6 +140,7 @@ function PasscodeGroup({
 	gap = 4,
 	children,
 	style,
+	...props
 }: PasscodeGroupProps) {
 	const { tokens } = useTheme();
 	const { length, shakeStyle, accessibilityValue } = usePasscodeContext();
@@ -117,6 +149,7 @@ function PasscodeGroup({
 		<GroupContext value={variant}>
 			{/* One accessible element: the row announces how many digits are in, never which ones. */}
 			<Animated.View
+				{...props}
 				accessible
 				accessibilityRole="text"
 				accessibilityLabel="Passcode"
@@ -137,7 +170,10 @@ function PasscodeGroup({
 	);
 }
 
-export type PasscodeSlotProps = {
+export type PasscodeSlotProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	/** Position in the code. */
 	index: number;
 	style?: StyleProp<ViewStyle>;
@@ -146,7 +182,7 @@ export type PasscodeSlotProps = {
 const DOT = 14;
 const BOX = { width: 48, height: 56 };
 
-function PasscodeSlot({ index, style }: PasscodeSlotProps) {
+function PasscodeSlot({ index, style, ...props }: PasscodeSlotProps) {
 	const { tokens, components } = useTheme();
 	const { value, status, secure, busy } = usePasscodeContext();
 	const variant = use(GroupContext);
@@ -166,6 +202,7 @@ function PasscodeSlot({ index, style }: PasscodeSlotProps) {
 	if (variant === "dot") {
 		return (
 			<View
+				{...props}
 				style={[
 					{
 						width: DOT,
@@ -183,6 +220,7 @@ function PasscodeSlot({ index, style }: PasscodeSlotProps) {
 
 	return (
 		<View
+			{...props}
 			style={[
 				styles.box,
 				{
@@ -219,7 +257,10 @@ function PasscodeSlot({ index, style }: PasscodeSlotProps) {
 	);
 }
 
-export type PasscodeKeyboardProps = {
+export type PasscodeKeyboardProps = Omit<
+	ComponentPropsWithRef<typeof View>,
+	"children"
+> & {
 	/** `round`: iOS lock screen keys. `flat`: full-width keys like the system number pad. */
 	variant?: KeyboardVariant;
 	/** Shows `ABC`, `DEF`… under the digits. */
@@ -234,12 +275,14 @@ function PasscodeKeyboard({
 	letters = true,
 	children,
 	style,
+	...props
 }: PasscodeKeyboardProps) {
 	const { tokens } = useTheme();
 
 	return (
 		<KeyboardContext value={{ variant, letters }}>
 			<View
+				{...props}
 				style={[
 					styles.keyboard,
 					{ rowGap: tokens.spacing[variant === "round" ? 3 : 2] },
@@ -277,7 +320,10 @@ const LETTERS: Record<string, string> = {
 const ROUND = 72;
 const FLAT_HEIGHT = 56;
 
-type KeyShellProps = {
+type KeyShellProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress" | "onLongPress"
+> & {
 	onPress: () => void;
 	onLongPress?: () => void;
 	accessibilityLabel: string;
@@ -291,6 +337,7 @@ function KeyShell({
 	accessibilityLabel,
 	disabled,
 	children,
+	...props
 }: KeyShellProps) {
 	const { tokens, components } = useTheme();
 	const { variant } = use(KeyboardContext);
@@ -298,6 +345,7 @@ function KeyShell({
 	return (
 		<View style={styles.cell}>
 			<Tappable
+				{...props}
 				accessibilityLabel={accessibilityLabel}
 				disabled={disabled}
 				onPress={onPress}
@@ -334,24 +382,28 @@ function KeyShell({
 	);
 }
 
-export type PasscodeKeyProps = {
+export type PasscodeKeyProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress" | "onLongPress"
+> & {
 	/** The digit it types. */
 	value: string;
 	/** Replaces the default content of the key. */
 	children?: ReactNode;
-	accessibilityLabel?: string;
 };
 
 function PasscodeKey({
 	value,
 	children,
 	accessibilityLabel,
+	...props
 }: PasscodeKeyProps) {
 	const { press, busy } = usePasscodeContext();
 	const { letters } = use(KeyboardContext);
 
 	return (
 		<KeyShell
+			{...props}
 			accessibilityLabel={accessibilityLabel ?? value}
 			disabled={busy}
 			onPress={() => press(value)}
@@ -384,13 +436,15 @@ function PasscodeKey({
 
 export type PasscodeAction = "delete" | "biometrics" | "custom";
 
-export type PasscodeKeyActionProps = {
+export type PasscodeKeyActionProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress" | "onLongPress"
+> & {
 	/** `delete` removes the last digit and clears the code on a long press. */
 	action: PasscodeAction;
 	/** Required for `biometrics` and `custom`. */
 	onPress?: () => void;
 	children?: ReactNode;
-	accessibilityLabel?: string;
 };
 
 function PasscodeKeyAction({
@@ -398,6 +452,7 @@ function PasscodeKeyAction({
 	onPress,
 	children,
 	accessibilityLabel,
+	...props
 }: PasscodeKeyActionProps) {
 	const { remove, clear, busy, filled } = usePasscodeContext();
 
@@ -413,6 +468,7 @@ function PasscodeKeyAction({
 
 	return (
 		<KeyShell
+			{...props}
 			accessibilityLabel={label}
 			disabled={disabled}
 			onPress={action === "delete" ? remove : (onPress ?? (() => {}))}

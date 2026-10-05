@@ -1,8 +1,13 @@
-import { createContext, use, useState, type ReactNode } from "react";
+import {
+	createContext,
+	use,
+	useState,
+	type ComponentPropsWithRef,
+	type ReactNode,
+} from "react";
 import {
 	StyleSheet,
 	View,
-	type AccessibilityRole,
 	type AccessibilityState,
 	type LayoutChangeEvent,
 	type StyleProp,
@@ -11,17 +16,20 @@ import {
 
 import { Slot } from "@/components/core/slot";
 import type { HapticKind } from "@/components/core/haptics";
-import { Tappable } from "@/components/core/tappable";
-import { Text } from "@/components/ui/text";
+import { Tappable, type TappableProps } from "@/components/core/tappable";
+import { Text, type TextProps } from "@/components/ui/text";
 import { useTheme } from "@/theme";
 
 export type ItemSize = "sm" | "md" | "lg";
 
-export type ItemProps = {
+export type ItemProps = Omit<
+	TappableProps,
+	"children" | "style" | "disabled" | "onPress" | "onLongPress"
+> & {
 	/** `Item.Leading`, `Item.Content` and `Item.Trailing`, in that order. */
 	children?: ReactNode;
-	onPress?: () => void;
-	onLongPress?: () => void;
+	onPress?: TappableProps["onPress"];
+	onLongPress?: TappableProps["onLongPress"];
 	/** Minimum height: 44, 52 or 64pt. */
 	size?: ItemSize;
 	selected?: boolean;
@@ -34,8 +42,6 @@ export type ItemProps = {
 	haptic?: HapticKind | false;
 	/** Merges the item into its child, for example a router `Link`. */
 	asChild?: boolean;
-	accessibilityLabel?: string;
-	accessibilityRole?: AccessibilityRole;
 	/** Merged with `selected` and `disabled`. */
 	accessibilityState?: AccessibilityState;
 	style?: StyleProp<ViewStyle>;
@@ -72,6 +78,7 @@ function ItemRoot({
 	accessibilityRole,
 	accessibilityState,
 	style,
+	...props
 }: ItemProps) {
 	const { tokens, components } = useTheme();
 	const [leadingWidth, setLeadingWidth] = useState(0);
@@ -126,6 +133,8 @@ function ItemRoot({
 		return (
 			<ItemContext value={context}>
 				<Slot
+					{...props}
+					accessibilityLabel={accessibilityLabel}
 					style={rowStyle(false)}
 					accessibilityRole={accessibilityRole}
 					accessibilityState={{ ...a11yState, disabled }}
@@ -140,6 +149,7 @@ function ItemRoot({
 		return (
 			<ItemContext value={context}>
 				<View
+					{...props}
 					accessibilityLabel={accessibilityLabel}
 					accessibilityRole={accessibilityRole}
 					accessibilityState={a11yState}
@@ -155,6 +165,7 @@ function ItemRoot({
 	return (
 		<ItemContext value={context}>
 			<Tappable
+				{...props}
 				disabled={disabled}
 				accessibilityLabel={accessibilityLabel}
 				accessibilityRole={accessibilityRole}
@@ -171,67 +182,59 @@ function ItemRoot({
 	);
 }
 
-type AreaProps = { children?: ReactNode; style?: StyleProp<ViewStyle> };
+export type ItemAreaProps = ComponentPropsWithRef<typeof View>;
 
-function ItemLeading({ children, style }: AreaProps) {
+function ItemLeading({ children, style, ...props }: ItemAreaProps) {
 	const { setLeadingWidth } = useItem();
-	const onLayout = (event: LayoutChangeEvent) =>
+	const onLayout = (event: LayoutChangeEvent) => {
 		setLeadingWidth(event.nativeEvent.layout.width);
+		props.onLayout?.(event);
+	};
 
 	return (
-		<View onLayout={onLayout} style={[styles.side, style]}>
+		<View {...props} onLayout={onLayout} style={[styles.side, style]}>
 			{children}
 		</View>
 	);
 }
 
-function ItemTrailing({ children, style }: AreaProps) {
+function ItemTrailing({ children, style, ...props }: ItemAreaProps) {
 	const { tokens } = useTheme();
 	return (
-		<View style={[styles.side, { gap: tokens.spacing[2] }, style]}>
+		<View {...props} style={[styles.side, { gap: tokens.spacing[2] }, style]}>
 			{children}
 		</View>
 	);
 }
 
-function ItemContent({ children, style }: AreaProps) {
-	return <View style={[styles.content, style]}>{children}</View>;
+function ItemContent({ children, style, ...props }: ItemAreaProps) {
+	return (
+		<View {...props} style={[styles.content, style]}>
+			{children}
+		</View>
+	);
 }
 
-function ItemTitle({
-	children,
-	numberOfLines = 1,
-}: {
-	children?: ReactNode;
-	numberOfLines?: number;
-}) {
+function ItemTitle(props: TextProps) {
 	const { disabled } = useItem();
 	return (
 		<Text
-			numberOfLines={numberOfLines}
+			numberOfLines={1}
 			color={disabled ? "disabled" : "default"}
-		>
-			{children}
-		</Text>
+			{...props}
+		/>
 	);
 }
 
-function ItemDescription({
-	children,
-	numberOfLines = 1,
-}: {
-	children?: ReactNode;
-	numberOfLines?: number;
-}) {
+function ItemDescription(props: TextProps) {
 	const { disabled } = useItem();
 	return (
 		<Text
 			variant="footnote"
-			numberOfLines={numberOfLines}
+			numberOfLines={1}
 			color={disabled ? "disabled" : "muted"}
-		>
-			{children}
-		</Text>
+			{...props}
+		/>
 	);
 }
 
