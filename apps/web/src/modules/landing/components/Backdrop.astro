@@ -1,24 +1,25 @@
 ---
 /*
- * The page background, built like the original square backdrop: a tall tile repeated down
- * the page. Each tile holds light ribbons in the brand colours: translucent bands with one
- * bright glowing edge, pinched at both ends, sweeping across the page in large S curves.
+ * The page background: light ribbons in the brand colours. Each ribbon is a translucent band
+ * with one bright glowing edge, pinched at both ends, sweeping across the page.
  *
- * The tile is wider than any common screen and centred, so ribbons enter and leave past the
+ * The hero ribbons are placed by hand. Below them, ribbons are generated from a fixed seed
+ * down the whole page, so every one has its own path, width and colours and nothing repeats,
+ * while the page still renders the same on every build.
+ *
+ * The scene is wider than any common screen and centred, so ribbons enter and leave past the
  * viewport edges; the content column (1440px) sits in its middle, x 480 → 1920.
  */
 
-const TILE_WIDTH = 2400;
-const TILE_HEIGHT = 4800;
+const SCENE_WIDTH = 2400;
+/** How far down ribbons are generated: past the tallest page, doubled for the half-scale phone scene. */
+const SCENE_DEPTH = 32000;
 
 type Point = [x: number, y: number];
 type Ribbon = {
-	/** The bright edge: a cubic curve from `from` to `to`. */
-	from: Point;
-	c1: Point;
-	c2: Point;
-	to: Point;
-	/** How far the faint edge's control points sit from the bright edge's: the ribbon's width. */
+	/** The bright edge: a start point followed by cubic segments (c1, c2, end), smooth at each joint. */
+	points: Point[];
+	/** How far the faint edge sits from the bright edge at its widest: the ribbon's width. */
 	spread: Point;
 	colors: string[];
 	opacity?: number;
@@ -27,33 +28,114 @@ type Ribbon = {
 const BLUE = '#3b6cff';
 const MAGENTA = '#c026d3';
 const PINK = '#ec4899';
+const PALETTE = ['var(--indigo)', BLUE, 'var(--accent)', 'var(--teal)', MAGENTA, PINK, 'var(--coral)'];
 
-const ribbons: Ribbon[] = [
-	// Hero: rises behind the phone and arcs off the top right.
-	{ from: [1000, 1400], c1: [1300, 400], c2: [1900, 150], to: [2500, 500], spread: [80, 260], colors: ['var(--indigo)', BLUE, 'var(--accent)', 'var(--teal)'] },
-	{ from: [1300, 1500], c1: [1600, 820], c2: [2000, 620], to: [2500, 900], spread: [20, 80], colors: ['var(--indigo)', PINK, 'var(--coral)'], opacity: 0.8 },
-	{ from: [-100, 1200], c1: [600, 1300], c2: [1000, 600], to: [1100, -200], spread: [-80, -220], colors: [BLUE, 'var(--indigo)'], opacity: 0.5 },
-	// Rises from the bottom left to the top right.
-	{ from: [-100, 3000], c1: [900, 3300], c2: [1500, 2700], to: [2500, 1900], spread: [0, -280], colors: [BLUE, 'var(--accent)', 'var(--teal)'] },
-	{ from: [500, 3300], c1: [1300, 3320], c2: [1800, 2820], to: [2500, 2300], spread: [0, -80], colors: ['var(--indigo)', MAGENTA, 'var(--coral)'], opacity: 0.8 },
-	// Falls from the right back across to the left.
-	{ from: [2500, 3500], c1: [1700, 3700], c2: [1000, 4500], to: [-100, 4400], spread: [0, 240], colors: ['var(--teal)', BLUE, 'var(--indigo)'], opacity: 0.85 },
-	{ from: [2500, 3820], c1: [1800, 3960], c2: [1200, 4720], to: [-100, 4780], spread: [0, 70], colors: ['var(--coral)', PINK, MAGENTA], opacity: 0.6 },
+// Hero: one segment each, the faint edge offset by `spread` at both control points.
+const hero = (from: Point, c1: Point, c2: Point, to: Point, spread: Point, colors: string[], opacity?: number): Ribbon => ({
+	points: [from, c1, c2, to],
+	spread,
+	colors,
+	opacity,
+});
+
+const heroRibbons: Ribbon[] = [
+	// Rises behind the phone and arcs off the top right.
+	hero([1000, 1400], [1300, 400], [1900, 150], [2500, 500], [80, 260], ['var(--indigo)', BLUE, 'var(--accent)', 'var(--teal)']),
+	hero([1300, 1500], [1600, 820], [2000, 620], [2500, 900], [20, 80], ['var(--indigo)', PINK, 'var(--coral)'], 0.8),
+	hero([-100, 1200], [600, 1300], [1000, 600], [1100, -200], [-80, -220], [BLUE, 'var(--indigo)'], 0.5),
 ];
 
-const add = ([x, y]: Point, [dx, dy]: Point): Point => [x + dx, y + dy];
+// Seeded PRNG (mulberry32): random-looking, identical on every build.
+const random = (() => {
+	let seed = 0x5eed1e55;
+	return () => {
+		seed = (seed + 0x6d2b79f5) | 0;
+		let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+		t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+		return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+	};
+})();
+const between = (min: number, max: number) => min + random() * (max - min);
+const pick = <T,>(items: T[], count: number) => [...items].sort(() => random() - 0.5).slice(0, count);
+
+/** Smooth cubic segments through the waypoints (Catmull-Rom tangents, uneven tension). */
+const through = (waypoints: Point[]): Point[] => {
+	const at = (i: number) => waypoints[Math.max(0, Math.min(waypoints.length - 1, i))];
+	const points: Point[] = [waypoints[0]];
+	for (let i = 0; i < waypoints.length - 1; i++) {
+		const [p0, p1, p2, p3] = [at(i - 1), at(i), at(i + 1), at(i + 2)];
+		const k1 = between(0.15, 0.4);
+		const k2 = between(0.15, 0.4);
+		points.push(
+			[p1[0] + (p2[0] - p0[0]) * k1, p1[1] + (p2[1] - p0[1]) * k1],
+			[p2[0] - (p3[0] - p1[0]) * k2, p2[1] - (p3[1] - p1[1]) * k2],
+			p2,
+		);
+	}
+	return points;
+};
+
+/** A path crossing the scene from one side to the other, wandering up and down on the way. */
+const wander = (startY: number): Point[] => {
+	const leftToRight = random() < 0.5;
+	const drift = between(-1400, 1400);
+	const stops = 2 + Math.floor(random() * 3);
+	const xs = Array.from({ length: stops - 1 }, () => between(200, SCENE_WIDTH - 200)).sort((a, b) => a - b);
+	const span = [-150, ...xs, SCENE_WIDTH + 150];
+	const waypoints = span.map((x, i): Point => [x, startY + (drift * i) / stops + between(-500, 500)]);
+	return leftToRight ? waypoints : waypoints.map(([x, y]) => [SCENE_WIDTH - x, y]);
+};
+
+const generatedRibbons: Ribbon[] = [];
+for (let y = 2000; y < SCENE_DEPTH; y += between(1100, 2000)) {
+	const path = wander(y);
+	const side = random() < 0.5 ? -1 : 1;
+	generatedRibbons.push({
+		points: through(path),
+		spread: [between(-120, 120), side * between(120, 340)],
+		colors: pick(PALETTE, 2 + Math.floor(random() * 3)),
+		opacity: between(0.6, 1),
+	});
+	// Often a thinner companion running alongside, drifting away from or into the first.
+	if (random() < 0.65) {
+		const offset = side * between(140, 380);
+		generatedRibbons.push({
+			points: through(path.map(([x, ry]) => [x + between(-150, 150), ry + offset + between(-180, 180)])),
+			spread: [between(-40, 40), side * between(30, 110)],
+			colors: pick(PALETTE, 2 + Math.floor(random() * 2)),
+			opacity: between(0.45, 0.85),
+		});
+	}
+}
+
+const ribbons = [...heroRibbons, ...generatedRibbons];
+
 const pt = ([x, y]: Point) => `${x} ${y}`;
+const segments = (points: Point[]) => {
+	let d = '';
+	for (let i = 1; i < points.length; i += 3) d += ` C ${pt(points[i])}, ${pt(points[i + 1])}, ${pt(points[i + 2])}`;
+	return d;
+};
 
-const edge = (r: Ribbon) => `M ${pt(r.from)} C ${pt(r.c1)}, ${pt(r.c2)}, ${pt(r.to)}`;
+const edge = (r: Ribbon) => `M ${pt(r.points[0])}${segments(r.points)}`;
+// The faint edge swells away from the bright one in the middle and meets it at both ends.
+const faintPoints = (r: Ribbon) => {
+	const last = r.points.length - 1;
+	return r.points.map(([x, y], k): Point => {
+		const swell = Math.sin((Math.PI * k) / last) / Math.sin(Math.PI / 3);
+		return [x + r.spread[0] * swell, y + r.spread[1] * swell];
+	});
+};
+const faintEdge = (r: Ribbon) => {
+	const back = faintPoints(r).reverse();
+	return `M ${pt(back[0])}${segments(back)}`;
+};
 // Bright edge out, faint edge back; sharing end points pinches the ribbon at both ends.
-const shape = (r: Ribbon) =>
-	`${edge(r)} C ${pt(add(r.c2, r.spread))}, ${pt(add(r.c1, r.spread))}, ${pt(r.from)} Z`;
-const faintEdge = (r: Ribbon) => `M ${pt(r.to)} C ${pt(add(r.c2, r.spread))}, ${pt(add(r.c1, r.spread))}, ${pt(r.from)}`;
-
+const shape = (r: Ribbon) => `${edge(r)}${segments(faintPoints(r).reverse())} Z`;
 ---
 
 <div class="backdrop" aria-hidden="true">
-	<svg class="backdrop__scene" width={TILE_WIDTH} fill="none">
+	<svg class="backdrop__scene" width={SCENE_WIDTH} fill="none">
 		<defs>
 			<filter id="backdrop-soft" x="-20%" y="-20%" width="140%" height="140%">
 				<feGaussianBlur stdDeviation="36" />
@@ -79,10 +161,10 @@ const faintEdge = (r: Ribbon) => `M ${pt(r.to)} C ${pt(add(r.c2, r.spread))}, ${
 						<linearGradient
 							id={`ribbon-${i}`}
 							gradientUnits="userSpaceOnUse"
-							x1={r.from[0]}
-							y1={r.from[1]}
-							x2={r.to[0]}
-							y2={r.to[1]}
+							x1={r.points[0][0]}
+							y1={r.points[0][1]}
+							x2={r.points.at(-1)![0]}
+							y2={r.points.at(-1)![1]}
 						>
 							{r.colors.map((color, j) => (
 								<stop offset={j / (r.colors.length - 1)} stop-color={color} />
@@ -94,31 +176,23 @@ const faintEdge = (r: Ribbon) => `M ${pt(r.to)} C ${pt(add(r.c2, r.spread))}, ${
 					</>
 				))
 			}
-			<pattern id="backdrop-tile" patternUnits="userSpaceOnUse" width={TILE_WIDTH} height={TILE_HEIGHT}>
-				{
-					// Drawn a tile above and below too, so ribbons crossing the tile edge wrap seamlessly.
-					[-TILE_HEIGHT, 0, TILE_HEIGHT].map((shift) => (
-						<g transform={`translate(0 ${shift})`}>
-							{ribbons.map((r, i) => (
-								<g opacity={r.opacity ?? 1}>
-									{/* Body: a faint tint, lit from the bright edge by a soft inner glow. */}
-									<path d={shape(r)} fill={`url(#ribbon-${i})`} fill-opacity="0.1" />
-									<g clip-path={`url(#ribbon-clip-${i})`}>
-										<path d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="140" stroke-opacity="0.45" filter="url(#backdrop-soft)" />
-									</g>
-									{/* Edges: the faint one, then the glowing one with a white-hot core. */}
-									<path d={faintEdge(r)} stroke={`url(#ribbon-${i})`} stroke-width="1" stroke-opacity="0.3" />
-									<path d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="36" stroke-opacity="0.35" filter="url(#backdrop-bloom)" />
-									<path d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="3" filter="url(#backdrop-neon)" />
-									<path d={edge(r)} stroke="#ffffff" stroke-width="1" stroke-opacity="0.8" />
-								</g>
-							))}
-						</g>
-					))
-				}
-			</pattern>
 		</defs>
-		<rect width="100%" height="100%" fill="url(#backdrop-tile)" />
+		{
+			ribbons.map((r, i) => (
+				<g opacity={r.opacity ?? 1}>
+					{/* Body: a faint tint, lit from the bright edge by a soft inner glow. */}
+					<path d={shape(r)} fill={`url(#ribbon-${i})`} fill-opacity="0.1" />
+					<g clip-path={`url(#ribbon-clip-${i})`}>
+						<path d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="140" stroke-opacity="0.45" filter="url(#backdrop-soft)" />
+					</g>
+					{/* Edges: the faint one, then the glowing one with a white-hot core. */}
+					<path d={faintEdge(r)} stroke={`url(#ribbon-${i})`} stroke-width="1" stroke-opacity="0.3" />
+					<path d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="36" stroke-opacity="0.35" filter="url(#backdrop-bloom)" />
+					<path d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="3" filter="url(#backdrop-neon)" />
+					<path d={edge(r)} stroke="#ffffff" stroke-width="1" stroke-opacity="0.8" />
+				</g>
+			))
+		}
 	</svg>
 </div>
 
@@ -133,7 +207,7 @@ const faintEdge = (r: Ribbon) => `M ${pt(r.to)} C ${pt(add(r.c2, r.spread))}, ${
 		opacity: var(--glow);
 	}
 
-	/* Centred on the page, so the content column lines up with the middle of the tile. */
+	/* Centred on the page, so the content column lines up with the middle of the scene. */
 	.backdrop__scene {
 		position: absolute;
 		top: 0;
