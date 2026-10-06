@@ -197,7 +197,13 @@ const shape = (r: Ribbon) => `${edge(r)}${segments(faintPoints(r).reverse())} Z`
 </div>
 
 <style>
-	/* Spans the whole page (body is its containing block), so it scrolls with the content. */
+	/*
+	 * Spans the whole page (body is its containing block), so it scrolls with the content.
+	 *
+	 * Its own compositor layer: the ribbons' blurs are rasterised once per tile and kept, so the
+	 * looping animations painted over it never re-run them. Containment keeps its layout and
+	 * paint out of the rest of the page's work.
+	 */
 	.backdrop {
 		position: absolute;
 		inset: 0;
@@ -205,6 +211,8 @@ const shape = (r: Ribbon) => `${edge(r)}${segments(faintPoints(r).reverse())} Z`
 		overflow: hidden;
 		pointer-events: none;
 		opacity: var(--glow);
+		contain: strict;
+		will-change: transform;
 	}
 
 	/* Centred on the page, so the content column lines up with the middle of the scene. */
