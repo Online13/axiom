@@ -64,12 +64,16 @@ const center = () => ({
 });
 
 /**
- * The part of the view the floating sidebar and the tools beside it leave
- * free: fitting and focusing center the screens there rather than behind them.
+ * The part of the view the floating header, sidebar and the tools beside it
+ * leave free: fitting and focusing center the screens there rather than behind them.
  */
 function area() {
 	const width = view?.clientWidth ?? 0;
-	const height = view?.clientHeight ?? 0;
+	const header = document.querySelector(".tb-header")?.getBoundingClientRect();
+	const top = view
+		? Math.max((header?.bottom ?? 0) - view.getBoundingClientRect().top, 0)
+		: 0;
+	const height = (view?.clientHeight ?? 0) - top;
 	const panel = ui$.sidebarOpen.peek()
 		? document.querySelector(".tb-panel")?.getBoundingClientRect()
 		: undefined;
@@ -78,7 +82,7 @@ function area() {
 	const left = view
 		? Math.max(edge - view.getBoundingClientRect().left, 0)
 		: 0;
-	return { left, width: width - left, height };
+	return { left, top, width: width - left, height };
 }
 
 export function zoomBy(factor: number) {
@@ -93,22 +97,22 @@ export const zoomTo = (z: number) => zoomBy(z / camera$.z.peek());
 /** Every screen in view, centered. */
 export function fitAll() {
 	if (!view || !world) return;
-	const { left, width, height } = area();
+	const { left, top, width, height } = area();
 	const ww = world.offsetWidth;
 	const wh = world.offsetHeight;
 	const z = clamp(
 		Math.min((width - MARGIN * 2) / ww, (height - MARGIN * 2) / wh, 1),
 	);
-	move({ x: left + (width - ww * z) / 2, y: (height - wh * z) / 2, z });
+	move({ x: left + (width - ww * z) / 2, y: top + (height - wh * z) / 2, z });
 }
 
 /** A full row across the view, from the top: where a visit starts. */
 export function fitWidth() {
 	if (!view || !world) return;
-	const { left, width } = area();
+	const { left, top, width } = area();
 	const ww = world.offsetWidth;
 	const z = clamp(Math.min((width - MARGIN * 2) / ww, MAX_FIT));
-	move({ x: left + (width - ww * z) / 2, y: MARGIN, z });
+	move({ x: left + (width - ww * z) / 2, y: top + MARGIN, z });
 }
 
 const GLIDE_MS = 320;
@@ -148,7 +152,7 @@ export function focusScreen(element: Element, zoom?: number) {
 	);
 	const to = {
 		x: free.left + free.width / 2 - (left + width / 2) * z,
-		y: free.height / 2 - (top + height / 2) * z,
+		y: free.top + free.height / 2 - (top + height / 2) * z,
 		z,
 	};
 
@@ -181,7 +185,7 @@ function nearestPhone() {
 	const free = area();
 	// The middle of the free view, in world points.
 	const cx = (free.left + free.width / 2 - x) / z;
-	const cy = (free.height / 2 - y) / z;
+	const cy = (free.top + free.height / 2 - y) / z;
 	let nearest: Element | null = null;
 	let best = Number.POSITIVE_INFINITY;
 	for (const phone of world.querySelectorAll(".tb-phone")) {

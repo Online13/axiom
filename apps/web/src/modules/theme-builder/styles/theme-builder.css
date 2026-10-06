@@ -11,9 +11,8 @@
 	--line: #1f2c3b;
 	--line-strong: #2e3f52;
 	--raised: #0f1822;
-	/* The worktable under the screens: a step lighter than the floating panel,
-	   so the panel reads as a separate sheet on top of it. */
-	--canvas: #13202e;
+	/* The worktable under the screens: the landing's page colour, in every theme. */
+	--canvas: var(--bg);
 	--accent: #61dafb;
 	/* Text on an accent fill. */
 	--on-accent: #0b1016;
@@ -29,9 +28,19 @@
 	--panel-w: 340px;
 	/* How far the floating panel and controls sit from the canvas edges. */
 	--float-inset: 1rem;
+	/* The header floats over the canvas, so the floats start below it. */
+	--float-top: calc(var(--header-h) + var(--float-inset));
 	/* The corner button the panel folds into. */
 	--corner: 2.5rem;
 	--gutter: clamp(1rem, 2.5vw, 2rem);
+
+	/* Frosted chrome: the panel and the floating controls let the
+	   canvas blur through. The fill and blur live on one rule below. */
+	--glass-line: color-mix(in srgb, var(--fg) 10%, transparent);
+	--glass-edge: color-mix(in srgb, var(--fg) 12%, transparent);
+	/* The header and the panel share one fill, so a light screen under
+	   the panel doesn't wash it out. */
+	--chrome-fill: color-mix(in srgb, var(--bg) 80%, transparent);
 
 	--font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 	--font-mono:
@@ -48,7 +57,6 @@
 	--line: #dedede;
 	--line-strong: #c4c4c4;
 	--raised: #ffffff;
-	--canvas: #ececec;
 	--hover: #efefef;
 	--pass: #1b7a43;
 	--pass-line: #9fd4b3;
@@ -67,7 +75,6 @@
 	--line: #2b2548;
 	--line-strong: #3d3563;
 	--raised: #120f26;
-	--canvas: #1c1836;
 	--hover: #1f1a3a;
 }
 
@@ -134,8 +141,9 @@ input[type="color"] {
 }
 
 .tb-header {
-	position: sticky;
-	top: 0;
+	/* Floats over the canvas, with the landing nav's fill. */
+	position: fixed;
+	inset: 0 0 auto;
 	z-index: 50;
 	display: flex;
 	align-items: center;
@@ -143,9 +151,9 @@ input[type="color"] {
 	gap: 1rem;
 	height: var(--header-h);
 	padding-inline: var(--gutter);
-	border-bottom: 1px solid var(--line);
-	background: color-mix(in srgb, var(--bg) 85%, transparent);
+	background: var(--chrome-fill);
 	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
 }
 
 .tb-header__side {
@@ -435,7 +443,7 @@ input[type="color"] {
 	--widen: 0.6s cubic-bezier(0.65, 0, 0.35, 1);
 	position: absolute;
 	z-index: 20;
-	top: var(--float-inset);
+	top: var(--float-top);
 	bottom: var(--float-inset);
 	left: var(--float-inset);
 	display: flex;
@@ -444,10 +452,10 @@ input[type="color"] {
 	/* Clip, not hidden: a hidden box still scrolls, and a row scrolled into
 	   view mid-slide would shift the track sideways on top of its transform. */
 	overflow: clip;
-	border: 1px solid var(--line-strong);
-	background: color-mix(in srgb, var(--raised) 92%, transparent);
-	backdrop-filter: blur(16px);
-	box-shadow: 0 24px 48px -24px rgb(0 0 0 / 0.55);
+	border: 1px solid var(--glass-line);
+	box-shadow:
+		inset 0 1px 0 var(--glass-edge),
+		0 24px 48px -24px rgb(0 0 0 / 0.55);
 	clip-path: inset(0 calc(100% - var(--corner)) calc(100% - var(--corner)) 0);
 	transition:
 		clip-path var(--fold),
@@ -541,7 +549,7 @@ input[type="color"] {
 	transform-origin: top left;
 	position: absolute;
 	z-index: 20;
-	top: var(--float-inset);
+	top: var(--float-top);
 	left: var(--float-inset);
 	opacity: 0;
 	scale: 0.6;
@@ -1069,16 +1077,28 @@ span.tb-crole__name {
 .tb-canvas {
 	position: relative;
 	display: flex;
-	height: calc(100svh - var(--header-h));
+	height: 100svh;
 	min-width: 0;
 	flex-direction: column;
+}
+
+/* Frosted chrome, see --glass-line. */
+.tb-panel,
+.tb-float {
+	background: color-mix(in srgb, var(--raised) 55%, transparent);
+	backdrop-filter: blur(20px) saturate(160%);
+	-webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+
+.tb-panel {
+	background: var(--chrome-fill);
 }
 
 /* The controls float over the top right of the canvas, as on a map. */
 .tb-overlay {
 	position: absolute;
 	z-index: 10;
-	top: var(--float-inset);
+	top: var(--float-top);
 	right: var(--float-inset);
 	display: flex;
 	align-items: stretch;
@@ -1091,9 +1111,10 @@ span.tb-crole__name {
 }
 
 .tb-float {
-	border: 1px solid var(--line-strong);
-	background: var(--raised);
-	box-shadow: 0 12px 24px -16px rgb(0 0 0 / 0.6);
+	border: 1px solid var(--glass-line);
+	box-shadow:
+		inset 0 1px 0 var(--glass-edge),
+		0 12px 24px -16px rgb(0 0 0 / 0.6);
 }
 
 /* The canvas tools: a column of square toggles just right of the sidebar,
@@ -1101,7 +1122,7 @@ span.tb-crole__name {
 .tb-tools {
 	position: absolute;
 	z-index: 20;
-	top: calc(var(--float-inset) + var(--corner) + 0.5rem);
+	top: calc(var(--float-top) + var(--corner) + 0.5rem);
 	left: var(--float-inset);
 	display: flex;
 	flex-direction: column;
@@ -1111,7 +1132,7 @@ span.tb-crole__name {
 }
 
 .tb-main:has(> .tb-panel[data-open]) .tb-tools {
-	top: var(--float-inset);
+	top: var(--float-top);
 	left: calc(
 		var(--float-inset) * 2 +
 			min(var(--panel-w), 100% - var(--float-inset) * 2)
