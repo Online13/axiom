@@ -23,9 +23,9 @@ const inspirations = [
 			{
 				inspirations.map((item) => (
 					<li>
-						<a href={item.href} target="_blank" rel="noopener noreferrer">
-							<span>{item.name}</span>
+						<a class="glass" href={item.href} target="_blank" rel="noopener noreferrer">
 							<small>{item.note}</small>
+							<span>{item.name}</span>
 						</a>
 					</li>
 				))
@@ -69,13 +69,11 @@ const inspirations = [
 		height: 100%;
 		min-height: 8rem;
 		padding: 1.25rem;
-		border: 1px solid var(--line);
-		background-color: var(---bg);
 		transition: border-color 0.2s;
 	}
 
 	.inspirations__grid a:hover {
-		border-color: color-mix(in srgb, var(--fg) 30%, var(--line));
+		border-color: color-mix(in srgb, var(--fg) 30%, transparent);
 	}
 
 	.inspirations__grid a:focus-visible {

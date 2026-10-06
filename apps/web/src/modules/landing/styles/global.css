@@ -136,6 +136,17 @@ p {
 	mask-image: linear-gradient(transparent, #000 8rem, #000 calc(100% - 8rem), transparent);
 }
 
+/* Frosted card, same fill as the nav: the backdrop's ribbons blur through with a lit top edge. */
+.glass {
+	border: 1px solid color-mix(in srgb, var(--fg) 10%, transparent);
+	background: color-mix(in srgb, var(--card) 45%, transparent);
+	backdrop-filter: blur(20px) saturate(160%);
+	-webkit-backdrop-filter: blur(20px) saturate(160%);
+	box-shadow:
+		inset 0 1px 0 color-mix(in srgb, var(--fg) 12%, transparent),
+		0 12px 32px -16px color-mix(in srgb, #000 40%, transparent);
+}
+
 .section--full {
 	height: var(--full-h);
 	min-height: fit-content;
