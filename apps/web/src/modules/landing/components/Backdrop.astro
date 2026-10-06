@@ -25,10 +25,15 @@ type Ribbon = {
 	opacity?: number;
 };
 
-const BLUE = '#3b6cff';
-const MAGENTA = '#c026d3';
-const PINK = '#ec4899';
-const PALETTE = ['var(--indigo)', BLUE, 'var(--accent)', 'var(--teal)', MAGENTA, PINK, 'var(--coral)'];
+// Ribbon colours are theme tokens (global.css), so light mode can set its own.
+const INDIGO = 'var(--ribbon-indigo)';
+const BLUE = 'var(--ribbon-blue)';
+const ACCENT = 'var(--ribbon-accent)';
+const TEAL = 'var(--ribbon-teal)';
+const MAGENTA = 'var(--ribbon-magenta)';
+const PINK = 'var(--ribbon-pink)';
+const CORAL = 'var(--ribbon-coral)';
+const PALETTE = [INDIGO, BLUE, ACCENT, TEAL, MAGENTA, PINK, CORAL];
 
 // Hero: one segment each, the faint edge offset by `spread` at both control points.
 const hero = (from: Point, c1: Point, c2: Point, to: Point, spread: Point, colors: string[], opacity?: number): Ribbon => ({
@@ -40,9 +45,9 @@ const hero = (from: Point, c1: Point, c2: Point, to: Point, spread: Point, color
 
 const heroRibbons: Ribbon[] = [
 	// Rises behind the phone and arcs off the top right.
-	hero([1000, 1400], [1300, 400], [1900, 150], [2500, 500], [80, 260], ['var(--indigo)', BLUE, 'var(--accent)', 'var(--teal)']),
-	hero([1300, 1500], [1600, 820], [2000, 620], [2500, 900], [20, 80], ['var(--indigo)', PINK, 'var(--coral)'], 0.8),
-	hero([-100, 1200], [600, 1300], [1000, 600], [1100, -200], [-80, -220], [BLUE, 'var(--indigo)'], 0.5),
+	hero([1000, 1400], [1300, 400], [1900, 150], [2500, 500], [80, 260], [INDIGO, BLUE, ACCENT, TEAL]),
+	hero([1300, 1500], [1600, 820], [2000, 620], [2500, 900], [20, 80], [INDIGO, PINK, CORAL], 0.8),
+	hero([-100, 1200], [600, 1300], [1000, 600], [1100, -200], [-80, -220], [BLUE, INDIGO], 0.5),
 ];
 
 // Seeded PRNG (mulberry32): random-looking, identical on every build.
@@ -110,6 +115,34 @@ for (let y = 2000; y < SCENE_DEPTH; y += between(1100, 2000)) {
 
 const ribbons = [...heroRibbons, ...generatedRibbons];
 
+/**
+ * Gradient stops, with three mixed between each pair of colours in `--ribbon-mix`. In sRGB
+ * (dark mode) they land exactly on the plain gradient; in OKLCH (light mode) they carry it
+ * round the hue wheel at full strength, so violet to teal never passes through grey.
+ */
+const gradientStops = (colors: string[]) =>
+	colors.flatMap((color, j) => {
+		const at = (t: number) => (j + t) / (colors.length - 1);
+		const next = colors[j + 1];
+		if (!next) return [{ offset: at(0), color }];
+		return [0, 25, 50, 75].map((mix) => ({
+			offset: at(mix / 100),
+			color: mix ? `color-mix(in var(--ribbon-mix), ${color} ${100 - mix}%, ${next})` : color,
+		}));
+	});
+
+/** The ribbon's width at its widest: how far the faint edge strays from the bright one. */
+const width = (r: Ribbon) => Math.round(Math.hypot(...r.spread));
+/** A box around the ribbon and its blurs: the curve stays inside its control points. */
+const bounds = (r: Ribbon) => {
+	const margin = width(r) + 120;
+	const xs = r.points.map(([x]) => x);
+	const ys = r.points.map(([, y]) => y);
+	const x = Math.min(...xs) - margin;
+	const y = Math.min(...ys) - margin;
+	return { x, y, width: Math.max(...xs) + margin - x, height: Math.max(...ys) + margin - y };
+};
+
 const pt = ([x, y]: Point) => `${x} ${y}`;
 const segments = (points: Point[]) => {
 	let d = '';
@@ -166,30 +199,50 @@ const shape = (r: Ribbon) => `${edge(r)}${segments(faintPoints(r).reverse())} Z`
 							x2={r.points.at(-1)![0]}
 							y2={r.points.at(-1)![1]}
 						>
-							{r.colors.map((color, j) => (
-								<stop offset={j / (r.colors.length - 1)} stop-color={color} />
+							{gradientStops(r.colors).map(({ offset, color }) => (
+								<stop offset={offset} stop-color={color} />
 							))}
 						</linearGradient>
 						<clipPath id={`ribbon-clip-${i}`}>
 							<path d={shape(r)} />
 						</clipPath>
+						{/* Light mode, across the width: a blur as wide as the ribbon, fading over all of it. */}
+						<filter id={`ribbon-shade-${i}`} x="-50%" y="-50%" width="200%" height="200%">
+							<feGaussianBlur stdDeviation={Math.round(width(r) / 4)} />
+						</filter>
+						{/* Light mode, along the length: full strength at the first point, faint at the last. */}
+						<linearGradient
+							id={`ribbon-fade-gradient-${i}`}
+							gradientUnits="userSpaceOnUse"
+							x1={r.points[0][0]}
+							y1={r.points[0][1]}
+							x2={r.points.at(-1)![0]}
+							y2={r.points.at(-1)![1]}
+						>
+							<stop offset="0" stop-color="#ffffff" />
+							<stop offset="1" stop-color="#ffffff" stop-opacity="0.4" />
+						</linearGradient>
+						<mask id={`ribbon-fade-${i}`} maskUnits="userSpaceOnUse" {...bounds(r)}>
+							<rect {...bounds(r)} fill={`url(#ribbon-fade-gradient-${i})`} />
+						</mask>
 					</>
 				))
 			}
 		</defs>
 		{
 			ribbons.map((r, i) => (
-				<g opacity={r.opacity ?? 1}>
+				<g class="backdrop__ribbon" opacity={r.opacity ?? 1} style={`--fade: url(#ribbon-fade-${i})`}>
 					{/* Body: a faint tint, lit from the bright edge by a soft inner glow. */}
-					<path d={shape(r)} fill={`url(#ribbon-${i})`} fill-opacity="0.1" />
+					<path class="backdrop__body" d={shape(r)} fill={`url(#ribbon-${i})`} fill-opacity="0.1" />
 					<g clip-path={`url(#ribbon-clip-${i})`}>
-						<path d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="140" stroke-opacity="0.45" filter="url(#backdrop-soft)" />
+						<path class="backdrop__inner" d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="140" stroke-opacity="0.45" filter="url(#backdrop-soft)" />
+						<path class="backdrop__shade" d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width={width(r)} filter={`url(#ribbon-shade-${i})`} />
 					</g>
 					{/* Edges: the faint one, then the glowing one with a white-hot core. */}
 					<path d={faintEdge(r)} stroke={`url(#ribbon-${i})`} stroke-width="1" stroke-opacity="0.3" />
-					<path d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="36" stroke-opacity="0.35" filter="url(#backdrop-bloom)" />
-					<path d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="3" filter="url(#backdrop-neon)" />
-					<path d={edge(r)} stroke="#ffffff" stroke-width="1" stroke-opacity="0.8" />
+					<path class="backdrop__glow" d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="36" stroke-opacity="0.35" filter="url(#backdrop-bloom)" />
+					<path class="backdrop__edge" d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="3" filter="url(#backdrop-neon)" />
+					<path class="backdrop__glow" d={edge(r)} stroke="#ffffff" stroke-width="1" stroke-opacity="0.8" />
 				</g>
 			))
 		}
@@ -223,6 +276,39 @@ const shape = (r: Ribbon) => `${edge(r)}${segments(faintPoints(r).reverse())} Z`
 		height: 100%;
 		translate: -50% 0;
 		transform-origin: top center;
+	}
+
+	/*
+	 * Light mode: a glow can't read on a near-white page, so the bright edge is a plain line in
+	 * the ribbon's colours, with no bloom, neon blur or white core. The ribbon then fades from
+	 * high contrast to low both across its width (the shade) and along its length (the mask).
+	 */
+	:global(:root[data-theme="light"]) .backdrop__glow,
+	:global(:root[data-theme="light"]) .backdrop__inner {
+		display: none;
+	}
+	:global(:root[data-theme="light"]) .backdrop__edge {
+		filter: none;
+	}
+	/*
+	 * Every ribbon at full strength. Overlapping ribbons of different hues mix into a muddy
+	 * grey on white, so they blend with `lighten`: each channel keeps its brightest value and
+	 * an overlap never darkens. The backdrop is its own stacking context, so they blend with
+	 * each other, not with the page.
+	 */
+	:global(:root[data-theme="light"]) .backdrop__ribbon {
+		opacity: 1;
+		mix-blend-mode: lighten;
+		mask: var(--fade);
+	}
+	:global(:root[data-theme="light"]) .backdrop__body {
+		fill-opacity: 0.2;
+	}
+	.backdrop__shade {
+		display: none;
+	}
+	:global(:root[data-theme="light"]) .backdrop__shade {
+		display: inline;
 	}
 
 	/* Smaller ribbons on phones; the taller box keeps the scaled scene full height. */

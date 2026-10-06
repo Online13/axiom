@@ -22,6 +22,16 @@
 	--on-accent: var(--ink);
 	/* Strength of the backdrop's light streaks and glows. */
 	--glow: 1;
+	/* Backdrop ribbon colours. */
+	--ribbon-indigo: var(--indigo);
+	--ribbon-blue: #3b6cff;
+	--ribbon-accent: var(--accent);
+	--ribbon-teal: var(--teal);
+	--ribbon-magenta: #c026d3;
+	--ribbon-pink: #ec4899;
+	--ribbon-coral: var(--coral);
+	/* Colour space the ribbon gradients blend in. */
+	--ribbon-mix: srgb;
 	color-scheme: dark;
 
 	--nav-h: 80px;
@@ -48,7 +58,19 @@
 	--eyebrow: #4a5563;
 	--grid: #00000006;
 	--accent-text: #087ea4;
-	--glow: 0.35;
+	/*
+	 * Bright, saturated ribbons, all at the same high lightness (OKLCH L) so none reads dark:
+	 * pale tints wash out on a near-white page, deep ones sink into the text.
+	 */
+	--ribbon-indigo: oklch(0.72 0.2 300);
+	--ribbon-blue: oklch(0.72 0.16 260);
+	--ribbon-accent: oklch(0.78 0.15 230);
+	--ribbon-teal: oklch(0.8 0.15 180);
+	--ribbon-magenta: oklch(0.74 0.24 325);
+	--ribbon-pink: oklch(0.74 0.2 0);
+	--ribbon-coral: oklch(0.77 0.17 40);
+	/* Blend round the hue wheel so mixed colours stay vivid instead of turning grey. */
+	--ribbon-mix: oklch;
 	color-scheme: light;
 }
 
