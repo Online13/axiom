@@ -62,11 +62,13 @@ export function usePasscode({
 
 	const shake = () => {
 		if (reduceMotion) return;
-		offset.value = withSequence(
-			withTiming(-SHAKE, STEP),
-			withTiming(SHAKE, STEP),
-			withTiming(-SHAKE / 2, STEP),
-			withTiming(0, STEP),
+		offset.set(
+			withSequence(
+				withTiming(-SHAKE, STEP),
+				withTiming(SHAKE, STEP),
+				withTiming(-SHAKE / 2, STEP),
+				withTiming(0, STEP),
+			),
 		);
 	};
 
@@ -123,7 +125,7 @@ export function usePasscode({
 			setValue("");
 		},
 		shakeStyle: useAnimatedStyle(() => ({
-			transform: [{ translateX: offset.value }],
+			transform: [{ translateX: offset.get() }],
 		})),
 		/** Slots never announce the digits themselves, only how many are in. */
 		accessibilityValue: `${value.length} of ${length} digits entered`,

@@ -49,7 +49,7 @@ export function useSwitch({
 
 	useEffect(() => {
 		// Reanimated jumps to the end when Reduce Motion is on.
-		progress.value = withTiming(checked ? 1 : 0, { duration: 200 });
+		progress.set(withTiming(checked ? 1 : 0, { duration: 200 }));
 	}, [checked, progress]);
 
 	const toggle = () => {

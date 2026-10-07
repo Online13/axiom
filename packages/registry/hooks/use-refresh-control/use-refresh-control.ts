@@ -8,6 +8,7 @@ import {
 	useReducedMotion,
 	useSharedValue,
 	withTiming,
+	type SharedValue,
 } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 
@@ -52,6 +53,33 @@ function wait(ms: number) {
 }
 
 /**
+ * Builds the gesture that feeds `track` and `release`. The builder only stores the callbacks,
+ * which run on the UI thread, never during render; taking them as hook arguments, like
+ * `useAnimatedScrollHandler` does, keeps the React Compiler from treating them as render reads.
+ */
+function usePullGesture(
+	atTop: SharedValue<boolean>,
+	track: (drag: number) => void,
+	release: () => void,
+) {
+	return useMemo(() => {
+		const native = Gesture.Native();
+		if (isIOS) return native;
+
+		const pan = Gesture.Pan()
+			.activeOffsetY([-8, 8])
+			.simultaneousWithExternalGesture(native)
+			.onUpdate((event) => {
+				if (!atTop.get()) return;
+				track(event.translationY);
+			})
+			.onEnd(() => release());
+
+		return Gesture.Simultaneous(pan, native);
+	}, [atTop, release, track]);
+}
+
+/**
  * Pull-to-refresh for any list or ScrollView, on iOS and Android.
  *
  * iOS reads the native bounce, Android a Pan gesture running alongside the list's own scroll.
@@ -81,7 +109,7 @@ export function useRefreshControl({
 	const armedFired = useSharedValue(false);
 
 	const progress = useDerivedValue(() =>
-		Math.min(distance.value / armAt.value, 1),
+		Math.min(distance.get() / armAt.get(), 1),
 	);
 
 	// Callbacks run from the UI thread read the latest render through this ref.
@@ -92,17 +120,30 @@ export function useRefreshControl({
 
 	const running = useRef(false);
 
+	// Turned off mid-pull: drop the pull, but let a running refresh finish.
+	// The status is adjusted during render; the effect below does the same on the UI thread.
+	if (!enabled && (status === "pulling" || status === "armed")) {
+		setStatus("idle");
+	}
+
 	useEffect(() => {
-		armAt.value = threshold;
-		limit.value = maxDistance;
-		isEnabled.value = enabled;
-		// Turned off mid-pull: drop the pull, but let a running refresh finish.
-		if (!enabled && (phase.value === "pulling" || phase.value === "armed")) {
-			distance.value = 0;
-			phase.value = "idle";
-			setStatus("idle");
+		armAt.set(threshold);
+		limit.set(maxDistance);
+		isEnabled.set(enabled);
+		if (!enabled && (phase.get() === "pulling" || phase.get() === "armed")) {
+			distance.set(0);
+			phase.set("idle");
 		}
-	}, [threshold, maxDistance, enabled]);
+	}, [
+		armAt,
+		distance,
+		isEnabled,
+		limit,
+		phase,
+		threshold,
+		maxDistance,
+		enabled,
+	]);
 
 	const notifyArmed = useCallback(() => {
 		const { onArmed: armed, hapticKind: kind } = latest.current;
@@ -111,39 +152,39 @@ export function useRefreshControl({
 	}, []);
 
 	const toIdle = useCallback(() => {
-		phase.value = "idle";
+		phase.set("idle");
 		setStatus("idle");
 	}, [phase]);
 
 	/** Animates the list back to its place. iOS cancels through the native bounce instead. */
 	const settle = useCallback(() => {
-		phase.value = "settling";
+		phase.set("settling");
 		setStatus("settling");
 		if (reduceMotion) {
-			distance.value = 0;
+			distance.set(0);
 			toIdle();
 			return;
 		}
-		distance.value = withTiming(
-			0,
-			{ duration: SETTLE_DURATION },
-			(finished) => {
+		distance.set(
+			withTiming(0, { duration: SETTLE_DURATION }, (finished) => {
 				"worklet";
 				if (finished) scheduleOnRN(toIdle);
-			},
+			}),
 		);
 	}, [distance, phase, reduceMotion, toIdle]);
 
 	const run = useCallback(async () => {
 		if (running.current) return;
 		running.current = true;
-		armedFired.value = false;
-		phase.value = "refreshing";
+		armedFired.set(false);
+		phase.set("refreshing");
 		setStatus("refreshing");
 		// Hold the list open at the threshold while the request runs.
-		distance.value = reduceMotion
-			? armAt.value
-			: withTiming(armAt.value, { duration: SETTLE_DURATION });
+		distance.set(
+			reduceMotion
+				? armAt.get()
+				: withTiming(armAt.get(), { duration: SETTLE_DURATION }),
+		);
 
 		const started = Date.now();
 		try {
@@ -172,23 +213,23 @@ export function useRefreshControl({
 	const track = useCallback(
 		(drag: number) => {
 			"worklet";
-			if (!isEnabled.value) return;
-			if (phase.value === "refreshing" || phase.value === "settling") return;
+			if (!isEnabled.get()) return;
+			if (phase.get() === "refreshing" || phase.get() === "settling") return;
 
-			distance.value = resist(drag, limit.value);
+			distance.set(resist(drag, limit.get()));
 			const next: RefreshStatus =
 				drag <= 0
 					? "idle"
-					: distance.value >= armAt.value
+					: distance.get() >= armAt.get()
 						? "armed"
 						: "pulling";
-			if (next === phase.value) return;
+			if (next === phase.get()) return;
 
-			phase.value = next;
+			phase.set(next);
 			scheduleOnRN(setStatus, next);
-			if (next === "idle") armedFired.value = false;
-			if (next === "armed" && !armedFired.value) {
-				armedFired.value = true;
+			if (next === "idle") armedFired.set(false);
+			if (next === "armed" && !armedFired.get()) {
+				armedFired.set(true);
 				scheduleOnRN(notifyArmed);
 			}
 		},
@@ -198,17 +239,17 @@ export function useRefreshControl({
 	/** The finger leaves the screen: refresh if armed, otherwise go back. Runs on the UI thread. */
 	const release = useCallback(() => {
 		"worklet";
-		if (phase.value !== "pulling" && phase.value !== "armed") return;
+		if (phase.get() !== "pulling" && phase.get() !== "armed") return;
 
-		if (phase.value === "armed") {
+		if (phase.get() === "armed") {
 			// Claimed here rather than in `run`, so the scroll events of the bounce-back don't reopen a pull.
-			phase.value = "refreshing";
+			phase.set("refreshing");
 			scheduleOnRN(setStatus, "refreshing");
 			scheduleOnRN(refreshFromGesture);
 			return;
 		}
 
-		armedFired.value = false;
+		armedFired.set(false);
 		// iOS lets the native bounce carry the list back, and `onScroll` takes `distance` and the status with it.
 		if (!isIOS) scheduleOnRN(settle);
 	}, [armedFired, phase, refreshFromGesture, settle]);
@@ -216,7 +257,7 @@ export function useRefreshControl({
 	const scrollHandler = useAnimatedScrollHandler({
 		onScroll: (event) => {
 			const offset = event.contentOffset.y;
-			atTop.value = offset <= TOP_EPSILON;
+			atTop.set(offset <= TOP_EPSILON);
 			// iOS: the list bounces, so the overscroll is the drag. Android never reports a negative offset.
 			if (isIOS) track(-offset);
 		},
@@ -229,25 +270,11 @@ export function useRefreshControl({
 	 * Attach to the list with a single `GestureDetector`. On Android the Pan runs alongside the
 	 * list's own scroll; on iOS only the native gesture is needed, the bounce does the rest.
 	 */
-	const gesture = useMemo(() => {
-		const native = Gesture.Native();
-		if (isIOS) return native;
-
-		const pan = Gesture.Pan()
-			.activeOffsetY([-8, 8])
-			.simultaneousWithExternalGesture(native)
-			.onUpdate((event) => {
-				if (!atTop.value) return;
-				track(event.translationY);
-			})
-			.onEnd(() => release());
-
-		return Gesture.Simultaneous(pan, native);
-	}, [atTop, release, track]);
+	const gesture = usePullGesture(atTop, track, release);
 
 	// Android has no bounce: the list itself moves to open the gap the indicator sits in.
 	const listStyle = useAnimatedStyle(() =>
-		isIOS ? {} : { transform: [{ translateY: distance.value }] },
+		isIOS ? {} : { transform: [{ translateY: distance.get() }] },
 	);
 
 	const holdingOpen = status === "refreshing";

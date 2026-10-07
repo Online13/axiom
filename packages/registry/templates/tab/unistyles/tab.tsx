@@ -71,15 +71,15 @@ function useTab({
 	useEffect(() => {
 		if (!selectedLayout) return;
 
-		if (!indicatorReady.value || reduceMotion) {
-			indicatorX.value = selectedLayout.x;
-			indicatorWidth.value = selectedLayout.width;
-			indicatorReady.value = true;
+		if (!indicatorReady.get() || reduceMotion) {
+			indicatorX.set(selectedLayout.x);
+			indicatorWidth.set(selectedLayout.width);
+			indicatorReady.set(true);
 			return;
 		}
 
-		indicatorX.value = withSpring(selectedLayout.x, SPRING);
-		indicatorWidth.value = withSpring(selectedLayout.width, SPRING);
+		indicatorX.set(withSpring(selectedLayout.x, SPRING));
+		indicatorWidth.set(withSpring(selectedLayout.width, SPRING));
 	}, [
 		indicatorReady,
 		indicatorWidth,
@@ -122,9 +122,9 @@ function useTab({
 			setListViewport(event.nativeEvent.layout.width),
 		onListContentSizeChange: (width: number) => setListContentWidth(width),
 		indicatorStyle: useAnimatedStyle(() => ({
-			opacity: indicatorReady.value ? 1 : 0,
-			width: indicatorWidth.value,
-			transform: [{ translateX: indicatorX.value }],
+			opacity: indicatorReady.get() ? 1 : 0,
+			width: indicatorWidth.get(),
+			transform: [{ translateX: indicatorX.get() }],
 		})),
 	};
 }

@@ -62,7 +62,7 @@ export function Overlay({
 		}
 
 		if (visible) {
-			timed.value = withTiming(1, { duration });
+			timed.set(withTiming(1, { duration }));
 			return;
 		}
 
@@ -70,14 +70,16 @@ export function Overlay({
 			setMounted(false);
 			onExited?.();
 		};
-		timed.value = withTiming(0, { duration }, (finished) => {
-			if (finished) scheduleOnRN(finish);
-		});
+		timed.set(
+			withTiming(0, { duration }, (finished) => {
+				if (finished) scheduleOnRN(finish);
+			}),
+		);
 		// Only `visible` starts an animation; the callbacks are read when it runs.
 	}, [visible, mounted]);
 
 	const animatedStyle = useAnimatedStyle(() => ({
-		opacity: (progress ? progress.value : timed.value) * opacity,
+		opacity: (progress ? progress.get() : timed.get()) * opacity,
 	}));
 
 	if (!mounted) return null;

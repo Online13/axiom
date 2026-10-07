@@ -62,21 +62,23 @@ export function Spinner({
 			return;
 		}
 		// With Reduce Motion, the spinner pulses slowly instead of turning.
-		progress.value = 0;
-		progress.value = reduceMotion
-			? withRepeat(withTiming(1, { duration: 1000 }), -1, true)
-			: withRepeat(
-					withTiming(1, { duration: 800, easing: Easing.linear }),
-					-1,
-					false,
-				);
+		progress.set(0);
+		progress.set(
+			reduceMotion
+				? withRepeat(withTiming(1, { duration: 1000 }), -1, true)
+				: withRepeat(
+						withTiming(1, { duration: 800, easing: Easing.linear }),
+						-1,
+						false,
+					),
+		);
 		return () => cancelAnimation(progress);
 	}, [visible, reduceMotion, progress]);
 
 	const animatedStyle = useAnimatedStyle(() =>
 		reduceMotion
-			? { opacity: 0.4 + progress.value * 0.6 }
-			: { transform: [{ rotate: `${progress.value * 360}deg` }] },
+			? { opacity: 0.4 + progress.get() * 0.6 }
+			: { transform: [{ rotate: `${progress.get() * 360}deg` }] },
 	);
 
 	return (

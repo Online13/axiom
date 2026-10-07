@@ -175,19 +175,21 @@ export function useToastItem({
 	const [touching, setTouching] = useState(false);
 
 	useEffect(() => {
-		translateY.value = withSpring(offset, SPRING);
-		scaleValue.value = withSpring(scale, SPRING);
+		translateY.set(withSpring(offset, SPRING));
+		scaleValue.set(withSpring(scale, SPRING));
 	}, [offset, scale, translateY, scaleValue]);
 
 	useEffect(() => {
 		if (data.open) {
-			progress.value = withSpring(hidden ? 0 : 1, SPRING);
+			progress.set(withSpring(hidden ? 0 : 1, SPRING));
 			return;
 		}
 		const finish = () => remove(data.id);
-		progress.value = withTiming(0, { duration: 180 }, (finished) => {
-			if (finished) scheduleOnRN(finish);
-		});
+		progress.set(
+			withTiming(0, { duration: 180 }, (finished) => {
+				if (finished) scheduleOnRN(finish);
+			}),
+		);
 	}, [data.open, data.id, hidden, progress]);
 
 	const duration =
@@ -227,16 +229,17 @@ export function useToastItem({
 			})
 			.onUpdate((event) => {
 				// Up follows the finger, down resists.
-				drag.value =
+				drag.set(
 					event.translationY < 0
 						? event.translationY
-						: event.translationY * 0.2;
+						: event.translationY * 0.2,
+				);
 			})
 			.onEnd((event) => {
 				if (event.translationY < -24 || event.velocityY < -500) {
 					scheduleOnRN(dismiss);
 				} else {
-					drag.value = withSpring(0, SPRING);
+					drag.set(withSpring(0, SPRING));
 				}
 			})
 			.onFinalize(() => {
@@ -246,13 +249,13 @@ export function useToastItem({
 	}, [id, swipeToDismiss]);
 
 	const animatedStyle = useAnimatedStyle(() => ({
-		opacity: progress.value,
+		opacity: progress.get(),
 		transform: [
 			{
 				translateY:
-					translateY.value + drag.value + (1 - progress.value) * -24,
+					translateY.get() + drag.get() + (1 - progress.get()) * -24,
 			},
-			{ scale: scaleValue.value },
+			{ scale: scaleValue.get() },
 		],
 	}));
 

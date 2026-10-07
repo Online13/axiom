@@ -105,24 +105,22 @@ export function useAccordionContent(open: boolean, forceMount: boolean) {
 	useEffect(() => {
 		const unmount = () => setMounted(false);
 		// Reanimated jumps to the end when Reduce Motion is on.
-		progress.value = withTiming(
-			open ? 1 : 0,
-			{ duration: DURATION },
-			(finished) => {
+		progress.set(
+			withTiming(open ? 1 : 0, { duration: DURATION }, (finished) => {
 				if (finished && !open) scheduleOnRN(unmount);
-			},
+			}),
 		);
 	}, [open, progress]);
 
 	const onLayout = (event: LayoutChangeEvent) => {
 		const next = event.nativeEvent.layout.height;
-		measured.value = next;
+		measured.set(next);
 		setHeight((previous) => (previous === next ? previous : next));
 	};
 
 	const containerStyle = useAnimatedStyle(() => ({
-		height: measured.value * progress.value,
-		opacity: progress.value,
+		height: measured.get() * progress.get(),
+		opacity: progress.get(),
 	}));
 
 	return {
@@ -137,10 +135,10 @@ export function useAccordionIndicator(open: boolean) {
 	const progress = useSharedValue(open ? 1 : 0);
 
 	useEffect(() => {
-		progress.value = withTiming(open ? 1 : 0, { duration: DURATION });
+		progress.set(withTiming(open ? 1 : 0, { duration: DURATION }));
 	}, [open, progress]);
 
 	return useAnimatedStyle(() => ({
-		transform: [{ rotate: `${progress.value * 180}deg` }],
+		transform: [{ rotate: `${progress.get() * 180}deg` }],
 	}));
 }

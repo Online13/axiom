@@ -68,7 +68,7 @@ export function useDialogContent({
 	useEffect(() => {
 		if (!mounted) return;
 		if (open) {
-			progress.value = withTiming(1, { duration: DURATION });
+			progress.set(withTiming(1, { duration: DURATION }));
 			return;
 		}
 		const finish = () => {
@@ -76,15 +76,17 @@ export function useDialogContent({
 			onDismiss?.();
 		};
 		// Reanimated jumps to the end when Reduce Motion is on.
-		progress.value = withTiming(0, { duration: DURATION }, (finished) => {
-			if (finished) scheduleOnRN(finish);
-		});
+		progress.set(
+			withTiming(0, { duration: DURATION }, (finished) => {
+				if (finished) scheduleOnRN(finish);
+			}),
+		);
 		// Only `open` starts an animation; `onDismiss` is read when it ends.
 	}, [open, mounted]);
 
 	const surfaceStyle = useAnimatedStyle(() => ({
-		opacity: progress.value,
-		transform: [{ scale: 0.94 + progress.value * 0.06 }],
+		opacity: progress.get(),
+		transform: [{ scale: 0.94 + progress.get() * 0.06 }],
 	}));
 
 	return { mounted, open, isTop, close, dismissible, surfaceStyle };

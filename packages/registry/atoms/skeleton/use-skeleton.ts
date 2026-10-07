@@ -20,11 +20,16 @@ let subscribers = 0;
 function subscribe() {
 	subscribers++;
 	if (subscribers === 1) {
-		clock.value = 0;
-		clock.value = withRepeat(
-			withTiming(1, { duration: 1200, easing: Easing.inOut(Easing.ease) }),
-			-1,
-			false,
+		clock.set(0);
+		clock.set(
+			withRepeat(
+				withTiming(1, {
+					duration: 1200,
+					easing: Easing.inOut(Easing.ease),
+				}),
+				-1,
+				false,
+			),
 		);
 	}
 	return () => {
@@ -53,7 +58,7 @@ export function useSkeleton(
 /** The `pulse` animation: the placeholder fades out and back. Only called by a pulsing placeholder. */
 export function usePulseStyle() {
 	return useAnimatedStyle(() => ({
-		opacity: interpolate(clock.value, [0, 0.5, 1], [1, 0.5, 1]),
+		opacity: interpolate(clock.get(), [0, 0.5, 1], [1, 0.5, 1]),
 	}));
 }
 
@@ -68,7 +73,7 @@ export function useShimmer() {
 		width: width * 0.6,
 		transform: [
 			{
-				translateX: interpolate(clock.value, [0, 1], [-width * 0.6, width]),
+				translateX: interpolate(clock.get(), [0, 1], [-width * 0.6, width]),
 			},
 		],
 	}));

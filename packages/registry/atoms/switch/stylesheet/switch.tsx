@@ -66,7 +66,7 @@ export function Switch({
 
 	const trackStyle = useAnimatedStyle(() => ({
 		backgroundColor: interpolateColor(
-			progress.value,
+			progress.get(),
 			[0, 1],
 			[off.track, on.track],
 		),
@@ -74,7 +74,7 @@ export function Switch({
 
 	const thumbStyle = useAnimatedStyle(() => ({
 		transform: [
-			{ translateX: interpolate(progress.value, [0, 1], [0, travel]) },
+			{ translateX: interpolate(progress.get(), [0, 1], [0, travel]) },
 		],
 	}));
 

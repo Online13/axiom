@@ -31,7 +31,7 @@ export function useFloatingButton({
 
 	useEffect(() => {
 		// Reanimated jumps to the end when Reduce Motion is on.
-		progress.value = withTiming(visible ? 1 : 0, { duration: 180 });
+		progress.set(withTiming(visible ? 1 : 0, { duration: 180 }));
 	}, [visible, progress]);
 
 	const position = {
@@ -46,8 +46,8 @@ export function useFloatingButton({
 	};
 
 	const animatedStyle = useAnimatedStyle(() => ({
-		opacity: progress.value,
-		transform: [{ scale: 0.6 + progress.value * 0.4 }],
+		opacity: progress.get(),
+		transform: [{ scale: 0.6 + progress.get() * 0.4 }],
 	}));
 
 	return { position, animatedStyle, hidden: !visible };

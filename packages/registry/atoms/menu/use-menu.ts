@@ -138,17 +138,21 @@ export function useMenuContent({
 			// Closed before it was measured: nothing to animate.
 			if (height === null) finish();
 			else
-				progress.value = withTiming(0, { duration: 150 }, (finished) => {
-					if (finished) scheduleOnRN(finish);
-				});
+				progress.set(
+					withTiming(0, { duration: 150 }, (finished) => {
+						if (finished) scheduleOnRN(finish);
+					}),
+				);
 			return;
 		}
 		if (height !== null)
-			progress.value = withSpring(1, {
-				stiffness: 500,
-				damping: 36,
-				mass: 1,
-			});
+			progress.set(
+				withSpring(1, {
+					stiffness: 500,
+					damping: 36,
+					mass: 1,
+				}),
+			);
 		// Only `open` and the first measure start an animation.
 	}, [menu.open, mounted, height === null]);
 
@@ -198,15 +202,15 @@ export function useMenuContent({
 	};
 
 	const menuStyle = useAnimatedStyle(() => ({
-		opacity: height === null ? 0 : Math.min(1, progress.value * 2),
-		transform: [{ scale: 0.5 + progress.value * 0.5 }],
+		opacity: height === null ? 0 : Math.min(1, progress.get() * 2),
+		transform: [{ scale: 0.5 + progress.get() * 0.5 }],
 	}));
 
 	// Grows from the corner closest to the trigger.
 	const transformOrigin = `${align === "start" ? "left" : align === "end" ? "right" : "center"} ${side === "bottom" ? "top" : "bottom"}`;
 
 	const previewStyle = useAnimatedStyle(() => ({
-		transform: [{ scale: 1 + progress.value * 0.03 }],
+		transform: [{ scale: 1 + progress.get() * 0.03 }],
 	}));
 
 	return {

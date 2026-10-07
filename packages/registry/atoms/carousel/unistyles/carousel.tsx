@@ -154,40 +154,55 @@ function CarouselList({
 	contentContainerStyle,
 	...props
 }: CarouselListProps) {
-	const carousel = useCarousel();
+	const {
+		listRef,
+		snapToOffsets,
+		snap,
+		scrollHandler,
+		onMomentumScrollEnd,
+		onTouchStart,
+		onTouchEnd,
+		inset,
+		endPadding,
+		gap,
+		interval,
+		itemWidth,
+		scrollX,
+	} = useCarousel();
 	const source = use(ListContext);
-	if (!source) throw new Error("Carousel.List must be rendered inside <Carousel>.");
+	if (!source)
+		throw new Error("Carousel.List must be rendered inside <Carousel>.");
 
 	return (
 		<Animated.FlatList
 			{...props}
-			ref={carousel.listRef}
+			ref={listRef}
 			data={source.data}
 			horizontal
 			showsHorizontalScrollIndicator={false}
-			decelerationRate={carousel.snapToOffsets ? "fast" : "normal"}
-			snapToOffsets={carousel.snapToOffsets}
+			decelerationRate={snapToOffsets ? "fast" : "normal"}
+			snapToOffsets={snapToOffsets}
 			snapToEnd={false}
-			disableIntervalMomentum={carousel.snap === "item"}
+			disableIntervalMomentum={snap === "item"}
 			windowSize={windowSize}
 			initialNumToRender={initialNumToRender}
 			scrollEventThrottle={16}
-			onScroll={carousel.scrollHandler}
-			onMomentumScrollEnd={carousel.onMomentumScrollEnd}
-			onTouchStart={carousel.onTouchStart}
-			onTouchEnd={carousel.onTouchEnd}
-			onTouchCancel={carousel.onTouchEnd}
+			onScroll={scrollHandler}
+			onMomentumScrollEnd={onMomentumScrollEnd}
+			onTouchStart={onTouchStart}
+			onTouchEnd={onTouchEnd}
+			onTouchCancel={onTouchEnd}
 			contentContainerStyle={[
 				{
-					paddingStart: carousel.inset,
-					paddingEnd: carousel.endPadding,
-					gap: carousel.gap,
+					paddingStart: inset,
+					paddingEnd: endPadding,
+					gap: gap,
 				},
 				contentContainerStyle,
 			]}
 			getItemLayout={(_, i) => ({
-				length: carousel.interval,
-				offset: carousel.inset + carousel.interval * i,
+				length: interval,
+				offset: inset + interval * i,
 				index: i,
 			})}
 			keyExtractor={(item, i) =>
@@ -195,10 +210,10 @@ function CarouselList({
 			}
 			renderItem={({ item, index: i }) => (
 				<CarouselItem
-					width={carousel.itemWidth}
+					width={itemWidth}
 					index={i}
-					interval={carousel.interval}
-					scrollX={carousel.scrollX}
+					interval={interval}
+					scrollX={scrollX}
 					render={(progress) =>
 						source.renderItem({ item, index: i, progress })
 					}
@@ -267,7 +282,7 @@ function Dot({
 
 	// The active dot stretches into a pill.
 	const animatedStyle = useAnimatedStyle(() => {
-		const focus = 1 - Math.abs(progress.value);
+		const focus = 1 - Math.abs(progress.get());
 		return {
 			width: interpolate(focus, [0, 1], [6, 18]),
 			opacity: interpolate(focus, [0, 1], [0.35, 1]),

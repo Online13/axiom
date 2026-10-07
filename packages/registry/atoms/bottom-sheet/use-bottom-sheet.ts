@@ -148,86 +148,58 @@ export function useBottomSheetContent({
 	const scrollOffset = useSharedValue(0);
 	const hasScroll = useSharedValue(false);
 
-	// Callbacks run from the UI thread read the latest render through this ref.
-	const latest = useRef({
-		open,
-		index,
-		controlledIndex,
-		onIndexChange,
-		onDismiss,
-		setOpen,
-		hapticKind,
+	// Called from the UI thread, these read the latest render: stable functions, current values.
+	const requestIndex = useLatestCallback((next: number) => {
+		if (controlledIndex === undefined) setUncontrolledIndex(next);
+		if (next !== index) onIndexChange?.(next);
 	});
-	useLayoutEffect(() => {
-		latest.current = {
-			open,
-			index,
-			controlledIndex,
-			onIndexChange,
-			onDismiss,
-			setOpen,
-			hapticKind,
-		};
-	});
-
-	const requestIndex = useCallback((next: number) => {
-		const {
-			index: current,
-			controlledIndex: controlled,
-			onIndexChange: onChange,
-		} = latest.current;
-		if (controlled === undefined) setUncontrolledIndex(next);
-		if (next !== current) onChange?.(next);
-	}, []);
 
 	// The end of a drag, the only snap change that plays the haptic.
-	const settleFromDrag = useCallback(
-		(next: number) => {
-			const { index: current, hapticKind: kind } = latest.current;
-			if (kind && next !== current) haptic(kind);
-			requestIndex(next);
-		},
-		[requestIndex],
-	);
+	const settleFromDrag = useLatestCallback((next: number) => {
+		if (hapticKind && next !== index) haptic(hapticKind);
+		requestIndex(next);
+	});
 
-	const requestClose = useCallback(() => latest.current.setOpen(false), []);
+	const requestClose = useLatestCallback(() => setOpen(false));
 
-	const onClosed = useCallback(() => {
-		if (latest.current.open) {
+	const onClosed = useLatestCallback(() => {
+		if (open) {
 			// The owner kept the sheet open: go back to the current snap point.
 			setRestore((value) => value + 1);
 			return;
 		}
 		setMounted(false);
 		setContentHeight(null);
-		latest.current.onDismiss?.();
-	}, []);
+		onDismiss?.();
+	});
 
 	const wasOpen = useRef(false);
 	const positionsKey = snapPositions.join(",");
 
 	useEffect(() => {
-		positions.value = snapPositions;
-		closed.value = closedPosition;
-		canDismiss.value = dismissible;
-		followsKeyboard.value = keyboardBehavior !== "none";
-		safeBottom.value = insets.bottom;
-		topLimit.value = maxHeight - sheetHeight;
-		isReady.value = mounted && ready;
+		positions.set(snapPositions);
+		closed.set(closedPosition);
+		canDismiss.set(dismissible);
+		followsKeyboard.set(keyboardBehavior !== "none");
+		safeBottom.set(insets.bottom);
+		topLimit.set(maxHeight - sheetHeight);
+		isReady.set(mounted && ready);
 		if (!mounted || !ready) return;
 
 		if (open) {
 			if (!wasOpen.current) {
-				translateY.value = closedPosition;
+				translateY.set(closedPosition);
 				wasOpen.current = true;
 			}
-			translateY.value = withSpring(snapPositions[index], SPRING);
+			translateY.set(withSpring(snapPositions[index], SPRING));
 		} else if (wasOpen.current) {
 			wasOpen.current = false;
 			if (KeyboardController.isVisible()) KeyboardController.dismiss();
-			translateY.value = withSpring(closedPosition, SPRING, (finished) => {
-				if (finished) scheduleOnRN(onClosed);
-			});
+			translateY.set(
+				withSpring(closedPosition, SPRING, (finished) => {
+					if (finished) scheduleOnRN(onClosed);
+				}),
+			);
 		}
 		// `positionsKey` stands for `snapPositions`, which is a new array on every render.
 	}, [
@@ -246,19 +218,19 @@ export function useBottomSheetContent({
 	]);
 
 	useEffect(() => {
-		coveredScale.value = withSpring(stackScale ** depth, SPRING);
+		coveredScale.set(withSpring(stackScale ** depth, SPRING));
 	}, [depth, stackScale]);
 
 	// `extend`: go to the highest snap point when the keyboard opens.
 	const highestIndex = snapPositions.indexOf(Math.min(...snapPositions));
 	useAnimatedReaction(
-		() => keyboard.progress.value > 0.5,
+		() => keyboard.progress.get() > 0.5,
 		(visible, previous) => {
 			if (
 				keyboardBehavior === "extend" &&
 				visible &&
 				previous === false &&
-				positions.value.length > 0
+				positions.get().length > 0
 			) {
 				scheduleOnRN(requestIndex, highestIndex);
 			}
@@ -268,12 +240,12 @@ export function useBottomSheetContent({
 
 	/** How far the sheet rises above its snap position. It stops when the top of the sheet reaches the top limit. */
 	const keyboardLift = useDerivedValue(() => {
-		if (!followsKeyboard.value) return 0;
+		if (!followsKeyboard.get()) return 0;
 		const lift = Math.max(
 			0,
-			Math.abs(keyboard.height.value) - safeBottom.value,
+			Math.abs(keyboard.height.get()) - safeBottom.get(),
 		);
-		return Math.min(lift, Math.max(0, topLimit.value + translateY.value));
+		return Math.min(lift, Math.max(0, topLimit.get() + translateY.get()));
 	});
 
 	useOverlayBackHandler(open && isTop, dismissible ? requestClose : undefined);
@@ -287,72 +259,70 @@ export function useBottomSheetContent({
 				.activeOffsetY([-8, 8])
 				.simultaneousWithExternalGesture(nativeGesture)
 				.onStart(() => {
-					start.value = translateY.value;
+					start.set(translateY.get());
 				})
 				.onUpdate((event) => {
-					const top = Math.min(...positions.value);
-					const bottom = canDismiss.value
-						? closed.value
-						: Math.max(...positions.value);
+					const top = Math.min(...positions.get());
+					const bottom = canDismiss.get()
+						? closed.get()
+						: Math.max(...positions.get());
 
 					// The list is scrolled: it owns the gesture. Keep the start in sync so the sheet doesn't jump later.
-					if (hasScroll.value && scrollOffset.value > 0) {
-						start.value = translateY.value - event.translationY;
+					if (hasScroll.get() && scrollOffset.get() > 0) {
+						start.set(translateY.get() - event.translationY);
 						return;
 					}
 
-					let next = start.value + event.translationY;
+					let next = start.get() + event.translationY;
 					if (next < top) {
-						if (hasScroll.value) {
+						if (hasScroll.get()) {
 							// Fully open and dragging up: the list scrolls instead.
-							translateY.value = top;
-							start.value = top - event.translationY;
+							translateY.set(top);
+							start.set(top - event.translationY);
 							return;
 						}
 						next = top;
 					}
 
-					translateY.value = Math.min(next, bottom);
-					if (hasScroll.value) scrollTo(scrollRef, 0, 0, false);
+					translateY.set(Math.min(next, bottom));
+					if (hasScroll.get()) scrollTo(scrollRef, 0, 0, false);
 				})
 				.onEnd((event) => {
-					const top = Math.min(...positions.value);
+					const top = Math.min(...positions.get());
 					if (
-						hasScroll.value &&
-						scrollOffset.value > 0 &&
-						translateY.value <= top
+						hasScroll.get() &&
+						scrollOffset.get() > 0 &&
+						translateY.get() <= top
 					)
 						return;
 
 					const projected =
-						translateY.value + event.velocityY * VELOCITY_PROJECTION;
+						translateY.get() + event.velocityY * VELOCITY_PROJECTION;
 					let target = 0;
-					positions.value.forEach((position, i) => {
+					positions.get().forEach((position, i) => {
 						if (
 							Math.abs(position - projected) <
-							Math.abs(positions.value[target] - projected)
+							Math.abs(positions.get()[target] - projected)
 						)
 							target = i;
 					});
 
 					const config = { ...SPRING, velocity: event.velocityY };
 					if (
-						canDismiss.value &&
-						Math.abs(closed.value - projected) <
-							Math.abs(positions.value[target] - projected)
+						canDismiss.get() &&
+						Math.abs(closed.get() - projected) <
+							Math.abs(positions.get()[target] - projected)
 					) {
-						translateY.value = withSpring(
-							closed.value,
-							config,
-							(finished) => {
+						translateY.set(
+							withSpring(closed.get(), config, (finished) => {
 								if (finished) scheduleOnRN(onClosed);
-							},
+							}),
 						);
 						scheduleOnRN(requestClose);
 						return;
 					}
 
-					translateY.value = withSpring(positions.value[target], config);
+					translateY.set(withSpring(positions.get()[target], config));
 					scheduleOnRN(settleFromDrag, target);
 				}),
 		[
@@ -374,27 +344,27 @@ export function useBottomSheetContent({
 
 	const scrollHandler = useAnimatedScrollHandler({
 		onScroll: (event) => {
-			scrollOffset.value = event.contentOffset.y;
+			scrollOffset.set(event.contentOffset.y);
 		},
 	});
 
 	const registerScroll = useCallback(() => {
-		hasScroll.value = true;
+		hasScroll.set(true);
 		return () => {
-			hasScroll.value = false;
-			scrollOffset.value = 0;
+			hasScroll.set(false);
+			scrollOffset.set(0);
 		};
 	}, [hasScroll, scrollOffset]);
 
 	/** 0 when closed, 1 at the first snap point. Drives the Overlay. */
 	const progress = useDerivedValue(() => {
 		// Until 'content' is measured, the positions are placeholders: closed and first can be equal, which read as fully open.
-		if (!isReady.value) return 0;
-		const first = positions.value[0] ?? 0;
-		if (closed.value === first) return 1;
+		if (!isReady.get()) return 0;
+		const first = positions.get()[0] ?? 0;
+		if (closed.get() === first) return 1;
 		return interpolate(
-			translateY.value,
-			[closed.value, first],
+			translateY.get(),
+			[closed.get(), first],
 			[0, 1],
 			Extrapolation.CLAMP,
 		);
@@ -402,8 +372,8 @@ export function useBottomSheetContent({
 
 	const sheetStyle = useAnimatedStyle(() => ({
 		transform: [
-			{ translateY: translateY.value - keyboardLift.value },
-			{ scale: coveredScale.value },
+			{ translateY: translateY.get() - keyboardLift.get() },
+			{ scale: coveredScale.get() },
 		],
 	}));
 
@@ -412,8 +382,8 @@ export function useBottomSheetContent({
 		transform: [
 			{
 				translateY: -Math.min(
-					translateY.value,
-					Math.max(...positions.value),
+					translateY.get(),
+					Math.max(...positions.get()),
 				),
 			},
 		],
@@ -457,6 +427,20 @@ export function useBottomSheetContent({
 			registerScroll,
 		},
 	};
+}
+
+/**
+ * A function that keeps the same identity across renders and always runs the latest `callback`.
+ * For callbacks scheduled from the UI thread: they see the current props without rebuilding the gesture.
+ */
+function useLatestCallback<Args extends unknown[], Result>(
+	callback: (...args: Args) => Result,
+) {
+	const ref = useRef(callback);
+	useLayoutEffect(() => {
+		ref.current = callback;
+	});
+	return useCallback((...args: Args) => ref.current(...args), []);
 }
 
 export type BottomSheetContentContextValue = ReturnType<

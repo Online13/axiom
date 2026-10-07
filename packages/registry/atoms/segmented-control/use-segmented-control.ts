@@ -46,6 +46,15 @@ type Layout = { x: number; width: number };
 
 const TIMING = { duration: 220 };
 
+/** A stable function that always calls the latest `fn`, for callbacks kept by gestures. */
+function useLatestCallback<A extends unknown[], R>(fn: (...args: A) => R) {
+	const latest = useRef(fn);
+	useLayoutEffect(() => {
+		latest.current = fn;
+	});
+	return useCallback((...args: A) => latest.current(...args), []);
+}
+
 /** Selection, segment measurement and the sliding, draggable indicator. Shared by every styling variant. */
 export function useSegmentedControl({
 	options,
@@ -95,19 +104,19 @@ export function useSegmentedControl({
 
 	useEffect(() => {
 		if (!measured) return;
-		positions.value = layouts as Layout[];
+		positions.set(layouts as Layout[]);
 		const target = layouts[selectedIndex];
 		if (!target) {
-			visible.value = 0;
+			visible.set(0);
 			return;
 		}
 		// The first placement doesn't animate.
-		const animate = visible.value === 1;
-		indicatorX.value = animate ? withTiming(target.x, TIMING) : target.x;
-		indicatorWidth.value = animate
-			? withTiming(target.width, TIMING)
-			: target.width;
-		visible.value = 1;
+		const animate = visible.get() === 1;
+		indicatorX.set(animate ? withTiming(target.x, TIMING) : target.x);
+		indicatorWidth.set(
+			animate ? withTiming(target.width, TIMING) : target.width,
+		);
+		visible.set(1);
 		// `layoutsKey` stands for `layouts`, a new array on every render in full width.
 	}, [
 		measured,
@@ -145,15 +154,8 @@ export function useSegmentedControl({
 		select(segment.value);
 	};
 
-	// The gesture runs on the UI thread and keeps its first callbacks: it selects through a ref to the latest render.
-	const latestSelectIndex = useRef(selectIndex);
-	useLayoutEffect(() => {
-		latestSelectIndex.current = selectIndex;
-	});
-	const drop = useCallback(
-		(index: number) => latestSelectIndex.current(index),
-		[],
-	);
+	// The gesture runs on the UI thread and keeps its first callbacks: it selects through a stable callback to the latest render.
+	const drop = useLatestCallback(selectIndex);
 
 	// Dragging the indicator: it follows the finger, then lands on the nearest enabled segment.
 	const enabled = segments.map((segment) => !segment.disabled && !disabled);
@@ -164,19 +166,21 @@ export function useSegmentedControl({
 				.enabled(!disabled)
 				.activeOffsetX([-6, 6])
 				.onUpdate((event) => {
-					const layout = positions.value;
+					const layout = positions.get();
 					if (!layout.length) return;
 					const first = layout[0];
 					const last = layout[layout.length - 1];
-					const x = event.x - indicatorWidth.value / 2;
-					indicatorX.value = Math.min(
-						Math.max(x, first.x),
-						last.x + last.width - indicatorWidth.value,
+					const x = event.x - indicatorWidth.get() / 2;
+					indicatorX.set(
+						Math.min(
+							Math.max(x, first.x),
+							last.x + last.width - indicatorWidth.get(),
+						),
 					);
 				})
 				.onEnd(() => {
-					const layout = positions.value;
-					const center = indicatorX.value + indicatorWidth.value / 2;
+					const layout = positions.get();
+					const center = indicatorX.get() + indicatorWidth.get() / 2;
 					let nearest = -1;
 					layout.forEach((segment, i) => {
 						if (!enabled[i]) return;
@@ -196,8 +200,8 @@ export function useSegmentedControl({
 						}
 					});
 					if (nearest === -1) return;
-					indicatorX.value = withTiming(layout[nearest].x, TIMING);
-					indicatorWidth.value = withTiming(layout[nearest].width, TIMING);
+					indicatorX.set(withTiming(layout[nearest].x, TIMING));
+					indicatorWidth.set(withTiming(layout[nearest].width, TIMING));
 					scheduleOnRN(drop, nearest);
 				}),
 		// Rebuilt when the enabled segments change; `enabledKey` stands for `enabled`.
@@ -205,9 +209,9 @@ export function useSegmentedControl({
 	);
 
 	const indicatorStyle = useAnimatedStyle(() => ({
-		opacity: visible.value,
-		width: indicatorWidth.value,
-		transform: [{ translateX: indicatorX.value }],
+		opacity: visible.get(),
+		width: indicatorWidth.get(),
+		transform: [{ translateX: indicatorX.get() }],
 	}));
 
 	return {

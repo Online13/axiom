@@ -80,7 +80,7 @@ export function useCarouselRoot({
 
 	const scrollHandler = useAnimatedScrollHandler({
 		onScroll: (event) => {
-			scrollX.value = event.contentOffset.x;
+			scrollX.set(event.contentOffset.x);
 		},
 	});
 
@@ -130,7 +130,10 @@ export function useCarouselRoot({
 	// trailing space below, the end of the content is never a stop.
 	const step =
 		snap === "page"
-			? Math.max(interval, Math.floor((viewport - inset) / interval) * interval)
+			? Math.max(
+					interval,
+					Math.floor((viewport - inset) / interval) * interval,
+				)
 			: interval;
 	const lastOffset = Math.max(0, count - 1) * interval;
 	const snapToOffsets =
@@ -182,7 +185,8 @@ export const CarouselContext = createContext<CarouselContextValue | null>(null);
 /** The carousel around this component: active index, count, scroll position and `scrollToIndex`. */
 export function useCarousel() {
 	const context = use(CarouselContext);
-	if (!context) throw new Error("This part must be rendered inside <Carousel>.");
+	if (!context)
+		throw new Error("This part must be rendered inside <Carousel>.");
 	return context;
 }
 
@@ -201,8 +205,13 @@ export function useCarouselAutoPlay({
 	interval,
 	loop = false,
 }: UseCarouselAutoPlayOptions) {
-	const { count, interval: step, activeRef, touching, scrollToIndex } =
-		useCarousel();
+	const {
+		count,
+		interval: step,
+		activeRef,
+		touching,
+		scrollToIndex,
+	} = useCarousel();
 	const reduceMotion = useReducedMotion();
 
 	useEffect(() => {
@@ -227,7 +236,7 @@ export function useCarouselItemProgress(
 ) {
 	return useDerivedValue(() =>
 		interpolate(
-			scrollX.value,
+			scrollX.get(),
 			[(index - 1) * interval, index * interval, (index + 1) * interval],
 			[1, 0, -1],
 			Extrapolation.CLAMP,

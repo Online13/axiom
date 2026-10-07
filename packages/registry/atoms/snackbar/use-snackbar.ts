@@ -113,13 +113,15 @@ export function useSnackbarItem(data: SnackbarData, swipeToDismiss: boolean) {
 
 	useEffect(() => {
 		if (data.open) {
-			progress.value = withSpring(1, SPRING);
+			progress.set(withSpring(1, SPRING));
 			return;
 		}
 		const finish = () => remove(data.id);
-		progress.value = withTiming(0, { duration: 180 }, (finished) => {
-			if (finished) scheduleOnRN(finish);
-		});
+		progress.set(
+			withTiming(0, { duration: 180 }, (finished) => {
+				if (finished) scheduleOnRN(finish);
+			}),
+		);
 	}, [data.open, data.id, progress]);
 
 	const base = data.duration ?? (data.action ? "long" : "short");
@@ -142,28 +144,30 @@ export function useSnackbarItem(data: SnackbarData, swipeToDismiss: boolean) {
 			.activeOffsetX([-10, 10])
 			.activeOffsetY([-10, 10])
 			.onBegin(() => {
-				axis.value = 0;
+				axis.set(0);
 				scheduleOnRN(setTouching, true);
 			})
 			.onUpdate((event) => {
-				if (axis.value === 0) {
-					axis.value =
+				if (axis.get() === 0) {
+					axis.set(
 						Math.abs(event.translationX) > Math.abs(event.translationY)
 							? 1
-							: 2;
+							: 2,
+					);
 				}
-				if (axis.value === 1) {
-					dragX.value = event.translationX;
+				if (axis.get() === 1) {
+					dragX.set(event.translationX);
 				} else {
 					// Down follows the finger, up resists.
-					dragY.value =
+					dragY.set(
 						event.translationY > 0
 							? event.translationY
-							: event.translationY * 0.2;
+							: event.translationY * 0.2,
+					);
 				}
 			})
 			.onEnd((event) => {
-				if (axis.value === 1) {
+				if (axis.get() === 1) {
 					if (
 						Math.abs(event.translationX) > screenWidth * 0.3 ||
 						Math.abs(event.velocityX) > 800
@@ -175,20 +179,22 @@ export function useSnackbarItem(data: SnackbarData, swipeToDismiss: boolean) {
 								: event.translationX) > 0
 								? 1
 								: -1;
-						dragX.value = withTiming(
-							direction * screenWidth,
-							{ duration: 180 },
-							(finished) => {
-								if (finished) scheduleOnRN(swipe);
-							},
+						dragX.set(
+							withTiming(
+								direction * screenWidth,
+								{ duration: 180 },
+								(finished) => {
+									if (finished) scheduleOnRN(swipe);
+								},
+							),
 						);
 					} else {
-						dragX.value = withSpring(0, SPRING);
+						dragX.set(withSpring(0, SPRING));
 					}
 				} else if (event.translationY > 24 || event.velocityY > 500) {
 					scheduleOnRN(swipe);
 				} else {
-					dragY.value = withSpring(0, SPRING);
+					dragY.set(withSpring(0, SPRING));
 				}
 			})
 			.onFinalize(() => {
@@ -200,11 +206,11 @@ export function useSnackbarItem(data: SnackbarData, swipeToDismiss: boolean) {
 	const animatedStyle = useAnimatedStyle(() => ({
 		// A horizontal drag fades the snackbar as it leaves.
 		opacity:
-			progress.value *
-			(1 - Math.min(Math.abs(dragX.value) / screenWidth, 1) * 0.8),
+			progress.get() *
+			(1 - Math.min(Math.abs(dragX.get()) / screenWidth, 1) * 0.8),
 		transform: [
-			{ translateX: dragX.value },
-			{ translateY: dragY.value + (1 - progress.value) * 32 },
+			{ translateX: dragX.get() },
+			{ translateY: dragY.get() + (1 - progress.get()) * 32 },
 		],
 	}));
 

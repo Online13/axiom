@@ -46,6 +46,15 @@ export type UseSliderOptions<T extends SliderValue> = {
 
 const SETTLE = { duration: 120 };
 
+/** A stable function that always calls the latest `fn`, for callbacks kept by gestures. */
+function useLatestCallback<A extends unknown[], R>(fn: (...args: A) => R) {
+	const latest = useRef(fn);
+	useLayoutEffect(() => {
+		latest.current = fn;
+	});
+	return useCallback((...args: A) => latest.current(...args), []);
+}
+
 /** Value math, drag and tap gestures, and thumb positions. Shared by every styling variant. */
 export function useSlider<T extends SliderValue>({
 	value,
@@ -82,10 +91,10 @@ export function useSlider<T extends SliderValue>({
 
 	// Follows the value when nobody is dragging: the first layout, a controlled change, an accessibility action.
 	useEffect(() => {
-		if (!width || active.value !== -1) return;
-		thumbs.value = values.map(toPixels);
-		emitted.value = values;
-		trackWidth.value = width;
+		if (!width || active.get() !== -1) return;
+		thumbs.set(values.map(toPixels));
+		emitted.set(values);
+		trackWidth.set(width);
 		// `valuesKey` stands for `values`.
 	}, [valuesKey, width, min, max]);
 
@@ -96,27 +105,22 @@ export function useSlider<T extends SliderValue>({
 
 	// One haptic per step when the steps are drawn: past 50 they would buzz. Otherwise only at the ends.
 	const stepHaptic = (v: number) => {
-		if (hapticKind && (ticks > 0 || v === min || v === max)) haptic(hapticKind);
+		if (hapticKind && (ticks > 0 || v === min || v === max))
+			haptic(hapticKind);
 	};
 
-	// Gestures run on the UI thread and keep their first callbacks: they reach the latest render through a ref.
-	const latest = useRef({ setCurrent, onSlidingComplete, range, stepHaptic });
-	useLayoutEffect(() => {
-		latest.current = { setCurrent, onSlidingComplete, range, stepHaptic };
+	// Gestures run on the UI thread and keep their first callbacks: they reach the latest render through stable callbacks.
+	const emit = useLatestCallback((next: number[]) => {
+		setCurrent((range ? [next[0], next[1]] : next[0]) as T);
 	});
-	const emit = useCallback((next: number[]) => {
-		const { setCurrent: set, range: isRange } = latest.current;
-		set((isRange ? [next[0], next[1]] : next[0]) as T);
-	}, []);
 	// A new stepped value from a gesture. Accessibility actions skip it: the screen reader already speaks the value.
-	const drag = useCallback((next: number[], index: number) => {
-		latest.current.stepHaptic(next[index]);
+	const drag = useLatestCallback((next: number[], index: number) => {
+		stepHaptic(next[index]);
 		emit(next);
-	}, [emit]);
-	const complete = useCallback((next: number[]) => {
-		const { onSlidingComplete: done, range: isRange } = latest.current;
-		done?.((isRange ? [next[0], next[1]] : next[0]) as T);
-	}, []);
+	});
+	const complete = useLatestCallback((next: number[]) => {
+		onSlidingComplete?.((range ? [next[0], next[1]] : next[0]) as T);
+	});
 
 	const gestures = useMemo(() => {
 		const toValue = (px: number, total: number) => {
@@ -131,9 +135,9 @@ export function useSlider<T extends SliderValue>({
 		// Moves thumb `index` to `px`, keeping `minRange` between thumbs, and emits a new stepped value.
 		const moveTo = (index: number, px: number) => {
 			"worklet";
-			const total = trackWidth.value;
+			const total = trackWidth.get();
 			const gap = max === min ? 0 : (minRange / (max - min)) * total;
-			const next = [...thumbs.value];
+			const next = [...thumbs.get()];
 			let clamped = Math.min(Math.max(px, 0), total);
 			if (next.length === 2) {
 				clamped =
@@ -142,11 +146,11 @@ export function useSlider<T extends SliderValue>({
 						: Math.max(clamped, next[0] + gap);
 			}
 			next[index] = clamped;
-			thumbs.value = next;
+			thumbs.set(next);
 
 			const stepped = next.map((position) => toValue(position, total));
-			if (stepped.some((v, i) => v !== emitted.value[i])) {
-				emitted.value = stepped;
+			if (stepped.some((v, i) => v !== emitted.get()[i])) {
+				emitted.set(stepped);
 				scheduleOnRN(drag, stepped, index);
 			}
 		};
@@ -154,14 +158,18 @@ export function useSlider<T extends SliderValue>({
 		// Lands the thumbs on their stepped positions.
 		const settle = () => {
 			"worklet";
-			const total = trackWidth.value;
-			thumbs.value = withTiming(
-				emitted.value.map((v) =>
-					max === min ? 0 : ((v - min) / (max - min)) * total,
+			const total = trackWidth.get();
+			thumbs.set(
+				withTiming(
+					emitted
+						.get()
+						.map((v) =>
+							max === min ? 0 : ((v - min) / (max - min)) * total,
+						),
+					SETTLE,
 				),
-				SETTLE,
 			);
-			scheduleOnRN(complete, emitted.value);
+			scheduleOnRN(complete, emitted.get());
 		};
 
 		const thumb = (index: number) =>
@@ -170,22 +178,22 @@ export function useSlider<T extends SliderValue>({
 				// 20pt thumb, 44pt touch area.
 				.hitSlop({ horizontal: 12, vertical: 12 })
 				.onBegin(() => {
-					active.value = index;
-					start.value = thumbs.value[index] ?? 0;
+					active.set(index);
+					start.set(thumbs.get()[index] ?? 0);
 				})
 				.onUpdate((event) =>
-					moveTo(index, start.value + event.translationX),
+					moveTo(index, start.get() + event.translationX),
 				)
 				.onFinalize(() => {
-					if (active.value !== index) return;
+					if (active.get() !== index) return;
 					settle();
-					active.value = -1;
+					active.set(-1);
 				});
 
 		const tap = Gesture.Tap()
 			.enabled(!disabled)
 			.onEnd((event) => {
-				const positions = thumbs.value;
+				const positions = thumbs.get();
 				const nearest =
 					positions.length === 2 &&
 					Math.abs(positions[1] - event.x) <
@@ -218,13 +226,13 @@ export function useSlider<T extends SliderValue>({
 	};
 
 	const firstThumbStyle = useAnimatedStyle(() => ({
-		transform: [{ translateX: thumbs.value[0] ?? 0 }],
+		transform: [{ translateX: thumbs.get()[0] ?? 0 }],
 	}));
 	const secondThumbStyle = useAnimatedStyle(() => ({
-		transform: [{ translateX: thumbs.value[1] ?? 0 }],
+		transform: [{ translateX: thumbs.get()[1] ?? 0 }],
 	}));
 	const fillStyle = useAnimatedStyle(() => {
-		const [first = 0, second] = thumbs.value;
+		const [first = 0, second] = thumbs.get();
 		return second === undefined
 			? { left: 0, width: first }
 			: { left: first, width: second - first };

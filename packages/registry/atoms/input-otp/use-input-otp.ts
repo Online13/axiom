@@ -99,14 +99,16 @@ export function useInputOTP({
 	const shake = useSharedValue(0);
 	useEffect(() => {
 		if (!error || reducedMotion) return;
-		shake.value = withSequence(
-			withTiming(-8, { duration: 50 }),
-			withRepeat(withTiming(8, { duration: 80 }), 4, true),
-			withTiming(0, { duration: 50 }),
+		shake.set(
+			withSequence(
+				withTiming(-8, { duration: 50 }),
+				withRepeat(withTiming(8, { duration: 80 }), 4, true),
+				withTiming(0, { duration: 50 }),
+			),
 		);
 	}, [error, reducedMotion, shake]);
 	const shakeStyle = useAnimatedStyle(() => ({
-		transform: [{ translateX: shake.value }],
+		transform: [{ translateX: shake.get() }],
 	}));
 
 	// Blinking caret in the active cell, restarted when it moves so it shows right away.
@@ -114,20 +116,22 @@ export function useInputOTP({
 	const activeIndex = cells.findIndex((cell) => cell.active);
 	useEffect(() => {
 		if (activeIndex < 0) return;
-		caret.value = 1;
+		caret.set(1);
 		if (!reducedMotion) {
-			caret.value = withRepeat(
-				withSequence(
-					withTiming(1, { duration: 500 }),
-					withTiming(0, { duration: 0 }),
-					withTiming(0, { duration: 500 }),
+			caret.set(
+				withRepeat(
+					withSequence(
+						withTiming(1, { duration: 500 }),
+						withTiming(0, { duration: 0 }),
+						withTiming(0, { duration: 500 }),
+					),
+					-1,
 				),
-				-1,
 			);
 		}
 		return () => cancelAnimation(caret);
 	}, [activeIndex, reducedMotion, caret]);
-	const caretStyle = useAnimatedStyle(() => ({ opacity: caret.value }));
+	const caretStyle = useAnimatedStyle(() => ({ opacity: caret.get() }));
 
 	return {
 		value,

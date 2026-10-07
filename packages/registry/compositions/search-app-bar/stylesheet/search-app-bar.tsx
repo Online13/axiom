@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+	type ReactNode,
+} from "react";
 import {
 	StyleSheet,
 	View,
@@ -25,7 +31,10 @@ import {
 import { MAX_FONT_SCALE, Text } from "@/components/ui/text";
 import { useTheme } from "@/theme";
 
-export type SearchAppBarProps = Omit<SearchBarProps, "size" | "containerStyle"> & {
+export type SearchAppBarProps = Omit<
+	SearchBarProps,
+	"size" | "containerStyle"
+> & {
 	/** `back` shows an arrow, `close` a cross, for a search opened as a modal. */
 	navigation?: "back" | "close";
 	/** Shows the navigation button. */
@@ -64,6 +73,11 @@ export function SearchAppBar({
 }: SearchAppBarProps) {
 	const { components } = useTheme();
 	const inputRef = useRef<TextInput>(null);
+	// Composed inside a stable callback ref, so neither ref is touched during render.
+	const setInputRef = useCallback(
+		(node: TextInput | null) => composeRefs(ref, inputRef)(node),
+		[ref],
+	);
 	const [focused, setFocused] = useState(false);
 
 	return (
@@ -79,7 +93,7 @@ export function SearchAppBar({
 				<AppBar.Center inset={!onNavigate}>
 					<SearchBar
 						{...searchProps}
-						ref={ref ? composeRefs(ref, inputRef) : inputRef}
+						ref={setInputRef}
 						variant={variant}
 						size="sm"
 						onFocus={(event) => {
@@ -132,14 +146,14 @@ function CancelButton({
 
 	useEffect(() => {
 		const target = visible ? 1 : 0;
-		progress.value = reduceMotion
-			? target
-			: withTiming(target, { duration: DURATION });
+		progress.set(
+			reduceMotion ? target : withTiming(target, { duration: DURATION }),
+		);
 	}, [visible, reduceMotion, progress]);
 
 	const animatedStyle = useAnimatedStyle(() => ({
-		width: width * progress.value,
-		opacity: progress.value,
+		width: width * progress.get(),
+		opacity: progress.get(),
 	}));
 
 	return (
@@ -147,7 +161,10 @@ function CancelButton({
 			{/* Absolute: the button keeps its natural width while the wrapper animates and clips it. */}
 			<View
 				onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
-				style={[styles.cancelInner, { paddingHorizontal: tokens.spacing[2] }]}
+				style={[
+					styles.cancelInner,
+					{ paddingHorizontal: tokens.spacing[2] },
+				]}
 			>
 				<Tappable
 					accessibilityRole="button"
