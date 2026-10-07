@@ -1,6 +1,8 @@
 {
 	"name": "axiom-project",
 	"devDependencies": {
+		"eslint": "^9.0.0",
+		"eslint-config-expo": "~57.0.2",
 		"prettier": "^3.9.8",
 		"wrangler": "^4.131.2"
 	},
@@ -13,7 +15,8 @@
 		"demo:uniwind": "bun run --cwd apps/demo-uniwind",
 		"example:noty": "bun run --cwd examples/noty",
 		"sim:ios": "node scripts/native-sim.mjs",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"lint": "eslint ."
 	},
 	"type": "module",
 	"workspaces": {

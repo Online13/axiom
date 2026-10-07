@@ -34,8 +34,6 @@
 	},
 	"devDependencies": {
 		"@types/react": "catalog:",
-		"eslint": "^9.0.0",
-		"eslint-config-expo": "~57.0.2",
 		"expo-mcp": "~0.2.1",
 		"typescript": "~6.0.3"
 	},

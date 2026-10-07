@@ -1,0 +1,41 @@
+name: Lint
+
+# Runs the root ESLint config over the registry, the CLI, the demo apps and the examples.
+on:
+  pull_request:
+    paths:
+      - packages/**
+      - apps/demo-*/**
+      - examples/**
+      - eslint.config.js
+      - package.json
+      - bun.lock
+      - .github/workflows/lint.yml
+  push:
+    branches: [main]
+    paths:
+      - packages/**
+      - apps/demo-*/**
+      - examples/**
+      - eslint.config.js
+      - package.json
+      - bun.lock
+      - .github/workflows/lint.yml
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - run: bun install --frozen-lockfile
+
+      - run: bun run lint

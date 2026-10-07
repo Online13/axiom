@@ -83,13 +83,13 @@ export default function TypographyScreen() {
 					<Text align="center">align center</Text>
 					<Text align="right">align right</Text>
 					<Text variant="bodySm" color="muted">
-						A nested Text keeps the parent's variant and color:{" "}
+						A nested Text keeps the parent’s variant and color:{" "}
 						<Text weight="semibold">semibold only</Text>, then{" "}
 						<Text color="link">a link color</Text>.
 					</Text>
 					<Label muted>numberOfLines={1}</Label>
 					<Text numberOfLines={1}>
-						A very long line that doesn't fit on the screen gets truncated
+						A very long line that doesn’t fit on the screen gets truncated
 						with an ellipsis at the end.
 					</Text>
 				</Panel>
