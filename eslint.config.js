@@ -12,12 +12,6 @@ export default defineConfig([
 			// variant. tsc already fails on an import it can't resolve, or on two `export *` that clash.
 			"import/no-unresolved": "off",
 			"import/export": "off",
-			// React Compiler rules. They flag Reanimated's `sharedValue.value = …` and the latest-ref
-			// pattern: the compiler skips those components, the code still runs. Warnings until the
-			// shared values move to `.get()` / `.set()`.
-			"react-hooks/refs": "warn",
-			"react-hooks/immutability": "warn",
-			"react-hooks/set-state-in-effect": "warn",
 		},
 	},
 	{
