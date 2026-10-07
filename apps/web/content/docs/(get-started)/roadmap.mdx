@@ -9,7 +9,7 @@ description: "What ships first, and what comes after."
 
 The specification is done: every foundation, component, behavior and pattern is written down, with its API, its states and its tokens. Phase 1 turns that into code.
 
-Every primitive of this phase now runs in code, along with tokens, theme and the six core pieces: Title and Text, the 33 atoms, the three molecules, Passcode and the five templates. All 76 entries with styling variants ship in both `stylesheet` and `unistyles`. The first 30 compositions and the first block are in, and both demo apps show them. The theme builder is public, `add --standalone` writes any entry as one theme-free file, and the CLI is typechecked and tested in CI. What is left of the phase is the Tailwind variants, `axiom fetch` and the rest of the CI.
+Every primitive of this phase now runs in code, along with tokens, theme and the six core pieces: Title and Text, the 34 atoms, the three molecules, Passcode and the five templates. All 76 entries with styling variants ship in both `stylesheet` and `unistyles`. The first 30 compositions and the first block are in, and both demo apps show them. The theme builder is public, `add --standalone` writes any entry as one theme-free file, and the CLI has `add`, `init` and `fetch`. The CI typechecks every styling variant, checks that they expose the same props, lints and bundles the apps. What is left of the phase is the Tailwind variants.
 
 <PhaseChecklist />
 
@@ -41,9 +41,9 @@ The theme-free form isn't written by hand. The CLI derives it from the registry:
 | -------------------------------- | ------------------------------------------------------------------------------------ | ------- |
 | [Foundations](/docs/foundations) | Tokens, ThemeColors, component tokens, Theme, `light` / `dark`, `components(colors, tokens)` | <StateTag state="shipped" /> |
 | [Core](/docs/core)               | Slot, Portal / PortalHost, Overlay, OverlayStack, Tappable, Haptics                  | <StateTag state="shipped" /> |
-| [Hooks](/docs/hooks)             | useControllableState, useOverlayBackHandler, useRefreshControl                       | <StateTag state="shipped" /> |
+| [Hooks](/docs/hooks)             | useControllableState, useOverlayBackHandler, useRefreshControl, useKeyboardVisible   | <StateTag state="shipped" /> |
 | Primitives: typography           | [Title](/docs/components/title), [Text](/docs/components/text)                                 | <StateTag state="shipped" /> |
-| Primitives: [atoms](/docs/components/atoms) | All 33 atoms                                                                         | <StateTag state="shipped" /> |
+| Primitives: [atoms](/docs/components/atoms) | All 34 atoms                                                                         | <StateTag state="shipped" /> |
 | Primitives: [molecules](/docs/components/molecules) | SearchBar, Attachment, DatePicker                                            | <StateTag state="shipped" /> |
 | Primitives: [organisms](/docs/components/organisms) | Passcode                                                                     | <StateTag state="shipped" /> |
 | Primitives: [templates](/docs/components/templates) | AppBar, BottomTabBar, Tab, ToolBar, Scaffold                                 | <StateTag state="shipped" /> |
@@ -56,13 +56,13 @@ Two core entries were added along the way. OverlayStack lets BottomSheet, Dialog
 
 ### Tooling
 
-- `registry.json` <StateTag state="shipped" /> — 86 entries, compositions and block included.
-- CLI <StateTag state="progress" /> — `add` and `init` are shipped. `add` resolves internal dependencies, icon source and navigation, and has a `--watch` mode; `init` picks the styling, resolves the aliases against `tsconfig.json`, copies the foundations and the headless core, installs what they need and writes `axiom.json`. `fetch` is still to write.
+- `registry.json` <StateTag state="shipped" /> — 88 entries, compositions and block included.
+- CLI <StateTag state="shipped" /> — `add`, `init` and `fetch` are shipped. `add` resolves internal dependencies, icon source and navigation, and has a `--watch` mode; `init` picks the styling, resolves the aliases against `tsconfig.json`, copies the foundations and the headless core, installs what they need and writes `axiom.json`. `fetch` copies every item listed in `axiom.json` and keeps the files already there.
 - Standalone mode <StateTag state="shipped" /> — `add --standalone` for 76 entries in both variants, typechecked on their own. Portal-based entries come later.
 - Demo apps <StateTag state="progress" /> — done for the `stylesheet` and `unistyles` variants: one screen per primitive, in groups from Foundations to Templates, then the compositions and the block, and a light / dark switch. The NativeWind and Uniwind apps are scaffolded and fill in with the `tailwind` variant.
 - Theme builder <StateTag state="shipped" /> — public at `/theme-builder`: role overrides, presets, app and component previews, a design-system view, a canvas toolbar with slide mode and a dark-mode toggle, Google Fonts, and an export an agent can apply.
 - Foundations screen <StateTag state="shipped" /> — colors, typography, spacing, radius, icons, touch targets, states.
-- CI <StateTag state="progress" /> — the CLI is typechecked and its test suite runs on every change to the CLI or the registry. Still to add: typecheck per variant, props parity between variants, lint, builds. The other workflow streams an iOS simulator preview.
+- CI <StateTag state="shipped" /> — the CLI is typechecked and tested; the registry is typechecked per styling variant, standalone forms included, and each variant must expose the same exports, props and parts as `stylesheet`; ESLint runs over the registry, the CLI and the apps; each Expo app is typechecked and bundled for Android and iOS. Another workflow streams an iOS simulator preview.
 
 ## Phase 2: blocks
 
@@ -70,7 +70,7 @@ Complete sections of an app, built from primitives and compositions, once the sy
 
 ## Later
 
-- [Agent integration](/docs/agent): the CLI commands an agent needs to find, plan and verify a screen — `search`, `info`, `plan`, `doctor`, `--json` output — plus the AGENTS.md, skill and MCP entry points. Specified, not built: only `add` and `init` are available today.
+- [Agent integration](/docs/agent): the CLI commands an agent needs to find, plan and verify a screen — `search`, `info`, `plan`, `doctor`, `--json` output — plus the AGENTS.md, skill and MCP entry points. Specified, not built: only `add`, `init` and `fetch` are available today.
 - [Patterns](/docs/patterns): selection mode, search experience, async content state…
 - More [hooks](/docs/hooks): hide-on-scroll, collapsible header, keyboard-aware behavior…
 - CI on Android and iOS devices, screenshots, visual tests (including parity between styling variants), accessibility checks.
