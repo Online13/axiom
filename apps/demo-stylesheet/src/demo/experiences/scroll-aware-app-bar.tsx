@@ -33,19 +33,19 @@ export default function ScrollAwareAppBarScreen() {
 
 	const offset = useSharedValue(0);
 	const elevation = useDerivedValue(() =>
-		Math.min(Math.max(offset.value / ELEVATION_DISTANCE, 0), 1),
+		Math.min(Math.max(offset.get() / ELEVATION_DISTANCE, 0), 1),
 	);
 	const titleProgress = useDerivedValue(() =>
-		Math.min(Math.max((offset.value - TITLE_OFFSET) / 32, 0), 1),
+		Math.min(Math.max((offset.get() - TITLE_OFFSET) / 32, 0), 1),
 	);
 
 	const onScroll = useAnimatedScrollHandler((event) => {
-		offset.value = event.contentOffset.y;
+		offset.set(event.contentOffset.y);
 	});
 
-	const surfaceStyle = useAnimatedStyle(() => ({ opacity: elevation.value }));
+	const surfaceStyle = useAnimatedStyle(() => ({ opacity: elevation.get() }));
 	const titleStyle = useAnimatedStyle(() => ({
-		opacity: titleProgress.value,
+		opacity: titleProgress.get(),
 	}));
 
 	return (

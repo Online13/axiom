@@ -26,18 +26,18 @@ export default function HideOnScrollScreen() {
 
 	const onScroll = useAnimatedScrollHandler((event) => {
 		const y = event.contentOffset.y;
-		const delta = y - lastY.value;
+		const delta = y - lastY.get();
 		if (Math.abs(delta) < DELTA) return;
-		lastY.value = y;
+		lastY.set(y);
 		// The top of the list always shows the bars, whatever the direction.
 		const next = y <= 0 ? 0 : delta > 0 ? 1 : 0;
-		if (next !== hidden.value)
-			hidden.value = withTiming(next, { duration: 180 });
+		if (next !== hidden.get())
+			hidden.set(withTiming(next, { duration: 180 }));
 	});
 
 	const topStyle = useAnimatedStyle(() => ({
-		transform: [{ translateY: -hidden.value * BAR_HEIGHT }],
-		opacity: 1 - hidden.value,
+		transform: [{ translateY: -hidden.get() * BAR_HEIGHT }],
+		opacity: 1 - hidden.get(),
 	}));
 
 	return (
@@ -82,7 +82,7 @@ function HidingToolBar({
 	hidden: ReturnType<typeof useSharedValue<number>>;
 }) {
 	const style = useAnimatedStyle(() => ({
-		transform: [{ translateY: hidden.value * BAR_HEIGHT }],
+		transform: [{ translateY: hidden.get() * BAR_HEIGHT }],
 	}));
 
 	return (

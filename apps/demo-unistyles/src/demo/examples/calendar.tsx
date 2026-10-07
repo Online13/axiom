@@ -44,15 +44,13 @@ function Slide({
 }) {
 	const style = useAnimatedStyle(() => ({
 		transform: [
-			{ scale: interpolate(Math.abs(progress.value), [0, 1], [1, 0.92]) },
+			{ scale: interpolate(Math.abs(progress.get()), [0, 1], [1, 0.92]) },
 		],
-		opacity: interpolate(Math.abs(progress.value), [0, 1], [1, 0.6]),
+		opacity: interpolate(Math.abs(progress.get()), [0, 1], [1, 0.6]),
 	}));
 
 	return (
-		<Animated.View
-			style={[styles.slide(hue), style]}
-		>
+		<Animated.View style={[styles.slide(hue), style]}>
 			<Text variant="bodyLg" weight="bold" style={{ color: "white" }}>
 				{title}
 			</Text>
@@ -75,7 +73,6 @@ function Counter() {
 }
 
 export default function CalendarScreen() {
-
 	const [date, setDate] = useState<CalendarSelection>(new Date());
 	const [month, setMonth] = useState<CalendarSelection>(new Date());
 	const [range, setRange] = useState<CalendarSelection>();
@@ -213,7 +210,9 @@ export default function CalendarScreen() {
 						onPress={() => carousel.current?.next()}
 					/>
 				</View>
-				<Label muted>Full-width items with a counter written with useCarousel:</Label>
+				<Label muted>
+					Full-width items with a counter written with useCarousel:
+				</Label>
 				<View style={styles.bleed}>
 					<Carousel
 						data={SLIDES.slice(0, 4)}

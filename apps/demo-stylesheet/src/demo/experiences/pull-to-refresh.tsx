@@ -22,8 +22,8 @@ function PullIndicator({ control }: { control: RefreshControl }) {
 	const { progress, status } = control;
 
 	const style = useAnimatedStyle(() => ({
-		opacity: progress.value,
-		transform: [{ rotate: `${progress.value * 180}deg` }],
+		opacity: progress.get(),
+		transform: [{ rotate: `${progress.get() * 180}deg` }],
 	}));
 
 	return (

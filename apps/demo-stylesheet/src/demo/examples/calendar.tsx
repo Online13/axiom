@@ -45,9 +45,9 @@ function Slide({
 	const { tokens } = useTheme();
 	const style = useAnimatedStyle(() => ({
 		transform: [
-			{ scale: interpolate(Math.abs(progress.value), [0, 1], [1, 0.92]) },
+			{ scale: interpolate(Math.abs(progress.get()), [0, 1], [1, 0.92]) },
 		],
-		opacity: interpolate(Math.abs(progress.value), [0, 1], [1, 0.6]),
+		opacity: interpolate(Math.abs(progress.get()), [0, 1], [1, 0.6]),
 	}));
 
 	return (
@@ -229,7 +229,9 @@ export default function CalendarScreen() {
 						onPress={() => carousel.current?.next()}
 					/>
 				</View>
-				<Label muted>Full-width items with a counter written with useCarousel:</Label>
+				<Label muted>
+					Full-width items with a counter written with useCarousel:
+				</Label>
 				<View style={{ marginHorizontal: -tokens.metrics.screenMargin }}>
 					<Carousel
 						data={SLIDES.slice(0, 4)}

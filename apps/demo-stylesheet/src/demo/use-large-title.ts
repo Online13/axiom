@@ -21,31 +21,31 @@ export function useLargeTitle() {
 
 	// 0 at the top of the list, 1 once it has scrolled by the height of the large title.
 	const collapse = useDerivedValue(() => {
-		const height = expandedHeight.value;
+		const height = expandedHeight.get();
 		if (height === 0) return 0;
-		return Math.min(Math.max(offset.value / height, 0), 1);
+		return Math.min(Math.max(offset.get() / height, 0), 1);
 	});
 
 	const onScroll = useAnimatedScrollHandler((event) => {
-		offset.value = event.contentOffset.y;
+		offset.set(event.contentOffset.y);
 	});
 
 	const onExpandedLayout = (event: LayoutChangeEvent) => {
-		expandedHeight.value = event.nativeEvent.layout.height;
+		expandedHeight.set(event.nativeEvent.layout.height);
 	};
 
 	const expandedStyle = useAnimatedStyle(() => {
-		const height = expandedHeight.value;
+		const height = expandedHeight.get();
 		if (height === 0) return {};
 		return {
-			height: interpolate(collapse.value, [0, 1], [height, 0]),
-			opacity: interpolate(collapse.value, [0, 0.6], [1, 0], "clamp"),
+			height: interpolate(collapse.get(), [0, 1], [height, 0]),
+			opacity: interpolate(collapse.get(), [0, 0.6], [1, 0], "clamp"),
 		};
 	});
 
 	// The row title waits for the large one to fade, so the two never show at full opacity.
 	const rowTitleStyle = useAnimatedStyle(() => ({
-		opacity: interpolate(collapse.value, [0.6, 1], [0, 1], "clamp"),
+		opacity: interpolate(collapse.get(), [0.6, 1], [0, 1], "clamp"),
 	}));
 
 	return { onScroll, onExpandedLayout, expandedStyle, rowTitleStyle };

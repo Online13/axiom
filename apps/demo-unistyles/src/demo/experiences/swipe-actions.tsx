@@ -49,44 +49,45 @@ function SwipeRow({
 	const leftWidth = ACTION_WIDTH;
 
 	const close = () => {
-		translate.value = withSpring(0, { damping: 20 });
+		translate.set(withSpring(0, { damping: 20 }));
 		onOpen(null);
 	};
 
 	// A row opened elsewhere closes this one.
 	useEffect(() => {
 		if (openId !== null && openId !== id)
-			translate.value = withSpring(0, { damping: 20 });
+			translate.set(withSpring(0, { damping: 20 }));
 	}, [id, openId, translate]);
 
 	const pan = Gesture.Pan()
 		.activeOffsetX([-12, 12])
 		.failOffsetY([-12, 12])
 		.onBegin(() => {
-			start.value = translate.value;
+			start.set(translate.get());
 		})
 		.onUpdate((event) => {
-			const next = start.value + event.translationX;
-			translate.value = Math.max(Math.min(next, leftWidth), -rightWidth);
+			const next = start.get() + event.translationX;
+			translate.set(Math.max(Math.min(next, leftWidth), -rightWidth));
 		})
 		.onEnd((event) => {
-			const goingLeft = translate.value < 0;
+			const goingLeft = translate.get() < 0;
 			const width = goingLeft ? rightWidth : leftWidth;
-			const past = Math.abs(translate.value) > width * OPEN_RATIO;
+			const past = Math.abs(translate.get()) > width * OPEN_RATIO;
 			const flick =
 				Math.abs(event.velocityX) > FLICK_VELOCITY &&
 				(goingLeft ? event.velocityX < 0 : event.velocityX > 0);
 			const open = past || flick;
 
-			translate.value = withSpring(
-				open ? (goingLeft ? -rightWidth : leftWidth) : 0,
-				{ damping: 20 },
+			translate.set(
+				withSpring(open ? (goingLeft ? -rightWidth : leftWidth) : 0, {
+					damping: 20,
+				}),
 			);
 			scheduleOnRN(onOpen, open ? id : null);
 		});
 
 	const rowStyle = useAnimatedStyle(() => ({
-		transform: [{ translateX: translate.value }],
+		transform: [{ translateX: translate.get() }],
 	}));
 
 	const act = (label: string) => {
@@ -118,9 +119,7 @@ function SwipeRow({
 				/>
 			</View>
 			<GestureDetector gesture={pan}>
-				<Animated.View
-					style={[styles.row, rowStyle]}
-				>
+				<Animated.View style={[styles.row, rowStyle]}>
 					<Text weight="medium">{title}</Text>
 					<Text variant="bodySm" color="muted">
 						{subtitle}

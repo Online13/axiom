@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Image, TextInput, View } from "react-native";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
@@ -35,14 +35,8 @@ export default function NoteScreen() {
 	const note = useNote(id);
 
 	const inputs = useRef(new Map<string, TextInput>());
-	// The todo to focus once it has rendered: a new one, or the one above a removed one.
-	const [focusId, setFocusId] = useState<string | null>(null);
-
-	useEffect(() => {
-		if (!focusId) return;
-		inputs.current.get(focusId)?.focus();
-		setFocusId(null);
-	}, [focusId]);
+	// A new todo, focused as soon as its input mounts.
+	const pendingFocus = useRef<string | null>(null);
 
 	// A note left empty isn't worth keeping.
 	useEffect(() => () => discardIfEmpty(id), [id]);
@@ -65,7 +59,9 @@ export default function NoteScreen() {
 					<Empty.Header>
 						<Empty.Media icon="file" />
 						<Empty.Title>Note not found</Empty.Title>
-						<Empty.Description>It may have been deleted.</Empty.Description>
+						<Empty.Description>
+							It may have been deleted.
+						</Empty.Description>
 					</Empty.Header>
 				</Empty>
 			</Scaffold>
@@ -88,13 +84,15 @@ export default function NoteScreen() {
 				: items.filter((candidate) => !candidate.done).length;
 			return [...items.slice(0, index), item, ...items.slice(index)];
 		});
-		setFocusId(item.id);
+		pendingFocus.current = item.id;
 	};
 
 	const removeItem = (itemId: string, focusPrevious: boolean) => {
 		const index = open.findIndex((item) => item.id === itemId);
 		setItems((items) => items.filter((item) => item.id !== itemId));
-		if (focusPrevious && index > 0) setFocusId(open[index - 1].id);
+		// The todo above is already on screen: focus it now, before this one unmounts.
+		if (focusPrevious && index > 0)
+			inputs.current.get(open[index - 1].id)?.focus();
 	};
 
 	return (
@@ -109,7 +107,9 @@ export default function NoteScreen() {
 						accessibilityLabel={note.pinned ? "Unpin" : "Pin"}
 						selected={note.pinned}
 						onPress={() =>
-							updateNote(note.id, (current) => ({ pinned: !current.pinned }))
+							updateNote(note.id, (current) => ({
+								pinned: !current.pinned,
+							}))
 						}
 					/>
 				</AppBar.Row>
@@ -181,8 +181,15 @@ export default function NoteScreen() {
 							/>
 							<ThemedTextInput
 								ref={(input) => {
-									if (input) inputs.current.set(item.id, input);
-									else inputs.current.delete(item.id);
+									if (!input) {
+										inputs.current.delete(item.id);
+										return;
+									}
+									inputs.current.set(item.id, input);
+									if (pendingFocus.current === item.id) {
+										pendingFocus.current = null;
+										input.focus();
+									}
 								}}
 								value={item.text}
 								onChangeText={(text) =>
