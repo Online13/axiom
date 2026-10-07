@@ -23,7 +23,7 @@ export const inputTokens = (
 	colors: ThemeColors,
 	tokens: Tokens,
 ): InputTokens => ({
-	radius: tokens.radius.full,
+	radius: tokens.radius.md,
 	outline: {
 		default: {
 			background: colors.background.default,
