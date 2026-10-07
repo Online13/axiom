@@ -133,7 +133,7 @@ The CLI is how a project uses the registry. It copies the requested items and th
 
 The copied code belongs to the project. The CLI is a tool for adding code and never becomes a runtime dependency of the app.
 
-The CLI lives in `packages/cli`. Its `add` command copies files, rewrites imports and installs missing npm packages. Its `init` command configures styling and aliases, copies foundations and core primitives, installs their dependencies and writes `axiom.json`. `add --standalone` writes an item as one self-contained file instead, for an app with its own design system: its dependencies inlined, the theme resolved to values, no Axiom import left. The CLI reads the registry from a local folder.
+The CLI lives in `packages/cli`. Its `add` command copies files, rewrites imports and installs missing npm packages. Its `init` command configures styling and aliases, copies foundations and core primitives, installs their dependencies and writes `axiom.json`. Its `fetch` command copies the items `axiom.json` lists that are missing from the project, and keeps the files already there. `add --standalone` writes an item as one self-contained file instead, for an app with its own design system: its dependencies inlined, the theme resolved to values, no Axiom import left. The CLI reads the registry from a local folder. [`packages/cli/docs`](packages/cli/docs/README.md) explains its code.
 
 ## Repository structure
 

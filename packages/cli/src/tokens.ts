@@ -31,7 +31,7 @@ export type TokenEntry = {
 	key: string;
 	/** Exported function, e.g. `bottomSheetTokens`. */
 	exportName: string;
-	/** Import specifier, e.g. `@/components/ui/bottom-sheet-tokens`. */
+	/** Import specifier, relative to the theme's components/index.ts, e.g. `./bottom-sheet`. */
 	specifier: string;
 };
 

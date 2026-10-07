@@ -183,14 +183,6 @@ function barrels(files: PlannedFile[], config: ProjectConfig): PlannedFile[] {
 	});
 }
 
-/**
- * Where each registry file is addressed from, mapped to where it now lives in the project.
- *
- * Registry sources address every file in one flat namespace (`@/components/ui/icons`), which is
- * also what the registry's own tsconfig paths declare. Folders exist only in the project, so the
- * CLI is what turns an address into a path. An address claimed by two items is left out: importing
- * it then fails with a clear message instead of resolving to the wrong file.
- */
 /** The file sets of `item` that apply to the project: its own, plus the ones its config selects. */
 export function sets(
 	item: RegistryItem,
@@ -374,6 +366,14 @@ function rewriteImports(
 	);
 }
 
+/**
+ * Where each registry file is addressed from, mapped to where it now lives in the project.
+ *
+ * Registry sources address every file in one flat namespace (`@/components/ui/icons`), which is
+ * also what the registry's own tsconfig paths declare. Folders exist only in the project, so the
+ * CLI is what turns an address into a path. An address claimed by two items is left out: importing
+ * it then fails with a clear message instead of resolving to the wrong file.
+ */
 function addresses(files: PlannedFile[]) {
 	const found = new Map<string, string | null>();
 
