@@ -1,0 +1,51 @@
+name: Apps
+
+# Typechecks each Expo app and bundles its JavaScript for Android and iOS with Metro, so a demo that
+# no longer builds fails here instead of on a device.
+on:
+  pull_request:
+    paths:
+      - apps/demo-*/**
+      - examples/**
+      - bun.lock
+      - .github/workflows/apps.yml
+  push:
+    branches: [main]
+    paths:
+      - apps/demo-*/**
+      - examples/**
+      - bun.lock
+      - .github/workflows/apps.yml
+
+concurrency:
+  group: apps-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - apps/demo-stylesheet
+          - apps/demo-unistyles
+          - apps/demo-nativewind
+          - apps/demo-uniwind
+          - examples/noty
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        working-directory: ${{ matrix.app }}
+        run: bunx tsc --noEmit
+
+      - name: Bundle
+        working-directory: ${{ matrix.app }}
+        run: bunx expo export --platform android --platform ios --output-dir dist
