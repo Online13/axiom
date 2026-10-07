@@ -18,6 +18,8 @@ import { useSafeAreaInsets, type Edge } from "react-native-safe-area-context";
 import { AppBar, type AppBarProps } from "@/components/ui/app-bar";
 import { useTheme } from "@/theme";
 
+export type ScaffoldBackground = "default" | "subtle";
+
 export type ScaffoldProps = Omit<
 	ComponentPropsWithRef<typeof View>,
 	"children"
@@ -27,7 +29,7 @@ export type ScaffoldProps = Omit<
 	/** Safe-area edges the screen owns, so its regions don't apply the same inset twice. */
 	safeAreaEdges?: Edge[];
 	/** The standard screen background, or the grouped-list one. */
-	background?: "default" | "subtle";
+	background?: ScaffoldBackground;
 	/** `auto` follows the resolved color scheme. */
 	statusBarStyle?: "auto" | "light" | "dark";
 	style?: StyleProp<ViewStyle>;

@@ -15,13 +15,15 @@ import {
 
 export type { SegmentOption } from "../use-segmented-control";
 
+export type SegmentedControlSize = "md" | "lg";
+
 export type SegmentedControlProps = Omit<
 	ComponentPropsWithRef<typeof View>,
 	"children"
 > &
 	Omit<UseSegmentedControlOptions, "inset"> & {
 		/** Minimum height: 32 or 40pt. Grows with larger system text. */
-		size?: "md" | "lg";
+		size?: SegmentedControlSize;
 		/** Stretches to the parent width with equal segments. `false` sizes it to its content. */
 		fullWidth?: boolean;
 		style?: StyleProp<ViewStyle>;

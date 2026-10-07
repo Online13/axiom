@@ -6,17 +6,22 @@ import { useTheme, type Spacing } from "@/theme";
 
 type SpacingToken = keyof Spacing;
 
+export type SeparatorOrientation = "horizontal" | "vertical";
+export type SeparatorVariant = "default" | "subtle";
+export type SeparatorInset =
+	SpacingToken | { start?: SpacingToken; end?: SpacingToken };
+
 export type SeparatorProps = Omit<
 	ComponentPropsWithRef<typeof View>,
 	"children"
 > & {
-	orientation?: "horizontal" | "vertical";
+	orientation?: SeparatorOrientation;
 	/** `default` between blocks, `subtle` inside a surface such as a card. */
-	variant?: "default" | "subtle";
+	variant?: SeparatorVariant;
 	/** Defaults to the `hairline` metric. */
 	thickness?: number;
 	/** Space left empty at the start and end of the line, to align it with content. */
-	inset?: SpacingToken | { start?: SpacingToken; end?: SpacingToken };
+	inset?: SeparatorInset;
 	/** Margin on both sides of the line, along the cross axis. */
 	spacing?: SpacingToken;
 	/** Text centered in a horizontal separator, with a line on each side. */

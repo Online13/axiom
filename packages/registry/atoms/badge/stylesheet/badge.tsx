@@ -21,6 +21,9 @@ export type BadgeVariant =
 	| "outline"
 	| "inverse";
 
+export type BadgeSize = "sm" | "md";
+export type BadgePlacement = "top-right" | "bottom-right";
+
 export type BadgeProps = Omit<
 	ComponentPropsWithRef<typeof View>,
 	"children"
@@ -36,7 +39,7 @@ export type BadgeProps = Omit<
 	count?: number;
 	/** Above this, the counter shows `99+`. */
 	max?: number;
-	size?: "sm" | "md";
+	size?: BadgeSize;
 	/**
 	 * A ring in the surface color around a counter or lone dot, to detach it from what it sits on.
 	 * `Badge.Anchor` turns it on for its badge.
@@ -195,7 +198,7 @@ export type BadgeAnchorProps = Omit<
 	 * exit plays, and the ring, being part of the badge, animates with it.
 	 */
 	badge: ReactNode;
-	placement?: "top-right" | "bottom-right";
+	placement?: BadgePlacement;
 	style?: StyleProp<ViewStyle>;
 };
 

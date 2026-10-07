@@ -15,6 +15,8 @@ import { useTheme } from "@/theme";
 
 import { useInputOTP, type UseInputOTPOptions } from "../use-input-otp";
 
+export type InputOTPSize = "sm" | "md";
+
 export type InputOTPProps = UseInputOTPOptions &
 	Pick<
 		TextInputProps,
@@ -27,7 +29,7 @@ export type InputOTPProps = UseInputOTPOptions &
 		/** Green cells, once the code is accepted. */
 		success?: boolean;
 		/** Cell size: 40×50 or 48×56pt. The height comes from the `input` size tokens. */
-		size?: "sm" | "md";
+		size?: InputOTPSize;
 		accessibilityLabel?: string;
 		style?: StyleProp<ViewStyle>;
 	};

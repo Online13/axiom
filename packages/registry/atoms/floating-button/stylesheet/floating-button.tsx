@@ -22,6 +22,8 @@ type Content =
 	/** Icon only: the label is required for screen readers. */
 	| { label?: undefined; accessibilityLabel: string };
 
+export type FloatingButtonSize = "sm" | "md";
+
 export type FloatingButtonProps = Omit<
 	TappableProps,
 	"children" | "style" | "accessibilityLabel"
@@ -31,7 +33,7 @@ export type FloatingButtonProps = Omit<
 		icon: IconName;
 		variant?: FloatingButtonVariant;
 		/** 44 or 52pt, from the `control` size tokens. */
-		size?: "sm" | "md";
+		size?: FloatingButtonSize;
 		style?: StyleProp<ViewStyle>;
 	};
 

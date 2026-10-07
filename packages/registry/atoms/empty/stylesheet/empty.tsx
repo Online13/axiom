@@ -16,6 +16,8 @@ type EmptySize = "sm" | "md";
 
 const SizeContext = createContext<EmptySize>("md");
 
+export type EmptyTone = "neutral" | "error";
+
 export type EmptyProps = Omit<
 	ComponentPropsWithRef<typeof View>,
 	"children"
@@ -85,7 +87,7 @@ export type EmptyMediaProps = Omit<
 > & {
 	icon?: IconName;
 	/** `error` tints the tile, for failures. */
-	tone?: "neutral" | "error";
+	tone?: EmptyTone;
 	/** Custom media instead of `icon`. */
 	children?: ReactNode;
 };

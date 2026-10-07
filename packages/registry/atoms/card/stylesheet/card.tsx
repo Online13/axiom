@@ -15,10 +15,12 @@ import { useTheme, type Radius, type Spacing } from "@/theme";
 
 export type CardVariant = "elevated" | "outlined" | "filled";
 
+export type CardPadding = keyof Spacing | "none";
+
 export type CardProps = Omit<ComponentPropsWithRef<typeof View>, "children"> & {
 	variant?: CardVariant;
 	/** Inner padding for a card without sub-components. The sub-components pad themselves. */
-	padding?: keyof Spacing | "none";
+	padding?: CardPadding;
 	radius?: keyof Radius;
 	/** Makes the whole card pressable. Buttons inside still receive their own presses. */
 	onPress?: () => void;

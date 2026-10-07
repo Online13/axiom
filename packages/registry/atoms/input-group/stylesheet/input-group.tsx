@@ -1,8 +1,4 @@
-import {
-	type ComponentPropsWithRef,
-	type ReactNode,
-	type Ref,
-} from "react";
+import { type ComponentPropsWithRef, type ReactNode, type Ref } from "react";
 import {
 	StyleSheet,
 	TextInput,
@@ -25,6 +21,8 @@ import {
 	useInputGroupContext,
 	type UseInputGroupOptions,
 } from "../use-input-group";
+
+export type InputGroupAddonVariant = "subtle" | "plain";
 
 export type InputGroupProps = Omit<
 	ComponentPropsWithRef<typeof View>,
@@ -49,7 +47,6 @@ function InputGroupRoot({
 	const { tokens, components } = useTheme();
 	const group = useInputGroup({ size, error, disabled });
 	const colors = inputColors(components, "outline", group.state);
-
 
 	return (
 		<InputGroupContext value={group.context}>
@@ -158,7 +155,7 @@ export type InputGroupAddonProps = Omit<
 	/** Makes the addon pressable, for example to open a picker. */
 	onPress?: TappableProps["onPress"];
 	/** `subtle` fills the addon, `plain` leaves it transparent. */
-	variant?: "subtle" | "plain";
+	variant?: InputGroupAddonVariant;
 	style?: StyleProp<ViewStyle>;
 };
 

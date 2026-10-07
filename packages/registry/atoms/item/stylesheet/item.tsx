@@ -22,6 +22,9 @@ import { useTheme } from "@/theme";
 
 export type ItemSize = "sm" | "md" | "lg";
 
+export type ItemAlign = "center" | "start";
+export type ItemDivider = boolean | "inset";
+
 export type ItemProps = Omit<
 	TappableProps,
 	"children" | "style" | "disabled" | "onPress" | "onLongPress"
@@ -35,9 +38,9 @@ export type ItemProps = Omit<
 	selected?: boolean;
 	disabled?: boolean;
 	/** Hairline under the row. `inset` starts it after the leading area. */
-	divider?: boolean | "inset";
+	divider?: ItemDivider;
 	/** Vertical alignment of leading and trailing. */
-	align?: "center" | "start";
+	align?: ItemAlign;
 	/** Played on touch when the row is pressable. Off unless you pass a kind: a row tap is rarely an event. */
 	haptic?: HapticKind | false;
 	/** Merges the item into its child, for example a router `Link`. */

@@ -10,6 +10,8 @@ import { useTheme } from "@/theme";
 export type IconButtonVariant = "ghost" | "tinted" | "outline" | "solid";
 export type IconButtonSize = "sm" | "md" | "lg";
 
+export type IconButtonShape = "circle" | "square";
+
 export type IconButtonProps = Omit<
 	TappableProps,
 	"children" | "style" | "accessibilityLabel"
@@ -21,7 +23,7 @@ export type IconButtonProps = Omit<
 	variant?: IconButtonVariant;
 	/** 32, 44 or 52pt, from the `control` size tokens. The touch area never goes below 44pt. */
 	size?: IconButtonSize;
-	shape?: "circle" | "square";
+	shape?: IconButtonShape;
 	/** Marks a toggle button as on. */
 	selected?: boolean;
 	/** Overrides the icon color of the variant, except when disabled. */

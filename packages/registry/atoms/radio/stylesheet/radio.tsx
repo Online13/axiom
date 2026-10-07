@@ -20,6 +20,8 @@ type RadioGroupContextValue = {
 
 const RadioGroupContext = createContext<RadioGroupContextValue | null>(null);
 
+export type RadioOrientation = "vertical" | "horizontal";
+
 export type RadioGroupProps = Omit<
 	ComponentPropsWithRef<typeof View>,
 	"children"
@@ -27,7 +29,7 @@ export type RadioGroupProps = Omit<
 	value?: string;
 	defaultValue?: string;
 	onValueChange?: (value: string) => void;
-	orientation?: "vertical" | "horizontal";
+	orientation?: RadioOrientation;
 	/** Space between radios, from the spacing tokens. */
 	gap?: keyof Spacing;
 	disabled?: boolean;

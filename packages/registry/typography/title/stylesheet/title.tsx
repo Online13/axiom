@@ -10,10 +10,12 @@ export type TitleVariant =
 	"display" | "headingLg" | "heading" | "headingSm" | "subheading";
 export type TitleColor = "default" | "muted" | "inverse";
 
+export type TitleAlign = "left" | "center" | "right";
+
 export type TitleProps = NativeTextProps & {
 	variant?: TitleVariant;
 	color?: TitleColor;
-	align?: "left" | "center" | "right";
+	align?: TitleAlign;
 	asChild?: boolean;
 };
 

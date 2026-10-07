@@ -20,6 +20,8 @@ import { useTheme, type Hue, type Spacing, type Theme } from "@/theme";
 export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl" | number;
 export type AvatarStatus = "online" | "away" | "busy" | "offline";
 
+export type AvatarShape = "circle" | "square";
+
 export type AvatarProps = Omit<
 	ComponentPropsWithRef<typeof View>,
 	"children"
@@ -31,7 +33,7 @@ export type AvatarProps = Omit<
 	/** Full name: initials when `fallback` is missing, and the accessibility label. */
 	name?: string;
 	size?: AvatarSize;
-	shape?: "circle" | "square";
+	shape?: AvatarShape;
 	status?: AvatarStatus;
 	/** Stable hue from `name` for the fallback background. */
 	colorFromName?: boolean;
@@ -213,7 +215,10 @@ function AvatarGroup({
 	return (
 		<GroupContext value={{ overlap: offset }}>
 			{/* The padding cancels the first avatar's negative margin. */}
-			<View {...props} style={[styles.group, { paddingStart: offset }, style]}>
+			<View
+				{...props}
+				style={[styles.group, { paddingStart: offset }, style]}
+			>
 				{children}
 			</View>
 		</GroupContext>

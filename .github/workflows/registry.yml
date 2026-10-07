@@ -1,0 +1,40 @@
+name: Registry
+
+# Typechecks every styling variant of the registry, standalone forms included, and checks that the
+# variants expose the same props as `stylesheet`.
+on:
+  pull_request:
+    paths:
+      - packages/registry/**
+      - packages/cli/src/**
+      - bun.lock
+      - .github/workflows/registry.yml
+  push:
+    branches: [main]
+    paths:
+      - packages/registry/**
+      - packages/cli/src/**
+      - bun.lock
+      - .github/workflows/registry.yml
+
+concurrency:
+  group: registry-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bun run --cwd packages/registry typecheck
+
+      - name: Props parity
+        run: bun run --cwd packages/registry parity

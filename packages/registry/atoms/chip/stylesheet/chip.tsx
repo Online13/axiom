@@ -1,10 +1,5 @@
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from "react";
-import {
-	StyleSheet,
-	View,
-	type StyleProp,
-	type ViewStyle,
-} from "react-native";
+import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 
 import type { HapticKind } from "@/components/core/haptics";
 import { Tappable, type TappableProps } from "@/components/core/tappable";
@@ -12,6 +7,9 @@ import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icons";
 import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from "@/components/ui/text";
 import { useTheme, type Spacing } from "@/theme";
+
+export type ChipVariant = "outline" | "filled";
+export type ChipSize = "sm" | "md";
 
 export type ChipProps = Omit<
 	TappableProps,
@@ -25,9 +23,9 @@ export type ChipProps = Omit<
 	/** Shows a close icon that calls it, with its own touch area. */
 	onRemove?: () => void;
 	/** `outline` for filters, `filled` for tags and entered values. */
-	variant?: "outline" | "filled";
+	variant?: ChipVariant;
 	/** 28 or 34pt. The touch area stays 44pt. */
-	size?: "sm" | "md";
+	size?: ChipSize;
 	leading?: IconName | ReactElement;
 	/** Ignored with `onRemove`. */
 	trailing?: IconName | ReactElement;

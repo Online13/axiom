@@ -32,6 +32,8 @@ import {
 	type UseDialogOptions,
 } from "../use-dialog";
 
+export type DialogActionsOrientation = "horizontal" | "vertical";
+
 export type DialogRootProps = UseDialogOptions & { children?: ReactNode };
 
 function DialogRoot({ children, ...options }: DialogRootProps) {
@@ -157,7 +159,7 @@ export type DialogActionsProps = Omit<
 	"children"
 > & {
 	/** `horizontal` for two short actions, `vertical` for three or long labels. */
-	orientation?: "horizontal" | "vertical";
+	orientation?: DialogActionsOrientation;
 	children?: ReactNode;
 };
 

@@ -13,12 +13,14 @@ import Animated, {
 import { textColor, type TextColor } from "@/components/ui/text";
 import { useTheme } from "@/theme";
 
+export type SpinnerSize = "sm" | "md" | "lg" | number;
+
 export type SpinnerProps = Omit<
 	ComponentPropsWithRef<typeof View>,
 	"children"
 > & {
 	/** From the `icon` size tokens (16, 20, 24), or a number. */
-	size?: "sm" | "md" | "lg" | number;
+	size?: SpinnerSize;
 	color?: TextColor;
 	/** Announced by screen readers. Not rendered. */
 	label?: string;
