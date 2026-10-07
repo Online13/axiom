@@ -113,7 +113,13 @@ for (let y = 2000; y < SCENE_DEPTH; y += between(1100, 2000)) {
 	}
 }
 
-const ribbons = [...heroRibbons, ...generatedRibbons];
+/** One decimal is finer than a pixel: the rest is only bytes in the page. */
+const round = (n: number) => Math.round(n * 10) / 10;
+const ribbons = [...heroRibbons, ...generatedRibbons].map((r) => ({
+	...r,
+	points: r.points.map(([x, y]): Point => [round(x), round(y)]),
+	opacity: r.opacity && Math.round(r.opacity * 100) / 100,
+}));
 
 /**
  * Gradient stops, with three mixed between each pair of colours in `--ribbon-mix`. In sRGB
@@ -126,7 +132,7 @@ const gradientStops = (colors: string[]) =>
 		const next = colors[j + 1];
 		if (!next) return [{ offset: at(0), color }];
 		return [0, 25, 50, 75].map((mix) => ({
-			offset: at(mix / 100),
+			offset: Math.round(at(mix / 100) * 1000) / 1000,
 			color: mix ? `color-mix(in var(--ribbon-mix), ${color} ${100 - mix}%, ${next})` : color,
 		}));
 	});
@@ -140,10 +146,10 @@ const bounds = (r: Ribbon) => {
 	const ys = r.points.map(([, y]) => y);
 	const x = Math.min(...xs) - margin;
 	const y = Math.min(...ys) - margin;
-	return { x, y, width: Math.max(...xs) + margin - x, height: Math.max(...ys) + margin - y };
+	return { x, y, width: round(Math.max(...xs) + margin - x), height: round(Math.max(...ys) + margin - y) };
 };
 
-const pt = ([x, y]: Point) => `${x} ${y}`;
+const pt = ([x, y]: Point) => `${round(x)} ${round(y)}`;
 const segments = (points: Point[]) => {
 	let d = '';
 	for (let i = 1; i < points.length; i += 3) d += ` C ${pt(points[i])}, ${pt(points[i + 1])}, ${pt(points[i + 2])}`;
@@ -167,8 +173,8 @@ const faintEdge = (r: Ribbon) => {
 const shape = (r: Ribbon) => `${edge(r)}${segments(faintPoints(r).reverse())} Z`;
 ---
 
-<div class="backdrop" aria-hidden="true">
-	<svg class="backdrop__scene" width={SCENE_WIDTH} fill="none">
+<div class="page-backdrop" aria-hidden="true">
+	<svg class="page-backdrop__scene" width={SCENE_WIDTH} fill="none">
 		<defs>
 			<filter id="backdrop-soft" x="-20%" y="-20%" width="140%" height="140%">
 				<feGaussianBlur stdDeviation="36" />
@@ -231,25 +237,26 @@ const shape = (r: Ribbon) => `${edge(r)}${segments(faintPoints(r).reverse())} Z`
 		</defs>
 		{
 			ribbons.map((r, i) => (
-				<g class="backdrop__ribbon" opacity={r.opacity ?? 1} style={`--fade: url(#ribbon-fade-${i})`}>
+				<g class="page-backdrop__ribbon" opacity={r.opacity ?? 1} style={`--fade: url(#ribbon-fade-${i})`}>
 					{/* Body: a faint tint, lit from the bright edge by a soft inner glow. */}
-					<path class="backdrop__body" d={shape(r)} fill={`url(#ribbon-${i})`} fill-opacity="0.1" />
+					<path class="page-backdrop__body" d={shape(r)} fill={`url(#ribbon-${i})`} fill-opacity="0.1" />
 					<g clip-path={`url(#ribbon-clip-${i})`}>
-						<path class="backdrop__inner" d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="140" stroke-opacity="0.45" filter="url(#backdrop-soft)" />
-						<path class="backdrop__shade" d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width={width(r)} filter={`url(#ribbon-shade-${i})`} />
+						<path class="page-backdrop__inner" d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="140" stroke-opacity="0.45" filter="url(#backdrop-soft)" />
+						<path class="page-backdrop__shade" d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width={width(r)} filter={`url(#ribbon-shade-${i})`} />
 					</g>
 					{/* Edges: the faint one, then the glowing one with a white-hot core. */}
 					<path d={faintEdge(r)} stroke={`url(#ribbon-${i})`} stroke-width="1" stroke-opacity="0.3" />
-					<path class="backdrop__glow" d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="36" stroke-opacity="0.35" filter="url(#backdrop-bloom)" />
-					<path class="backdrop__edge" d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="3" filter="url(#backdrop-neon)" />
-					<path class="backdrop__glow" d={edge(r)} stroke="#ffffff" stroke-width="1" stroke-opacity="0.8" />
+					<path class="page-backdrop__glow" d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="36" stroke-opacity="0.35" filter="url(#backdrop-bloom)" />
+					<path class="page-backdrop__edge" d={edge(r)} stroke={`url(#ribbon-${i})`} stroke-width="3" filter="url(#backdrop-neon)" />
+					<path class="page-backdrop__glow" d={edge(r)} stroke="#ffffff" stroke-width="1" stroke-opacity="0.8" />
 				</g>
 			))
 		}
 	</svg>
 </div>
 
-<style>
+<!-- Global: scoped styles would tag every one of the scene's ~1000 elements with an attribute. -->
+<style is:global>
 	/*
 	 * Spans the whole page (body is its containing block), so it scrolls with the content.
 	 *
@@ -257,7 +264,7 @@ const shape = (r: Ribbon) => `${edge(r)}${segments(faintPoints(r).reverse())} Z`
 	 * looping animations painted over it never re-run them. Containment keeps its layout and
 	 * paint out of the rest of the page's work.
 	 */
-	.backdrop {
+	.page-backdrop {
 		position: absolute;
 		inset: 0;
 		z-index: -1;
@@ -269,7 +276,7 @@ const shape = (r: Ribbon) => `${edge(r)}${segments(faintPoints(r).reverse())} Z`
 	}
 
 	/* Centred on the page, so the content column lines up with the middle of the scene. */
-	.backdrop__scene {
+	.page-backdrop__scene {
 		position: absolute;
 		top: 0;
 		left: 50%;
@@ -283,11 +290,11 @@ const shape = (r: Ribbon) => `${edge(r)}${segments(faintPoints(r).reverse())} Z`
 	 * the ribbon's colours, with no bloom, neon blur or white core. The ribbon then fades from
 	 * high contrast to low both across its width (the shade) and along its length (the mask).
 	 */
-	:global(:root[data-theme="light"]) .backdrop__glow,
-	:global(:root[data-theme="light"]) .backdrop__inner {
+	:root[data-theme="light"] .page-backdrop__glow,
+	:root[data-theme="light"] .page-backdrop__inner {
 		display: none;
 	}
-	:global(:root[data-theme="light"]) .backdrop__edge {
+	:root[data-theme="light"] .page-backdrop__edge {
 		filter: none;
 	}
 	/*
@@ -296,24 +303,24 @@ const shape = (r: Ribbon) => `${edge(r)}${segments(faintPoints(r).reverse())} Z`
 	 * an overlap never darkens. The backdrop is its own stacking context, so they blend with
 	 * each other, not with the page.
 	 */
-	:global(:root[data-theme="light"]) .backdrop__ribbon {
+	:root[data-theme="light"] .page-backdrop__ribbon {
 		opacity: 1;
 		mix-blend-mode: lighten;
 		mask: var(--fade);
 	}
-	:global(:root[data-theme="light"]) .backdrop__body {
+	:root[data-theme="light"] .page-backdrop__body {
 		fill-opacity: 0.2;
 	}
-	.backdrop__shade {
+	.page-backdrop__shade {
 		display: none;
 	}
-	:global(:root[data-theme="light"]) .backdrop__shade {
+	:root[data-theme="light"] .page-backdrop__shade {
 		display: inline;
 	}
 
 	/* Smaller ribbons on phones; the taller box keeps the scaled scene full height. */
 	@media (max-width: 900px) {
-		.backdrop__scene {
+		.page-backdrop__scene {
 			height: calc(100% / 0.5);
 			scale: 0.5;
 		}
