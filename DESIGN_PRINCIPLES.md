@@ -43,6 +43,8 @@ Axiom code is copied into your app. You should be able to read it, understand it
 
 Avoid abstractions that make the code harder to modify than to rewrite. Axiom should never become a black box.
 
+Because it is app code, the React Compiler compiles it whenever the app turns the compiler on. Axiom code is written so the compiler can optimize it, and never relies on it: shared values go through `.get()` / `.set()`, refs are not read during render, and the existing `useCallback` / `useMemo` stay, so an app without the compiler runs it just as well.
+
 ## 5. Progressive adoption
 
 Take one piece or fifty. Using a single component must not require the rest of the system, a specific theme or a specific styling tool beyond what that piece needs.
