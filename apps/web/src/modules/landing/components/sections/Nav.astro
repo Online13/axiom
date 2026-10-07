@@ -29,12 +29,28 @@ const links = [
 	</div>
 </header>
 
+<script>
+	const nav = document.querySelector<HTMLElement>('.nav');
+	if (nav) {
+		const update = () => nav.toggleAttribute('data-scrolled', window.scrollY > 0);
+		update();
+		window.addEventListener('scroll', update, { passive: true });
+	}
+</script>
+
 <style>
 	.nav {
 		position: sticky;
 		top: 0;
 		z-index: 50;
 		height: var(--nav-h);
+		background: transparent;
+		transition:
+			background-color 0.3s ease,
+			backdrop-filter 0.3s ease;
+	}
+
+	.nav[data-scrolled] {
 		background: color-mix(in srgb, var(--bg) 80%, transparent);
 		backdrop-filter: blur(12px);
 	}
