@@ -1,7 +1,7 @@
 // Runs the real CLI, as a user would, against the real registry. No terminal is attached, so the
 // CLI never prompts: every answer comes from a flag, and what it can't decide makes it fail.
 import { describe, expect, test } from "bun:test";
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, extname, join, relative, resolve } from "node:path";
 
 import { readRegistry } from "../src/registry.ts";
@@ -194,6 +194,52 @@ describe("add", () => {
 			expect(unresolvedImports(cwd)).toEqual([]);
 		});
 	}
+});
+
+describe("fetch", () => {
+	test("restores deleted files and keeps edited ones", () => {
+		const cwd = tempProject();
+		init(cwd);
+		axiom(cwd, "add", "button", "--icons", "expo-symbols");
+		const items = readJson(cwd, "axiom.json").items;
+		const deleted = join(cwd, "src/components/ui/button.tsx");
+		const edited = join(cwd, "src/components/ui/text.tsx");
+		rmSync(deleted);
+		writeFileSync(edited, "// mine\n");
+
+		const { code, output } = axiom(cwd, "fetch");
+		expect(code).toBe(0);
+		expect(existsSync(deleted)).toBe(true);
+		expect(readFileSync(edited, "utf8")).toBe("// mine\n");
+		expect(output).toMatch(/1 written/);
+		expect(readJson(cwd, "axiom.json").items).toEqual(items);
+	});
+
+	test("sets up a project with the same items as another one", () => {
+		const source = tempProject();
+		init(source);
+		axiom(source, "add", "button", "--icons", "expo-symbols");
+
+		const target = tempProject({ "axiom.json": readJson(source, "axiom.json") });
+		const { code } = axiom(target, "fetch");
+		expect(code).toBe(0);
+		const list = (cwd: string) =>
+			files(join(cwd, "src")).map((file) => relative(cwd, file)).sort();
+		expect(list(target)).toEqual(list(source));
+		expect(unresolvedImports(target)).toEqual([]);
+	});
+
+	test("fails without axiom.json", () => {
+		const { code, output } = axiom(tempProject(), "fetch");
+		expect(code).toBe(1);
+		expect(output).toContain("No axiom.json");
+	});
+
+	test("--help prints its usage", () => {
+		const { code, output } = axiom(tempDir(), "fetch", "--help");
+		expect(code).toBe(0);
+		expect(output).toContain("Usage: axiom fetch");
+	});
 });
 
 describe("add --standalone", () => {

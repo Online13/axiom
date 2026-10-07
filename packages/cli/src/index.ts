@@ -66,6 +66,7 @@ Commands:
   init            Set up a project for Axiom: styling, foundations, core
                   primitives and axiom.json
   add [items...]  Copy items and their internal dependencies into the project
+  fetch           Copy every item listed in axiom.json, keeping existing files
 
 Run "axiom <command> --help" for the options of a command.`;
 
@@ -132,6 +133,23 @@ Options:
                      dependencies too: use it on a project that mirrors the registry
   --cwd <path>       Project root (default: current folder)`;
 
+const FETCH_USAGE = `Usage: axiom fetch --registry <path> [--icons <source>] [--navigation <library>] [--install | --no-install] [--cwd <path>]
+
+Copies every item listed in "items" in axiom.json, with the same steps as add:
+the variant for its styling, internal dependencies, missing npm packages.
+Use it to set up a project with the same items as another one, or to restore
+deleted files. Files already in the project are kept as they are: to update an
+item, run add again.
+
+Options:
+  --registry <path>  Registry folder (the one holding registry.json)
+  --icons <source>   Icon source, when axiom.json has none: expo-symbols or custom
+  --navigation <library>
+                     Navigation library, when axiom.json has none. Detected otherwise
+  --install          Install missing dependencies without asking
+  --no-install       Print the install command instead of asking
+  --cwd <path>       Project root (default: current folder)`;
+
 async function confirmOverwrite(path: string): Promise<OverwriteAnswer> {
 	return select<OverwriteAnswer>({
 		message: `${path} differs from the registry.`,
@@ -152,6 +170,8 @@ type RunOptions = {
 	icons?: string;
 	navigation?: string;
 	install: InstallMode;
+	/** Keep every existing file, even the requested ones (fetch). */
+	keepExisting?: boolean;
 	/** Packages the command needs on top of what the copied files declare, like the styling tool. */
 	extraDependencies?: string[];
 };
@@ -164,6 +184,7 @@ async function run({
 	icons: iconsFlag,
 	navigation: navigationFlag,
 	install,
+	keepExisting = false,
 	extraDependencies = [],
 }: RunOptions) {
 	const registry = readRegistry(registryRoot);
@@ -195,7 +216,8 @@ async function run({
 
 	// Without a terminal, there is nobody to ask: differing files are kept.
 	const result = await copyItems(items, config, registryRoot, cwd, {
-		requested: new Set(requested),
+		// Nothing requested: every existing file is kept as a dependency would be.
+		requested: new Set(keepExisting ? [] : requested),
 		overwrite,
 		confirm: interactive ? confirmOverwrite : undefined,
 		// Read when the file is reached: tokens files copied earlier in this run are on disk by then.
@@ -472,9 +494,15 @@ async function main() {
 
 	const [command, ...names] = positionals;
 	const usage =
-		command === "init" ? INIT_USAGE : command === "add" ? ADD_USAGE : USAGE;
+		command === "init"
+			? INIT_USAGE
+			: command === "add"
+				? ADD_USAGE
+				: command === "fetch"
+					? FETCH_USAGE
+					: USAGE;
 
-	if (values.help || (command !== "add" && command !== "init")) {
+	if (values.help || !["add", "init", "fetch"].includes(command ?? "")) {
 		console.log(usage);
 		process.exit(values.help ? 0 : 1);
 	}
@@ -512,6 +540,23 @@ async function main() {
 		});
 		outro(
 			`${result.written.length} written, ${result.unchanged.length} unchanged. Add a component with ${accent("axiom add button")}.`,
+		);
+		return;
+	}
+
+	if (command === "fetch") {
+		const result = await run({
+			names: [],
+			registryRoot,
+			cwd,
+			overwrite: "ask",
+			icons: values.icons,
+			navigation: values.navigation,
+			install,
+			keepExisting: true,
+		});
+		outro(
+			`${result.written.length} written, ${result.kept.length + result.unchanged.length} already in the project.`,
 		);
 		return;
 	}

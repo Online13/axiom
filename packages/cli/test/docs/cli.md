@@ -47,6 +47,21 @@ A typo like `add buton`, or running `add` before `init`, must end with a message
 **Every component in the registry, copied together, for each styling.**
 This is the widest test we have. It adds every item of the registry in one go, once per styling tool, and checks that every import resolves. When someone adds a new component to the registry with a wrong import, or an import to a file that isn't declared, this test catches it, whichever component it is. When a new component arrives, this test covers it without anyone writing a new test.
 
+## `axiom fetch`
+
+`fetch` copies what `axiom.json` lists without updating anything. It writes only the files that are missing.
+
+**It restores deleted files and keeps edited ones.**
+We delete one copied file and edit another, then run `fetch`. The deleted file must come back, the edited one must keep the user's version, and `axiom.json` must not change. Unlike `add`, `fetch` doesn't ask about the edited file. It never overwrites.
+
+**It sets up an app with the same components as another one.**
+We copy one app's `axiom.json` into a second, empty app and run `fetch`. The second app must end up with exactly the same files as the first, and every import must resolve. That's how a team shares a setup.
+
+**It fails clearly without `axiom.json`.**
+There's nothing to fetch, so the command must say so.
+
+**`--help` prints its own usage.**
+
 ## `axiom add --standalone`
 
 Some apps already have their own design system and just want one Axiom component, without our theme. `--standalone` writes each component as a single file that depends on nothing else from Axiom.
