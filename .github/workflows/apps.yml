@@ -42,6 +42,11 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
+      # Registry items are gitignored in the demos: copy the ones axiom.json lists, as a fresh clone would.
+      - name: Fetch registry items
+        working-directory: ${{ matrix.app }}
+        run: bun run axiom fetch --no-install
+
       - name: Typecheck
         working-directory: ${{ matrix.app }}
         run: bunx tsc --noEmit
