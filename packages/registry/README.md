@@ -43,6 +43,10 @@ Compositions and blocks are fixed assemblies and don't follow this rule.
 
 A component with colors has a `<item>-tokens.ts` exporting `<item>Tokens(colors, tokens)` (camelCase), declared in `tokens` and in `files`. It stays next to the component here, but `axiom add` copies it to the project's `theme/components/<item>.ts`: the theme is its only reader. Don't add it to `foundations/theme/components/index.ts`: that file is a template, and `axiom add` registers tokens between its markers in the project. The typecheck uses `.generated/components/`, the template with every item's tokens registered.
 
+### The tailwind variant
+
+A `tailwind/` file reads colors and token values through `useTheme()` and passes them in `style`, like `stylesheet`. `className` only carries layout that doesn't depend on the theme, on React Native's core components, and never a rem-based utility: a rem is 14px in NativeWind and 16px in Uniwind. The root joins its own classes with the caller's: `cx("flex-row items-center", className)`, `cx` coming from `@/theme`. See `atoms/badge/tailwind/badge.tsx`.
+
 ### Icon sources
 
 The icon registry depends on where the project's icons come from (`icons` in axiom.json). `iconSources` lists the files and dependencies of each source; `atoms/icon/sources/<source>/icons.tsx` are the templates. Items that render an icon themselves declare its name in `requiredIcons`, and `add` lists the ones missing from the project's registry.
@@ -65,7 +69,7 @@ A file the project fills once copied, like the icon registry `icons.tsx`, is dec
 
 ### Standalone form
 
-`axiom add <item> --standalone` derives a single theme-free file from the sources here: nothing to write per item. It relies on the conventions above: the theme is read through `useTheme()` (or Unistyles' `theme`), tokens files export `<item>Tokens` with a named return type, and files of other items are imported through aliases.
+`axiom add <item> --standalone` derives a single theme-free file from the sources here: nothing to write per item. It relies on the conventions above: the theme is read through `useTheme()` (or Unistyles' `theme`), anything else imported from `@/theme` (like `cx`) is declared in a theme file that imports only npm packages, tokens files export `<item>Tokens` with a named return type, and files of other items are imported through aliases.
 
 An item that can't work on its own, like `portal` (it needs a host mounted by the app), declares `"standalone": false`. The CLI refuses it and every item that depends on it.
 
@@ -78,7 +82,7 @@ bun run typecheck
 Aliases don't resolve in this folder on their own, since each file lands somewhere else once copied. `scripts/tsconfig.ts` reads `registry.json` and maps every alias import to its registry file, the same way the CLI maps it to the project:
 
 - `tsconfig.json`: the `stylesheet` variant. It's the file your editor reads, so imports like `@/components/core/tappable` resolve while you write code here;
-- `tsconfig.<variant>.json`: the other variants, once they have files;
+- `tsconfig.<variant>.json`: the other variants. The tailwind one includes `foundations/theme/tailwind/tailwind-env.d.ts`, which gives React Native's props the `className` NativeWind and Uniwind add;
 - `tsconfig.base.json`: the shared options;
 - `scripts/tsconfig.json`: the Node scripts;
 - `.generated/standalone/<variant>/tsconfig.json`: the standalone form of every item, written by `scripts/standalone.ts`, each file compiled with nothing but its npm imports.
