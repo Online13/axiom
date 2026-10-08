@@ -191,16 +191,21 @@ const blocks = ["Settings", "Profile", "Checkout", "Paywall", "Login"];
 	/* Each layer grows wider as it builds on the previous one. */
 	.system__block {
 		height: 3.75rem;
-		width: calc(40% + var(--i) * 20%);
+		width: calc(40% + var(--i) * 20% + var(--extra, 0px));
 		display: flex;
 		align-items: center;
 		gap: 1rem;
 		padding: 0 1rem;
 		overflow: hidden;
 		border: 1px solid var(--line);
-		border-radius: 10px;
+		border-radius: 0;
 		font-size: 0.8rem;
 		white-space: nowrap;
+	}
+
+	/* Foundations needs a little more room for its content. */
+	.system__layer:first-child {
+		--extra: 20px;
 	}
 
 	.system__block svg {
