@@ -12,6 +12,7 @@
 	},
 	"devDependencies": {
 		"@react-navigation/native": "^7.4.1",
+		"nativewind": "^4.2.7",
 		"react-native-unistyles": "^3.3.0",
 		"typescript": "~6.0.3"
 	}
