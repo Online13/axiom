@@ -139,6 +139,19 @@ const stages = [
 	const figure = document.querySelector<HTMLElement>('.composition');
 	const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+	// Glyphs scale uniformly, so their strokes stay in user units (non-scaling-stroke would make
+	// Chrome measure the pathLength dashes on screen and cut scaled shapes short). Keep them ~1px.
+	if (figure && 'ResizeObserver' in window) {
+		const strokes = new ResizeObserver((entries) => {
+			for (const { target, contentRect } of entries) {
+				const svg = target as SVGSVGElement;
+				if (!contentRect.width) continue;
+				svg.style.setProperty('--stroke', String(svg.viewBox.baseVal.width / contentRect.width));
+			}
+		});
+		figure.querySelectorAll<SVGSVGElement>('.composition__glyph svg').forEach((svg) => strokes.observe(svg));
+	}
+
 	if (figure && !reduced && 'IntersectionObserver' in window) {
 		figure.dataset.state = 'idle';
 		const observer = new IntersectionObserver(
@@ -224,6 +237,11 @@ const stages = [
 		stroke-linejoin: round;
 		stroke-dasharray: 1;
 		stroke-dashoffset: 0;
+	}
+
+	.composition__glyph :is(rect, circle, line, path) {
+		stroke-width: var(--stroke, 1);
+		vector-effect: none;
 	}
 
 	.composition__glyph .is-fill {
