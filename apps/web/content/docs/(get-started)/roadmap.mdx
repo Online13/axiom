@@ -5,6 +5,16 @@ description: "What ships first, and what comes after."
 
 <PhaseTimeline />
 
+<VariantPanel group="roadmap" value="phase-0">
+
+## Phase 0: specification
+
+Done. The whole system exists on paper first — [foundations](/docs/foundations), [core](/docs/core), [hooks](/docs/hooks), the [component catalog](/docs/components), the [behaviors](/docs/behaviors) and the [patterns](/docs/patterns). Nothing gets built twice because the API was decided while writing it down.
+
+</VariantPanel>
+
+<VariantPanel group="roadmap" value="phase-1" active>
+
 ## Where we are
 
 The specification is done: every foundation, component, behavior and pattern is written down, with its API, its states and its tokens. Phase 1 turns that into code.
@@ -12,10 +22,6 @@ The specification is done: every foundation, component, behavior and pattern is 
 Every primitive of this phase now runs in code, along with tokens, theme and the six core pieces: Title and Text, the 34 atoms, the three molecules, Passcode and the five templates. All 76 entries with styling variants ship in both `stylesheet` and `unistyles`. The first 30 compositions and the first block are in, and both demo apps show them. The theme builder is public, `add --standalone` writes any entry as one theme-free file, and the CLI has `add`, `init` and `fetch`. The CI typechecks every styling variant, checks that they expose the same props, lints and bundles the apps. What is left of the phase is the Tailwind variants.
 
 <PhaseChecklist />
-
-## Phase 0: specification
-
-Done. The whole system exists on paper first — [foundations](/docs/foundations), [core](/docs/core), [hooks](/docs/hooks), the [component catalog](/docs/components), the [behaviors](/docs/behaviors) and the [patterns](/docs/patterns). Nothing gets built twice because the API was decided while writing it down.
 
 ## Phase 1: the foundation
 
@@ -64,9 +70,17 @@ Two core entries were added along the way. OverlayStack lets BottomSheet, Dialog
 - Foundations screen <StateTag state="shipped" /> — colors, typography, spacing, radius, icons, touch targets, states.
 - CI <StateTag state="shipped" /> — the CLI is typechecked and tested; the registry is typechecked per styling variant, standalone forms included, and each variant must expose the same exports, props and parts as `stylesheet`; ESLint runs over the registry, the CLI and the apps; each Expo app is typechecked and bundled for Android and iOS. Another workflow streams an iOS simulator preview.
 
+</VariantPanel>
+
+<VariantPanel group="roadmap" value="phase-2">
+
 ## Phase 2: blocks
 
 Complete sections of an app, built from primitives and compositions, once the system is stable. [Settings section](/docs/blocks/settings-section) comes first, in phase 1; then [authentication](/docs/blocks/authentication), [onboarding](/docs/blocks/onboarding), [monetization](/docs/blocks/monetization), [profile](/docs/blocks/profile) and [commerce](/docs/blocks/commerce).
+
+</VariantPanel>
+
+<VariantPanel group="roadmap" value="later">
 
 ## Later
 
@@ -74,3 +88,5 @@ Complete sections of an app, built from primitives and compositions, once the sy
 - [Patterns](/docs/patterns): selection mode, search experience, async content state…
 - More [hooks](/docs/hooks): hide-on-scroll, collapsible header, keyboard-aware behavior…
 - CI on Android and iOS devices, screenshots, visual tests (including parity between styling variants), accessibility checks.
+
+</VariantPanel>
