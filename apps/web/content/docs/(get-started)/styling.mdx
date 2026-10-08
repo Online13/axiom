@@ -13,11 +13,11 @@ Axiom doesn't come with its own styling syntax. Each component exists in several
 | `unistyles`  | react-native-unistyles    | `react-native-unistyles`  |
 | `tailwind`   | NativeWind or Uniwind     | `nativewind` or `uniwind` |
 
-NativeWind and Uniwind share the `tailwind` variant. Component classes are identical; only the setup differs (config, Babel or Metro plugin, supported Tailwind versions), and `init` handles it.
+NativeWind and Uniwind share the `tailwind` variant. Component classes are identical; only the setup differs (config, Babel or Metro plugin, supported Tailwind versions). `init` installs the tool's package; set it up following the NativeWind or Uniwind guide.
 
 <Callout title="Rollout">
-	`stylesheet` ships first for every component. `unistyles` follows, then
-	`tailwind` once the behavior / style split is proven on the first two.
+	All three variants ship for every component, compositions and blocks
+	included.
 </Callout>
 
 ## Choosing a variant
@@ -37,7 +37,7 @@ Behavior (shared)              Style (per variant)
 ─────────────────              ───────────────────
 core/    Tappable, Overlay…    stylesheet/  StyleSheet.create + useTheme
 hooks/   useSwitch, useSlider… unistyles/   StyleSheet.create((theme) => …)
-                               tailwind/    className + variants
+                               tailwind/    useTheme in style + className
 ```
 
 - Non-trivial logic lives in `core/`, `hooks/` or a hook next to the component.
@@ -84,16 +84,17 @@ StyleSheet.configure({
 });
 ```
 
-```css tab="tailwind"
-/* Tokens exposed as CSS variables, then referenced in the Tailwind config. */
-:root {
-	--color-background: hsla(0, 0%, 100%, 1);
-	--color-content: hsla(0, 0%, 4%, 1);
+```tsx tab="tailwind"
+// The same hook as `stylesheet`: values go in `style`, `className` keeps theme-free layout.
+import { useColorScheme } from "react-native";
+
+export function useTheme() {
+	return useColorScheme() === "dark" ? dark : light;
 }
 
-.dark {
-	--color-background: hsla(0, 0%, 4%, 1);
-	--color-content: hsla(0, 0%, 98%, 1);
+// Joins class names, skipping falsy ones.
+export function cx(...classes: (string | false | null | undefined)[]) {
+	return classes.filter(Boolean).join(" ");
 }
 ```
 
@@ -103,12 +104,19 @@ See [Foundations](/docs/foundations) for the contracts.
 
 The variants don't only differ in syntax:
 
-|                              | `stylesheet`                 | `unistyles`       | `tailwind`                             |
-| ---------------------------- | ---------------------------- | ----------------- | -------------------------------------- |
-| Theme access                 | `useTheme()`                 | built in          | variables / classes                    |
-| Variants (`size`, `variant`) | style objects picked by hand | native `variants` | `tailwind-variants` or `cva`           |
-| Dark mode                    | `useColorScheme`             | adaptive themes   | `dark:` prefix                         |
-| Animated styles (Reanimated) | animated `style`             | animated `style`  | animated `style` alongside `className` |
+|                              | `stylesheet`                 | `unistyles`        | `tailwind`                                  |
+| ---------------------------- | ---------------------------- | ------------------ | ------------------------------------------- |
+| Theme access                 | `useTheme()`                 | built in           | `useTheme()`, read in `style`               |
+| Variants (`size`, `variant`) | style objects picked by hand | native `variants`  | values picked by hand in `style`            |
+| Dark mode                    | `useColorScheme`             | adaptive themes    | `useColorScheme`, through `useTheme()`      |
+| Theme-free layout            | `StyleSheet.create`          | `StyleSheet.create` | `className`                                 |
+| Animated styles (Reanimated) | animated `style`             | animated `style`   | animated `style` (animated views take no `className`) |
+
+### Why `tailwind` keeps values in `style`
+
+- **No rem-based utilities.** A rem is 14px in NativeWind and 16px in Uniwind, so `p-4` would not give the same size in both. Spacing, radius and type sizes come from the tokens.
+- **Colors come from the component tokens**, the same ones the other variants read. There is one source, no colors to copy into a Tailwind config, and the classes stay identical in NativeWind and Uniwind.
+- **Your `className` is added to the component's own.** The root writes `cx("its classes", className)`. Two utilities that set the same property don't override each other by order, so to replace one of the component's values, pass `style`: it always wins.
 
 ## Same contract everywhere
 

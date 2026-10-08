@@ -19,7 +19,7 @@ Done. The whole system exists on paper first — [foundations](/docs/foundations
 
 The specification is done: every foundation, component, behavior and pattern is written down, with its API, its states and its tokens. Phase 1 turns that into code.
 
-Every primitive of this phase now runs in code, along with tokens, theme and the six core pieces: Title and Text, the 34 atoms, the three molecules, Passcode and the five templates. All 76 entries with styling variants ship in both `stylesheet` and `unistyles`. The first 30 compositions and the first block are in, and both demo apps show them. The theme builder is public, `add --standalone` writes any entry as one theme-free file, and the CLI has `add`, `init` and `fetch`. The CI typechecks every styling variant, checks that they expose the same props, lints and bundles the apps. What is left of the phase is the Tailwind variants.
+Every primitive of this phase now runs in code, along with tokens, theme and the six core pieces: Title and Text, the 34 atoms, the three molecules, Passcode and the five templates. All 76 entries with styling variants ship in `stylesheet`, `unistyles` and `tailwind`. The first 30 compositions and the first block are in, and the four demo apps show them. The theme builder is public, `add --standalone` writes any entry as one theme-free file, and the CLI has `add`, `init` and `fetch`. The CI typechecks every styling variant, checks that they expose the same props, lints and bundles the apps.
 
 <PhaseChecklist />
 
@@ -29,17 +29,17 @@ Every primitive of this phase now runs in code, along with tokens, theme and the
 
 1. `stylesheet` for every item in this phase, with the behavior / style split in place. Shipped.
 2. `unistyles` for all 76 entries with styling variants, compositions and block included, with matching APIs and a demo app. Shipped.
-3. `tailwind` (NativeWind / Uniwind), once the split is proven on the first two.
+3. `tailwind` (NativeWind / Uniwind) for the same 76 entries, with matching APIs and a demo app per tool. Colors and tokens come through `useTheme()` in `style`, and `className` only carries theme-free layout, so the classes are the same in both tools. Shipped.
 
 ### Standalone mode
 
-Shipped for `stylesheet` and `unistyles`. By default a component arrives with everything it stands on: ask for Tab and you also get the theme, the tokens and the headless core it imports. That is the right default for an app built on Axiom, and the wrong one for an app that already has its own design system and wants a single component out of the catalog.
+Shipped for all three variants. By default a component arrives with everything it stands on: ask for Tab and you also get the theme, the tokens and the headless core it imports. That is the right default for an app built on Axiom, and the wrong one for an app that already has its own design system and wants a single component out of the catalog.
 
 `axiom add tab --standalone` breaks that chain. It writes one self-contained file: token values resolved inline, no `useTheme`, no import outside React, React Native and the npm packages the component uses. Nothing else is added to the project. See [the CLI](/docs/cli#standalone).
 
 The trade is explicit. A standalone component no longer follows a theme, so light / dark and any restyling are the user's job, in a file that is already theirs to edit. What Axiom still guarantees is the behavior: the touch targets, the gestures, the states, the safe areas.
 
-The theme-free form isn't written by hand. The CLI derives it from the registry: it inlines the items the component depends on, replaces each read of the theme with the light theme's values, and keeps the registry's types for the token groups and component tokens. The registry typechecks the standalone form of every entry in both variants, so a new entry gets one for free. Entries that render through a portal (Dialog, Menu, Bottom Sheet, Toast, Snackbar) are refused for now: a portal needs a host at the root of the app.
+The theme-free form isn't written by hand. The CLI derives it from the registry: it inlines the items the component depends on, replaces each read of the theme with the light theme's values, and keeps the registry's types for the token groups and component tokens. NativeWind and Uniwind get the same file. The registry typechecks the standalone form of every entry in every variant, so a new entry gets one for free. Entries that render through a portal (Dialog, Menu, Bottom Sheet, Toast, Snackbar) are refused for now: a portal needs a host at the root of the app.
 
 ### Components
 
@@ -64,8 +64,8 @@ Two core entries were added along the way. OverlayStack lets BottomSheet, Dialog
 
 - `registry.json` <StateTag state="shipped" /> — 88 entries, compositions and block included.
 - CLI <StateTag state="shipped" /> — `add`, `init` and `fetch` are shipped. `add` resolves internal dependencies, icon source and navigation, and has a `--watch` mode; `init` picks the styling, resolves the aliases against `tsconfig.json`, copies the foundations and the headless core, installs what they need and writes `axiom.json`. `fetch` copies every item listed in `axiom.json` and keeps the files already there.
-- Standalone mode <StateTag state="shipped" /> — `add --standalone` for 76 entries in both variants, typechecked on their own. Portal-based entries come later.
-- Demo apps <StateTag state="progress" /> — done for the `stylesheet` and `unistyles` variants: one screen per primitive, in groups from Foundations to Templates, then the compositions and the block, and a light / dark switch. The NativeWind and Uniwind apps are scaffolded and fill in with the `tailwind` variant.
+- Standalone mode <StateTag state="shipped" /> — `add --standalone` for 76 entries in all three variants, typechecked on their own. Portal-based entries come later.
+- Demo apps <StateTag state="shipped" /> — one per styling tool (StyleSheet, Unistyles, NativeWind, Uniwind): one screen per primitive, in groups from Foundations to Templates, then the compositions and the block, and a light / dark switch.
 - Theme builder <StateTag state="shipped" /> — public at `/theme-builder`: role overrides, presets, app and component previews, a design-system view, a canvas toolbar with slide mode and a dark-mode toggle, Google Fonts, and an export an agent can apply.
 - Foundations screen <StateTag state="shipped" /> — colors, typography, spacing, radius, icons, touch targets, states.
 - CI <StateTag state="shipped" /> — the CLI is typechecked and tested; the registry is typechecked per styling variant, standalone forms included, and each variant must expose the same exports, props and parts as `stylesheet`; ESLint runs over the registry, the CLI and the apps; each Expo app is typechecked and bundled for Android and iOS. Another workflow streams an iOS simulator preview.

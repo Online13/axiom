@@ -143,7 +143,7 @@ For an app that already has its own design system and wants one component from t
 
 The component no longer follows a theme: light / dark and any restyling are yours to handle, in a file that is already yours. What Axiom still guarantees is the behavior: touch targets, gestures, states, safe areas, accessibility.
 
-The file goes where its layer's alias resolves in `tsconfig.json`: `@/components/ui/tab.tsx` for a primitive. Without an `axiom.json`, pass `--styling stylesheet` or `--styling unistyles`, or answer the prompt. A component that draws icons carries its own icon registry, the `icons` object in the file, filled from the source you pick; add your icons there.
+The file goes where its layer's alias resolves in `tsconfig.json`: `@/components/ui/tab.tsx` for a primitive. Without an `axiom.json`, pass `--styling` (`stylesheet`, `unistyles`, `nativewind` or `uniwind`), or answer the prompt. NativeWind and Uniwind get the same file, with `cx` inlined next to the components that join class names. A component that draws icons carries its own icon registry, the `icons` object in the file, filled from the source you pick; add your icons there.
 
 Components that render through a portal (Dialog, Menu, Bottom Sheet, Toast, Snackbar) aren't available standalone yet: a portal needs a host mounted at the root of the app.
 

@@ -314,13 +314,13 @@ const styles = StyleSheet.create((theme) => ({
 }));
 ```
 
-```css title="tailwind"
-/* Each token becomes a CSS variable, one set per scheme */
---button-solid-default-background: var(--primary-default);
-```
-
 ```tsx title="tailwind"
-<Pressable className="bg-button-solid-default-background active:bg-button-solid-pressed-background" />
+const theme = useTheme();
+
+<Pressable
+	className="flex-row items-center"
+	style={{ backgroundColor: theme.components.button.solid.default.background }}
+/>;
 ```
 
 ## Customizing

@@ -203,9 +203,9 @@ The names match the conventions of each styling tool:
 | ------------ | -------------------------------------------------------------------------------- |
 | `stylesheet` | `light` / `dark` objects picked by a `useTheme()` hook based on `useColorScheme` |
 | `unistyles`  | Registered as adaptive themes                                                    |
-| `tailwind`   | Mapped to the `dark:` prefix                                                     |
+| `tailwind`   | Same as `stylesheet`: `useTheme()` follows the system scheme, values go in `style` |
 
-The `stylesheet` variant follows the system color scheme without a global provider. Add a provider only if you want to force a theme manually.
+The `stylesheet` and `tailwind` variants follow the system color scheme without a global provider. Add a provider only if you want to force a theme manually.
 
 ## Customizing
 
