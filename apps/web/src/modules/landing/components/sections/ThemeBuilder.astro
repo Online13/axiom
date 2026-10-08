@@ -105,9 +105,31 @@ const controlOf: Record<ControlShape, string> = { square: "3px", rounded: "6px",
 				</figcaption>
 
 				<div class="tbd__app" aria-hidden="true">
-					<div class="tbd__bar">
-						<span class="tbd__dots"><i></i><i></i><i></i></span>
-						<span class="tbd__url">/theme-builder</span>
+					<div class="tbd__tabs">
+						<span class="tbd__lights"><i></i><i></i><i></i></span>
+						<span class="tbd__tab">
+							<span class="tbd__favicon"><Logo variant="mark" /></span>
+							<span class="tbd__tab-title">Theme builder · Axiom</span>
+							<BuilderIcon name="close" />
+						</span>
+						<span class="tbd__newtab"><BuilderIcon name="plus" /></span>
+					</div>
+
+					<div class="tbd__toolbar">
+						<span class="tbd__nav">
+							<BuilderIcon name="back" />
+							<BuilderIcon name="forward" />
+							<BuilderIcon name="reload" />
+						</span>
+						<span class="tbd__url">
+							<BuilderIcon name="lock" />
+							<span><span class="tbd__host">axiom.dev</span>/theme-builder</span>
+							<BuilderIcon name="star" />
+						</span>
+						<span class="tbd__nav tbd__nav--end">
+							<span class="tbd__avatar"></span>
+							<BuilderIcon name="more" />
+						</span>
 					</div>
 
 					<div class="tbd__header">
@@ -348,7 +370,7 @@ const controlOf: Record<ControlShape, string> = { square: "3px", rounded: "6px",
 		gap: 0.35rem;
 		padding: 0.25rem;
 		border: 1px solid var(--line);
-		border-radius: 999px;
+		border-radius: 0;
 	}
 
 	.theme-builder__preset {
@@ -356,7 +378,7 @@ const controlOf: Record<ControlShape, string> = { square: "3px", rounded: "6px",
 		overflow: hidden;
 		padding: 0.45rem 1.1rem;
 		border: 0;
-		border-radius: 999px;
+		border-radius: 0;
 		background: none;
 		color: var(--muted);
 		font: inherit;
@@ -389,7 +411,7 @@ const controlOf: Record<ControlShape, string> = { square: "3px", rounded: "6px",
 		right: 1.1rem;
 		bottom: 0.2rem;
 		height: 2px;
-		border-radius: 1px;
+		border-radius: 0;
 		background: color-mix(in srgb, var(--bg) 45%, transparent);
 		transform: scaleX(0);
 		transform-origin: left;
@@ -418,9 +440,15 @@ const controlOf: Record<ControlShape, string> = { square: "3px", rounded: "6px",
 		align-self: stretch;
 		margin: 0;
 		overflow: hidden;
-		border: 1px solid var(--line);
+		border-radius: 12px;
 		background: var(--bg);
 		font-size: 0.8125rem;
+		/* A desktop window: a hairline edge, a contact shadow and a long soft drop. */
+		box-shadow:
+			0 0 0 1px color-mix(in srgb, var(--fg) 12%, transparent),
+			0 1px 2px rgb(0 0 0 / 0.12),
+			0 8px 16px -4px rgb(0 0 0 / 0.18),
+			0 32px 64px -16px rgb(0 0 0 / 0.4);
 	}
 
 	.tbd :global(.builder-icon) {
@@ -441,37 +469,173 @@ const controlOf: Record<ControlShape, string> = { square: "3px", rounded: "6px",
 	}
 
 	/* ---------- Browser window ---------- */
-	.tbd__bar {
+	/* The tab strip sits a shade below the toolbar; the active tab shares the
+	   toolbar's fill and flows into it, as in a real browser. */
+	.tbd {
+		--chrome-strip: color-mix(in srgb, var(--fg) 6%, var(--bg));
+		--chrome-bar: color-mix(in srgb, var(--fg) 2.5%, var(--bg));
+	}
+
+	.tbd__tabs {
+		display: flex;
+		align-items: flex-end;
+		gap: 0.25rem;
+		height: 2.75rem;
+		padding-inline: 1rem 0.75rem;
+		background: var(--chrome-strip);
+		box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 6%, transparent);
+	}
+
+	.tbd__lights {
+		display: flex;
+		align-self: center;
+		gap: 0.5rem;
+		margin-right: 1rem;
+	}
+
+	.tbd__lights i {
+		width: 0.75rem;
+		height: 0.75rem;
+		border-radius: 50%;
+		background: #ff5f57;
+		box-shadow: inset 0 0 0 0.5px rgb(0 0 0 / 0.25);
+	}
+
+	.tbd__lights i:nth-child(2) {
+		background: #febc2e;
+	}
+
+	.tbd__lights i:nth-child(3) {
+		background: #28c840;
+	}
+
+	.tbd__tab {
+		position: relative;
 		display: flex;
 		align-items: center;
-		gap: 1rem;
-		height: 2.25rem;
-		padding: 0 1rem;
-		border-bottom: 1px solid var(--line);
-		background: var(--surface);
+		gap: 0.5rem;
+		flex: 0 1 14rem;
+		min-width: 0;
+		height: 2.2rem;
+		padding-inline: 0.75rem 0.6rem;
+		border-radius: 8px 8px 0 0;
+		background: var(--chrome-bar);
+		color: var(--fg);
+		font-size: 0.72rem;
 	}
 
-	.tbd__dots {
+	/* The flared feet where the tab meets the toolbar. */
+	.tbd__tab::before,
+	.tbd__tab::after {
+		content: "";
+		position: absolute;
+		bottom: 0;
+		width: 8px;
+		height: 8px;
+	}
+
+	.tbd__tab::before {
+		left: -8px;
+		background: radial-gradient(circle at 0 0, transparent 8px, var(--chrome-bar) 8.5px);
+	}
+
+	.tbd__tab::after {
+		right: -8px;
+		background: radial-gradient(circle at 100% 0, transparent 8px, var(--chrome-bar) 8.5px);
+	}
+
+	.tbd__favicon {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 1rem;
+		height: 1rem;
+		border-radius: 4px;
+		background: var(--fg);
+		color: var(--bg);
+		font-size: 0.55rem;
+	}
+
+	.tbd__tab-title {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.tbd__tab :global(.builder-icon),
+	.tbd__newtab {
+		color: var(--muted);
+	}
+
+	.tbd__newtab {
+		display: grid;
+		place-items: center;
+		align-self: center;
+		width: 1.6rem;
+		height: 1.6rem;
+		margin-left: 0.5rem;
+		border-radius: 6px;
+	}
+
+	.tbd__toolbar {
 		display: flex;
-		gap: 0.4rem;
+		align-items: center;
+		gap: 0.75rem;
+		height: 2.6rem;
+		padding-inline: 0.75rem;
+		border-bottom: 1px solid var(--line);
+		background: var(--chrome-bar);
+		color: var(--muted);
 	}
 
-	.tbd__dots i {
-		width: 0.6rem;
-		height: 0.6rem;
-		border-radius: 50%;
-		background: var(--line);
+	.tbd__nav {
+		display: flex;
+		align-items: center;
+		gap: 0.9rem;
+		padding-inline: 0.25rem;
+		font-size: 1rem;
+	}
+
+	/* Nowhere to go forward to yet. */
+	.tbd__nav:not(.tbd__nav--end) > :nth-child(2) {
+		opacity: 0.4;
 	}
 
 	.tbd__url {
-		flex: 0 1 18rem;
-		margin-inline: auto;
-		padding: 0.2rem 0.75rem;
-		background: var(--bg);
-		color: var(--muted);
-		font-family: var(--font-mono);
-		font-size: 0.68rem;
-		text-align: center;
+		display: flex;
+		flex: 1;
+		align-items: center;
+		gap: 0.55rem;
+		min-width: 0;
+		height: 1.85rem;
+		padding-inline: 0.85rem 0.7rem;
+		border-radius: 999px;
+		background: var(--chrome-strip);
+		font-size: 0.74rem;
+		white-space: nowrap;
+	}
+
+	.tbd__url > span {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.tbd__host {
+		color: var(--fg);
+	}
+
+	.tbd__avatar {
+		width: 1.25rem;
+		height: 1.25rem;
+		border-radius: 50%;
+		background: linear-gradient(135deg, var(--p-accent), var(--p-highlight));
+		box-shadow:
+			0 0 0 1.5px var(--chrome-bar),
+			0 0 0 2.5px var(--line);
 	}
 
 	.tbd__muted {
@@ -646,8 +810,7 @@ const controlOf: Record<ControlShape, string> = { square: "3px", rounded: "6px",
 		--s-fg: var(--p-fg);
 		--s-muted: var(--p-muted);
 		--s-line: var(--p-line);
-
-		box-shadow: inset 0 0 0 1px #3a3a3a;
+		--phone-drop: 0 0 #0000;
 	}
 
 	.tbd__phone :global(.phone__screen) {
@@ -905,6 +1068,8 @@ const controlOf: Record<ControlShape, string> = { square: "3px", rounded: "6px",
 	}
 
 	@media (max-width: 520px) {
+		.tbd__newtab,
+		.tbd__nav--end,
 		.tbd__device + .tbd__device,
 		.tbd__overlay > :last-child {
 			display: none;
