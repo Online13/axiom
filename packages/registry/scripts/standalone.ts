@@ -61,6 +61,10 @@ for (const variant of VARIANTS) {
 				extends: "../../../tsconfig.base.json",
 				compilerOptions: { paths: {} },
 				include: ["*.ts", "*.tsx"],
+				// The `className` NativeWind and Uniwind add to React Native's props.
+				...(variant === "tailwind" && {
+					files: ["../../../foundations/theme/tailwind/tailwind-env.d.ts"],
+				}),
 			},
 			null,
 			2,

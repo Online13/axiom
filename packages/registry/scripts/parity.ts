@@ -23,6 +23,8 @@ const REFERENCE = "stylesheet";
 const ALLOWED = new Set([
 	// Unistyles reads the theme through its own hooks: there is no `useTheme` to re-export.
 	"foundations/theme/unistyles/index.ts: export useTheme",
+	// Tailwind components merge their own classes with the caller's `className`.
+	"foundations/theme/tailwind/index.ts: export cx",
 ]);
 
 const configOf = (variant: Variant) =>
@@ -104,7 +106,11 @@ for (const variant of VARIANTS) {
 			const expected = surface(reference, referenceFile);
 			const actual = surface(other, file);
 			const allowed = (line: string) =>
-				ALLOWED.has(`${relative(root, file)}: ${line}`);
+				ALLOWED.has(`${relative(root, file)}: ${line}`) ||
+				// NativeWind and Uniwind give React Native's props a `className` (and `cssInterop`,
+				// `placeholderClassName`…), so the props built on them have it too.
+				(variant === "tailwind" &&
+					/^\w+Props\.(\w*ClassName|className|cssInterop)\?$/.test(line));
 			const missing = [...expected].filter(
 				(line) => !actual.has(line) && !allowed(line),
 			);
