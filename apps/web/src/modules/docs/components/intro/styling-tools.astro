@@ -1,0 +1,83 @@
+---
+// "It works with my tool": the same Switch row, styled with StyleSheet, Unistyles, NativeWind and Uniwind.
+// Each column shows how its tool styles the track and the identical result; all four plug into one shared hook.
+// NativeWind and Uniwind are grouped as Tailwind-based: their classes are the same, only the setup differs.
+// Illustrations use the docs palette only, so they follow the light / dark theme.
+
+const tools = [
+	{ name: "StyleSheet", kind: "Built into React Native", code: ["StyleSheet.create({", "  track: { … }", "})", "style={styles.track}"] },
+	{ name: "Unistyles", kind: "react-native-unistyles", code: ["StyleSheet.create(", "  (theme) => ({ … })", ")", "style={styles.track}"] },
+	{ name: "NativeWind", kind: "Tailwind-based", code: ["", "className=", '  "bg-primary', '   rounded-full"'] },
+	{ name: "Uniwind", kind: "Tailwind-based", code: ["", "className=", '  "bg-primary', '   rounded-full"'] },
+];
+---
+
+<figure
+	class="not-prose st my-8 border border-fd-border bg-fd-background text-fd-foreground"
+	aria-label="The same Switch row, with the same props and the same look, styled with StyleSheet, Unistyles, NativeWind or Uniwind. NativeWind and Uniwind share the same Tailwind classes. Every variant uses the same shared behavior."
+>
+	<div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-fd-border px-4 py-3">
+		<span class="text-sm font-medium">One component, four styling tools</span>
+		<span class="text-xs text-fd-muted-foreground">Same props · same behavior · same look</span>
+	</div>
+
+	<div class="px-4 pt-4" aria-hidden="true">
+		<!-- NativeWind and Uniwind share the Tailwind classes. -->
+		<div class="hidden grid-cols-4 gap-3 sm:grid">
+			<span class="col-span-2" />
+			<span class="col-span-2 flex flex-col items-center gap-1">
+				<span class="text-[11px] font-medium uppercase tracking-wider text-fd-muted-foreground">Tailwind-based · same classes</span>
+				<span class="h-2 w-full border-x border-t border-fd-border" />
+			</span>
+		</div>
+
+		<div class="mt-1 grid grid-cols-2 gap-3 sm:grid-cols-4">
+			{
+				tools.map((tool) => (
+					<div class="flex flex-col">
+					<div class="flex flex-1 flex-col overflow-hidden border border-fd-border bg-fd-card text-fd-card-foreground">
+						<div class="flex flex-col gap-0.5 border-b border-fd-border px-3 py-2">
+							<span class="text-sm font-semibold leading-5">{tool.name}</span>
+							<span class="truncate text-[11px] text-fd-muted-foreground">{tool.kind}</span>
+						</div>
+
+						<div class="border-b border-fd-border bg-fd-muted/40 px-3 py-2 font-mono text-[10.5px] leading-[1.55] text-fd-muted-foreground">
+							{tool.code.map((line) => <span class="block min-h-[1.55em] whitespace-pre">{line}</span>)}
+						</div>
+
+						<!-- The rendered result is identical in every column. -->
+						<div class="st-stage flex flex-1 items-center justify-center px-3 py-5">
+							<span class="flex w-full max-w-[150px] items-center gap-2 rounded-md border border-fd-border bg-fd-background px-2.5 py-2">
+								<svg width="14" height="14" viewBox="0 0 20 20" class="shrink-0 text-fd-muted-foreground">
+									<path d="M10 3a4.5 4.5 0 00-4.5 4.5c0 4-1.5 5.5-1.5 5.5h12s-1.5-1.5-1.5-5.5A4.5 4.5 0 0010 3zM8.5 16a1.6 1.6 0 003 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+								</svg>
+								<span class="flex-1 truncate text-xs">Alerts</span>
+								<span class="flex h-4 w-7 shrink-0 items-center justify-end rounded-full bg-fd-primary px-0.5">
+									<span class="size-3 rounded-full bg-fd-primary-foreground" />
+								</span>
+							</span>
+						</div>
+					</div>
+					<span class="mx-auto h-4 w-px bg-fd-border" />
+					</div>
+				))
+			}
+		</div>
+	</div>
+
+	<!-- Every column plugs into the same behavior. -->
+	<div class="px-4 pb-4" aria-hidden="true">
+		<div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border border-fd-border bg-fd-muted/40 px-3 py-2.5">
+			<span class="font-mono text-xs">useSwitch()</span>
+			<span class="text-xs text-fd-muted-foreground">shared behavior: state, gestures, accessibility</span>
+		</div>
+	</div>
+</figure>
+
+<style>
+	.st-stage {
+		background-image: radial-gradient(color-mix(in oklab, var(--color-fd-muted-foreground) 14%, transparent) 1px, transparent 1px);
+		background-size: 8px 8px;
+		background-position: -1px -1px;
+	}
+</style>
