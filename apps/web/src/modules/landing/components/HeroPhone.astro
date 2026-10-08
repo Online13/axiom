@@ -116,51 +116,88 @@ const rows2: Row[] = [
 		<clipPath id="hp-screen">
 			<rect x="232" y="102" width="296" height="656" rx="42"></rect>
 		</clipPath>
-		<linearGradient id="hp-frame" x1="0" y1="0" x2="1" y2="1">
-			<stop offset="0" stop-color="#2e2e2e"></stop>
-			<stop offset="0.5" stop-color="#151515"></stop>
-			<stop offset="1" stop-color="#262626"></stop>
+		<!-- Brushed titanium band, brighter where it curves toward the light. -->
+		<linearGradient id="hp-frame" x1="0" y1="0" x2="1" y2="0">
+			<stop offset="0" stop-color="#6b6b6f"></stop>
+			<stop offset="0.025" stop-color="#2b2b2e"></stop>
+			<stop offset="0.12" stop-color="#44444a"></stop>
+			<stop offset="0.5" stop-color="#26262a"></stop>
+			<stop offset="0.88" stop-color="#3e3e44"></stop>
+			<stop offset="0.975" stop-color="#2b2b2e"></stop>
+			<stop offset="1" stop-color="#636367"></stop>
+		</linearGradient>
+		<linearGradient id="hp-sheen" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0" stop-color="#fff" stop-opacity="0.14"></stop>
+			<stop offset="0.08" stop-color="#fff" stop-opacity="0"></stop>
+			<stop offset="0.92" stop-color="#000" stop-opacity="0"></stop>
+			<stop offset="1" stop-color="#000" stop-opacity="0.3"></stop>
+		</linearGradient>
+		<linearGradient id="hp-key" x1="0" y1="0" x2="1" y2="0">
+			<stop offset="0" stop-color="#232326"></stop>
+			<stop offset="0.45" stop-color="#55555a"></stop>
+			<stop offset="1" stop-color="#2e2e32"></stop>
+		</linearGradient>
+		<radialGradient id="hp-lens">
+			<stop offset="0.38" stop-color="#1a2238"></stop>
+			<stop offset="0.55" stop-color="#0b0e17"></stop>
+			<stop offset="0.72" stop-color="#121212"></stop>
+			<stop offset="1" stop-color="#050505"></stop>
+		</radialGradient>
+		<linearGradient id="hp-glare" x1="0" y1="0" x2="1" y2="0.55">
+			<stop offset="0" stop-color="#fff" stop-opacity="0.1"></stop>
+			<stop offset="0.32" stop-color="#fff" stop-opacity="0.03"></stop>
+			<stop offset="0.322" stop-color="#fff" stop-opacity="0"></stop>
 		</linearGradient>
 	</defs>
 
 	<!-- Device -->
 	<g class="hero-phone__device" aria-hidden="true">
-		<rect x="216" y="210" width="4" height="34" rx="2" fill="#2a2a2a"></rect>
-		<rect x="216" y="262" width="4" height="56" rx="2" fill="#2a2a2a"></rect>
-		<rect x="216" y="328" width="4" height="56" rx="2" fill="#2a2a2a"></rect>
-		<rect x="540" y="280" width="4" height="86" rx="2" fill="#2a2a2a"></rect>
-		<rect
-			x="220"
-			y="90"
-			width="320"
-			height="680"
-			rx="54"
-			fill="url(#hp-frame)"
-			stroke="#3a3a3a"></rect>
+		<!-- Side keys: action, volume up, volume down, power. -->
+		<g fill="url(#hp-key)">
+			<rect x="216.5" y="202" width="4.5" height="31" rx="1.6"></rect>
+			<rect x="216.5" y="253" width="4.5" height="58" rx="1.6"></rect>
+			<rect x="216.5" y="323" width="4.5" height="58" rx="1.6"></rect>
+			<rect x="539" y="274" width="4.5" height="88" rx="1.6"></rect>
+		</g>
+		<rect x="219.5" y="89.5" width="321" height="681" rx="54.5" fill="none" stroke="#000" stroke-opacity="0.55"></rect>
+		<rect x="220" y="90" width="320" height="680" rx="54" fill="url(#hp-frame)"></rect>
+		<rect x="220" y="90" width="320" height="680" rx="54" fill="url(#hp-sheen)"></rect>
+		<rect x="220.5" y="90.5" width="319" height="679" rx="53.5" fill="none" stroke="#fff" stroke-opacity="0.22"></rect>
+		<!-- Antenna lines across the band. -->
+		<g fill="#000" fill-opacity="0.5">
+			<rect x="220" y="140" width="4" height="2.4"></rect>
+			<rect x="536" y="140" width="4" height="2.4"></rect>
+			<rect x="220" y="718" width="4" height="2.4"></rect>
+			<rect x="536" y="718" width="4" height="2.4"></rect>
+			<rect x="290" y="90" width="2.4" height="4"></rect>
+			<rect x="468" y="766" width="2.4" height="4"></rect>
+		</g>
+		<!-- Black glass bezel. -->
+		<rect x="224" y="94" width="312" height="672" rx="50" fill="#050506" stroke="#fff" stroke-opacity="0.07"></rect>
 
 		<g clip-path="url(#hp-screen)">
 			<rect x="232" y="102" width="296" height="656" fill="#f4f4f2"></rect>
 
 			<!-- Status bar -->
 			<text x="266" y="129" class="t t--status">9:41</text>
-			<rect x="332" y="112" width="96" height="28" rx="14" fill="#0a0a0a"
-			></rect>
+			<rect x="332" y="112" width="96" height="28" rx="14" fill="#000"></rect>
+			<circle cx="414" cy="126" r="6" fill="url(#hp-lens)"></circle>
+			<circle cx="412" cy="124" r="1.4" fill="#8caae6" fill-opacity="0.55"></circle>
+			<!-- Signal, Wi-Fi, battery. -->
 			<g fill="#111">
-				<rect x="462" y="125" width="3" height="4" rx="0.8"></rect>
-				<rect x="467" y="123" width="3" height="6" rx="0.8"></rect>
-				<rect x="472" y="121" width="3" height="8" rx="0.8"></rect>
+				<rect x="449" y="124.5" width="2.6" height="3.8" rx="0.8"></rect>
+				<rect x="453" y="122.5" width="2.6" height="5.8" rx="0.8"></rect>
+				<rect x="457" y="120.5" width="2.6" height="7.8" rx="0.8"></rect>
+				<rect x="461" y="118.5" width="2.6" height="9.8" rx="0.8"></rect>
+				<g transform="translate(467 118.3) scale(0.8)">
+					<path d="M8 0.6C5.1 0.6 2.5 1.7 0.6 3.6l1.4 1.4A8.4 8.4 0 0 1 8 2.6c2.3 0 4.4 0.9 6 2.4l1.4-1.4A10.4 10.4 0 0 0 8 0.6Z"></path>
+					<path d="M8 4.6c-1.8 0-3.4 0.7-4.6 1.8l1.4 1.4A4.5 4.5 0 0 1 8 6.6c1.2 0 2.3 0.5 3.2 1.2l1.4-1.4A6.5 6.5 0 0 0 8 4.6Z"></path>
+					<path d="M8 8.6c-0.7 0-1.3 0.3-1.8 0.7L8 11.2l1.8-1.9A2.6 2.6 0 0 0 8 8.6Z"></path>
+				</g>
+				<rect x="481.5" y="118.5" width="19" height="10" rx="3" fill="none" stroke="#111" stroke-opacity="0.38"></rect>
+				<rect x="483" y="120" width="13.5" height="7" rx="1.8"></rect>
+				<path d="M502 121.8c0.8 0.3 1.3 0.9 1.3 1.7s-0.5 1.4-1.3 1.7Z" fill-opacity="0.4"></path>
 			</g>
-			<rect
-				x="481"
-				y="120.5"
-				width="20"
-				height="9.5"
-				rx="2.6"
-				fill="none"
-				stroke="#111"
-				stroke-opacity="0.4"></rect>
-			<rect x="483" y="122.5" width="14" height="5.5" rx="1.4" fill="#111"
-			></rect>
 
 			<!-- AppBar -->
 			<path d="M258 151 L251 158 L258 165" class="ico" stroke-width="1.8"
@@ -313,6 +350,8 @@ const rows2: Row[] = [
 
 			<rect x="325" y="744" width="110" height="4" rx="2" fill="#111"></rect>
 		</g>
+		<!-- The glass catching the light. -->
+		<rect x="232" y="102" width="296" height="656" rx="42" fill="url(#hp-glare)"></rect>
 	</g>
 
 	<!-- Callouts -->
@@ -389,6 +428,10 @@ const rows2: Row[] = [
 		width: 100%;
 		height: 100%;
 		overflow: visible;
+	}
+
+	.hero-phone__device {
+		filter: drop-shadow(0 28px 32px rgb(0 0 0 / 0.32));
 	}
 
 	.t {

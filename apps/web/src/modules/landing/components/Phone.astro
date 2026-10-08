@@ -1,6 +1,7 @@
 ---
-// CSS device frame. Everything inside the screen is sized in `em`, and the
-// screen font-size follows the frame width, so content scales with the phone.
+// CSS device frame: a titanium band with side keys, a black glass bezel, then
+// the screen. Everything inside the screen is sized in `em`, and the screen
+// font-size follows the frame width, so content scales with the phone.
 interface Props {
 	class?: string;
 	dark?: boolean;
@@ -11,19 +12,40 @@ const { class: className, dark = false, label } = Astro.props;
 ---
 
 <div class:list={['phone', className, { 'phone--dark': dark }]} role={label ? 'img' : undefined} aria-label={label}>
-	<div class="phone__screen">
-		<div class="phone__status" aria-hidden="true">
-			<span>9:41</span>
-			<i class="phone__island"></i>
-			<span class="phone__icons">
-				<b></b><b></b><b></b>
-				<em></em>
-			</span>
+	<i class="phone__key phone__key--action" aria-hidden="true"></i>
+	<i class="phone__key phone__key--up" aria-hidden="true"></i>
+	<i class="phone__key phone__key--down" aria-hidden="true"></i>
+	<i class="phone__key phone__key--power" aria-hidden="true"></i>
+	<div class="phone__bezel">
+		<div class="phone__screen">
+			<div class="phone__status" aria-hidden="true">
+				<span class="phone__time">9:41</span>
+				<i class="phone__island"></i>
+				<span class="phone__icons">
+					<svg viewBox="0 0 18 12" class="phone__signal">
+						<rect x="0" y="7.5" width="3.2" height="4.5" rx="1" />
+						<rect x="4.9" y="5" width="3.2" height="7" rx="1" />
+						<rect x="9.8" y="2.5" width="3.2" height="9.5" rx="1" />
+						<rect x="14.7" y="0" width="3.2" height="12" rx="1" />
+					</svg>
+					<svg viewBox="0 0 16 12" class="phone__wifi">
+						<path d="M8 0.6C5.1 0.6 2.5 1.7 0.6 3.6l1.4 1.4A8.4 8.4 0 0 1 8 2.6c2.3 0 4.4 0.9 6 2.4l1.4-1.4A10.4 10.4 0 0 0 8 0.6Z" />
+						<path d="M8 4.6c-1.8 0-3.4 0.7-4.6 1.8l1.4 1.4A4.5 4.5 0 0 1 8 6.6c1.2 0 2.3 0.5 3.2 1.2l1.4-1.4A6.5 6.5 0 0 0 8 4.6Z" />
+						<path d="M8 8.6c-0.7 0-1.3 0.3-1.8 0.7L8 11.2l1.8-1.9A2.6 2.6 0 0 0 8 8.6Z" />
+					</svg>
+					<svg viewBox="0 0 27 12" class="phone__battery">
+						<rect x="0.5" y="0.5" width="23" height="11" rx="3.4" fill="none" stroke="currentColor" stroke-opacity="0.38" />
+						<rect x="2" y="2" width="16.5" height="8" rx="2" />
+						<path d="M25 4.2c0.9 0.3 1.5 1 1.5 1.8s-0.6 1.5-1.5 1.8Z" fill-opacity="0.4" />
+					</svg>
+				</span>
+			</div>
+			<div class="phone__content">
+				<slot />
+			</div>
+			<i class="phone__home" aria-hidden="true"></i>
 		</div>
-		<div class="phone__content">
-			<slot />
-		</div>
-		<i class="phone__home" aria-hidden="true"></i>
+		<i class="phone__glare" aria-hidden="true"></i>
 	</div>
 </div>
 
@@ -35,18 +57,81 @@ const { class: className, dark = false, label } = Astro.props;
 		--s-fg: #111111;
 		--s-muted: #8a8a8a;
 		--s-line: #ececea;
+		/* Sections that set the phone flat on a canvas override the drop shadow. */
+		--phone-drop:
+			0 2px 3px rgb(0 0 0 / 0.25),
+			0 24px 48px -18px rgb(0 0 0 / 0.55),
+			0 60px 110px -40px rgb(0 0 0 / 0.6);
 
 		container-type: inline-size;
 		position: relative;
 		height: 100%;
 		aspect-ratio: 9 / 19.5;
 		max-width: 100%;
-		padding: 3.6%;
-		border-radius: 13% / 6%;
-		background: linear-gradient(135deg, #2e2e2e, #151515 50%, #262626);
+		padding: 1.2%;
+		border-radius: 14% / 6.5%;
+		/* Brushed titanium: bright rims where the band curves toward the light. */
+		background:
+			linear-gradient(180deg, rgb(255 255 255 / 0.14), transparent 8% 92%, rgb(0 0 0 / 0.3)),
+			linear-gradient(90deg, #6b6b6f 0%, #2b2b2e 2.5%, #44444a 12%, #26262a 50%, #3e3e44 88%, #2b2b2e 97.5%, #636367 100%);
 		box-shadow:
-			inset 0 0 0 1px #3a3a3a,
-			0 40px 80px -30px rgb(0 0 0 / 0.8);
+			inset 0 0 0 1px rgb(255 255 255 / 0.22),
+			inset 0 0 0 2px rgb(0 0 0 / 0.55),
+			0 0 0 1px rgb(0 0 0 / 0.55),
+			var(--phone-drop);
+	}
+
+	/* Antenna lines cutting across the band, near the top and bottom corners. */
+	.phone::before,
+	.phone::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		pointer-events: none;
+		background:
+			linear-gradient(90deg, rgb(0 0 0 / 0.5) 1.3%, transparent 1.3% 98.7%, rgb(0 0 0 / 0.5) 98.7%) 0 7.5% / 100% 0.35% no-repeat,
+			linear-gradient(90deg, rgb(0 0 0 / 0.5) 1.3%, transparent 1.3% 98.7%, rgb(0 0 0 / 0.5) 98.7%) 0 92.5% / 100% 0.35% no-repeat;
+	}
+
+	.phone::after {
+		background:
+			linear-gradient(180deg, rgb(0 0 0 / 0.5) 0.6%, transparent 0.6% 99.4%, rgb(0 0 0 / 0.5) 99.4%) 22% 0 / 1.3% 100% no-repeat,
+			linear-gradient(180deg, rgb(0 0 0 / 0.5) 0.6%, transparent 0.6% 99.4%, rgb(0 0 0 / 0.5) 99.4%) 78% 0 / 1.3% 100% no-repeat;
+	}
+
+	.phone__key {
+		position: absolute;
+		width: 1.1cqw;
+		background: linear-gradient(90deg, #232326, #55555a 45%, #2e2e32);
+		box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.15), inset 0 -1px 0 rgb(0 0 0 / 0.5);
+	}
+
+	.phone__key--action,
+	.phone__key--up,
+	.phone__key--down {
+		right: calc(100% - 0.2cqw);
+		border-radius: 0.6cqw 0 0 0.6cqw;
+	}
+
+	.phone__key--power {
+		left: calc(100% - 0.2cqw);
+		border-radius: 0 0.6cqw 0.6cqw 0;
+		top: 27%;
+		height: 13%;
+	}
+
+	.phone__key--action { top: 16.5%; height: 4.6%; }
+	.phone__key--up { top: 24%; height: 8.6%; }
+	.phone__key--down { top: 34.4%; height: 8.6%; }
+
+	.phone__bezel {
+		position: relative;
+		height: 100%;
+		padding: 2.5%;
+		border-radius: 12.8% / 5.95%;
+		background: #050506;
+		box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07);
 	}
 
 	.phone--dark {
@@ -61,7 +146,7 @@ const { class: className, dark = false, label } = Astro.props;
 		position: relative;
 		height: 100%;
 		overflow: hidden;
-		border-radius: 10.5% / 4.9%;
+		border-radius: 11% / 5.1%;
 		background: var(--s-bg);
 		color: var(--s-fg);
 		font-family: var(--font-sans);
@@ -70,48 +155,83 @@ const { class: className, dark = false, label } = Astro.props;
 		display: flex;
 		flex-direction: column;
 		text-align: left;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	/* The glass catching the light, and the faint shadow where it meets the bezel. */
+	.phone__glare {
+		position: absolute;
+		inset: 2.5%;
+		border-radius: 11% / 5.1%;
+		pointer-events: none;
+		z-index: 6;
+		background: linear-gradient(118deg, rgb(255 255 255 / 0.1) 0%, rgb(255 255 255 / 0.03) 32%, transparent 32.2%);
+		box-shadow: inset 0 0 0.6cqw rgb(0 0 0 / 0.35);
 	}
 
 	.phone__status {
 		flex: none;
+		position: relative;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		height: 3.4em;
-		padding: 0 1.9em 0 2.2em;
+		padding: 0 1.7em 0 2.3em;
 		font-size: 0.85em;
+	}
+
+	.phone__time {
+		width: 4.2em;
+		text-align: center;
 		font-weight: 600;
+		font-size: 1.1em;
+		letter-spacing: -0.01em;
+		font-variant-numeric: tabular-nums;
 	}
 
 	.phone__island {
-		width: 7.4em;
-		height: 2.1em;
+		position: absolute;
+		left: 50%;
+		top: 0.7em;
+		width: 7.6em;
+		height: 2.2em;
 		border-radius: 999px;
-		background: #0a0a0a;
+		background: #000;
+		transform: translateX(-50%);
+		box-shadow: 0 0 0 0.06em rgb(255 255 255 / 0.04);
+	}
+
+	/* Front camera: a dark lens with a cool reflection. */
+	.phone__island::after {
+		content: '';
+		position: absolute;
+		right: 0.65em;
+		top: 50%;
+		width: 0.95em;
+		height: 0.95em;
+		border-radius: 50%;
+		transform: translateY(-50%);
+		background:
+			radial-gradient(circle at 34% 32%, rgb(140 170 230 / 0.55) 0 12%, transparent 22%),
+			radial-gradient(circle, #1a2238 0 38%, #0b0e17 55%, #121212 72%, #050505 100%);
 	}
 
 	.phone__icons {
 		display: flex;
-		align-items: flex-end;
-		gap: 0.18em;
+		align-items: center;
+		gap: 0.35em;
 	}
 
-	.phone__icons b {
-		width: 0.24em;
-		border-radius: 0.1em;
-		background: currentColor;
-	}
-	.phone__icons b:nth-child(1) { height: 0.35em; }
-	.phone__icons b:nth-child(2) { height: 0.55em; }
-	.phone__icons b:nth-child(3) { height: 0.75em; }
-
-	.phone__icons em {
-		width: 1.6em;
+	.phone__icons svg {
+		display: block;
 		height: 0.8em;
-		margin-left: 0.3em;
-		border-radius: 0.25em;
-		border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
-		box-shadow: inset 0 0 0 0.12em var(--s-bg), inset 1.1em 0 0 currentColor;
+		width: auto;
+		fill: currentColor;
+	}
+
+	.phone__icons .phone__battery {
+		height: 0.92em;
+		margin-left: 0.1em;
 	}
 
 	.phone__content {
