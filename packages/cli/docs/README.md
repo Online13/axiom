@@ -4,8 +4,8 @@ The CLI copies component source code from `packages/registry` into an app. Almos
 
 ## The trajectory of `axiom add button`
 
-1. **[`main()`](../src/index.ts#L476)** parses the flags and decides two modes: install (`ask`, `always`, `never`) and overwrite (`ask`, `always`, `force`). It calls `run()`. Any error thrown below lands in the `catch` at the bottom of the file, which prints it and exits.
-2. **[`run()`](../src/index.ts#L179)** reads `registry.json` and the app's `axiom.json`. If `button` needs an icon source or a navigation library that `axiom.json` doesn't record yet, it fills that in from the flags, a prompt, or `package.json`.
+1. **[`main()`](../src/index.ts#L477)** parses the flags and decides two modes: install (`ask`, `always`, `never`) and overwrite (`ask`, `always`, `force`). It calls `run()`. Any error thrown below lands in the `catch` at the bottom of the file, which prints it and exits.
+2. **[`run()`](../src/index.ts#L180)** reads `registry.json` and the app's `axiom.json`. If `button` needs an icon source or a navigation library that `axiom.json` doesn't record yet, it fills that in from the flags, a prompt, or `package.json`.
 3. **[`resolveItems()`](../src/registry.ts#L17)** turns `["button"]` into `button` plus everything it depends on (`icon`, `slot`, `tappable`, `text`, `theme`…).
 4. **[`copyItems()`](../src/copy.ts#L401)** does the copying, in two passes so a failure writes nothing:
    - [`plan()`](../src/copy.ts#L73) picks each item's files for the app's styling and gives each file a destination ([`locate()`](../src/copy.ts#L220)). The destination depends on the item's layer, which maps to an alias like `@/components/ui`. [`aliasToDir()`](../src/project.ts#L68) turns that alias into a folder by reading the app's `tsconfig.json`;
@@ -16,10 +16,10 @@ The CLI copies component source code from `packages/registry` into an app. Almos
 
 ## The other commands, as differences
 
-- **`init`** ([`runInit()`](../src/index.ts#L425)) checks the folder is a React Native app, asks for the styling tool and aliases, makes sure `tsconfig.json` resolves them, writes an empty `axiom.json`, then calls `run()` with the base items (theme, slot, tappable, portal, overlay).
+- **`init`** ([`runInit()`](../src/index.ts#L426)) checks the folder is a React Native app, asks for the styling tool and aliases, makes sure `tsconfig.json` resolves them, writes an empty `axiom.json`, then calls `run()` with the base items (theme, slot, tappable, portal, overlay).
 - **`fetch`** is `run()` on every item of `axiom.json` with `keepExisting: true`, so only missing files get written.
 - **`add` with no names** is `run()` on every item of `axiom.json`, asking before replacing files that differ. With `--watch` it repeats that on every registry change and overwrites without asking.
-- **`add --standalone`** ([`runStandalone()`](../src/index.ts#L308)) goes elsewhere. It builds one self-contained file per item with the TypeScript compiler. Ignore it until you work on it, then read [standalone.md](standalone.md).
+- **`add --standalone`** ([`runStandalone()`](../src/index.ts#L309)) goes elsewhere. It builds one self-contained file per item with the TypeScript compiler. Ignore it until you work on it, then read [standalone.md](standalone.md).
 
 ## Where things live
 

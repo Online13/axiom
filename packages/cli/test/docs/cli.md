@@ -69,6 +69,9 @@ Some apps already have their own design system and just want one Axiom component
 **It writes one self-contained file and nothing else.**
 After `add button --standalone`, the app must contain exactly one new file. That file must import only npm packages, never another Axiom file, and there must be no `axiom.json`. If a local import slipped in, the component would reference a file the user doesn't have.
 
+**NativeWind and Uniwind get the same self-contained file.**
+Both use the `tailwind` variant. Its components read the theme through `useTheme()`, like the `StyleSheet` ones, and import `cx` from the theme to join class names. For `badge` (which uses `cx`) and `switch`, the file must import only npm packages, have no `useTheme` left, declare `cx` itself when it calls it, and be identical for both tools.
+
 **It refuses components that can't stand alone.**
 Some items only work inside Axiom. The portal, for example, needs a host set up by the app. Asking for one standalone must fail with a message, not produce a broken file.
 

@@ -58,6 +58,11 @@ type Module = {
 	entry: boolean;
 	/** A theme file inlined for its types. */
 	types: boolean;
+	/**
+	 * A file of the theme's variant that imports only npm packages, like `cx.ts`: what it declares
+	 * isn't part of the theme, so it is inlined as written, when something reaches it.
+	 */
+	helper: boolean;
 	/** The component tokens file of `item`. */
 	tokens: boolean;
 	/** What the file's section is headed with: the item, or the theme file. */
@@ -161,13 +166,17 @@ export function buildStandalone(
 	const theme = evaluateTheme(all, fileSets, registryRoot);
 
 	// Every file the items are made of, addressed the way registry sources import them. Of the
-	// theme, only the files its types live in.
-	const files: { item: RegistryItem; path: string; address: string }[] = [];
+	// theme, only the files its types live in, and the helpers a styling ships beside `useTheme`.
+	const files: { item: RegistryItem; path: string; address: string; helper: boolean }[] = [];
 	for (const item of all) {
+		const variantFiles = new Set(item.variants?.[variant]?.files ?? []);
 		for (const file of fileSets.get(item)!.flatMap((set) => set.files ?? [])) {
 			const address = registryAddress(file, item);
-			if (item.type === "foundations" && !TYPE_MODULES.includes(address)) continue;
-			files.push({ item, path: normalize(resolve(registryRoot, pathOf(file))), address });
+			const path = normalize(resolve(registryRoot, pathOf(file)));
+			const helper =
+				item.type === "foundations" && variantFiles.has(file) && isSelfContained(readFileSync(path, "utf8"));
+			if (item.type === "foundations" && !TYPE_MODULES.includes(address) && !helper) continue;
+			files.push({ item, path, address, helper });
 		}
 	}
 
@@ -176,15 +185,16 @@ export function buildStandalone(
 	);
 	const checker = program.getTypeChecker();
 
-	const modules = files.map(({ item, path, address }): Module => {
+	const modules = files.map(({ item, path, address, helper }): Module => {
 		const tokens = item.tokens !== undefined && path === normalize(resolve(registryRoot, item.tokens));
 		return {
 			item,
 			path,
 			entry: item === requested && !tokens,
 			types: TYPE_MODULES.includes(address),
+			helper,
 			tokens,
-			label: TYPE_MODULES.includes(address) ? address.replace(/^@\//, "") : item.name,
+			label: TYPE_MODULES.includes(address) || helper ? address.replace(/^@\//, "") : item.name,
 			source: program.getSourceFile(path)!,
 			statements: [],
 			imports: new Set(),
@@ -193,6 +203,7 @@ export function buildStandalone(
 	const byAddress = new Map(files.map((file, i) => [file.address, modules[i]]));
 	const byPath = new Map(modules.map((module) => [stripExtension(module.path), module]));
 	const typeModules = modules.filter((module) => module.types);
+	const helperModules = modules.filter((module) => module.helper);
 
 	const internalModule = (specifier: string, from: Module) => {
 		if (specifier.startsWith(".")) {
@@ -269,6 +280,13 @@ export function buildStandalone(
 			const decl = declsByName.get(typeModule)!.get(imported);
 			if (decl?.statements.every(({ node }) => isTypeDeclaration(node))) {
 				return { kind: "module", module: typeModule, name: imported };
+			}
+		}
+
+		// A helper the styling's theme ships, like `cx`, is inlined as written.
+		for (const helperModule of helperModules) {
+			if (declsByName.get(helperModule)!.has(imported)) {
+				return { kind: "module", module: helperModule, name: imported };
 			}
 		}
 
@@ -635,7 +653,9 @@ export function buildStandalone(
 		const queue: Statement[] = written.flatMap((slice) => slice.type.statements);
 		for (const module of modules) {
 			for (const record of module.statements) {
-				if (module.entry || (!record.decl && !module.types && !module.tokens)) queue.push(record);
+				if (module.entry || (!record.decl && !module.types && !module.helper && !module.tokens)) {
+					queue.push(record);
+				}
 			}
 		}
 		while (queue.length) {
@@ -1330,6 +1350,18 @@ function removeListElement(element: ts.Node, elements: ts.NodeArray<ts.Node>, ed
 function skipSpaces(text: string, position: number) {
 	while (text[position] === " ") position++;
 	return position;
+}
+
+/** Imports and re-exports nothing but npm packages. */
+function isSelfContained(code: string) {
+	const source = ts.createSourceFile("file.ts", code, ts.ScriptTarget.Latest);
+	return source.statements.every((statement) => {
+		const specifier =
+			ts.isImportDeclaration(statement) || ts.isExportDeclaration(statement)
+				? statement.moduleSpecifier
+				: undefined;
+		return !specifier || !/^(\.|@\/)/.test((specifier as ts.StringLiteral).text);
+	});
 }
 
 function isTheme(specifier: string) {

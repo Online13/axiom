@@ -33,6 +33,8 @@ describe("availableStylings", () => {
 		expect(availableStylings(readRegistry(REGISTRY_ROOT))).toEqual([
 			"stylesheet",
 			"unistyles",
+			"nativewind",
+			"uniwind",
 		]);
 	});
 });

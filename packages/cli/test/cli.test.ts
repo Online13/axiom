@@ -267,6 +267,34 @@ describe("add --standalone", () => {
 		expect(existsSync(join(cwd, "axiom.json"))).toBe(false);
 	});
 
+	// The tailwind variant reads the theme through `useTheme()` like stylesheet, and imports `cx` from
+	// the theme: a helper, written into the file rather than resolved from the theme.
+	for (const name of ["badge", "switch"]) {
+		test(`${name} with nativewind and uniwind: the same self-contained file`, () => {
+			const written = ["nativewind", "uniwind"].map((styling) => {
+				const cwd = tempProject();
+				const { code } = axiom(
+					cwd,
+					"add",
+					name,
+					"--standalone",
+					"--styling",
+					styling,
+					"--icons",
+					"expo-symbols",
+				);
+				expect(code).toBe(0);
+				return readFileSync(join(cwd, `src/components/ui/${name}.tsx`), "utf8");
+			});
+			const [content] = written;
+			const imports = [...content.matchAll(IMPORT)].map(([, specifier]) => specifier);
+			expect(imports.filter((specifier) => /^(@\/|\.)/.test(specifier))).toEqual([]);
+			expect(content).not.toContain("useTheme");
+			if (content.includes("cx(")) expect(content).toContain("function cx(");
+			expect(written[1]).toBe(content);
+		});
+	}
+
 	test("refuses an item with no standalone form", () => {
 		const { code, output } = axiom(
 			tempProject(),

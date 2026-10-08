@@ -120,7 +120,8 @@ Standalone:
 Options:
   --registry <path>  Registry folder (the one holding registry.json)
   --standalone       One self-contained file per item, without the theme
-  --styling <tool>   With --standalone and no axiom.json: stylesheet or unistyles
+  --styling <tool>   With --standalone and no axiom.json: stylesheet, unistyles,
+                     nativewind or uniwind
   --icons <source>   Icon source, when axiom.json has none: expo-symbols or custom
   --navigation <library>
                      Navigation library, when axiom.json has none: expo-router,
