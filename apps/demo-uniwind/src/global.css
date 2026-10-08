@@ -1,2 +1,7 @@
 @import "tailwindcss";
 @import "uniwind";
+
+/* Tailwind 4 skips .gitignore'd files, and the Axiom CLI copies the components into ignored folders. */
+@source "./components";
+@source "./theme";
+@source "./hooks";

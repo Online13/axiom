@@ -1,0 +1,523 @@
+/** One destination per documented atom. Groups only organize the index. */
+export const SCREENS = [
+	{
+		name: "foundations",
+		title: "Foundations",
+		group: "Foundations",
+		description: "Colors, typography, spacing and radius",
+	},
+
+	{
+		name: "button",
+		title: "Button",
+		group: "Actions",
+		description: "Primary actions, loading and paired actions",
+	},
+	{
+		name: "button-group",
+		title: "ButtonGroup",
+		group: "Actions",
+		description: "Split button, stepper and vertical stack",
+	},
+	{
+		name: "icon-button",
+		title: "IconButton",
+		group: "Actions",
+		description: "Compact actions and toggles",
+	},
+	{
+		name: "floating-button",
+		title: "FloatingButton",
+		group: "Actions",
+		description: "Floating primary actions",
+	},
+
+	{
+		name: "input",
+		title: "Input",
+		group: "Inputs",
+		description: "Login, validation, affixes and return key",
+	},
+	{
+		name: "text-area",
+		title: "TextArea",
+		group: "Inputs",
+		description: "Long-form text and character limits",
+	},
+	{
+		name: "input-group",
+		title: "InputGroup",
+		group: "Inputs",
+		description: "Shared borders, addons and inline actions",
+	},
+	{
+		name: "input-otp",
+		title: "InputOTP",
+		group: "Inputs",
+		description: "Verification codes and grouped keys",
+	},
+	{
+		name: "checkbox",
+		title: "Checkbox",
+		group: "Inputs",
+		description: "Consent, select all and filters",
+	},
+	{
+		name: "radio",
+		title: "Radio",
+		group: "Inputs",
+		description: "Single choice and selectable rows",
+	},
+	{
+		name: "switch",
+		title: "Switch",
+		group: "Inputs",
+		description: "Settings and dependent options",
+	},
+	{
+		name: "slider",
+		title: "Slider",
+		group: "Inputs",
+		description: "Volume, ranges and steps",
+	},
+	{
+		name: "segmented-control",
+		title: "SegmentedControl",
+		group: "Inputs",
+		description: "Views, filters and settings",
+	},
+	{
+		name: "calendar",
+		title: "Calendar",
+		group: "Inputs",
+		description: "Dates, ranges and marked days",
+	},
+	{
+		name: "chip",
+		title: "Chip",
+		group: "Inputs",
+		description: "Filters and removable tags",
+	},
+
+	{
+		name: "card",
+		title: "Card",
+		group: "Content",
+		description: "Summary, feed and media cards",
+	},
+	{
+		name: "item",
+		title: "Item",
+		group: "Content",
+		description: "Navigation and action rows",
+	},
+	{
+		name: "option-item",
+		title: "OptionItem",
+		group: "Content",
+		description: "Settings and selection lists",
+	},
+	{
+		name: "accordion",
+		title: "Accordion",
+		group: "Content",
+		description: "FAQ, order details and advanced options",
+	},
+	{
+		name: "carousel",
+		title: "Carousel",
+		group: "Content",
+		description: "Onboarding and galleries",
+	},
+	{
+		name: "avatar",
+		title: "Avatar",
+		group: "Content",
+		description: "People, initials and groups",
+	},
+	{
+		name: "badge",
+		title: "Badge",
+		group: "Content",
+		description: "Counts, status and labels",
+	},
+	{
+		name: "separator",
+		title: "Separator",
+		group: "Content",
+		description: "Dividers and grouped content",
+	},
+	{
+		name: "icon",
+		title: "Icon",
+		group: "Content",
+		description: "Registry, sizes and semantic colors",
+	},
+	{
+		name: "text",
+		title: "Text",
+		group: "Content",
+		description: "Body text, colors and weights",
+	},
+	{
+		name: "title",
+		title: "Title",
+		group: "Content",
+		description: "Accessible headings",
+	},
+
+	{
+		name: "alert",
+		title: "Alert",
+		group: "Feedback",
+		description: "Errors, warnings and contextual information",
+	},
+	{
+		name: "empty",
+		title: "Empty",
+		group: "Feedback",
+		description: "No results, offline and retry",
+	},
+	{
+		name: "skeleton",
+		title: "Skeleton",
+		group: "Feedback",
+		description: "List and card placeholders",
+	},
+	{
+		name: "spinner",
+		title: "Spinner",
+		group: "Feedback",
+		description: "Screen, list and inline loading",
+	},
+	{
+		name: "toast",
+		title: "Toast",
+		group: "Feedback",
+		description: "Background actions and requests",
+	},
+	{
+		name: "snackbar",
+		title: "Snackbar",
+		group: "Feedback",
+		description: "Undo and retry",
+	},
+	{
+		name: "dialog",
+		title: "Dialog",
+		group: "Overlays",
+		description: "Confirmation and async actions",
+	},
+	{
+		name: "menu",
+		title: "Menu",
+		group: "Overlays",
+		description: "App bar and context actions",
+	},
+	{
+		name: "bottom-sheet",
+		title: "BottomSheet",
+		group: "Overlays",
+		description: "Item actions and short forms",
+	},
+
+	{
+		name: "attachment",
+		title: "Attachment",
+		group: "Molecules",
+		description: "Upload progress, removal, errors and tiles",
+	},
+	{
+		name: "date-picker",
+		title: "DatePicker",
+		group: "Molecules",
+		description: "Date and range in a sheet, presets and custom triggers",
+	},
+	{
+		name: "search-bar",
+		title: "SearchBar",
+		group: "Molecules",
+		description: "Query, cancel, live results and local filtering",
+	},
+
+	{
+		name: "passcode",
+		title: "Passcode",
+		group: "Organisms",
+		description: "In-app keypad, wrong code, verifying and PIN setup",
+	},
+
+	{
+		name: "scaffold",
+		title: "Scaffold",
+		group: "Templates",
+		description: "Screen structure: bar, content, footer and safe areas",
+	},
+	{
+		name: "tab",
+		title: "Tab",
+		group: "Templates",
+		description: "Underline, pill, scrollable and swipeable tabs",
+	},
+	{
+		name: "bottom-tab-bar",
+		title: "BottomTabBar",
+		group: "Templates",
+		description: "Destinations, badges, floating bar and main action",
+	},
+	{
+		name: "tool-bar",
+		title: "ToolBar",
+		group: "Templates",
+		description: "Contextual actions, docked or floating",
+	},
+	{
+		name: "app-bar",
+		title: "AppBar",
+		group: "Templates",
+		description: "Small, medium and large titles, search and elevation",
+	},
+
+	{
+		name: "tappable",
+		title: "Tappable",
+		group: "Core",
+		description: "Press feedback and touch targets",
+	},
+	{
+		name: "overlay",
+		title: "Overlay",
+		group: "Core",
+		description: "Backdrop and dismissal",
+	},
+	{
+		name: "portal",
+		title: "Portal",
+		group: "Core",
+		description: "Render outside the current view tree",
+	},
+	{
+		name: "slot",
+		title: "Slot",
+		group: "Core",
+		description: "Forward behavior to a child",
+	},
+
+	{
+		name: "product-card",
+		title: "ProductCard",
+		group: "Cards",
+		description: "Default and spotlight",
+	},
+	{
+		name: "listing-card",
+		title: "ListingCard",
+		group: "Cards",
+		description: "Stays and homes, five layouts",
+	},
+	{
+		name: "recipe-card",
+		title: "RecipeCard",
+		group: "Cards",
+		description: "Stats, ingredients and a cook button",
+	},
+	{
+		name: "article-card",
+		title: "ArticleCard",
+		group: "Cards",
+		description: "Cover, excerpt and byline",
+	},
+	{
+		name: "event-card",
+		title: "EventCard",
+		group: "Cards",
+		description: "Date, details and who's going",
+	},
+	{
+		name: "profile-card",
+		title: "ProfileCard",
+		group: "Cards",
+		description: "Stats, follow and message",
+	},
+	{
+		name: "offer-card",
+		title: "OfferCard",
+		group: "Cards",
+		description: "Benefit, highlights and fee",
+	},
+	{
+		name: "pricing-card",
+		title: "PricingCard",
+		group: "Cards",
+		description: "Plans, featured and current",
+	},
+	{
+		name: "stats-card",
+		title: "StatsCard",
+		group: "Cards",
+		description: "A metric and its trend",
+	},
+	{
+		name: "settings-item",
+		title: "SettingsItem",
+		group: "Rows",
+		description: "Navigation, value and switch",
+	},
+	{
+		name: "track-item",
+		title: "TrackItem",
+		group: "Rows",
+		description: "Artwork, duration and playing state",
+	},
+	{
+		name: "conversation-item",
+		title: "ConversationItem",
+		group: "Rows",
+		description: "Preview, unread and muted",
+	},
+	{
+		name: "notification-item",
+		title: "NotificationItem",
+		group: "Rows",
+		description: "From a person or from the app",
+	},
+	{
+		name: "search-result-item",
+		title: "SearchResultItem",
+		group: "Rows",
+		description: "Highlighted query and an action",
+	},
+	{
+		name: "search-app-bar",
+		title: "SearchAppBar",
+		group: "Bars",
+		description: "A search field as the bar",
+	},
+	{
+		name: "profile-app-bar",
+		title: "ProfileAppBar",
+		group: "Bars",
+		description: "Greeting, avatar and actions",
+	},
+	{
+		name: "settings-section",
+		title: "SettingsSection",
+		group: "Blocks",
+		description: "Titled groups of settings rows",
+	},
+] as const;
+
+export type Screen = (typeof SCREENS)[number];
+export type ScreenGroup = Screen["group"];
+
+/** The tabs of the Components section: the foundations, then the primitives by Atomic Design level,
+ * then the compositions and blocks built from them. */
+export const CATEGORIES = [
+	{ value: "foundation", label: "Foundation" },
+	{ value: "atoms", label: "Atoms" },
+	{ value: "molecules", label: "Molecules" },
+	{ value: "organisms", label: "Organisms" },
+	{ value: "templates", label: "Templates" },
+	{ value: "compositions", label: "Compositions" },
+	{ value: "blocks", label: "Blocks" },
+] as const;
+
+export type Category = (typeof CATEGORIES)[number]["value"];
+
+const CATEGORY_OF_GROUP: Record<ScreenGroup, Category> = {
+	Foundations: "foundation",
+	Core: "foundation",
+	Actions: "atoms",
+	Inputs: "atoms",
+	Content: "atoms",
+	Feedback: "atoms",
+	Overlays: "atoms",
+	Molecules: "molecules",
+	Organisms: "organisms",
+	Templates: "templates",
+	Cards: "compositions",
+	Rows: "compositions",
+	Bars: "compositions",
+	Blocks: "blocks",
+};
+
+export function screensOf(category: Category): Screen[] {
+	return SCREENS.filter(
+		(screen) => CATEGORY_OF_GROUP[screen.group] === category,
+	);
+}
+
+/** The groups of a category, in the order they appear in `SCREENS`. */
+export function groupsOf(category: Category): ScreenGroup[] {
+	return [...new Set(screensOf(category).map((screen) => screen.group))];
+}
+
+/**
+ * The sub-screens of Foundations, one route each. The screen is far too heavy to mount at once:
+ * `states` alone renders every component token of the project.
+ */
+export const FOUNDATIONS = [
+	{
+		name: "colors",
+		title: "Colors",
+		group: "Theme",
+		description: "Semantic roles, in the current scheme",
+	},
+	{
+		name: "palette",
+		title: "Palette",
+		group: "Theme",
+		description: "Raw steps from 50 to 950",
+	},
+	{
+		name: "typography",
+		title: "Typography",
+		group: "Theme",
+		description: "The type scale, from 34 down to 12",
+	},
+	{
+		name: "spacing",
+		title: "Spacing",
+		group: "Theme",
+		description: "A 4pt grid",
+	},
+	{
+		name: "radius",
+		title: "Radius",
+		group: "Theme",
+		description: "Corner rounding of surfaces and controls",
+	},
+	{
+		name: "icons",
+		title: "Icons",
+		group: "Reference",
+		description: "The icon registry, at the size tokens",
+	},
+	{
+		name: "tap-targets",
+		title: "Tap targets",
+		group: "Reference",
+		description: "Minimum touch target, hitSlop and metrics",
+	},
+	{
+		name: "states",
+		title: "States",
+		group: "Reference",
+		description: "Component tokens, per variant and state",
+	},
+] as const;
+
+export type Foundation = (typeof FOUNDATIONS)[number];
+export type FoundationGroup = Foundation["group"];
+
+/** The groups of the Foundations index, in the order they appear in `FOUNDATIONS`. */
+export const FOUNDATION_GROUPS = [
+	...new Set(FOUNDATIONS.map((foundation) => foundation.group)),
+];
+
+export function screenTitle(name: string): string | undefined {
+	return (
+		SCREENS.find((screen) => screen.name === name)?.title ??
+		FOUNDATIONS.find((foundation) => foundation.name === name)?.title
+	);
+}

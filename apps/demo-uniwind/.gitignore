@@ -45,4 +45,14 @@ example
 # copied from packages/registry by the Axiom CLI
 /src/theme
 /src/hooks
-/src/components
+/src/components/*
+!/src/components/core/
+/src/components/core/*
+# the haptics adapter belongs to the project: the CLI creates it once
+!/src/components/core/haptics.ts
+!/src/components/ui/
+/src/components/ui/*
+!/src/components/ui/icon/
+/src/components/ui/icon/*
+# the icon registry belongs to the project: the CLI creates it once
+!/src/components/ui/icon/icons.tsx
