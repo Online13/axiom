@@ -1,32 +1,16 @@
 import type { ComponentPropsWithRef, ReactNode } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
-import { StyleSheet } from "react-native-unistyles";
 
 import { Text, type TextProps } from "@/components/ui/text";
-import type { Theme } from "@/theme";
-
 import {
 	FieldContext,
 	useField,
 	useFieldRoot,
 	useFieldText,
-	type InputState,
 } from "./use-input";
+import { StyleSheet } from "react-native-unistyles";
 
 export type InputVariant = "outline" | "filled";
-
-/** Colors of a text field for a variant and a state; missing properties fall back to `default`. */
-export function inputColors(
-	components: Theme["components"],
-	variant: InputVariant,
-	state: InputState,
-) {
-	const states = components.input[variant];
-	return {
-		...states.default,
-		...(state === "default" ? undefined : states[state]),
-	};
-}
 
 export type FieldProps = ComponentPropsWithRef<typeof View> & {
 	/** Puts the control inside in the `invalid` state. A rendered `Field.Error` does it too. */
@@ -46,7 +30,6 @@ function FieldRoot({
 	invalid,
 	disabled,
 	required,
-	style,
 	children,
 	...props
 }: FieldProps) {
@@ -54,7 +37,7 @@ function FieldRoot({
 
 	return (
 		<FieldContext value={field}>
-			<View {...props} style={[styles.field, style]}>
+			<View {...props} style={[styles.field, props.style]}>
 				{children}
 			</View>
 		</FieldContext>

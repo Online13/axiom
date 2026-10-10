@@ -6,14 +6,17 @@ import {
 	type StyleProp,
 	type ViewStyle,
 } from "react-native";
-import { StyleSheet } from "react-native-unistyles";
 
-import { Tappable } from "@/components/core/tappable";
+import { Tappable, type TappableState } from "@/components/core/tappable";
 import { Text, type TextProps } from "@/components/ui/text";
 import { Title, type TitleProps } from "@/components/ui/title";
 import type { Radius, Spacing } from "@/theme";
 
+import { StyleSheet } from "react-native-unistyles";
+import { stateColors } from "@/theme/components/states";
+
 export type CardVariant = "elevated" | "outlined" | "filled";
+
 export type CardPadding = keyof Spacing | "none";
 
 export type CardProps = Omit<ComponentPropsWithRef<typeof View>, "children"> & {
@@ -35,21 +38,18 @@ function CardRoot({
 	onPress,
 	disabled = false,
 	children,
-	style,
 	...props
 }: CardProps) {
-	const containerStyle = (pressed: boolean): StyleProp<ViewStyle> => [
-		styles.card(variant, padding, radius, pressed, disabled),
-		style,
-	];
-
 	if (onPress) {
 		return (
 			<Tappable
 				{...props}
 				disabled={disabled}
 				onPress={onPress}
-				style={({ pressed }) => containerStyle(pressed)}
+				style={({ pressed }: TappableState) => [
+					styles.card(variant, padding, radius, pressed, disabled),
+					props.style,
+				]}
 			>
 				{children}
 			</Tappable>
@@ -57,7 +57,13 @@ function CardRoot({
 	}
 
 	return (
-		<View {...props} style={containerStyle(false)}>
+		<View
+			{...props}
+			style={[
+				styles.card(variant, padding, radius, false, disabled),
+				props.style,
+			]}
+		>
 			{children}
 		</View>
 	);
@@ -78,12 +84,11 @@ function CardMedia({
 	source,
 	aspectRatio = 16 / 9,
 	children,
-	style,
 	...props
 }: CardMediaProps) {
 	return (
-		<View {...props} style={[styles.media(aspectRatio), style]}>
-			<Image source={source} style={styles.mediaImage} resizeMode="cover" />
+		<View {...props} style={[styles.media(aspectRatio), props.style]}>
+			<Image source={source} resizeMode="cover" style={styles.mediaImage} />
 			{children ? <View style={styles.mediaOverlay}>{children}</View> : null}
 		</View>
 	);
@@ -91,9 +96,9 @@ function CardMedia({
 
 export type CardPartProps = ComponentPropsWithRef<typeof View>;
 
-function CardHeader({ children, style, ...props }: CardPartProps) {
+function CardHeader({ children, ...props }: CardPartProps) {
 	return (
-		<View {...props} style={[styles.header, style]}>
+		<View {...props} style={[styles.header, props.style]}>
 			{children}
 		</View>
 	);
@@ -107,17 +112,17 @@ function CardDescription(props: TextProps) {
 	return <Text variant="bodySm" color="muted" {...props} />;
 }
 
-function CardContent({ children, style, ...props }: CardPartProps) {
+function CardContent({ children, ...props }: CardPartProps) {
 	return (
-		<View {...props} style={[styles.part, style]}>
+		<View {...props} style={[styles.part, props.style]}>
 			{children}
 		</View>
 	);
 }
 
-function CardFooter({ children, style, ...props }: CardPartProps) {
+function CardFooter({ children, ...props }: CardPartProps) {
 	return (
-		<View {...props} style={[styles.footer, style]}>
+		<View {...props} style={[styles.footer, props.style]}>
 			{children}
 		</View>
 	);
@@ -140,11 +145,10 @@ const styles = StyleSheet.create((theme) => ({
 		pressed: boolean,
 		disabled: boolean,
 	) => {
-		const states = theme.components.card[variant];
-		const colors = {
-			...states.default,
-			...(pressed ? states.pressed : undefined),
-		};
+		const colors = stateColors(
+			theme.components.card[variant],
+			pressed && "pressed",
+		);
 		return {
 			overflow: "hidden",
 			borderRadius: theme.tokens.radius[radius],

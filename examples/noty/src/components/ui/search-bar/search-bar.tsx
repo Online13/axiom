@@ -6,15 +6,16 @@ import {
 	type TextInputProps,
 	type ViewStyle,
 } from "react-native";
-import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
 import { Tappable } from "@/components/core/tappable";
-import { Icon } from "@/components/ui/icon/icon";
 import { Spinner } from "@/components/ui/spinner";
 import { MAX_FONT_SCALE } from "@/components/ui/text";
-import type { Theme } from "@/theme";
 
 import { useSearchBar, type SearchBarState } from "./use-search-bar";
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
+import { Icon } from "@/components/ui/icon/icon";
+import { searchBarColors } from "@/components/ui/search-bar/search-bar-colors";
+import type { Theme } from "@/theme";
 
 export type SearchBarVariant = "filled" | "outline";
 export type SearchBarSize = "sm" | "md";
@@ -40,26 +41,6 @@ export type SearchBarProps = Omit<
 	ref?: Ref<TextInput>;
 };
 
-/** Colors of the bar for a variant and a state; missing properties fall back to `default`. */
-export function searchBarColors(
-	components: Theme["components"],
-	variant: SearchBarVariant,
-	state: SearchBarState,
-) {
-	const states = components.searchBar[variant];
-	return {
-		...states.default,
-		...(state === "default" ? undefined : states[state]),
-	};
-}
-
-const TEXT = { sm: "subheadline", md: "callout" } as const;
-
-// The icon color, the placeholder and the caret are props, not styles. Wrapped once, here, so each
-// instance only has to map the theme to those props through `uniProps`. Refs are forwarded.
-const ThemedIcon = withUnistyles(Icon);
-const ThemedTextInput = withUnistyles(TextInput);
-
 /** The search field alone: icon, text, clear button and loading state. */
 export function SearchBar({
 	placeholder = "Search",
@@ -70,7 +51,6 @@ export function SearchBar({
 	size = "sm",
 	disabled = false,
 	containerStyle,
-	style,
 	value,
 	defaultValue,
 	onChangeText,
@@ -93,9 +73,6 @@ export function SearchBar({
 	});
 
 	const iconSize = size === "sm" ? "sm" : "md";
-	const iconColor = (theme: Theme) => ({
-		color: searchBarColors(theme.components, variant, search.state).icon,
-	});
 
 	// Taps on the padding around the text focus the field.
 	return (
@@ -107,10 +84,37 @@ export function SearchBar({
 			{loading ? (
 				<Spinner size={iconSize} color="subtle" label="Searching" />
 			) : (
-				<ThemedIcon name="search" size={iconSize} uniProps={iconColor} />
+				<SearchBarIcon
+					name="search"
+					size={iconSize}
+					uniProps={(theme: Theme) => ({
+						color: searchBarColors(
+							theme.components,
+							variant,
+							search.state,
+						).icon,
+					})}
+				/>
 			)}
-			<ThemedTextInput
+			<SearchBarText
 				placeholder={placeholder}
+				uniProps={(theme: Theme) => ({
+					placeholderTextColor: searchBarColors(
+						theme.components,
+						variant,
+						search.state,
+					).placeholder,
+					selectionColor: searchBarColors(
+						theme.components,
+						variant,
+						search.state,
+					).caret,
+					cursorColor: searchBarColors(
+						theme.components,
+						variant,
+						search.state,
+					).caret,
+				})}
 				maxFontSizeMultiplier={MAX_FONT_SCALE.control}
 				returnKeyType="search"
 				clearButtonMode="never"
@@ -118,21 +122,9 @@ export function SearchBar({
 				autoCapitalize="none"
 				accessibilityRole="search"
 				accessibilityLabel={accessibilityLabel ?? placeholder}
-				uniProps={(theme) => {
-					const colors = searchBarColors(
-						theme.components,
-						variant,
-						search.state,
-					);
-					return {
-						placeholderTextColor: colors.placeholder,
-						selectionColor: colors.caret,
-						cursorColor: colors.caret,
-					};
-				}}
 				{...props}
 				{...search.inputProps}
-				style={[styles.text(variant, size, search.state), style]}
+				style={[styles.text(variant, size, search.state), props.style]}
 			/>
 			{search.hasText
 				? clearable && (
@@ -141,11 +133,17 @@ export function SearchBar({
 							onPress={search.clear}
 							disabled={disabled}
 						>
-							<ThemedIcon
+							<SearchBarIcon
 								name="close"
 								size="sm"
 								strokeWidth={2.5}
-								uniProps={iconColor}
+								uniProps={(theme: Theme) => ({
+									color: searchBarColors(
+										theme.components,
+										variant,
+										search.state,
+									).icon,
+								})}
 							/>
 						</Tappable>
 					)
@@ -153,6 +151,14 @@ export function SearchBar({
 		</Pressable>
 	);
 }
+
+const TEXT = { sm: "subheadline", md: "callout" } as const;
+
+// The icon color, the placeholder and the caret are props, not styles. Wrapped once, here, so each
+// instance only has to map the theme to those props through `uniProps`. Refs are forwarded.
+const SearchBarIcon = withUnistyles(Icon);
+
+const SearchBarText = withUnistyles(TextInput);
 
 const styles = StyleSheet.create((theme) => ({
 	field: (

@@ -9,9 +9,10 @@ import Animated, {
 	withRepeat,
 	withTiming,
 } from "react-native-reanimated";
-import { StyleSheet } from "react-native-unistyles";
 
-import { textColor, type TextColor } from "@/components/ui/text";
+import { type TextColor, textColor } from "@/components/ui/text";
+
+import { StyleSheet } from "react-native-unistyles";
 import type { Theme } from "@/theme";
 
 export type SpinnerSize = "sm" | "md" | "lg" | number;
@@ -32,16 +33,12 @@ export type SpinnerProps = Omit<
 	style?: StyleProp<ViewStyle>;
 };
 
-const dimensionOf = (tokens: Theme["tokens"], size: SpinnerSize) =>
-	typeof size === "number" ? size : tokens.sizes.icon[size];
-
 export function Spinner({
 	size = "md",
 	color = "default",
 	label = "Loading",
 	animating = true,
 	delay = 0,
-	style,
 	...props
 }: SpinnerProps) {
 	const reduceMotion = useReducedMotion();
@@ -90,12 +87,18 @@ export function Spinner({
 			accessibilityState={{ busy: visible }}
 			accessibilityElementsHidden={!visible}
 			importantForAccessibility={visible ? "yes" : "no-hide-descendants"}
-			style={[styles.frame(size, visible), style]}
+			style={[styles.frame(size, visible), props.style]}
 		>
-			<Animated.View style={[styles.ring(size, color), animatedStyle]} />
+			<SpinnerRing style={[styles.ring(size, color), animatedStyle]} />
 		</View>
 	);
 }
+
+const dimensionOf = (tokens: Theme["tokens"], size: SpinnerSize) =>
+	typeof size === "number" ? size : tokens.sizes.icon[size];
+
+// The ring, which turns: with styles, the animated view takes them all.
+const SpinnerRing = Animated.View;
 
 const styles = StyleSheet.create((theme) => ({
 	frame: (size: SpinnerSize, visible: boolean) => {

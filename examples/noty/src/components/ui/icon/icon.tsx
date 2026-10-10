@@ -1,12 +1,16 @@
 import type { ComponentPropsWithRef } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 // The registry depends on the icon source chosen for the project, so it's imported through the alias.
 import { icons, type IconName } from "@/components/ui/icon/icons";
 import type { Theme } from "@/theme";
 
-import type { IconRegistry } from "./icon-types";
+import type {
+	IconRegistry,
+	IconComponent,
+	IconComponentProps,
+} from "./icon-types";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 export type IconSize = "sm" | "md" | "lg";
 
@@ -51,17 +55,13 @@ export function Icon({
 	color = "default",
 	strokeWidth,
 	accessibilityLabel,
-	style,
 	...props
 }: IconProps) {
-	// The glyph takes its size and color as props, not as styles, and it comes from the project's
-	// icon registry: it can't be wrapped once with `withUnistyles`. This is the theme-in-logic case.
 	const { theme } = useUnistyles();
-	// Read through `IconRegistry`: with an empty registry (`custom` source), `icons[name]` would be `never`.
-	const registry: IconRegistry = icons;
-	const Glyph = registry[name];
 	const dimension =
 		typeof size === "number" ? size : theme.tokens.sizes.icon[size];
+	// Read through `IconRegistry`: with an empty registry (`custom` source), `icons[name]` would be `never`.
+	const registry: IconRegistry = icons;
 	const decorative = accessibilityLabel === undefined;
 
 	return (
@@ -72,15 +72,22 @@ export function Icon({
 			accessibilityLabel={accessibilityLabel}
 			accessibilityElementsHidden={decorative}
 			importantForAccessibility={decorative ? "no-hide-descendants" : "yes"}
-			style={[styles.frame(dimension), style]}
+			style={[styles.frame(dimension), props.style]}
 		>
-			<Glyph
+			<IconGlyph
+				glyph={registry[name]}
+				strokeWidth={strokeWidth}
 				size={dimension}
 				color={iconColor(theme.colors, color)}
-				strokeWidth={strokeWidth}
 			/>
 		</View>
 	);
+}
+
+type IconGlyphProps = IconComponentProps & { glyph: IconComponent };
+
+function IconGlyph({ glyph: Glyph, ...props }: IconGlyphProps) {
+	return <Glyph {...props} />;
 }
 
 const styles = StyleSheet.create({

@@ -5,11 +5,13 @@ import {
 	type ReactNode,
 } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
-import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
-import { Icon } from "@/components/ui/icon/icon";
 import type { IconName } from "@/components/ui/icon/icons";
-import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from "@/components/ui/text";
+import { MAX_FONT_SCALE, Text, FONT_WEIGHT } from "@/components/ui/text";
+
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
+import { Icon } from "@/components/ui/icon/icon";
+import type { Theme } from "@/theme";
 
 export type BadgeVariant =
 	| "neutral"
@@ -20,6 +22,7 @@ export type BadgeVariant =
 	| "error"
 	| "outline"
 	| "inverse";
+
 export type BadgeSize = "sm" | "md";
 export type BadgePlacement = "top-right" | "bottom-right";
 
@@ -49,18 +52,9 @@ export type BadgeProps = Omit<
 	style?: StyleProp<ViewStyle>;
 };
 
-const HEIGHT = { sm: 18, md: 22 };
-const DOT = 10;
-/** Width of the ring around an anchored counter or dot. */
-const RING = 2;
-
 // Set by `Badge.Anchor` around its badge, so the ring follows the badge: it animates with it and
 // disappears when the badge renders nothing.
 const RingContext = createContext(false);
-
-// The icon takes its color as a prop, not as a style. Wrapped once, here, so each instance only has
-// to map the theme to that prop through `uniProps`.
-const ThemedIcon = withUnistyles(Icon);
 
 function BadgeRoot({
 	children,
@@ -72,7 +66,6 @@ function BadgeRoot({
 	size = "md",
 	ring: ringProp,
 	accessibilityLabel,
-	style,
 	...props
 }: BadgeProps) {
 	const anchored = useContext(RingContext);
@@ -93,7 +86,10 @@ function BadgeRoot({
 				{...props}
 				accessible={accessibilityLabel !== undefined}
 				accessibilityLabel={accessibilityLabel}
-				style={[styles.counter(size, label !== undefined, ring), style]}
+				style={[
+					styles.counter(size, label !== undefined, ring),
+					props.style,
+				]}
 			>
 				{label !== undefined ? (
 					<Text
@@ -112,13 +108,13 @@ function BadgeRoot({
 			{...props}
 			accessible={accessibilityLabel !== undefined}
 			accessibilityLabel={accessibilityLabel}
-			style={[styles.pill(variant, size), style]}
+			style={[styles.pill(variant, size), props.style]}
 		>
 			{icon ? (
-				<ThemedIcon
+				<BadgeIcon
 					name={icon}
 					size={size === "sm" ? 12 : 14}
-					uniProps={(theme) => ({
+					uniProps={(theme: Theme) => ({
 						color: theme.components.badge[variant].default.foreground,
 					})}
 				/>
@@ -160,11 +156,10 @@ function BadgeAnchor({
 	children,
 	badge,
 	placement = "top-right",
-	style,
 	...props
 }: BadgeAnchorProps) {
 	return (
-		<View {...props} style={[styles.anchor, style]}>
+		<View {...props} style={[styles.anchor, props.style]}>
 			{children}
 			{/* Always mounted, so a badge animated out has a parent to play its exit in. */}
 			<View style={styles.badge(placement)}>
@@ -175,6 +170,17 @@ function BadgeAnchor({
 }
 
 export const Badge = Object.assign(BadgeRoot, { Anchor: BadgeAnchor });
+
+const HEIGHT = { sm: 18, md: 22 };
+
+const DOT = 10;
+
+/** Width of the ring around an anchored counter or dot. */
+const RING = 2;
+
+// The icon takes its color as a prop, not as a style. Wrapped once, here, so each instance only has
+// to map the theme to that prop through `uniProps`, which `tint` gives it.
+const BadgeIcon = withUnistyles(Icon);
 
 const styles = StyleSheet.create((theme) => ({
 	counter: (size: BadgeSize, labelled: boolean, ring: boolean) => {

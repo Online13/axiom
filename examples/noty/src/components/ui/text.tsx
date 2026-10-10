@@ -3,10 +3,11 @@ import {
 	Text as NativeText,
 	type TextProps as NativeTextProps,
 } from "react-native";
-import { StyleSheet } from "react-native-unistyles";
 
 import { Slot } from "@/components/core/slot";
 import type { Theme, TypographyVariant } from "@/theme";
+
+import { StyleSheet } from "react-native-unistyles";
 
 export type TextVariant = "bodyLg" | "body" | "bodySm" | "footnote" | "caption";
 export type TextColor =
@@ -70,30 +71,25 @@ export function textColor(colors: Theme["colors"], color: TextColor): string {
 const NestedContext = createContext(false);
 
 export function Text({
-	variant,
-	color,
+	variant: ownVariant,
+	color: ownColor,
 	weight,
 	align,
 	asChild,
-	style,
 	children,
 	...props
 }: TextProps) {
 	const nested = use(NestedContext);
-
-	const textStyle = [
-		styles.text(
-			variant ?? (nested ? undefined : "body"),
-			color ?? (nested ? undefined : "default"),
-			weight,
-			align,
-		),
-		style,
-	];
+	// A missing variant or color means "inherit from the Text above": nothing is set for it.
+	const variant = ownVariant ?? (nested ? undefined : "body");
+	const color = ownColor ?? (nested ? undefined : "default");
+	const text = {
+		style: [styles.text(variant, color, weight, align), props.style],
+	};
 
 	if (asChild) {
 		return (
-			<Slot {...props} style={textStyle}>
+			<Slot {...props} {...text}>
 				{children}
 			</Slot>
 		);
@@ -101,7 +97,7 @@ export function Text({
 
 	return (
 		<NestedContext value>
-			<NativeText {...props} style={textStyle}>
+			<NativeText {...props} {...text}>
 				{children}
 			</NativeText>
 		</NestedContext>

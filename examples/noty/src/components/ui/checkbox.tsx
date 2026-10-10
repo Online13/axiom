@@ -1,13 +1,15 @@
 import type { ReactNode } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
-import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
 import { haptic, type HapticKind } from "@/components/core/haptics";
 import { Tappable, type TappableProps } from "@/components/core/tappable";
-import { Icon } from "@/components/ui/icon/icon";
 import { Text } from "@/components/ui/text";
 import { useControllableState } from "@/hooks/use-controllable-state";
+
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
+import { Icon } from "@/components/ui/icon/icon";
 import type { Theme } from "@/theme";
+import { stateColors } from "@/theme/components/states";
 
 export type CheckedState = boolean | "indeterminate";
 
@@ -32,27 +34,6 @@ export type CheckboxProps = Omit<
 	style?: StyleProp<ViewStyle>;
 };
 
-const BOX = 22;
-
-function checkboxColors(
-	components: Theme["components"],
-	on: boolean,
-	error: boolean,
-	disabled: boolean,
-) {
-	const states = components.checkbox.default;
-	return {
-		...states.default,
-		...(on ? states.checked : undefined),
-		...(error && !disabled ? states.invalid : undefined),
-		...(disabled ? states.disabled : undefined),
-	};
-}
-
-// The icon takes its color as a prop, not as a style. Wrapped once, here, so each instance only has
-// to map the theme to that prop through `uniProps`.
-const ThemedIcon = withUnistyles(Icon);
-
 export function Checkbox({
 	checked,
 	defaultChecked = false,
@@ -63,7 +44,6 @@ export function Checkbox({
 	error = false,
 	haptic: hapticKind,
 	accessibilityLabel,
-	style,
 	...props
 }: CheckboxProps) {
 	const [value, setValue] = useControllableState<CheckedState>({
@@ -88,7 +68,7 @@ export function Checkbox({
 				if (hapticKind) haptic(hapticKind);
 				setValue(value !== true);
 			}}
-			style={[styles.row, style]}
+			style={[styles.row, props.style]}
 		>
 			<CheckboxIndicator checked={value} error={error} disabled={disabled} />
 			{label !== undefined || description !== undefined ? (
@@ -129,10 +109,10 @@ export function CheckboxIndicator({
 	return (
 		<View style={styles.box(on, error, disabled)}>
 			{on ? (
-				<ThemedIcon
+				<CheckboxIcon
 					name={checked === "indeterminate" ? "minus" : "check"}
 					size="sm"
-					uniProps={(theme) => ({
+					uniProps={(theme: Theme) => ({
 						color: checkboxColors(theme.components, on, error, disabled)
 							.indicator,
 					})}
@@ -141,6 +121,27 @@ export function CheckboxIndicator({
 		</View>
 	);
 }
+
+const BOX = 22;
+
+function checkboxColors(
+	components: Theme["components"],
+	on: boolean,
+	error: boolean,
+	disabled: boolean,
+) {
+	const states = components.checkbox.default;
+	return stateColors(
+		states,
+		on && "checked",
+		error && !disabled && "invalid",
+		disabled && "disabled",
+	);
+}
+
+// The icon takes its color as a prop, not as a style. Wrapped once, here, so each instance only has
+// to map the theme to that prop through `uniProps`, which `indicator` gives it.
+const CheckboxIcon = withUnistyles(Icon);
 
 const styles = StyleSheet.create((theme) => ({
 	row: {

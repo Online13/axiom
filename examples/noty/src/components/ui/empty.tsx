@@ -5,17 +5,20 @@ import {
 	type ReactNode,
 } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
-import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
-import { Icon } from "@/components/ui/icon/icon";
 import type { IconName } from "@/components/ui/icon/icons";
 import { Text, type TextProps } from "@/components/ui/text";
 import { Title, type TitleProps } from "@/components/ui/title";
 
-type EmptySize = "sm" | "md";
-export type EmptyTone = "neutral" | "error";
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
+import { Icon } from "@/components/ui/icon/icon";
+import type { Theme } from "@/theme";
+
+export type EmptySize = "sm" | "md";
 
 const SizeContext = createContext<EmptySize>("md");
+
+export type EmptyTone = "neutral" | "error";
 
 export type EmptyProps = Omit<
 	ComponentPropsWithRef<typeof View>,
@@ -29,20 +32,15 @@ export type EmptyProps = Omit<
 	style?: StyleProp<ViewStyle>;
 };
 
-// The icon takes its color as a prop, not as a style. Wrapped once, here, so each instance only has
-// to map the theme to that prop through `uniProps`.
-const ThemedIcon = withUnistyles(Icon);
-
 function EmptyRoot({
 	children,
 	size = "md",
 	fill = true,
-	style,
 	...props
 }: EmptyProps) {
 	return (
 		<SizeContext value={size}>
-			<View {...props} style={[styles.root(size, fill), style]}>
+			<View {...props} style={[styles.root(size, fill), props.style]}>
 				{children}
 			</View>
 		</SizeContext>
@@ -51,7 +49,7 @@ function EmptyRoot({
 
 export type EmptyHeaderProps = ComponentPropsWithRef<typeof View>;
 
-function EmptyHeader({ children, style, ...props }: EmptyHeaderProps) {
+function EmptyHeader({ children, ...props }: EmptyHeaderProps) {
 	const size = use(SizeContext);
 
 	return (
@@ -59,7 +57,7 @@ function EmptyHeader({ children, style, ...props }: EmptyHeaderProps) {
 			// Read as one block: "No projects yet. Create one to get started."
 			accessible
 			{...props}
-			style={[styles.header(size), style]}
+			style={[styles.header(size), props.style]}
 		>
 			{children}
 		</View>
@@ -81,20 +79,19 @@ function EmptyMedia({
 	icon,
 	tone = "neutral",
 	children,
-	style,
 	...props
 }: EmptyMediaProps) {
 	const size = use(SizeContext);
 
 	return (
-		<View {...props} style={[styles.media(size), style]}>
+		<View {...props} style={[styles.media(size), props.style]}>
 			{children ?? (
 				<View style={styles.tile(size, tone)}>
 					{icon ? (
-						<ThemedIcon
+						<EmptyIcon
 							name={icon}
 							size={size === "md" ? "lg" : "md"}
-							uniProps={(theme) => ({
+							uniProps={(theme: Theme) => ({
 								color: theme.components.empty[tone].default.icon,
 							})}
 						/>
@@ -130,9 +127,9 @@ function EmptyDescription(props: TextProps) {
 
 export type EmptyContentProps = ComponentPropsWithRef<typeof View>;
 
-function EmptyContent({ children, style, ...props }: EmptyContentProps) {
+function EmptyContent({ children, ...props }: EmptyContentProps) {
 	return (
-		<View {...props} style={[styles.content, style]}>
+		<View {...props} style={[styles.content, props.style]}>
 			{children}
 		</View>
 	);
@@ -145,6 +142,10 @@ export const Empty = Object.assign(EmptyRoot, {
 	Description: EmptyDescription,
 	Content: EmptyContent,
 });
+
+// The icon takes its color as a prop, not as a style. Wrapped once, here, so each instance only has
+// to map the theme to that prop through `uniProps`, which `tint` gives it.
+const EmptyIcon = withUnistyles(Icon);
 
 const styles = StyleSheet.create((theme) => ({
 	root: (size: EmptySize, fill: boolean) => ({

@@ -1,9 +1,10 @@
 import type { ComponentPropsWithRef } from "react";
 import { View } from "react-native";
-import { StyleSheet } from "react-native-unistyles";
 
 import { Text, type TextProps } from "@/components/ui/text";
 import { Title, type TitleProps } from "@/components/ui/title";
+
+import { StyleSheet } from "react-native-unistyles";
 
 /** Height of `AppBar.Row`. */
 export const APP_BAR_HEIGHT = 64;
@@ -21,15 +22,16 @@ export type AppBarProps = ComponentPropsWithRef<typeof View> & {
 function AppBarRoot({
 	bordered = false,
 	safeArea = true,
-	style,
 	...props
 }: AppBarProps) {
-	return <View {...props} style={[styles.root(safeArea, bordered), style]} />;
+	return (
+		<View {...props} style={[styles.root(safeArea, bordered), props.style]} />
+	);
 }
 
 /** The row of controls. Its children are laid out in the order you write them. */
-function AppBarRow({ style, ...props }: ComponentPropsWithRef<typeof View>) {
-	return <View {...props} style={[styles.row, style]} />;
+function AppBarRow(props: ComponentPropsWithRef<typeof View>) {
+	return <View {...props} style={[styles.row, props.style]} />;
 }
 
 export type AppBarCenterProps = ComponentPropsWithRef<typeof View> & {
@@ -38,16 +40,13 @@ export type AppBarCenterProps = ComponentPropsWithRef<typeof View> & {
 };
 
 /** Fills the row between the controls: a title, a search field, a picker. Empty, it pushes the actions to the end. */
-function AppBarCenter({ inset = false, style, ...props }: AppBarCenterProps) {
-	return <View {...props} style={[styles.center(inset), style]} />;
+function AppBarCenter({ inset = false, ...props }: AppBarCenterProps) {
+	return <View {...props} style={[styles.center(inset), props.style]} />;
 }
 
 /** The block under the row, for a medium or large title. */
-function AppBarExpanded({
-	style,
-	...props
-}: ComponentPropsWithRef<typeof View>) {
-	return <View {...props} style={[styles.expanded, style]} />;
+function AppBarExpanded(props: ComponentPropsWithRef<typeof View>) {
+	return <View {...props} style={[styles.expanded, props.style]} />;
 }
 
 const TITLE_VARIANT = {
@@ -70,7 +69,6 @@ export type AppBarTitleProps = Omit<TitleProps, "variant"> & {
 function AppBarTitle({
 	size = "small",
 	numberOfLines = size === "small" ? 1 : 2,
-	style,
 	...props
 }: AppBarTitleProps) {
 	return (
@@ -78,7 +76,7 @@ function AppBarTitle({
 			{...props}
 			variant={TITLE_VARIANT[size]}
 			numberOfLines={numberOfLines}
-			style={[styles.title, style]}
+			style={[styles.title, props.style]}
 		/>
 	);
 }
@@ -91,7 +89,6 @@ export type AppBarSubtitleProps = Omit<TextProps, "variant"> & {
 function AppBarSubtitle({
 	size = "small",
 	numberOfLines = 1,
-	style,
 	...props
 }: AppBarSubtitleProps) {
 	return (
@@ -100,7 +97,7 @@ function AppBarSubtitle({
 			{...props}
 			variant={SUBTITLE_VARIANT[size]}
 			numberOfLines={numberOfLines}
-			style={[styles.subtitle, style]}
+			style={[styles.subtitle, props.style]}
 		/>
 	);
 }

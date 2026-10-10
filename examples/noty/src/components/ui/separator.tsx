@@ -1,11 +1,12 @@
 import type { ComponentPropsWithRef, ReactNode } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
-import { StyleSheet } from "react-native-unistyles";
 
 import { Text } from "@/components/ui/text";
 import type { Spacing } from "@/theme";
 
-type SpacingToken = keyof Spacing;
+import { StyleSheet } from "react-native-unistyles";
+
+export type SpacingToken = keyof Spacing;
 
 export type SeparatorOrientation = "horizontal" | "vertical";
 export type SeparatorVariant = "default" | "subtle";
@@ -32,11 +33,6 @@ export type SeparatorProps = Omit<
 	style?: StyleProp<ViewStyle>;
 };
 
-const insetStart = (inset: SeparatorInset | undefined): SpacingToken =>
-	typeof inset === "object" ? (inset.start ?? 0) : (inset ?? 0);
-const insetEnd = (inset: SeparatorInset | undefined): SpacingToken =>
-	typeof inset === "object" ? (inset.end ?? 0) : (inset ?? 0);
-
 export function Separator({
 	orientation = "horizontal",
 	variant = "default",
@@ -45,7 +41,6 @@ export function Separator({
 	spacing = 0,
 	label,
 	decorative = true,
-	style,
 	...props
 }: SeparatorProps) {
 	const accessibility = decorative
@@ -60,7 +55,7 @@ export function Separator({
 			<View
 				{...props}
 				{...accessibility}
-				style={[styles.labelled(inset, spacing), style]}
+				style={[styles.labelled(inset, spacing), props.style]}
 			>
 				<View style={styles.line(variant, thickness)} />
 				{typeof label === "string" ? (
@@ -81,11 +76,17 @@ export function Separator({
 			{...accessibility}
 			style={[
 				styles.separator(orientation, variant, thickness, inset, spacing),
-				style,
+				props.style,
 			]}
 		/>
 	);
 }
+
+const insetStart = (inset: SeparatorInset | undefined): SpacingToken =>
+	typeof inset === "object" ? (inset.start ?? 0) : (inset ?? 0);
+
+const insetEnd = (inset: SeparatorInset | undefined): SpacingToken =>
+	typeof inset === "object" ? (inset.end ?? 0) : (inset ?? 0);
 
 const styles = StyleSheet.create((theme) => ({
 	separator: (

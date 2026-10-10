@@ -1,13 +1,19 @@
 import type { ReactNode } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
-import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
-import { Tappable, type TappableProps } from "@/components/core/tappable";
+import {
+	Tappable,
+	type TappableProps,
+	type TappableState,
+} from "@/components/core/tappable";
 import { Badge } from "@/components/ui/badge";
-import { Icon, iconColor, type IconColor } from "@/components/ui/icon/icon";
+import { type IconColor, Icon, iconColor } from "@/components/ui/icon/icon";
 import type { IconName } from "@/components/ui/icon/icons";
+
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
 import type { Theme } from "@/theme";
 import { metrics } from "@/theme/tokens";
+import { stateColors } from "@/theme/components/states";
 
 export type IconButtonVariant = "ghost" | "tinted" | "outline" | "solid";
 export type IconButtonSize = "sm" | "md" | "lg";
@@ -37,27 +43,6 @@ export type IconButtonProps = Omit<
 	style?: StyleProp<ViewStyle>;
 };
 
-// Later states win: selected, then pressed, then disabled.
-function iconButtonColors(
-	components: Theme["components"],
-	variant: IconButtonVariant,
-	selected: boolean,
-	pressed: boolean,
-	disabled: boolean,
-) {
-	const states = components.iconButton[variant];
-	return {
-		...states.default,
-		...(selected ? states.selected : undefined),
-		...(pressed ? states.pressed : undefined),
-		...(disabled ? states.disabled : undefined),
-	};
-}
-
-// The icon takes its color as a prop, not as a style. Wrapped once, here, so each instance only has
-// to map the theme to that prop through `uniProps`.
-const ThemedIcon = withUnistyles(Icon);
-
 export function IconButton({
 	icon,
 	variant = "ghost",
@@ -69,7 +54,6 @@ export function IconButton({
 	badge,
 	accessibilityLabel,
 	accessibilityState,
-	style,
 	...props
 }: IconButtonProps) {
 	// `disabled` is nullable on Pressable; the styles and the icon color want a plain boolean.
@@ -77,7 +61,6 @@ export function IconButton({
 
 	return (
 		<Tappable
-			pressScale={metrics.pressScale}
 			{...props}
 			disabled={disabled}
 			accessibilityLabel={
@@ -86,17 +69,18 @@ export function IconButton({
 					: accessibilityLabel
 			}
 			accessibilityState={{ ...accessibilityState, selected }}
-			style={({ pressed }) => [
+			pressScale={props.pressScale ?? metrics.pressScale}
+			style={({ pressed }: TappableState) => [
 				styles.container(variant, size, shape, selected, pressed, off),
-				style,
+				props.style,
 			]}
 		>
 			{({ pressed }) => (
 				<WithBadge badge={badge}>
-					<ThemedIcon
+					<IconButtonIcon
 						name={icon}
 						size={size}
-						uniProps={(theme) => ({
+						uniProps={(theme: Theme) => ({
 							color:
 								color && !off
 									? iconColor(theme.colors, color)
@@ -133,6 +117,27 @@ function WithBadge({
 		</Badge.Anchor>
 	);
 }
+
+// Later states win: selected, then pressed, then disabled.
+function iconButtonColors(
+	components: Theme["components"],
+	variant: IconButtonVariant,
+	selected: boolean,
+	pressed: boolean,
+	disabled: boolean,
+) {
+	const states = components.iconButton[variant];
+	return stateColors(
+		states,
+		selected && "selected",
+		pressed && "pressed",
+		disabled && "disabled",
+	);
+}
+
+// The icon takes its color as a prop, not as a style. Wrapped once, here, so each instance only has
+// to map the theme to that prop through `uniProps`, which `tint` gives it.
+const IconButtonIcon = withUnistyles(Icon);
 
 const styles = StyleSheet.create((theme) => ({
 	container: (

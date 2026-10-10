@@ -1,11 +1,5 @@
 export type HapticKind =
-	| "selection"
-	| "light"
-	| "medium"
-	| "heavy"
-	| "success"
-	| "warning"
-	| "error";
+	"selection" | "light" | "medium" | "heavy" | "success" | "warning" | "error";
 
 /**
  * Plays a haptic. Axiom components call it and never import a haptics library.

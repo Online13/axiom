@@ -1,13 +1,19 @@
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
-import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
 import type { HapticKind } from "@/components/core/haptics";
-import { Tappable, type TappableProps } from "@/components/core/tappable";
-import { Icon } from "@/components/ui/icon/icon";
+import {
+	Tappable,
+	type TappableProps,
+	type TappableState,
+} from "@/components/core/tappable";
 import type { IconName } from "@/components/ui/icon/icons";
-import { FONT_WEIGHT, MAX_FONT_SCALE, Text } from "@/components/ui/text";
+import { MAX_FONT_SCALE, Text, FONT_WEIGHT } from "@/components/ui/text";
 import type { Spacing, Theme } from "@/theme";
+
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
+import { Icon } from "@/components/ui/icon/icon";
+import { stateColors } from "@/theme/components/states";
 
 export type ChipVariant = "outline" | "filled";
 export type ChipSize = "sm" | "md";
@@ -36,28 +42,6 @@ export type ChipProps = Omit<
 	style?: StyleProp<ViewStyle>;
 };
 
-const HEIGHT = { sm: 28, md: 34 };
-
-function chipColors(
-	components: Theme["components"],
-	variant: ChipVariant,
-	selected: boolean | undefined,
-	pressed: boolean,
-	disabled: boolean,
-) {
-	const states = components.chip[variant];
-	return {
-		...states.default,
-		...(selected ? states.selected : undefined),
-		...(pressed && !selected ? states.pressed : undefined),
-		...(disabled ? states.disabled : undefined),
-	};
-}
-
-// The icon takes its color as a prop, not as a style. Wrapped once, here, so each instance only has
-// to map the theme to that prop through `uniProps`.
-const ThemedIcon = withUnistyles(Icon);
-
 function ChipRoot({
 	children,
 	selected,
@@ -70,7 +54,6 @@ function ChipRoot({
 	disabled = false,
 	haptic,
 	accessibilityLabel,
-	style,
 	...props
 }: ChipProps) {
 	const label =
@@ -78,20 +61,23 @@ function ChipRoot({
 		(typeof children === "string" ? children : undefined);
 	const iconSize = size === "sm" ? 14 : 16;
 
-	const foreground = (pressed: boolean) => (theme: Theme) => ({
-		color: chipColors(theme.components, variant, selected, pressed, disabled)
-			.foreground,
-	});
-
 	const renderIcon = (
 		icon: IconName | ReactElement | undefined,
 		pressed: boolean,
 	) =>
 		typeof icon === "string" ? (
-			<ThemedIcon
+			<ChipIcon
 				name={icon}
 				size={iconSize}
-				uniProps={foreground(pressed)}
+				uniProps={(theme: Theme) => ({
+					color: chipColors(
+						theme.components,
+						variant,
+						selected,
+						pressed,
+						disabled,
+					).foreground,
+				})}
 			/>
 		) : (
 			icon
@@ -118,10 +104,18 @@ function ChipRoot({
 					onPress={onRemove}
 					style={styles.remove(size)}
 				>
-					<ThemedIcon
+					<ChipIcon
 						name="close"
 						size={iconSize}
-						uniProps={foreground(pressed)}
+						uniProps={(theme: Theme) => ({
+							color: chipColors(
+								theme.components,
+								variant,
+								selected,
+								pressed,
+								disabled,
+							).foreground,
+						})}
 					/>
 				</Tappable>
 			) : (
@@ -130,27 +124,25 @@ function ChipRoot({
 		</>
 	);
 
-	const containerStyle = (pressed: boolean): StyleProp<ViewStyle> => [
-		styles.chip(
-			variant,
-			size,
-			selected,
-			pressed,
-			disabled,
-			leading !== undefined,
-			trailing !== undefined,
-			onRemove !== undefined,
-		),
-		style,
-	];
-
 	if (!onPress) {
 		return (
 			<View
 				{...props}
 				accessible={!onRemove}
 				accessibilityLabel={label}
-				style={containerStyle(false)}
+				style={[
+					styles.chip(
+						variant,
+						size,
+						selected,
+						false,
+						disabled,
+						leading !== undefined,
+						trailing !== undefined,
+						onRemove !== undefined,
+					),
+					props.style,
+				]}
 			>
 				{content(false)}
 			</View>
@@ -168,7 +160,19 @@ function ChipRoot({
 			}
 			onPress={onPress}
 			haptic={haptic}
-			style={({ pressed }) => containerStyle(pressed)}
+			style={({ pressed }: TappableState) => [
+				styles.chip(
+					variant,
+					size,
+					selected,
+					pressed,
+					disabled,
+					leading !== undefined,
+					trailing !== undefined,
+					onRemove !== undefined,
+				),
+				props.style,
+			]}
 		>
 			{({ pressed }) => content(pressed)}
 		</Tappable>
@@ -190,11 +194,33 @@ export type ChipGroupProps = Omit<
  * Lays chips out on as many lines as they need. For one line that scrolls, put the group in a
  * horizontal ScrollView: it no longer has a width to wrap at.
  */
-function ChipGroup({ gap = 2, style, ...props }: ChipGroupProps) {
-	return <View {...props} style={[styles.wrapRow(gap), style]} />;
+function ChipGroup({ gap = 2, ...props }: ChipGroupProps) {
+	return <View {...props} style={[styles.wrapRow(gap), props.style]} />;
 }
 
 export const Chip = Object.assign(ChipRoot, { Group: ChipGroup });
+
+const HEIGHT = { sm: 28, md: 34 };
+
+function chipColors(
+	components: Theme["components"],
+	variant: ChipVariant,
+	selected: boolean | undefined,
+	pressed: boolean,
+	disabled: boolean,
+) {
+	const states = components.chip[variant];
+	return stateColors(
+		states,
+		selected && "selected",
+		pressed && !selected && "pressed",
+		disabled && "disabled",
+	);
+}
+
+// The icon takes its color as a prop, not as a style. Wrapped once, here, so each instance only has
+// to map the theme to that prop through `uniProps`, which `tint` gives it.
+const ChipIcon = withUnistyles(Icon);
 
 const styles = StyleSheet.create((theme) => ({
 	chip: (

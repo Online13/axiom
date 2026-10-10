@@ -72,7 +72,10 @@ export function useFieldRoot({
  * Registers a text part with its Field. Returns true when the control announces it, so the part
  * hides itself from screen readers. Anything other than plain text stays readable on its own.
  */
-export function useFieldText(part: FieldTextPart, children: ReactNode): boolean {
+export function useFieldText(
+	part: FieldTextPart,
+	children: ReactNode,
+): boolean {
 	const register = use(FieldContext)?.register;
 	const text =
 		typeof children === "string" || typeof children === "number"

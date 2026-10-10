@@ -6,11 +6,14 @@ import {
 	type TextInputProps,
 	type ViewStyle,
 } from "react-native";
-import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
-import { inputColors, type InputVariant } from "@/components/ui/input/field";
 import { MAX_FONT_SCALE } from "@/components/ui/text";
 import { useInput, type InputState } from "@/components/ui/input/use-input";
+
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
+import type { InputVariant } from "@/components/ui/input/field";
+import { inputColors } from "@/components/ui/input/input-colors";
+import type { Theme } from "@/theme";
 
 export type TextAreaVariant = "outline" | "filled" | "plain";
 
@@ -32,14 +35,6 @@ export type TextAreaProps = Omit<TextInputProps, "editable" | "multiline"> & {
 	ref?: Ref<TextInput>;
 };
 
-/** `plain` keeps the colors of `outline`; it only drops the border, background and padding. */
-const colorVariant = (variant: TextAreaVariant): InputVariant =>
-	variant === "plain" ? "outline" : variant;
-
-// The placeholder and the caret are props, not styles. Wrapped once, here, so each instance only
-// has to map the theme to those props through `uniProps`. Refs are forwarded.
-const ThemedTextInput = withUnistyles(TextInput);
-
 /** The multiline control alone. Wrap it in a Field for a label, a description, an error or a count. */
 export function TextArea({
 	invalid,
@@ -49,7 +44,6 @@ export function TextArea({
 	minRows = 3,
 	maxRows = 8,
 	containerStyle,
-	style,
 	value,
 	defaultValue,
 	onChangeText,
@@ -79,38 +73,45 @@ export function TextArea({
 			onPress={input.focus}
 			style={[styles.control(variant, input.state), containerStyle]}
 		>
-			<ThemedTextInput
+			<TextAreaText
 				textAlignVertical="top"
 				maxFontSizeMultiplier={MAX_FONT_SCALE.control}
-				uniProps={(theme) => {
-					const colors = inputColors(
+				uniProps={(theme: Theme) => ({
+					placeholderTextColor: inputColors(
 						theme.components,
 						colorVariant(variant),
 						input.state,
-					);
-					return {
-						placeholderTextColor: colors.placeholder,
-						selectionColor: colors.caret,
-						cursorColor: colors.caret,
-					};
-				}}
+					).placeholder,
+					selectionColor: inputColors(
+						theme.components,
+						colorVariant(variant),
+						input.state,
+					).caret,
+					cursorColor: inputColors(
+						theme.components,
+						colorVariant(variant),
+						input.state,
+					).caret,
+				})}
 				{...props}
 				{...input.inputProps}
 				multiline
 				style={[
-					styles.text(
-						variant,
-						input.state,
-						autoGrow,
-						minRows,
-						maxRows,
-					),
-					style,
+					styles.text(variant, input.state, autoGrow, minRows, maxRows),
+					props.style,
 				]}
 			/>
 		</Pressable>
 	);
 }
+
+/** `plain` keeps the colors of `outline`; it only drops the border, background and padding. */
+const colorVariant = (variant: TextAreaVariant): InputVariant =>
+	variant === "plain" ? "outline" : variant;
+
+// The placeholder and the caret are props, not styles. Wrapped once, here, so each instance only
+// has to map the theme to those props through `uniProps`, which `colors` gives it. Refs are forwarded.
+const TextAreaText = withUnistyles(TextInput);
 
 const styles = StyleSheet.create((theme, rt) => ({
 	control: (variant: TextAreaVariant, state: InputState) => {

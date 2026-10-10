@@ -19,6 +19,7 @@ export type SlotProps = AnyProps & {
  *
  * - Event handlers (`onPress`, `onLayout`…) are both called: the child's first, then the slot's.
  * - Styles are combined, the child's last so it can override. Style functions (`Pressable`) are supported.
+ * - Class names are joined, the child's last.
  * - Other props: the child's value wins.
  */
 export function Slot({ children, ref, ...props }: SlotProps) {
@@ -56,6 +57,12 @@ export function mergeProps(
 			};
 		} else if (key === "style" && childValue !== undefined) {
 			merged.style = mergeStyles(slotValue, childValue);
+		} else if (
+			key === "className" &&
+			typeof slotValue === "string" &&
+			typeof childValue === "string"
+		) {
+			merged.className = `${slotValue} ${childValue}`;
 		}
 	}
 

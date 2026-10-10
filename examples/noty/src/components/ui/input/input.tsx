@@ -7,12 +7,13 @@ import {
 	type TextInputProps,
 	type ViewStyle,
 } from "react-native";
-import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
 import { MAX_FONT_SCALE, Text } from "@/components/ui/text";
-
+import type { InputVariant } from "./field";
 import { useInput, type InputState } from "./use-input";
-import { inputColors, type InputVariant } from "./field";
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
+import { inputColors } from "@/components/ui/input/input-colors";
+import type { Theme } from "@/theme";
 
 export type InputSize = "sm" | "md" | "lg";
 
@@ -33,12 +34,6 @@ export type InputProps = Omit<TextInputProps, "editable"> & {
 	ref?: Ref<TextInput>;
 };
 
-const TEXT = { sm: "subheadline", md: "callout", lg: "body" } as const;
-
-// The placeholder and the caret are props, not styles. Wrapped once, here, so each instance only
-// has to map the theme to those props through `uniProps`. Refs are forwarded.
-const ThemedTextInput = withUnistyles(TextInput);
-
 /** The text control alone. Wrap it in a Field for a label, a description or an error. */
 export function Input({
 	invalid,
@@ -48,7 +43,6 @@ export function Input({
 	variant = "outline",
 	disabled,
 	containerStyle,
-	style,
 	value,
 	defaultValue,
 	onChangeText,
@@ -94,23 +88,25 @@ export function Input({
 			{prefix !== undefined ? (
 				<View style={styles.affix}>{affix(prefix)}</View>
 			) : null}
-			<ThemedTextInput
+			<InputText
 				maxFontSizeMultiplier={MAX_FONT_SCALE.control}
-				uniProps={(theme) => {
-					const colors = inputColors(
+				uniProps={(theme: Theme) => ({
+					placeholderTextColor: inputColors(
 						theme.components,
 						variant,
 						input.state,
-					);
-					return {
-						placeholderTextColor: colors.placeholder,
-						selectionColor: colors.caret,
-						cursorColor: colors.caret,
-					};
-				}}
+					).placeholder,
+					selectionColor: inputColors(
+						theme.components,
+						variant,
+						input.state,
+					).caret,
+					cursorColor: inputColors(theme.components, variant, input.state)
+						.caret,
+				})}
 				{...props}
 				{...input.inputProps}
-				style={[styles.text(size, variant, input.state), style]}
+				style={[styles.text(size, variant, input.state), props.style]}
 			/>
 			{suffix !== undefined ? (
 				<View style={styles.affix}>{affix(suffix)}</View>
@@ -118,6 +114,12 @@ export function Input({
 		</Pressable>
 	);
 }
+
+const TEXT = { sm: "subheadline", md: "callout", lg: "body" } as const;
+
+// The placeholder and the caret are props, not styles. Wrapped once, here, so each instance only
+// has to map the theme to those props through `uniProps`, which `colors` gives it. Refs are forwarded.
+const InputText = withUnistyles(TextInput);
 
 const styles = StyleSheet.create((theme) => ({
 	control: (size: InputSize, variant: InputVariant, state: InputState) => {

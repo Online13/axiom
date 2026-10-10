@@ -11,10 +11,11 @@ import {
 	KeyboardAvoidingView,
 	type KeyboardAvoidingViewProps,
 } from "react-native-keyboard-controller";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import type { Edge } from "react-native-safe-area-context";
 
 import { AppBar, type AppBarProps } from "@/components/ui/app-bar";
+
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 export type ScaffoldBackground = "default" | "subtle";
 
@@ -38,11 +39,8 @@ function ScaffoldRoot({
 	safeAreaEdges = ["top", "bottom"],
 	background = "default",
 	statusBarStyle = "auto",
-	style,
 	...props
 }: ScaffoldProps) {
-	// The status bar follows the active Unistyles theme, so a forced theme stays readable even when
-	// it differs from the system color scheme. This is the theme-in-logic case.
 	const { rt } = useUnistyles();
 
 	// `auto` means readable on the current background: dark glyphs on a light screen.
@@ -54,7 +52,10 @@ function ScaffoldRoot({
 			: statusBarStyle;
 
 	return (
-		<View {...props} style={[styles.root(background, safeAreaEdges), style]}>
+		<View
+			{...props}
+			style={[styles.root(background, safeAreaEdges), props.style]}
+		>
 			<StatusBar
 				barStyle={resolved === "light" ? "light-content" : "dark-content"}
 			/>
@@ -71,14 +72,13 @@ export type ScaffoldKeyboardAvoidingProps = KeyboardAvoidingViewProps;
  */
 function ScaffoldKeyboardAvoiding({
 	behavior = "padding",
-	style,
 	...props
 }: ScaffoldKeyboardAvoidingProps) {
 	return (
 		<KeyboardAvoidingView
 			{...props}
 			behavior={behavior}
-			style={[styles.fill, style]}
+			style={[styles.fill, props.style]}
 		/>
 	);
 }
@@ -101,17 +101,17 @@ function ScaffoldContent({
 	scrollable = true,
 	contentContainerStyle,
 	keyboardShouldPersistTaps = "handled",
-	style,
 	...props
 }: ScaffoldContentProps) {
-	if (!scrollable) return <View style={[styles.fill, style]}>{children}</View>;
+	if (!scrollable)
+		return <View style={[styles.fill, props.style]}>{children}</View>;
 
 	return (
 		<ScrollView
 			keyboardShouldPersistTaps={keyboardShouldPersistTaps}
 			contentContainerStyle={contentContainerStyle}
-			style={[styles.fill, style]}
 			{...props}
+			style={[styles.fill, props.style]}
 		>
 			{children}
 		</ScrollView>
@@ -135,11 +135,10 @@ function ScaffoldFooter({
 	children,
 	bordered = false,
 	safeArea = false,
-	style,
 	...props
 }: ScaffoldFooterProps) {
 	return (
-		<View {...props} style={[styles.footer(bordered, safeArea), style]}>
+		<View {...props} style={[styles.footer(bordered, safeArea), props.style]}>
 			{children}
 		</View>
 	);
