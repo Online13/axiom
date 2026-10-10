@@ -17,7 +17,7 @@ import { ThemeSwitcher } from "../../brand/ThemeSwitcher";
 const githubUrl = "https://github.com/Online13/axiom";
 
 // Tabs whose section is not built yet get a "Soon" pill next to their title.
-const soonTabs = new Set(["/docs/agent", "/docs/showcase"]);
+const soonTabs = new Set(["/docs/agent"]);
 
 const tabs: GetLayoutTabsOptions = {
 	transform: (tab) =>

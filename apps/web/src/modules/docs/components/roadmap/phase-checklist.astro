@@ -17,8 +17,9 @@ const groups = [
     name: 'Styling variants',
     items: [
       { name: 'stylesheet', detail: 'behavior / style split in place', status: 'shipped' },
-      { name: 'unistyles', detail: '76 entries, same API, other engine', status: 'shipped' },
-      { name: 'tailwind', detail: 'NativeWind / Uniwind, once the split is proven', status: 'next' },
+      { name: 'unistyles', detail: '75 entries, same API, other engine', status: 'shipped' },
+      { name: 'nativewind', detail: '75 entries, the theme as a Tailwind preset', status: 'shipped' },
+      { name: 'uniwind', detail: '75 entries, the theme as a Tailwind 4 file', status: 'shipped' },
     ],
   },
   {
@@ -27,7 +28,7 @@ const groups = [
       { name: 'Foundations', detail: 'tokens, ThemeColors, Theme, light / dark', status: 'shipped' },
       { name: 'Core', detail: 'Slot, Portal, Overlay, OverlayStack, Tappable, Haptics', status: 'shipped' },
       { name: 'Hooks', detail: 'useRefreshControl, useControllableState, useOverlayBackHandler', status: 'shipped' },
-      { name: 'Primitives', detail: 'typography, 33 atoms, 3 molecules, Passcode, 5 templates', status: 'shipped' },
+      { name: 'Primitives', detail: 'typography, 34 atoms, 3 molecules, Passcode, 5 templates', status: 'shipped' },
       { name: 'Compositions', detail: '30 entries: cards, items, app bars', status: 'progress' },
       { name: 'Blocks', detail: 'SettingsSection', status: 'progress' },
     ],
@@ -36,9 +37,9 @@ const groups = [
     name: 'Tooling',
     items: [
       { name: 'registry.json', detail: 'component manifest, 88 entries', status: 'shipped' },
-      { name: 'CLI', detail: 'add, init and fetch ship', status: 'shipped' },
+      { name: 'CLI', detail: 'add, init and sync ship', status: 'shipped' },
       { name: 'Standalone mode', detail: 'add --standalone: one file, no theme; portal-based entries later', status: 'shipped' },
-      { name: 'Demo apps', detail: 'StyleSheet and Unistyles with compositions, NativeWind / Uniwind scaffolded', status: 'progress' },
+      { name: 'Demo apps', detail: 'one per styling tool: StyleSheet, Unistyles, NativeWind, Uniwind', status: 'shipped' },
       { name: 'Theme builder', detail: 'public: overrides, presets, previews, agent export', status: 'shipped' },
       { name: 'Foundations screen', detail: 'colors, typography, spacing, radius, icons, targets, states', status: 'shipped' },
       { name: 'CI', detail: 'CLI tests, typecheck per variant, props parity, lint and app bundles run', status: 'shipped' },

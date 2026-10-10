@@ -2,7 +2,7 @@
 import Title from '../Title.astro';
 
 // The same Button in every styling variant (see docs/architecture/styling.md).
-// NativeWind and Uniwind share the tailwind code; only their setup differs.
+// NativeWind and Uniwind show the same code here: their classes are the same, their setup differs.
 const stylesheet = `import { StyleSheet } from 'react-native';
 import { Text } from 'react-native';
 import { Tappable } from '@/components/core/tappable';
@@ -43,29 +43,27 @@ const styles = StyleSheet.create((theme) => ({
   label: { ...theme.type.label, variants: { variant: theme.components.button.label } },
 }));`;
 
-const tailwind = `import { tv } from 'tailwind-variants';
-import { Text } from 'react-native';
+const tailwind = `import { Text } from 'react-native';
 import { Tappable } from '@/components/core/tappable';
+import { cx } from '@/theme';
 
-const button = tv({
-  slots: { base: 'min-h-11 rounded-xl px-4', label: 'text-base font-semibold' },
-  variants: { variant: { solid: { base: 'bg-primary', label: 'text-on-primary' } } },
-});
+// Class names generated from the button's tokens: they follow light and dark.
+const BASE = { solid: 'bg-button-solid active:bg-button-solid-pressed' };
+const LABEL = { solid: 'text-button-solid-foreground' };
 
 export function Button({ label, variant = 'solid', ...props }: ButtonProps) {
-  const styles = button({ variant });
   return (
-    <Tappable className={styles.base()} {...props}>
-      <Text className={styles.label()}>{label}</Text>
+    <Tappable className={cx('min-h-control-md rounded-button px-4', BASE[variant])} {...props}>
+      <Text className={cx('text-callout font-semibold', LABEL[variant])}>{label}</Text>
     </Tappable>
   );
 }`;
 
 const variants = [
 	{ id: 'stylesheet', name: 'StyleSheet', code: stylesheet, note: 'No dependency. Theme through useTheme().' },
-	{ id: 'unistyles', name: 'Unistyles', code: unistyles, note: 'Adaptive themes and native variants.', soon: true },
-	{ id: 'nativewind', name: 'NativeWind', code: tailwind, note: 'Tokens exposed to your Tailwind config.', soon: true },
-	{ id: 'uniwind', name: 'Uniwind', code: tailwind, note: 'Same classes as NativeWind, different setup.', soon: true },
+	{ id: 'unistyles', name: 'Unistyles', code: unistyles, note: 'Adaptive themes and native variants.' },
+	{ id: 'nativewind', name: 'NativeWind', code: tailwind, note: 'The Axiom theme as a Tailwind preset.' },
+	{ id: 'uniwind', name: 'Uniwind', code: tailwind, note: 'The same classes, from a Tailwind 4 theme file.' },
 ];
 
 // A line is "shared" when every variant contains it: that is the behavior Axiom keeps identical.
@@ -120,7 +118,6 @@ const ownership = [
 							>
 								<span class="prompt__cursor" aria-hidden="true">›</span>
 								{v.name}
-								{v.soon && <small>soon</small>}
 								<span class="progress" aria-hidden="true">
 									<span data-progress />
 								</span>
