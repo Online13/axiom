@@ -54,7 +54,7 @@ _A preview of a real mobile flow built with Axiom will be added here._
 | Registry           | [`packages/registry`](./packages/registry) | Source for foundations, components, and hooks |
 | CLI                | [`packages/cli`](./packages/cli)           | Copies selected registry items into an app    |
 
-The registry currently lists 88 items, each styled for StyleSheet, Unistyles and Tailwind (NativeWind or Uniwind). Each demo app shows them with one of these tools. See [apps/README.md](./apps/README.md) for the workspace layout.
+The registry currently lists 88 items, each styled for StyleSheet, Unistyles, NativeWind and Uniwind. Each demo app shows them with one of these tools. See [apps/README.md](./apps/README.md) for the workspace layout.
 
 ## Running locally
 

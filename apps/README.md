@@ -7,8 +7,8 @@ Applications in the monorepo. Each folder is a standalone Bun workspace with its
 | [web](web/)                         | Landing and documentation      | Astro + Fumadocs  |
 | [demo-stylesheet](demo-stylesheet/) | Demo app, `stylesheet` variant | Expo + StyleSheet |
 | [demo-unistyles](demo-unistyles/)   | Demo app, `unistyles` variant  | Expo + Unistyles  |
-| [demo-nativewind](demo-nativewind/) | Demo app, `tailwind` variant   | Expo + NativeWind |
-| [demo-uniwind](demo-uniwind/)       | Demo app, `tailwind` variant   | Expo + Uniwind    |
+| [demo-nativewind](demo-nativewind/) | Demo app, `nativewind` variant | Expo + NativeWind |
+| [demo-uniwind](demo-uniwind/)       | Demo app, `uniwind` variant    | Expo + Uniwind    |
 
 ## web
 

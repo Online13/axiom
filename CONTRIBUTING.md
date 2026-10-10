@@ -2,7 +2,7 @@
 
 Thanks for your interest in Axiom. This guide covers setting up the repository, finding something to work on, and opening a pull request.
 
-Axiom is in early development. The repository contains the documentation site, the landing page, four demo apps, a 55-entry registry and a CLI with `add` and `init`. The 45 components with styling variants have both `stylesheet` and `unistyles` implementations.
+Axiom is in early development. The repository contains the documentation site, the landing page, four demo apps, an 88-entry registry and a CLI with `add`, `init` and `sync`. The 75 entries with styling variants are written for `stylesheet`, `unistyles`, `nativewind` and `uniwind`.
 
 ## Before contributing
 
@@ -55,7 +55,7 @@ Components are written in `packages/registry` and copied into the demos by the C
 
 The repo installs dependencies hoisted (`bunfig.toml`), so every app must use the same React version as Expo.
 
-There are no tests yet. The minimum check is a successful build of the app you changed. For a demo app, run `bunx tsc --noEmit` and `bunx expo-doctor` in its folder.
+The CLI has tests (`bun run --cwd packages/cli test`), and the registry is typechecked for every variant (`bun run --cwd packages/registry typecheck`). For an app, the minimum check is a successful build. For a demo app, run `bunx tsc --noEmit` and `bunx expo-doctor` in its folder.
 
 ## Finding something to work on
 

@@ -10,18 +10,18 @@ Axiom is in early development. This document describes the intended structure of
 Foundations → Primitives → Compositions → Blocks
 ```
 
-| Layer        | Role                                                                     |
-| ------------ | ------------------------------------------------------------------------ |
-| Foundations  | Theme, tokens and the headless core                                      |
-| Primitives   | Generic, reusable UI building blocks, organized with Atomic Design       |
-| Compositions | Ready-made interfaces assembled from primitives, such as a product card  |
+| Layer        | Role                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| Foundations  | Theme, tokens and the headless core                                        |
+| Primitives   | Generic, reusable UI building blocks, organized with Atomic Design         |
+| Compositions | Ready-made interfaces assembled from primitives, such as a product card    |
 | Blocks       | Complete or nearly complete sections of an app, such as a settings section |
 
 Behaviors and patterns are a second axis: they describe interaction, not UI elements.
 
-| Layer     | Role                                                                          |
-| --------- | ----------------------------------------------------------------------------- |
-| Behaviors | Reusable interaction logic, independent of a specific look                    |
+| Layer     | Role                                                                            |
+| --------- | ------------------------------------------------------------------------------- |
+| Behaviors | Reusable interaction logic, independent of a specific look                      |
 | Patterns  | Primitives, compositions and behaviors combined to solve a recurring UX problem |
 
 Atomic Design only organizes the primitives. It doesn't describe compositions, blocks, behaviors or patterns.
@@ -125,7 +125,7 @@ The registry is the manifest of everything Axiom can add to a project. For each 
 
 With this graph, a project can take one item and get exactly what that item needs.
 
-The registry lives in `packages/registry`. Its manifest, `registry.json`, lists 88 items. All 76 entries with styling variants provide `stylesheet`, `unistyles` and `tailwind` implementations. NativeWind and Uniwind share the `tailwind` one.
+The registry lives in `packages/registry`. Its manifest, `registry.json`, lists 88 items. Each component is written once, and the 75 entries with styling variants add one styles file per styling: `stylesheet`, `unistyles`, `nativewind` and `uniwind`. The CLI writes the two as one file in the project.
 
 ## CLI
 
@@ -133,7 +133,7 @@ The CLI is how a project uses the registry. It copies the requested items and th
 
 The copied code belongs to the project. The CLI is a tool for adding code and never becomes a runtime dependency of the app.
 
-The CLI lives in `packages/cli`. Its `add` command copies files, rewrites imports and installs missing npm packages. Its `init` command configures styling and aliases, copies foundations and core primitives, installs their dependencies and writes `axiom.json`. Its `fetch` command copies the items `axiom.json` lists that are missing from the project, and keeps the files already there. `add --standalone` writes an item as one self-contained file instead, for an app with its own design system: its dependencies inlined, the theme resolved to values, no Axiom import left. The CLI reads the registry from a local folder. [`packages/cli/docs`](packages/cli/docs/README.md) explains its code.
+The CLI lives in `packages/cli`. Its `add` command copies files, rewrites imports and installs missing npm packages. Its `init` command configures styling and aliases, copies foundations and core primitives, installs their dependencies and writes `axiom.json`. Its `sync` command copies the items `axiom.json` lists that are missing from the project, then lets you choose, level by level (core, theme, components), which existing files follow the registry. `add --standalone` writes an item as one self-contained file instead, for an app with its own design system: its dependencies inlined, the theme resolved to values, no Axiom import left. The CLI reads the registry from a local folder. [`packages/cli/docs`](packages/cli/docs/README.md) explains its code.
 
 ## Repository structure
 
