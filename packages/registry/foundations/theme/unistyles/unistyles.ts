@@ -15,10 +15,11 @@ import { dark, light, type Theme } from "../theme";
  * `adaptiveThemes` follows the system color scheme on its own: no provider, and no re-render when
  * the scheme changes. To force a scheme, call `UnistylesRuntime.setTheme('light' | 'dark')`.
  */
-type AxiomThemes = { light: Theme; dark: Theme };
-
 declare module "react-native-unistyles" {
-	export interface UnistylesThemes extends AxiomThemes {}
+	export interface UnistylesThemes {
+		light: Theme;
+		dark: Theme;
+	}
 }
 
 StyleSheet.configure({
