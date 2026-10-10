@@ -98,7 +98,12 @@ export function Tappable({
 			accessibilityState={{ ...accessibilityState, disabled }}
 			onLayout={handleLayout}
 			onPressIn={handlePressIn}
-			style={({ pressed }) => resolveStyle(pressed && !disabled)}
+			// A style that doesn't depend on the press stays a plain style.
+			style={
+				typeof style === "function" || pressScale !== undefined
+					? ({ pressed }) => resolveStyle(pressed && !disabled)
+					: style
+			}
 		>
 			{typeof children === "function"
 				? ({ pressed }) => children({ pressed: pressed && !disabled })

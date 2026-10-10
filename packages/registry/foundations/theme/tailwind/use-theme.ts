@@ -5,9 +5,9 @@ import { dark, light, type Theme } from "../theme";
 /**
  * The theme matching the system color scheme. No provider needed.
  *
- * Components take their colors and token values from here, in `style`, and keep `className` for the
- * layout that doesn't depend on the theme: the same values as the other variants, and the same
- * classes with NativeWind and Uniwind. To force a scheme, call
+ * Components take their colors from classes, which follow the scheme on their own. They read this
+ * for what no class can say: a color a prop wants as a value, like the stroke of an SVG path, and
+ * the tokens of the components that animate their colors. To force a scheme, call
  * `Appearance.setColorScheme('light' | 'dark')`, or `'unspecified'` to follow the system again.
  */
 export function useTheme(): Theme {
