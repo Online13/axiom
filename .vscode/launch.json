@@ -1,0 +1,26 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			// Runs `axiom add button` on a fresh sandbox app. Needs the Bun extension (oven.bun-vscode).
+			// No terminal is attached, so the CLI never prompts: answers come from the flags.
+			"name": "CLI: add button",
+			"type": "bun",
+			"request": "launch",
+			"preLaunchTask": "cli: sandbox",
+			"program": "${workspaceFolder}/packages/cli/src/index.ts",
+			"args": [
+				"add",
+				"button",
+				"--icons",
+				"expo-symbols",
+				"--no-install",
+				"--registry",
+				"${workspaceFolder}/packages/registry",
+				"--cwd",
+				"/tmp/axiom-sandbox"
+			],
+			"cwd": "${workspaceFolder}"
+		}
+	]
+}

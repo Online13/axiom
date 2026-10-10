@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			// A throwaway Expo app in /tmp, already through `axiom init`, for the "CLI: add button" debug run.
+			"label": "cli: sandbox",
+			"type": "shell",
+			"command": "rm -rf /tmp/axiom-sandbox && mkdir -p /tmp/axiom-sandbox && echo '{\"dependencies\":{\"react-native\":\"*\",\"expo\":\"*\"}}' > /tmp/axiom-sandbox/package.json && echo '{\"compilerOptions\":{\"paths\":{\"@/*\":[\"./src/*\"]}}}' > /tmp/axiom-sandbox/tsconfig.json && bun packages/cli/src/index.ts init --styling stylesheet --no-install --registry packages/registry --cwd /tmp/axiom-sandbox | cat",
+			"presentation": { "reveal": "silent" },
+			"problemMatcher": []
+		}
+	]
+}
