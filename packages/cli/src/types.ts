@@ -6,8 +6,54 @@ export const STYLINGS = [
 ] as const;
 export type Styling = (typeof STYLINGS)[number];
 
-export const VARIANTS = ["stylesheet", "unistyles", "tailwind"] as const;
+/**
+ * The names a variant goes by: one per styling, and `tailwind` for what NativeWind and Uniwind
+ * share, like the folder of their theme (`foundations/theme/tailwind`). Every item of the registry
+ * lists `nativewind` and `uniwind` apart.
+ */
+export const VARIANTS = [
+	"stylesheet",
+	"unistyles",
+	"nativewind",
+	"uniwind",
+	"tailwind",
+] as const;
 export type Variant = (typeof VARIANTS)[number];
+
+/** Where a styling takes its files from, its own variant first. */
+export const VARIANTS_OF: Record<Styling, readonly Variant[]> = {
+	stylesheet: ["stylesheet"],
+	unistyles: ["unistyles"],
+	nativewind: ["nativewind", "tailwind"],
+	uniwind: ["uniwind", "tailwind"],
+};
+
+/** Stylings whose components are written with class names, and whose tokens are CSS. */
+export const CSS_STYLINGS = ["nativewind", "uniwind"] as const;
+export type CssStyling = (typeof CSS_STYLINGS)[number];
+
+export function isCssStyling(styling: Styling): styling is CssStyling {
+	return (CSS_STYLINGS as readonly Styling[]).includes(styling);
+}
+
+/** The variant of `item` a styling uses, if the item has one for it. */
+export function variantOf(
+	item: Pick<RegistryItem, "variants">,
+	styling: Styling,
+): Variant | undefined {
+	return VARIANTS_OF[styling].find((variant) => item.variants?.[variant]);
+}
+
+const VARIANT_SUFFIX = new RegExp(`\\.(${VARIANTS.join("|")})(?=\\.[^./]+$|$)`);
+
+/**
+ * A file every variant writes its own way sits beside the files they share, named after its variant:
+ * `button.styles.unistyles.tsx` is the Unistyles form of `button.styles`. The registry's tsconfigs
+ * resolve `./button.styles` to it through `moduleSuffixes`.
+ */
+export function stripVariant(path: string) {
+	return path.replace(VARIANT_SUFFIX, "");
+}
 
 /** Where the icons of the project come from. Decides which icon registry `add icon` creates. */
 export const ICON_SOURCES = ["expo-symbols", "custom"] as const;
@@ -23,13 +69,6 @@ export const NAVIGATIONS = [
 	"react-native",
 ] as const;
 export type Navigation = (typeof NAVIGATIONS)[number];
-
-export const VARIANT_OF: Record<Styling, Variant> = {
-	stylesheet: "stylesheet",
-	unistyles: "unistyles",
-	nativewind: "tailwind",
-	uniwind: "tailwind",
-};
 
 export type Layer =
 	| "foundations"
@@ -135,6 +174,12 @@ export type RegistryItem = FileSet & {
 	 * `<name>` (camelCase).
 	 */
 	tokens?: string;
+	/**
+	 * The same tokens as CSS, generated from `tokens` by the registry, per styling that reads its
+	 * tokens from CSS. With one of them, the CLI copies it to the theme's `components/` folder as
+	 * `<name>.css`, and leaves the `tokens` file out.
+	 */
+	cssTokens?: Partial<Record<CssStyling, string>>;
 	internalDependencies?: string[];
 	variants?: Partial<Record<Variant, FileSet>>;
 	/** Files and dependencies per icon source (`icons` in axiom.json). Asking for the source when missing. */

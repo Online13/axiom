@@ -9,17 +9,22 @@ import {
 	sep,
 } from "node:path";
 
+import { format } from "./format.ts";
+import { inlineStyles } from "./inline.ts";
 import { aliasToDir } from "./project.ts";
 import {
 	ALIAS_OF,
 	DEFAULT_ALIASES,
 	THEME_COMPONENTS_DIR,
-	VARIANT_OF,
+	isCssStyling,
 	itemFolder,
+	stripVariant,
+	variantOf,
 	type FileSet,
 	type ProjectConfig,
 	type RegistryFile,
 	type RegistryItem,
+	type Styling,
 } from "./types.ts";
 
 type PlannedFile = {
@@ -32,11 +37,38 @@ type PlannedFile = {
 	folder?: string;
 	/** Content of a generated file, written instead of reading `source`. */
 	content?: string;
+	/** The styles file of the project's variant, written into this component. */
+	styles?: string;
 	/** How the registry addresses this file, and what that becomes in the project. */
 	address?: { from: string; to: string };
 };
 
 const BARREL = "index.ts";
+/**
+ * `button.styles.<variant>.tsx`: what a component reads from its variant. It isn't copied: the
+ * project has one variant, so the file is written into the component it belongs to.
+ */
+const STYLES_FILE = /\.styles\.tsx?$/;
+
+function isStylesFile(file: RegistryFile) {
+	return STYLES_FILE.test(stripVariant(pathOf(file)));
+}
+
+/** The styles file among `files` that `component` imports as `./<name>.styles`. */
+export function stylesFileOf(component: string, files: RegistryFile[]) {
+	const base = stripExtension(component);
+	return files
+		.map(pathOf)
+		.find(
+			(path) =>
+				isStylesFile(path) &&
+				stripExtension(stripVariant(path)) === `${base}.styles`,
+		);
+}
+
+function pathOf(file: RegistryFile) {
+	return typeof file === "string" ? file : file.path;
+}
 
 export type OverwriteAnswer = "yes" | "no" | "all" | "none";
 
@@ -53,15 +85,29 @@ export type CopyOptions = {
 	 */
 	overwrite: "ask" | "always" | "force";
 	confirm?: (path: string) => Promise<OverwriteAnswer>;
+	/**
+	 * Decides on every differing file at once (`sync`), in place of `requested` and `overwrite`:
+	 * it gets the files that exist and differ, and returns the paths to overwrite.
+	 */
+	select?: (differing: DifferingFile[]) => Promise<Set<string>>;
 	/** Last change to a file's content before it's compared and written. */
 	transform?: (destination: string, content: string) => string;
 };
 
+/** A file of the project that differs from the registry: `path` is relative to the project root. */
+export type DifferingFile = { path: string; destination: string };
+
 export type CopyResult = {
 	written: string[];
 	unchanged: string[];
-	/** Existing files left untouched: dependencies, `createOnly` files, and declined overwrites. */
-	kept: { path: string; reason: "dependency" | "owned" | "declined" }[];
+	/**
+	 * Existing files left untouched: dependencies, `createOnly` files, declined overwrites, and the
+	 * ones `select` left out.
+	 */
+	kept: {
+		path: string;
+		reason: "dependency" | "owned" | "declined" | "unselected";
+	}[];
 	dependencies: string[];
 };
 
@@ -76,13 +122,14 @@ function plan(
 	registryRoot: string,
 	cwd: string,
 ) {
-	const variant = VARIANT_OF[config.styling];
 	const files: PlannedFile[] = [];
 	const dependencies = new Set<string>();
 
 	for (const item of items) {
-		if (item.variants && !item.variants[variant]) {
-			throw new Error(`"${item.name}" has no ${variant} variant yet.`);
+		if (item.variants && !variantOf(item, config.styling)) {
+			throw new Error(
+				`"${item.name}" has no ${config.styling} variant yet.`,
+			);
 		}
 
 		if (item.iconSources && !config.icons) {
@@ -119,10 +166,29 @@ function plan(
 
 		const folder = folderOf(item, config);
 
-		for (const file of own.flatMap((set) => set.files ?? [])) {
+		const all = own.flatMap((set) => set.files ?? []);
+		const cssTokens = cssTokensOf(item, config.styling);
+		if (cssTokens) {
+			files.push({
+				item,
+				source: join(registryRoot, cssTokens),
+				destination: join(
+					aliasToDir(cwd, config.aliases.theme),
+					THEME_COMPONENTS_DIR,
+					`${item.name}.css`,
+				),
+				createOnly: false,
+			});
+		}
+		for (const file of all) {
+			if (isStylesFile(file)) continue;
+			// The component reads its tokens from the CSS: the TypeScript ones stay out.
+			if (cssTokens && item.tokens === pathOf(file)) continue;
+			const styles = stylesFileOf(pathOf(file), all);
 			files.push({
 				item,
 				...locate(file, item, config, registryRoot, cwd, folder),
+				...(styles && { styles: join(registryRoot, styles) }),
 			});
 		}
 	}
@@ -190,10 +256,21 @@ export function sets(
 ): FileSet[] {
 	return [
 		item,
-		item.variants?.[VARIANT_OF[config.styling]] ?? {},
+		variantSet(item, config.styling),
 		(config.icons && item.iconSources?.[config.icons]) || {},
 		(config.navigation && item.navigationSources?.[config.navigation]) || {},
 	];
+}
+
+/** The files and dependencies of the variant a styling uses. */
+export function variantSet(item: RegistryItem, styling: Styling): FileSet {
+	const variant = variantOf(item, styling);
+	return (variant && item.variants?.[variant]) || {};
+}
+
+/** The CSS tokens of `item` for the project's styling, when it reads its tokens from CSS. */
+export function cssTokensOf(item: RegistryItem, styling: Styling) {
+	return isCssStyling(styling) ? item.cssTokens?.[styling] : undefined;
 }
 
 /**
@@ -204,7 +281,9 @@ export function sets(
 export function folderOf(item: RegistryItem, config: ProjectConfig) {
 	const own = sets(item, config)
 		.flatMap((set) => set.files ?? [])
-		.filter((file) => placement(file, item) === "alias");
+		.filter(
+			(file) => placement(file, item) === "alias" && !isStylesFile(file),
+		);
 	return itemFolder(item, own.length);
 }
 
@@ -271,17 +350,21 @@ function locate(
 				},
 			};
 
-		default:
+		default: {
+			// A file named after its variant (`input-classes.uniwind.ts`) is the only one of its
+			// name in a project: it lands without the suffix.
+			const name = stripVariant(basename(path));
 			return {
 				source,
-				destination: join(aliasDir(), folder ?? "", basename(path)),
+				destination: join(aliasDir(), folder ?? "", name),
 				createOnly,
 				folder,
 				address: {
 					from,
-					to: `${config.aliases[alias]}${folder ? `/${folder}` : ""}/${stripExtension(basename(path))}`,
+					to: `${config.aliases[alias]}${folder ? `/${folder}` : ""}/${stripExtension(name)}`,
 				},
 			};
+		}
 	}
 }
 
@@ -295,7 +378,7 @@ export function registryAddress(file: RegistryFile, item: RegistryItem) {
 	if (typeof file !== "string" && file.as) {
 		return join(alias, stripIndex(stripExtension(file.as)));
 	}
-	return `${alias}/${stripExtension(basename(path))}`;
+	return `${alias}/${stripExtension(stripVariant(basename(path)))}`;
 }
 
 /** Maps the registry's default aliases to the project's. */
@@ -398,6 +481,19 @@ function stripExtension(path: string) {
 		: path;
 }
 
+/** `component` with the styles file of its variant written into it. */
+export function inlineComponent(
+	content: string,
+	component: string,
+	styles: string,
+) {
+	return inlineStyles(content, readFileSync(styles, "utf8"), {
+		stylesModule: `./${stripExtension(stripVariant(basename(styles)))}`,
+		componentModule: `./${stripExtension(basename(component))}`,
+		stylesFile: styles,
+	});
+}
+
 export async function copyItems(
 	items: RegistryItem[],
 	config: ProjectConfig,
@@ -424,6 +520,7 @@ export async function copyItems(
 	// Every file is read, rewritten and decided on before anything is written,
 	// so an error in one file leaves the project untouched.
 	const writes: { file: PlannedFile; content: string; path: string }[] = [];
+	const differing: typeof writes = [];
 
 	for (const file of files) {
 		if (file.source && !existsSync(file.source)) {
@@ -433,12 +530,16 @@ export async function copyItems(
 		}
 
 		let content = file.content ?? readFileSync(file.source, "utf8");
+		if (file.styles)
+			content = inlineComponent(content, file.source, file.styles);
 		if (file.source && CODE_EXTENSIONS.includes(extname(file.source))) {
 			const itemFiles = files.filter((other) => other.item === file.item);
 			content = rewriteImports(content, file, itemFiles, config, addresses);
 		}
 		if (options.transform)
 			content = options.transform(file.destination, content);
+		// A merged component is written by the CLI, not copied: it is formatted like the project.
+		if (file.styles) content = await format(content, file.destination);
 
 		const path = relative(cwd, file.destination);
 
@@ -450,6 +551,10 @@ export async function copyItems(
 			}
 			if (file.createOnly) {
 				result.kept.push({ path, reason: "owned" });
+				continue;
+			}
+			if (options.select) {
+				differing.push({ file, content, path });
 				continue;
 			}
 			if (overwrite !== "force" && !options.requested.has(file.item.name)) {
@@ -475,6 +580,19 @@ export async function copyItems(
 		}
 
 		writes.push({ file, content, path });
+	}
+
+	if (options.select && differing.length) {
+		const selected = await options.select(
+			differing.map(({ file, path }) => ({
+				path,
+				destination: file.destination,
+			})),
+		);
+		for (const write of differing) {
+			if (selected.has(write.path)) writes.push(write);
+			else result.kept.push({ path: write.path, reason: "unselected" });
+		}
 	}
 
 	for (const { file, content, path } of writes) {

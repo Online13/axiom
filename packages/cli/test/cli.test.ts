@@ -5,7 +5,7 @@ import { existsSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync 
 import { dirname, extname, join, relative, resolve } from "node:path";
 
 import { readRegistry } from "../src/registry.ts";
-import { STYLINGS, VARIANT_OF } from "../src/types.ts";
+import { STYLINGS, variantOf } from "../src/types.ts";
 import { REGISTRY_ROOT, tempDir, tempProject } from "./fixtures.ts";
 
 const CLI = join(import.meta.dirname, "../src/index.ts");
@@ -173,7 +173,7 @@ describe("add", () => {
 	// The widest check there is: every item of the registry, copied together, with every import resolving.
 	const registry = readRegistry(REGISTRY_ROOT);
 	const stylings = STYLINGS.filter((styling) =>
-		registry.items.every((item) => !item.variants || item.variants[VARIANT_OF[styling]]),
+		registry.items.every((item) => !item.variants || variantOf(item, styling)),
 	);
 	for (const styling of stylings) {
 		test(`every item of the registry, with ${styling}`, () => {
@@ -196,7 +196,7 @@ describe("add", () => {
 	}
 });
 
-describe("fetch", () => {
+describe("sync", () => {
 	test("restores deleted files and keeps edited ones", () => {
 		const cwd = tempProject();
 		init(cwd);
@@ -207,7 +207,7 @@ describe("fetch", () => {
 		rmSync(deleted);
 		writeFileSync(edited, "// mine\n");
 
-		const { code, output } = axiom(cwd, "fetch");
+		const { code, output } = axiom(cwd, "sync");
 		expect(code).toBe(0);
 		expect(existsSync(deleted)).toBe(true);
 		expect(readFileSync(edited, "utf8")).toBe("// mine\n");
@@ -221,7 +221,7 @@ describe("fetch", () => {
 		axiom(source, "add", "button", "--icons", "expo-symbols");
 
 		const target = tempProject({ "axiom.json": readJson(source, "axiom.json") });
-		const { code } = axiom(target, "fetch");
+		const { code } = axiom(target, "sync");
 		expect(code).toBe(0);
 		const list = (cwd: string) =>
 			files(join(cwd, "src")).map((file) => relative(cwd, file)).sort();
@@ -229,16 +229,63 @@ describe("fetch", () => {
 		expect(unresolvedImports(target)).toEqual([]);
 	});
 
+	/** A project with button, where a component, a core primitive and a theme file were edited. */
+	function editedProject() {
+		const cwd = tempProject();
+		init(cwd);
+		axiom(cwd, "add", "button", "--icons", "expo-symbols");
+		const edited = {
+			components: join(cwd, "src/components/ui/text.tsx"),
+			core: join(cwd, "src/components/core/tappable.tsx"),
+			theme: join(cwd, "src/theme/components/button.ts"),
+		};
+		for (const file of Object.values(edited)) writeFileSync(file, "// mine\n");
+		const mine = (file: string) => readFileSync(file, "utf8") === "// mine\n";
+		return { cwd, edited, mine };
+	}
+
+	test("--keep and --overwrite update the levels that aren't kept", () => {
+		const { cwd, edited, mine } = editedProject();
+		const { code, output } = axiom(cwd, "sync", "--keep", "core,theme", "--overwrite");
+		expect(code).toBe(0);
+		expect(mine(edited.components)).toBe(false);
+		expect(mine(edited.core)).toBe(true);
+		expect(mine(edited.theme)).toBe(true);
+		expect(output).toMatch(/1 written/);
+	});
+
+	test("--keep none overwrites every level", () => {
+		const { cwd, edited, mine } = editedProject();
+		expect(axiom(cwd, "sync", "--keep", "none", "--overwrite").code).toBe(0);
+		expect(Object.values(edited).some(mine)).toBe(false);
+		expect(unresolvedImports(cwd)).toEqual([]);
+	});
+
+	test("--keep alone keeps the files nobody can be asked about", () => {
+		const { cwd, edited, mine } = editedProject();
+		const { code, output } = axiom(cwd, "sync", "--keep", "core,theme");
+		expect(code).toBe(0);
+		expect(mine(edited.components)).toBe(true);
+		expect(output).toContain("--overwrite");
+	});
+
+	test("--keep refuses an unknown level", () => {
+		const { cwd } = editedProject();
+		const { code, output } = axiom(cwd, "sync", "--keep", "tokens");
+		expect(code).toBe(1);
+		expect(output).toContain('Unknown level "tokens"');
+	});
+
 	test("fails without axiom.json", () => {
-		const { code, output } = axiom(tempProject(), "fetch");
+		const { code, output } = axiom(tempProject(), "sync");
 		expect(code).toBe(1);
 		expect(output).toContain("No axiom.json");
 	});
 
 	test("--help prints its usage", () => {
-		const { code, output } = axiom(tempDir(), "fetch", "--help");
+		const { code, output } = axiom(tempDir(), "sync", "--help");
 		expect(code).toBe(0);
-		expect(output).toContain("Usage: axiom fetch");
+		expect(output).toContain("Usage: axiom sync");
 	});
 });
 
@@ -267,10 +314,11 @@ describe("add --standalone", () => {
 		expect(existsSync(join(cwd, "axiom.json"))).toBe(false);
 	});
 
-	// The tailwind variant reads the theme through `useTheme()` like stylesheet, and imports `cx` from
-	// the theme: a helper, written into the file rather than resolved from the theme.
+	// NativeWind and Uniwind read the theme through `useTheme()` like stylesheet, and import `cx` from
+	// the theme: a helper, written into the file rather than resolved from the theme. The two files
+	// differ where the tools do, like the icon's color.
 	for (const name of ["badge", "switch"]) {
-		test(`${name} with nativewind and uniwind: the same self-contained file`, () => {
+		test(`${name} with nativewind and uniwind: a self-contained file each`, () => {
 			const written = ["nativewind", "uniwind"].map((styling) => {
 				const cwd = tempProject();
 				const { code } = axiom(
@@ -286,12 +334,12 @@ describe("add --standalone", () => {
 				expect(code).toBe(0);
 				return readFileSync(join(cwd, `src/components/ui/${name}.tsx`), "utf8");
 			});
-			const [content] = written;
-			const imports = [...content.matchAll(IMPORT)].map(([, specifier]) => specifier);
-			expect(imports.filter((specifier) => /^(@\/|\.)/.test(specifier))).toEqual([]);
-			expect(content).not.toContain("useTheme");
-			if (content.includes("cx(")) expect(content).toContain("function cx(");
-			expect(written[1]).toBe(content);
+			for (const content of written) {
+				const imports = [...content.matchAll(IMPORT)].map(([, specifier]) => specifier);
+				expect(imports.filter((specifier) => /^(@\/|\.)/.test(specifier))).toEqual([]);
+				expect(content).not.toContain("useTheme");
+				if (content.includes("cx(")) expect(content).toContain("function cx(");
+			}
 		});
 	}
 

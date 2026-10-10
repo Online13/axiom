@@ -47,18 +47,30 @@ A typo like `add buton`, or running `add` before `init`, must end with a message
 **Every component in the registry, copied together, for each styling.**
 This is the widest test we have. It adds every item of the registry in one go, once per styling tool, and checks that every import resolves. When someone adds a new component to the registry with a wrong import, or an import to a file that isn't declared, this test catches it, whichever component it is. When a new component arrives, this test covers it without anyone writing a new test.
 
-## `axiom fetch`
+## `axiom sync`
 
-`fetch` copies what `axiom.json` lists without updating anything. It writes only the files that are missing.
+`sync` copies what `axiom.json` lists. It writes the files that are missing, and updates existing ones only where it's told to. No terminal is attached in these tests, so the options stand in for its two questions.
 
 **It restores deleted files and keeps edited ones.**
-We delete one copied file and edit another, then run `fetch`. The deleted file must come back, the edited one must keep the user's version, and `axiom.json` must not change. Unlike `add`, `fetch` doesn't ask about the edited file. It never overwrites.
+We delete one copied file and edit another, then run `sync`. The deleted file must come back, the edited one must keep the user's version, and `axiom.json` must not change. With no option and nobody to ask, `sync` overwrites nothing.
 
 **It sets up an app with the same components as another one.**
-We copy one app's `axiom.json` into a second, empty app and run `fetch`. The second app must end up with exactly the same files as the first, and every import must resolve. That's how a team shares a setup.
+We copy one app's `axiom.json` into a second, empty app and run `sync`. The second app must end up with exactly the same files as the first, and every import must resolve. That's how a team shares a setup.
+
+**`--keep` and `--overwrite` update the levels that aren't kept.**
+We edit a component, a core primitive and a component's tokens, then run `sync --keep core,theme --overwrite`. Only the component must go back to the registry's version.
+
+**`--keep none` overwrites every level.**
+Same three edits, with `--keep none --overwrite`. All three files must go back to the registry's version, and every import must still resolve.
+
+**`--keep` alone keeps the files nobody can be asked about.**
+Without `--overwrite` and without a terminal, the component stays edited and the output points to `--overwrite`.
+
+**`--keep` refuses an unknown level.**
+`--keep tokens` must fail and name the level it doesn't know.
 
 **It fails clearly without `axiom.json`.**
-There's nothing to fetch, so the command must say so.
+There's nothing to sync, so the command must say so.
 
 **`--help` prints its own usage.**
 
@@ -69,8 +81,8 @@ Some apps already have their own design system and just want one Axiom component
 **It writes one self-contained file and nothing else.**
 After `add button --standalone`, the app must contain exactly one new file. That file must import only npm packages, never another Axiom file, and there must be no `axiom.json`. If a local import slipped in, the component would reference a file the user doesn't have.
 
-**NativeWind and Uniwind get the same self-contained file.**
-Both use the `tailwind` variant. Its components read the theme through `useTheme()`, like the `StyleSheet` ones, and import `cx` from the theme to join class names. For `badge` (which uses `cx`) and `switch`, the file must import only npm packages, have no `useTheme` left, declare `cx` itself when it calls it, and be identical for both tools.
+**NativeWind and Uniwind each get a self-contained file.**
+Their components read the theme through `useTheme()`, like the `StyleSheet` ones, and import `cx` from the theme to join class names. For `badge` (which uses `cx`) and `switch`, each file must import only npm packages, have no `useTheme` left, and declare `cx` itself when it calls it. The two files differ where the tools do, like the color of an icon.
 
 **It refuses components that can't stand alone.**
 Some items only work inside Axiom. The portal, for example, needs a host set up by the app. Asking for one standalone must fail with a message, not produce a broken file.

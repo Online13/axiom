@@ -6,7 +6,7 @@ import {
 	watch,
 	writeFileSync,
 } from "node:fs";
-import { dirname, join, relative, resolve } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { parseArgs } from "node:util";
 
 import { copyItems, type CopyOptions, type OverwriteAnswer } from "./copy.ts";
@@ -39,6 +39,7 @@ import { buildStandalone } from "./standalone.ts";
 import {
 	COMPONENTS_FILE,
 	projectTokenEntries,
+	syncCssTokens,
 	registerTokens,
 	syncTokens,
 } from "./tokens.ts";
@@ -54,6 +55,7 @@ import {
 	intro,
 	isInteractive,
 	log,
+	multiselect,
 	muted,
 	note,
 	outro,
@@ -66,7 +68,8 @@ Commands:
   init            Set up a project for Axiom: styling, foundations, core
                   primitives and axiom.json
   add [items...]  Copy items and their internal dependencies into the project
-  fetch           Copy every item listed in axiom.json, keeping existing files
+  sync            Copy every item listed in axiom.json, and choose which
+                  existing files follow the registry
 
 Run "axiom <command> --help" for the options of a command.`;
 
@@ -134,16 +137,28 @@ Options:
                      dependencies too: use it on a project that mirrors the registry
   --cwd <path>       Project root (default: current folder)`;
 
-const FETCH_USAGE = `Usage: axiom fetch --registry <path> [--icons <source>] [--navigation <library>] [--install | --no-install] [--cwd <path>]
+const SYNC_USAGE = `Usage: axiom sync --registry <path> [--keep <levels>] [--overwrite] [--icons <source>] [--navigation <library>] [--install | --no-install] [--cwd <path>]
 
-Copies every item listed in "items" in axiom.json, with the same steps as add:
-the variant for its styling, internal dependencies, missing npm packages.
-Use it to set up a project with the same items as another one, or to restore
-deleted files. Files already in the project are kept as they are: to update an
-item, run add again.
+Brings the project in line with "items" in axiom.json, with the same steps as
+add: the variant for its styling, internal dependencies, missing npm packages.
+
+  1. Files missing from the project are written.
+  2. When files differ from the registry, asks which levels you keep as they
+     are: core (core primitives and hooks), theme (tokens and component
+     tokens) and components. All of them are kept by default.
+  3. Asks which differing files of the other levels to overwrite. All of them
+     are selected by default.
+
+Use it to set up a project with the same items as another one, to restore
+deleted files, or to update what you copied. Without a terminal and without
+options, every existing file is kept.
 
 Options:
   --registry <path>  Registry folder (the one holding registry.json)
+  --keep <levels>    Levels kept as they are, instead of being asked: core,
+                     theme and components, separated by commas, or none
+  --overwrite        Overwrite every differing file of the levels you don't
+                     keep, without asking which
   --icons <source>   Icon source, when axiom.json has none: expo-symbols or custom
   --navigation <library>
                      Navigation library, when axiom.json has none. Detected otherwise
@@ -163,6 +178,97 @@ async function confirmOverwrite(path: string): Promise<OverwriteAnswer> {
 	});
 }
 
+/** What `sync` lets the project keep or bring back to the registry, as a whole. */
+const SYNC_LEVELS = ["core", "theme", "components"] as const;
+type SyncLevel = (typeof SYNC_LEVELS)[number];
+
+const SYNC_LEVEL_LABELS: Record<SyncLevel, string> = {
+	core: "Core primitives and hooks",
+	theme: "Theme: tokens and component tokens",
+	components: "Components",
+};
+
+function parseKeep(flag: string): SyncLevel[] {
+	if (flag === "none") return [];
+	const levels = flag.split(",").map((level) => level.trim());
+	const unknown = levels.find(
+		(level) => !(SYNC_LEVELS as readonly string[]).includes(level),
+	);
+	if (unknown !== undefined) {
+		throw new Error(
+			`Unknown level "${unknown}": --keep takes ${SYNC_LEVELS.join(", ")}, separated by commas, or none.`,
+		);
+	}
+	return levels as SyncLevel[];
+}
+
+type SyncOptions = {
+	/** Levels kept as they are (`--keep`). Asked for when missing. */
+	keep?: SyncLevel[];
+	/** Overwrite every differing file of the other levels without asking which (`--overwrite`). */
+	overwrite: boolean;
+};
+
+/**
+ * The files `sync` overwrites among the ones that differ: the levels to keep are chosen first,
+ * then the files of the other levels. Without a terminal, what no flag decides is kept.
+ */
+function syncSelection(
+	config: ProjectConfig,
+	cwd: string,
+	{ keep, overwrite }: SyncOptions,
+): NonNullable<CopyOptions["select"]> {
+	const dirs: [SyncLevel, string][] = [
+		["theme", aliasToDir(cwd, config.aliases.theme) + sep],
+		["core", aliasToDir(cwd, config.aliases.core) + sep],
+		["core", aliasToDir(cwd, config.aliases.hooks) + sep],
+	];
+	const levelOf = (destination: string) =>
+		dirs.find(([, dir]) => destination.startsWith(dir))?.[0] ?? "components";
+
+	return async (differing) => {
+		const interactive = isInteractive();
+		const count = (level: SyncLevel) =>
+			differing.filter((file) => levelOf(file.destination) === level).length;
+		const levels = SYNC_LEVELS.filter((level) => count(level));
+
+		const kept =
+			keep ??
+			(interactive
+				? await multiselect<SyncLevel>({
+						message:
+							"Some files differ from the registry. Which levels do you keep as they are?",
+						options: levels.map((level) => ({
+							value: level,
+							label: SYNC_LEVEL_LABELS[level],
+							hint: `${count(level)} differ`,
+						})),
+						initialValues: levels,
+						required: false,
+					})
+				: SYNC_LEVELS);
+
+		const paths = differing
+			.filter((file) => !kept.includes(levelOf(file.destination)))
+			.map((file) => file.path);
+		if (!paths.length || overwrite) return new Set(paths);
+		if (!interactive) {
+			log.warn(
+				`Kept your version of ${paths.join(", ")}. Run in a terminal to choose, or pass --overwrite.`,
+			);
+			return new Set();
+		}
+		return new Set(
+			await multiselect({
+				message: "Which files do you overwrite?",
+				options: paths.map((path) => ({ value: path, label: path })),
+				initialValues: paths,
+				required: false,
+			}),
+		);
+	};
+}
+
 type RunOptions = {
 	names: string[];
 	registryRoot: string;
@@ -171,8 +277,8 @@ type RunOptions = {
 	icons?: string;
 	navigation?: string;
 	install: InstallMode;
-	/** Keep every existing file, even the requested ones (fetch). */
-	keepExisting?: boolean;
+	/** Decide on the existing files by level, whatever was requested (sync). */
+	sync?: SyncOptions;
 	/** Packages the command needs on top of what the copied files declare, like the styling tool. */
 	extraDependencies?: string[];
 };
@@ -185,7 +291,7 @@ async function run({
 	icons: iconsFlag,
 	navigation: navigationFlag,
 	install,
-	keepExisting = false,
+	sync,
 	extraDependencies = [],
 }: RunOptions) {
 	const registry = readRegistry(registryRoot);
@@ -217,10 +323,10 @@ async function run({
 
 	// Without a terminal, there is nobody to ask: differing files are kept.
 	const result = await copyItems(items, config, registryRoot, cwd, {
-		// Nothing requested: every existing file is kept as a dependency would be.
-		requested: new Set(keepExisting ? [] : requested),
+		requested: new Set(requested),
 		overwrite,
 		confirm: interactive ? confirmOverwrite : undefined,
+		select: sync && syncSelection(config, cwd, sync),
 		// Read when the file is reached: tokens files copied earlier in this run are on disk by then.
 		transform: (destination, content) =>
 			destination === componentsFile
@@ -235,6 +341,11 @@ async function run({
 
 	// When the theme was already in the project, register the new components in it.
 	const tokensFile = syncTokens(projectItems, config.aliases, cwd);
+	// Uniwind imports the CSS tokens; NativeWind's preset reads the folder itself.
+	const cssTokensFile =
+		config.styling === "uniwind"
+			? syncCssTokens(config.aliases, cwd)
+			: undefined;
 
 	if (result.written.length) {
 		log.success(
@@ -242,6 +353,8 @@ async function run({
 		);
 	}
 	if (tokensFile) log.success(`registered component tokens in ${tokensFile}`);
+	if (cssTokensFile)
+		log.success(`listed the components' CSS tokens in ${cssTokensFile}`);
 
 	const declined = result.kept.filter((file) => file.reason === "declined");
 	if (declined.length) {
@@ -480,6 +593,7 @@ async function main() {
 		options: {
 			registry: { type: "string" },
 			styling: { type: "string" },
+			keep: { type: "string" },
 			icons: { type: "string" },
 			navigation: { type: "string" },
 			overwrite: { type: "boolean", default: false },
@@ -499,11 +613,11 @@ async function main() {
 			? INIT_USAGE
 			: command === "add"
 				? ADD_USAGE
-				: command === "fetch"
-					? FETCH_USAGE
+				: command === "sync"
+					? SYNC_USAGE
 					: USAGE;
 
-	if (values.help || !["add", "init", "fetch"].includes(command ?? "")) {
+	if (values.help || !["add", "init", "sync"].includes(command ?? "")) {
 		console.log(usage);
 		process.exit(values.help ? 0 : 1);
 	}
@@ -545,7 +659,8 @@ async function main() {
 		return;
 	}
 
-	if (command === "fetch") {
+	if (command === "sync") {
+		const keep = values.keep === undefined ? undefined : parseKeep(values.keep);
 		const result = await run({
 			names: [],
 			registryRoot,
@@ -554,10 +669,10 @@ async function main() {
 			icons: values.icons,
 			navigation: values.navigation,
 			install,
-			keepExisting: true,
+			sync: { keep, overwrite: values.overwrite },
 		});
 		outro(
-			`${result.written.length} written, ${result.kept.length + result.unchanged.length} already in the project.`,
+			`${result.written.length} written, ${result.unchanged.length} unchanged, ${result.kept.length} kept.`,
 		);
 		return;
 	}

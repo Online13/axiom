@@ -81,4 +81,4 @@ The helpers after `buildStandalone` are grouped under three banner comments: `Th
 | A name clash or a reference to a dropped declaration | `link` and its `allocate`. Stage 6. |
 | Broken syntax in the output | The `Edit` that produced it (stage 5), and `render`. |
 
-The `add --standalone` tests in [`cli.test.ts`](../test/cli.test.ts) check that the output imports only npm packages, and that NativeWind and Uniwind get the same file. `bun scripts/standalone.ts` in `packages/registry` builds every item for every variant so `bun run typecheck` compiles them. For a change here, also open the generated file and read it.
+The `add --standalone` tests in [`cli.test.ts`](../test/cli.test.ts) check that the output imports only npm packages, and that NativeWind and Uniwind each get a self-contained file. `bun scripts/standalone.ts` in `packages/registry` builds every item for every variant so `bun run typecheck` compiles them. For a change here, also open the generated file and read it.

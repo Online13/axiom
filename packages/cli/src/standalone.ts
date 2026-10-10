@@ -2,11 +2,11 @@ import { readFileSync } from "node:fs";
 import { dirname, extname, resolve } from "node:path";
 import ts from "typescript";
 
-import { registryAddress, sets } from "./copy.ts";
+import { inlineComponent, registryAddress, sets, stylesFileOf, variantSet } from "./copy.ts";
 import { resolveItems } from "./registry.ts";
 import {
 	DEFAULT_ALIASES,
-	VARIANT_OF,
+	variantOf,
 	type FileSet,
 	type ProjectConfig,
 	type Registry,
@@ -129,7 +129,7 @@ export function buildStandalone(
 	name: string,
 	config: StandaloneConfig,
 ): StandaloneResult {
-	const variant = VARIANT_OF[config.styling];
+	const variant = config.styling;
 	const items = resolveItems(registry, [name]);
 	const requested = items[0];
 
@@ -147,7 +147,7 @@ export function buildStandalone(
 		);
 	}
 	for (const item of items) {
-		if (item.variants && !item.variants[variant]) {
+		if (item.variants && !variantOf(item, variant)) {
 			throw new Error(`"${item.name}" has no ${variant} variant yet.`);
 		}
 		if (item.iconSources && !config.icons) {
@@ -167,22 +167,28 @@ export function buildStandalone(
 
 	// Every file the items are made of, addressed the way registry sources import them. Of the
 	// theme, only the files its types live in, and the helpers a styling ships beside `useTheme`.
-	const files: { item: RegistryItem; path: string; address: string; helper: boolean }[] = [];
+	const files: { item: RegistryItem; path: string; address: string; helper: boolean; text: string }[] = [];
 	for (const item of all) {
-		const variantFiles = new Set(item.variants?.[variant]?.files ?? []);
-		for (const file of fileSets.get(item)!.flatMap((set) => set.files ?? [])) {
+		const variantFiles = new Set(variantSet(item, variant).files ?? []);
+		const own = fileSets.get(item)!.flatMap((set) => set.files ?? []);
+		// A styles file is written into its component, as in a project.
+		const styles = new Map(own.map((file) => [stylesFileOf(pathOf(file), own), file]));
+		for (const file of own) {
+			if (styles.has(pathOf(file))) continue;
 			const address = registryAddress(file, item);
 			const path = normalize(resolve(registryRoot, pathOf(file)));
-			const helper =
-				item.type === "foundations" && variantFiles.has(file) && isSelfContained(readFileSync(path, "utf8"));
+			// The theme's CSS and its Tailwind preset aren't source files.
+			if (!/\.tsx?$/.test(path)) continue;
+			const source = readFileSync(path, "utf8");
+			const helper = item.type === "foundations" && variantFiles.has(file) && isSelfContained(source);
 			if (item.type === "foundations" && !TYPE_MODULES.includes(address) && !helper) continue;
-			files.push({ item, path, address, helper });
+			const stylesFile = stylesFileOf(pathOf(file), own);
+			const text = stylesFile ? inlineComponent(source, path, resolve(registryRoot, stylesFile)) : source;
+			files.push({ item, path, address, helper, text });
 		}
 	}
 
-	const program = createProgram(
-		new Map(files.map(({ path }) => [path, readFileSync(path, "utf8")])),
-	);
+	const program = createProgram(new Map(files.map(({ path, text }) => [path, text])));
 	const checker = program.getTypeChecker();
 
 	const modules = files.map(({ item, path, address, helper }): Module => {
@@ -275,10 +281,11 @@ export function buildStandalone(
 			return part;
 		}
 
-		// A type the theme's files declare, like `Spacing` or `States`, is inlined as written.
+		// A type the theme's files declare, like `Spacing` or `States`, is inlined as written. So is a
+		// function, like `stateColors`: unlike a value, it isn't something the evaluated theme holds.
 		for (const typeModule of typeModules) {
 			const decl = declsByName.get(typeModule)!.get(imported);
-			if (decl?.statements.every(({ node }) => isTypeDeclaration(node))) {
+			if (decl?.statements.every(({ node }) => isTypeDeclaration(node) || ts.isFunctionDeclaration(node))) {
 				return { kind: "module", module: typeModule, name: imported };
 			}
 		}

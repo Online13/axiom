@@ -1,6 +1,7 @@
 import * as clack from "@clack/prompts";
 import type {
 	ConfirmOptions,
+	MultiSelectOptions,
 	SelectOptions,
 	TextOptions,
 } from "@clack/prompts";
@@ -60,6 +61,12 @@ export async function text(options: TextOptions): Promise<string> {
 
 export async function select<T>(options: SelectOptions<T>): Promise<T> {
 	return orCancel(await clack.select(options));
+}
+
+export async function multiselect<T>(
+	options: MultiSelectOptions<T>,
+): Promise<T[]> {
+	return orCancel(await clack.multiselect(options));
 }
 
 export async function confirm(options: ConfirmOptions): Promise<boolean> {

@@ -4,22 +4,22 @@ The CLI copies component source code from `packages/registry` into an app. Almos
 
 ## The trajectory of `axiom add button`
 
-1. **[`main()`](../src/index.ts#L477)** parses the flags and decides two modes: install (`ask`, `always`, `never`) and overwrite (`ask`, `always`, `force`). It calls `run()`. Any error thrown below lands in the `catch` at the bottom of the file, which prints it and exits.
-2. **[`run()`](../src/index.ts#L180)** reads `registry.json` and the app's `axiom.json`. If `button` needs an icon source or a navigation library that `axiom.json` doesn't record yet, it fills that in from the flags, a prompt, or `package.json`.
+1. **[`main()`](../src/index.ts#L590)** parses the flags and decides two modes: install (`ask`, `always`, `never`) and overwrite (`ask`, `always`, `force`). It calls `run()`. Any error thrown below lands in the `catch` at the bottom of the file, which prints it and exits.
+2. **[`run()`](../src/index.ts#L286)** reads `registry.json` and the app's `axiom.json`. If `button` needs an icon source or a navigation library that `axiom.json` doesn't record yet, it fills that in from the flags, a prompt, or `package.json`.
 3. **[`resolveItems()`](../src/registry.ts#L17)** turns `["button"]` into `button` plus everything it depends on (`icon`, `slot`, `tappable`, `text`, `theme`…).
-4. **[`copyItems()`](../src/copy.ts#L401)** does the copying, in two passes so a failure writes nothing:
-   - [`plan()`](../src/copy.ts#L73) picks each item's files for the app's styling and gives each file a destination ([`locate()`](../src/copy.ts#L220)). The destination depends on the item's layer, which maps to an alias like `@/components/ui`. [`aliasToDir()`](../src/project.ts#L68) turns that alias into a folder by reading the app's `tsconfig.json`;
-   - then for each file: read it, [`rewriteImports()`](../src/copy.ts#L314) so its imports point to where the other files landed, and decide what happens if the file already exists (same content: skip; user-edited dependency: keep; requested item: ask). Writing comes last.
+4. **[`copyItems()`](../src/copy.ts#L497)** does the copying, in two passes so a failure writes nothing:
+   - [`plan()`](../src/copy.ts#L119) picks each item's files for the app's styling and gives each file a destination ([`locate()`](../src/copy.ts#L299)). The destination depends on the item's layer, which maps to an alias like `@/components/ui`. [`aliasToDir()`](../src/project.ts#L68) turns that alias into a folder by reading the app's `tsconfig.json`;
+   - then for each file: read it, [`rewriteImports()`](../src/copy.ts#L397) so its imports point to where the other files landed, write the styles of the app's styling into the component ([`inlineStyles()`](../src/inline.ts#L33), then Prettier with the app's config), and decide what happens if the file already exists (same content: skip; user-edited dependency: keep; requested item: ask). Writing comes last.
 5. **`writeConfig()`** adds the new items to `axiom.json`.
-6. **[`syncTokens()`](../src/tokens.ts#L151)** adds one line per component to the theme's `components/index.ts`, between `// axiom:…:start/end` markers, so the theme computes the button's style values.
+6. **[`syncTokens()`](../src/tokens.ts#L151)** adds one line per component to the theme's `components/index.ts`, between `// axiom:…:start/end` markers, so the theme computes the button's style values. With NativeWind and Uniwind the tokens are CSS files instead, and [`syncCssTokens()`](../src/tokens.ts#L181) lists them in the theme's `components/index.css` for Uniwind.
 7. **[`resolveMissingDependencies()`](../src/install.ts#L46)** installs the npm packages the copied files need, or prints the command.
 
 ## The other commands, as differences
 
-- **`init`** ([`runInit()`](../src/index.ts#L426)) checks the folder is a React Native app, asks for the styling tool and aliases, makes sure `tsconfig.json` resolves them, writes an empty `axiom.json`, then calls `run()` with the base items (theme, slot, tappable, portal, overlay).
-- **`fetch`** is `run()` on every item of `axiom.json` with `keepExisting: true`, so only missing files get written.
+- **`init`** ([`runInit()`](../src/index.ts#L539)) checks the folder is a React Native app, asks for the styling tool and aliases, makes sure `tsconfig.json` resolves them, writes an empty `axiom.json`, then calls `run()` with the base items (theme, slot, tappable, portal, overlay).
+- **`sync`** is `run()` on every item of `axiom.json` with `sync` options. Missing files get written; the ones that differ go to `syncSelection()`, which asks which levels (core, theme, components) to keep, then which files of the other levels to overwrite. `--keep` and `--overwrite` answer for it.
 - **`add` with no names** is `run()` on every item of `axiom.json`, asking before replacing files that differ. With `--watch` it repeats that on every registry change and overwrites without asking.
-- **`add --standalone`** ([`runStandalone()`](../src/index.ts#L309)) goes elsewhere. It builds one self-contained file per item with the TypeScript compiler. Ignore it until you work on it, then read [standalone.md](standalone.md).
+- **`add --standalone`** ([`runStandalone()`](../src/index.ts#L422)) goes elsewhere. It builds one self-contained file per item with the TypeScript compiler. Ignore it until you work on it, then read [standalone.md](standalone.md).
 
 ## Where things live
 
@@ -28,6 +28,8 @@ The CLI copies component source code from `packages/registry` into an app. Almos
 | `types.ts` | The shapes of `registry.json` and `axiom.json`, layers, aliases, stylings. Look here when a word is unclear. |
 | `index.ts` | Flags, help texts, and the command functions above. |
 | `copy.ts` | Where files land and how their imports are rewritten. |
+| `inline.ts` | Writes a component and the styles file of its variant as one file. The contract a styles file keeps is in the [registry README](../../registry/README.md#one-component-one-styles-file-per-variant). |
+| `format.ts` | Prettier, for the files the CLI writes itself. |
 | `registry.ts`, `project.ts` | Reading `registry.json`, `axiom.json`, `tsconfig.json`, `package.json`. |
 | `init.ts`, `tokens.ts`, `icons.ts`, `install.ts` | One job each, named after it. |
 | `ui.ts` | Every prompt and printed line. |

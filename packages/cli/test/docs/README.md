@@ -10,7 +10,7 @@ It has three commands:
 
 - `axiom init` prepares an existing app. It asks which styling tool the app uses, copies the base files (the theme, colors, spacing, and a few low-level building blocks), then writes an `axiom.json` file that records these choices.
 - `axiom add button` copies a component. It also copies everything the component needs (a button needs text and icons, for instance) and adjusts the copied code so it fits the app. With `--standalone`, it writes the component as one file that needs nothing else from Axiom.
-- `axiom fetch` copies every component listed in `axiom.json` that's missing from the app, and leaves the files already there alone. It restores deleted files, or sets up a second app with the same components as the first.
+- `axiom sync` copies every component listed in `axiom.json` that's missing from the app. It restores deleted files, or sets up a second app with the same components as the first. For the files already there, it asks which levels (core, theme, components) to keep and which files to overwrite.
 
 To learn how the code itself works, read [the contributor docs](../../docs/README.md).
 
@@ -38,7 +38,7 @@ Every test works in a temporary folder that gets deleted afterwards. None of the
 
 | Page | What it covers | Kind |
 | --- | --- | --- |
-| [cli.md](cli.md) | The `init`, `add` and `fetch` commands, end to end | Integration |
+| [cli.md](cli.md) | The `init`, `add` and `sync` commands, end to end | Integration |
 | [copy.md](copy.md) | Where files land and how imports get rewritten | Unit |
 | [tokens.md](tokens.md) | Registering component styles in the theme | Unit |
 | [init.md](init.md) | The checks and suggestions `init` makes before copying | Unit |

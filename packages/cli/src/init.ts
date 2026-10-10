@@ -6,7 +6,7 @@ import { resolveItems } from "./registry.ts";
 import {
 	DEFAULT_ALIASES,
 	STYLINGS,
-	VARIANT_OF,
+	variantOf,
 	type AliasName,
 	type Aliases,
 	type Registry,
@@ -41,10 +41,9 @@ const TSCONFIG_FILE = "tsconfig.json";
  */
 export function availableStylings(registry: Registry): Styling[] {
 	const items = resolveItems(registry, INIT_ITEMS);
-	return STYLINGS.filter((styling) => {
-		const variant = VARIANT_OF[styling];
-		return items.every((item) => !item.variants || item.variants[variant]);
-	});
+	return STYLINGS.filter((styling) =>
+		items.every((item) => !item.variants || variantOf(item, styling)),
+	);
 }
 
 export function parseStyling(value: string, available: Styling[]): Styling {

@@ -12,7 +12,7 @@ Before copying anything, `axiom init` makes a few decisions: which styling tools
 `init` copies the theme and a few building blocks. If any of them lacks a version for a styling tool, offering that tool would lead to a failed setup halfway through. The test uses a made-up registry where only `StyleSheet` is complete and checks that it's the only option offered.
 
 **The real registry offers `StyleSheet`, Unistyles, NativeWind and Uniwind.**
-This one reads the actual registry. The last two share the `tailwind` version of the base files. If a base file loses a version, or a new styling tool is added, this test fails on purpose: it's the reminder to update the test and to check that the setup really works. The full setup with each tool is covered by the "every item of the registry" tests in [cli.md](cli.md).
+This one reads the actual registry. The last two each list their own version of the base files, taken from the same theme folder. If a base file loses a version, or a new styling tool is added, this test fails on purpose: it's the reminder to update the test and to check that the setup really works. The full setup with each tool is covered by the "every item of the registry" tests in [cli.md](cli.md).
 
 **`--styling` only accepts an offered tool.** Anything else fails, and the message lists the valid choices.
 

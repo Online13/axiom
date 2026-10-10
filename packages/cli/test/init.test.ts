@@ -18,7 +18,7 @@ describe("availableStylings", () => {
 				{
 					name: "theme",
 					type: "foundations",
-					variants: { stylesheet: {}, tailwind: {} },
+					variants: { stylesheet: {}, nativewind: {} },
 				},
 				{ name: "slot", type: "core" },
 				{ name: "tappable", type: "core", variants: { stylesheet: {} } },

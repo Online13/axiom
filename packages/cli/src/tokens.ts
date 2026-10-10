@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, extname, join, relative } from "node:path";
 
 import { aliasToDir } from "./project.ts";
@@ -166,6 +166,38 @@ export function syncTokens(
 	const source = readFileSync(file, "utf8");
 	const next = registerTokens(source, entries);
 	if (next === source) return undefined;
+
+	writeFileSync(file, next);
+	return relative(cwd, file);
+}
+
+/** Imports every CSS tokens file of the theme. The project's CSS entry imports it once. */
+export const CSS_COMPONENTS_FILE = join(THEME_COMPONENTS_DIR, "index.css");
+
+/**
+ * Lists the CSS tokens files of the project in the theme's `components/index.css`, so a component
+ * added later is picked up without touching the project's CSS entry. Returns the file when it changed.
+ */
+export function syncCssTokens(
+	aliases: Aliases,
+	cwd: string,
+): string | undefined {
+	const dir = join(aliasToDir(cwd, aliases.theme), THEME_COMPONENTS_DIR);
+	if (!existsSync(dir)) return undefined;
+
+	const index = basename(CSS_COMPONENTS_FILE);
+	const files = readdirSync(dir)
+		.filter((name) => extname(name) === ".css" && name !== index)
+		.sort();
+	if (!files.length) return undefined;
+
+	const file = join(dir, index);
+	const next =
+		"/* Written by axiom: the tokens of every component of the project. */\n" +
+		files.map((name) => `@import "./${name}";`).join("\n") +
+		"\n";
+	if (existsSync(file) && readFileSync(file, "utf8") === next)
+		return undefined;
 
 	writeFileSync(file, next);
 	return relative(cwd, file);
