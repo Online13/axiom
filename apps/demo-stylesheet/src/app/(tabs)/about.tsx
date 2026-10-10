@@ -1,6 +1,7 @@
 import Constants from "expo-constants";
 import { Platform, View } from "react-native";
 
+import { AppBar } from "@/components/ui/app-bar";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import type { IconName } from "@/components/ui/icon";
@@ -39,6 +40,14 @@ export default function AboutScreen() {
 
 	return (
 		<Scaffold background="subtle" safeAreaEdges={["top"]}>
+			<AppBar
+				safeArea={false}
+				style={{ backgroundColor: colors.background.subtle }}
+			>
+				<AppBar.Expanded style={{ paddingTop: tokens.spacing[6] }}>
+					<AppBar.Title size="medium">About</AppBar.Title>
+				</AppBar.Expanded>
+			</AppBar>
 			<Scaffold.Content
 				contentContainerStyle={{
 					padding: tokens.metrics.screenMargin,

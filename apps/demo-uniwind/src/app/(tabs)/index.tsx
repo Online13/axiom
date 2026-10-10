@@ -1,43 +1,43 @@
 import { useState } from "react";
 import { View } from "react-native";
 
+import { AppBar } from "@/components/ui/app-bar";
 import { Scaffold } from "@/components/ui/scaffold";
 import { SearchBar } from "@/components/ui/search-bar";
 import { Tab } from "@/components/ui/tab";
 import { Text } from "@/components/ui/text";
-import { Title } from "@/components/ui/title";
 import { CatalogGroup, CatalogRow } from "@/demo/catalog";
 import { CATEGORIES, groupsOf, screensOf, type Category } from "@/demo/screens";
 import { useTheme } from "@/theme";
 
 export default function ComponentsScreen() {
-	const { tokens } = useTheme();
+	const { tokens, colors } = useTheme();
 	const [category, setCategory] = useState<Category>("foundation");
 	const [query, setQuery] = useState("");
 	const normalizedQuery = query.trim().toLowerCase();
 
 	return (
 		<Scaffold background="subtle" safeAreaEdges={["top"]}>
-			<View
-				style={{
-					paddingHorizontal: tokens.metrics.screenMargin,
-					paddingTop: tokens.spacing[6],
-					paddingBottom: tokens.spacing[4],
-					gap: tokens.spacing[4],
-				}}
+			<AppBar
+				safeArea={false}
+				style={{ backgroundColor: colors.background.subtle }}
 			>
-				<View style={{ gap: tokens.spacing[1] }}>
-					<Title variant="headingLg">Components</Title>
-					<Text color="muted">
-						Browse the building blocks available in Axiom.
-					</Text>
-				</View>
-				<SearchBar
-					placeholder="Search components"
-					value={query}
-					onChangeText={setQuery}
-				/>
-			</View>
+				<AppBar.Expanded
+					style={{ paddingTop: tokens.spacing[6], gap: tokens.spacing[4] }}
+				>
+					<View style={{ gap: tokens.spacing[1] }}>
+						<AppBar.Title size="medium">Components</AppBar.Title>
+						<AppBar.Subtitle size="large" numberOfLines={2}>
+							Browse the building blocks available in Axiom.
+						</AppBar.Subtitle>
+					</View>
+					<SearchBar
+						placeholder="Search components"
+						value={query}
+						onChangeText={setQuery}
+					/>
+				</AppBar.Expanded>
+			</AppBar>
 			<Tab
 				value={category}
 				onValueChange={(value) => setCategory(value as Category)}

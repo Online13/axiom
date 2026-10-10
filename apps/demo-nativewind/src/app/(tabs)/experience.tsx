@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { AppBar } from "@/components/ui/app-bar";
 import { Scaffold } from "@/components/ui/scaffold";
 import { Tab } from "@/components/ui/tab";
 import { CatalogGroup, CatalogRow } from "@/demo/catalog";
@@ -12,42 +13,36 @@ import {
 } from "@/demo/experiences";
 import { useTheme } from "@/theme";
 import { View } from "react-native";
-import { Title } from "@/components/ui/title";
-import { Text } from "@/components/ui/text";
 import { SearchBar } from "@/components/ui/search-bar";
 
 export default function ExperienceScreen() {
-	const { tokens } = useTheme();
+	const { tokens, colors } = useTheme();
 	const [section, setSection] = useState<ExperienceSection>("behaviors");
 	const [query, setQuery] = useState("");
 	const normalizedQuery = query.trim().toLowerCase();
 
 	return (
 		<Scaffold background="subtle" safeAreaEdges={["top"]}>
-			<View
-				style={{
-					paddingHorizontal: tokens.metrics.screenMargin,
-					paddingTop: tokens.spacing[6],
-					paddingBottom: tokens.spacing[4],
-					gap: tokens.spacing[4],
-				}}
+			<AppBar
+				safeArea={false}
+				style={{ backgroundColor: colors.background.subtle }}
 			>
-				<View
-					style={{
-						gap: tokens.spacing[1],
-					}}
+				<AppBar.Expanded
+					style={{ paddingTop: tokens.spacing[6], gap: tokens.spacing[4] }}
 				>
-					<Title variant="headingLg">Experience</Title>
-					<Text color="muted">
-						Explore the different aspects of the user experience.
-					</Text>
-				</View>
-				<SearchBar
-					placeholder="Search components"
-					value={query}
-					onChangeText={setQuery}
-				/>
-			</View>
+					<View style={{ gap: tokens.spacing[1] }}>
+						<AppBar.Title size="medium">Experience</AppBar.Title>
+						<AppBar.Subtitle size="large" numberOfLines={2}>
+							Explore the different aspects of the user experience.
+						</AppBar.Subtitle>
+					</View>
+					<SearchBar
+						placeholder="Search components"
+						value={query}
+						onChangeText={setQuery}
+					/>
+				</AppBar.Expanded>
+			</AppBar>
 			<Tab
 				value={section}
 				onValueChange={(value) => setSection(value as ExperienceSection)}

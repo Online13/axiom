@@ -2,11 +2,11 @@ import { useState } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
+import { AppBar } from "@/components/ui/app-bar";
 import { Scaffold } from "@/components/ui/scaffold";
 import { SearchBar } from "@/components/ui/search-bar";
 import { Tab } from "@/components/ui/tab";
 import { Text } from "@/components/ui/text";
-import { Title } from "@/components/ui/title";
 import { CatalogGroup, CatalogRow } from "@/demo/catalog";
 import { CATEGORIES, groupsOf, screensOf, type Category } from "@/demo/screens";
 
@@ -16,23 +16,22 @@ export default function ComponentsScreen() {
 	const normalizedQuery = query.trim().toLowerCase();
 
 	return (
-		<Scaffold
-			background="subtle"
-			safeAreaEdges={["top"]}
-		>
-			<View style={styles.header}>
-				<View style={styles.heading}>
-					<Title variant="headingLg">Components</Title>
-					<Text color="muted">
-						Browse the building blocks available in Axiom.
-					</Text>
-				</View>
-				<SearchBar
-					placeholder="Search components"
-					value={query}
-					onChangeText={setQuery}
-				/>
-			</View>
+		<Scaffold background="subtle" safeAreaEdges={["top"]}>
+			<AppBar safeArea={false} style={styles.bar}>
+				<AppBar.Expanded style={styles.header}>
+					<View style={styles.heading}>
+						<AppBar.Title size="medium">Components</AppBar.Title>
+						<AppBar.Subtitle size="large" numberOfLines={2}>
+							Browse the building blocks available in Axiom.
+						</AppBar.Subtitle>
+					</View>
+					<SearchBar
+						placeholder="Search components"
+						value={query}
+						onChangeText={setQuery}
+					/>
+				</AppBar.Expanded>
+			</AppBar>
 			<Tab
 				value={category}
 				onValueChange={(value) => setCategory(value as Category)}
@@ -101,10 +100,9 @@ export default function ComponentsScreen() {
 }
 
 const styles = StyleSheet.create((theme) => ({
+	bar: { backgroundColor: theme.colors.background.subtle },
 	header: {
-		paddingHorizontal: theme.tokens.metrics.screenMargin,
 		paddingTop: theme.tokens.spacing[6],
-		paddingBottom: theme.tokens.spacing[4],
 		gap: theme.tokens.spacing[4],
 	},
 	heading: { gap: theme.tokens.spacing[1] },

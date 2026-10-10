@@ -2,6 +2,7 @@ import Constants from "expo-constants";
 import { Platform, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
+import { AppBar } from "@/components/ui/app-bar";
 import { Card } from "@/components/ui/card";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { Scaffold } from "@/components/ui/scaffold";
@@ -36,10 +37,12 @@ export default function AboutScreen() {
 	const version = Constants.expoConfig?.version ?? "1.0.0";
 
 	return (
-		<Scaffold
-			background="subtle"
-			safeAreaEdges={["top"]}
-		>
+		<Scaffold background="subtle" safeAreaEdges={["top"]}>
+			<AppBar safeArea={false} style={styles.bar}>
+				<AppBar.Expanded style={styles.header}>
+					<AppBar.Title size="medium">About</AppBar.Title>
+				</AppBar.Expanded>
+			</AppBar>
 			<Scaffold.Content contentContainerStyle={styles.content}>
 				<Card variant="outlined" padding={4}>
 					<View style={styles.intro}>
@@ -133,6 +136,8 @@ function Fact({ label, value }: { label: string; value: string }) {
 }
 
 const styles = StyleSheet.create((theme) => ({
+	bar: { backgroundColor: theme.colors.background.subtle },
+	header: { paddingTop: theme.tokens.spacing[6] },
 	content: {
 		padding: theme.tokens.metrics.screenMargin,
 		paddingBottom: theme.tokens.spacing[12] * 3,
