@@ -9,17 +9,18 @@ import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
-import { VARIANTS } from "../../cli/src/types.ts";
+import { STYLINGS } from "../../cli/src/types.ts";
 
 const root = join(import.meta.dirname, "..");
 
-// `stylesheet` is written to tsconfig.json, the file editors read; the others get their own name.
+// tsconfig.json only references the others, for editors: each one is checked on its own.
 const configs = [
-	"tsconfig.json",
-	...VARIANTS.map((variant) => `tsconfig.${variant}.json`),
+	...STYLINGS.map((styling) => `tsconfig.${styling}.json`),
 	"scripts/tsconfig.json",
 	// Written by scripts/standalone.ts: every item's standalone file, compiled on its own.
-	...VARIANTS.map((variant) => `.generated/standalone/${variant}/tsconfig.json`),
+	...STYLINGS.map(
+		(styling) => `.generated/standalone/${styling}/tsconfig.json`,
+	),
 ].filter((file) => existsSync(join(root, file)));
 
 let failed = false;

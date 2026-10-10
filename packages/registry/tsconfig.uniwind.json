@@ -3,7 +3,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "moduleSuffixes": [
-      ".unistyles",
+      ".uniwind",
       ""
     ],
     "paths": {
@@ -22,11 +22,14 @@
       "@/theme/theme": [
         "./foundations/theme/theme.ts"
       ],
-      "@/theme/unistyles": [
-        "./foundations/theme/unistyles/unistyles.ts"
+      "@/theme/use-theme": [
+        "./foundations/theme/tailwind/use-theme.ts"
+      ],
+      "@/theme/cx": [
+        "./foundations/theme/tailwind/cx.ts"
       ],
       "@/theme": [
-        "./foundations/theme/unistyles/index.ts"
+        "./foundations/theme/tailwind/index.ts"
       ],
       "@/components/core/slot": [
         "./core/slot/slot.tsx"
@@ -62,13 +65,13 @@
         "./typography/text/text.tsx"
       ],
       "@/components/ui/text.styles": [
-        "./typography/text/text.styles.unistyles.ts"
+        "./typography/text/text.styles.uniwind.ts"
       ],
       "@/components/ui/title": [
         "./typography/title/title.tsx"
       ],
       "@/components/ui/title.styles": [
-        "./typography/title/title.styles.unistyles.ts"
+        "./typography/title/title.styles.uniwind.ts"
       ],
       "@/components/ui/icon-types": [
         "./atoms/icon/icon-types.ts"
@@ -77,7 +80,7 @@
         "./atoms/icon/icon.tsx"
       ],
       "@/components/ui/icon.styles": [
-        "./atoms/icon/icon.styles.unistyles.tsx"
+        "./atoms/icon/icon.styles.uniwind.tsx"
       ],
       "@/components/ui/icons": [
         "./atoms/icon/sources/expo-symbols/icons.tsx"
@@ -86,13 +89,13 @@
         "./atoms/button/button.tsx"
       ],
       "@/components/ui/button.styles": [
-        "./atoms/button/button.styles.unistyles.tsx"
+        "./atoms/button/button.styles.uniwind.tsx"
       ],
       "@/components/ui/icon-button": [
         "./atoms/icon-button/icon-button.tsx"
       ],
       "@/components/ui/icon-button.styles": [
-        "./atoms/icon-button/icon-button.styles.unistyles.ts"
+        "./atoms/icon-button/icon-button.styles.uniwind.ts"
       ],
       "@/components/ui/use-floating-button": [
         "./atoms/floating-button/use-floating-button.ts"
@@ -101,7 +104,7 @@
         "./atoms/floating-button/floating-button.tsx"
       ],
       "@/components/ui/floating-button.styles": [
-        "./atoms/floating-button/floating-button.styles.unistyles.ts"
+        "./atoms/floating-button/floating-button.styles.uniwind.ts"
       ],
       "@/components/ui/use-switch": [
         "./atoms/switch/use-switch.ts"
@@ -110,19 +113,19 @@
         "./atoms/switch/switch.tsx"
       ],
       "@/components/ui/switch.styles": [
-        "./atoms/switch/switch.styles.unistyles.ts"
+        "./atoms/switch/switch.styles.uniwind.ts"
       ],
       "@/components/ui/checkbox": [
         "./atoms/checkbox/checkbox.tsx"
       ],
       "@/components/ui/checkbox.styles": [
-        "./atoms/checkbox/checkbox.styles.unistyles.ts"
+        "./atoms/checkbox/checkbox.styles.uniwind.ts"
       ],
       "@/components/ui/radio": [
         "./atoms/radio/radio.tsx"
       ],
       "@/components/ui/radio.styles": [
-        "./atoms/radio/radio.styles.unistyles.ts"
+        "./atoms/radio/radio.styles.uniwind.ts"
       ],
       "@/components/ui/use-segmented-control": [
         "./atoms/segmented-control/use-segmented-control.ts"
@@ -131,7 +134,7 @@
         "./atoms/segmented-control/segmented-control.tsx"
       ],
       "@/components/ui/segmented-control.styles": [
-        "./atoms/segmented-control/segmented-control.styles.unistyles.ts"
+        "./atoms/segmented-control/segmented-control.styles.uniwind.ts"
       ],
       "@/components/ui/use-slider": [
         "./atoms/slider/use-slider.ts"
@@ -140,7 +143,7 @@
         "./atoms/slider/slider.tsx"
       ],
       "@/components/ui/slider.styles": [
-        "./atoms/slider/slider.styles.unistyles.ts"
+        "./atoms/slider/slider.styles.uniwind.ts"
       ],
       "@/components/ui/use-input": [
         "./atoms/input/use-input.ts"
@@ -152,19 +155,19 @@
         "./atoms/input/field.tsx"
       ],
       "@/components/ui/input.styles": [
-        "./atoms/input/input.styles.unistyles.ts"
+        "./atoms/input/input.styles.uniwind.ts"
       ],
       "@/components/ui/field.styles": [
-        "./atoms/input/field.styles.unistyles.ts"
+        "./atoms/input/field.styles.uniwind.ts"
       ],
-      "@/components/ui/input-colors": [
-        "./atoms/input/input-colors.ts"
+      "@/components/ui/input-classes": [
+        "./atoms/input/input-classes.uniwind.ts"
       ],
       "@/components/ui/text-area": [
         "./atoms/text-area/text-area.tsx"
       ],
       "@/components/ui/text-area.styles": [
-        "./atoms/text-area/text-area.styles.unistyles.ts"
+        "./atoms/text-area/text-area.styles.uniwind.ts"
       ],
       "@/components/ui/use-input-group": [
         "./atoms/input-group/use-input-group.ts"
@@ -173,7 +176,7 @@
         "./atoms/input-group/input-group.tsx"
       ],
       "@/components/ui/input-group.styles": [
-        "./atoms/input-group/input-group.styles.unistyles.ts"
+        "./atoms/input-group/input-group.styles.uniwind.ts"
       ],
       "@/components/ui/use-input-otp": [
         "./atoms/input-otp/use-input-otp.ts"
@@ -182,7 +185,7 @@
         "./atoms/input-otp/input-otp.tsx"
       ],
       "@/components/ui/input-otp.styles": [
-        "./atoms/input-otp/input-otp.styles.unistyles.ts"
+        "./atoms/input-otp/input-otp.styles.uniwind.tsx"
       ],
       "@/components/ui/bottom-sheet-root": [
         "./atoms/bottom-sheet/bottom-sheet-root.tsx"
@@ -194,19 +197,19 @@
         "./atoms/bottom-sheet/use-bottom-sheet.ts"
       ],
       "@/components/ui/bottom-sheet.styles": [
-        "./atoms/bottom-sheet/bottom-sheet.styles.unistyles.ts"
+        "./atoms/bottom-sheet/bottom-sheet.styles.uniwind.tsx"
       ],
       "@/components/ui/separator": [
         "./atoms/separator/separator.tsx"
       ],
       "@/components/ui/separator.styles": [
-        "./atoms/separator/separator.styles.unistyles.ts"
+        "./atoms/separator/separator.styles.uniwind.ts"
       ],
       "@/components/ui/spinner": [
         "./atoms/spinner/spinner.tsx"
       ],
       "@/components/ui/spinner.styles": [
-        "./atoms/spinner/spinner.styles.unistyles.ts"
+        "./atoms/spinner/spinner.styles.uniwind.tsx"
       ],
       "@/components/ui/use-skeleton": [
         "./atoms/skeleton/use-skeleton.ts"
@@ -215,61 +218,61 @@
         "./atoms/skeleton/skeleton.tsx"
       ],
       "@/components/ui/skeleton.styles": [
-        "./atoms/skeleton/skeleton.styles.unistyles.ts"
+        "./atoms/skeleton/skeleton.styles.uniwind.ts"
       ],
       "@/components/ui/badge": [
         "./atoms/badge/badge.tsx"
       ],
       "@/components/ui/badge.styles": [
-        "./atoms/badge/badge.styles.unistyles.tsx"
+        "./atoms/badge/badge.styles.uniwind.tsx"
       ],
       "@/components/ui/avatar": [
         "./atoms/avatar/avatar.tsx"
       ],
       "@/components/ui/avatar.styles": [
-        "./atoms/avatar/avatar.styles.unistyles.ts"
+        "./atoms/avatar/avatar.styles.uniwind.ts"
       ],
       "@/components/ui/chip": [
         "./atoms/chip/chip.tsx"
       ],
       "@/components/ui/chip.styles": [
-        "./atoms/chip/chip.styles.unistyles.ts"
+        "./atoms/chip/chip.styles.uniwind.ts"
       ],
       "@/components/ui/card": [
         "./atoms/card/card.tsx"
       ],
       "@/components/ui/card.styles": [
-        "./atoms/card/card.styles.unistyles.ts"
+        "./atoms/card/card.styles.uniwind.ts"
       ],
       "@/components/ui/item": [
         "./atoms/item/item.tsx"
       ],
       "@/components/ui/item.styles": [
-        "./atoms/item/item.styles.unistyles.ts"
+        "./atoms/item/item.styles.uniwind.ts"
       ],
       "@/components/ui/option-item": [
         "./atoms/option-item/option-item.tsx"
       ],
       "@/components/ui/option-item.styles": [
-        "./atoms/option-item/option-item.styles.unistyles.ts"
+        "./atoms/option-item/option-item.styles.uniwind.ts"
       ],
       "@/components/ui/empty": [
         "./atoms/empty/empty.tsx"
       ],
       "@/components/ui/empty.styles": [
-        "./atoms/empty/empty.styles.unistyles.ts"
+        "./atoms/empty/empty.styles.uniwind.ts"
       ],
       "@/components/ui/alert": [
         "./atoms/alert/alert.tsx"
       ],
       "@/components/ui/alert.styles": [
-        "./atoms/alert/alert.styles.unistyles.ts"
+        "./atoms/alert/alert.styles.uniwind.ts"
       ],
       "@/components/ui/button-group": [
         "./atoms/button-group/button-group.tsx"
       ],
       "@/components/ui/button-group.styles": [
-        "./atoms/button-group/button-group.styles.unistyles.ts"
+        "./atoms/button-group/button-group.styles.uniwind.ts"
       ],
       "@/components/ui/use-accordion": [
         "./atoms/accordion/use-accordion.ts"
@@ -278,7 +281,7 @@
         "./atoms/accordion/accordion.tsx"
       ],
       "@/components/ui/accordion.styles": [
-        "./atoms/accordion/accordion.styles.unistyles.ts"
+        "./atoms/accordion/accordion.styles.uniwind.ts"
       ],
       "@/components/ui/use-dialog": [
         "./atoms/dialog/use-dialog.ts"
@@ -287,7 +290,7 @@
         "./atoms/dialog/dialog.tsx"
       ],
       "@/components/ui/dialog.styles": [
-        "./atoms/dialog/dialog.styles.unistyles.ts"
+        "./atoms/dialog/dialog.styles.uniwind.tsx"
       ],
       "@/components/ui/context-menu": [
         "./atoms/context-menu/context-menu.tsx"
@@ -299,7 +302,7 @@
         "./atoms/menu/menu.tsx"
       ],
       "@/components/ui/menu.styles": [
-        "./atoms/menu/menu.styles.unistyles.ts"
+        "./atoms/menu/menu.styles.uniwind.tsx"
       ],
       "@/components/ui/use-toast": [
         "./atoms/toast/use-toast.ts"
@@ -308,7 +311,7 @@
         "./atoms/toast/toast.tsx"
       ],
       "@/components/ui/toast.styles": [
-        "./atoms/toast/toast.styles.unistyles.ts"
+        "./atoms/toast/toast.styles.uniwind.ts"
       ],
       "@/components/ui/use-snackbar": [
         "./atoms/snackbar/use-snackbar.ts"
@@ -317,7 +320,7 @@
         "./atoms/snackbar/snackbar.tsx"
       ],
       "@/components/ui/snackbar.styles": [
-        "./atoms/snackbar/snackbar.styles.unistyles.ts"
+        "./atoms/snackbar/snackbar.styles.uniwind.tsx"
       ],
       "@/components/ui/use-calendar": [
         "./atoms/calendar/use-calendar.ts"
@@ -326,7 +329,7 @@
         "./atoms/calendar/calendar.tsx"
       ],
       "@/components/ui/calendar.styles": [
-        "./atoms/calendar/calendar.styles.unistyles.ts"
+        "./atoms/calendar/calendar.styles.uniwind.ts"
       ],
       "@/components/ui/use-carousel": [
         "./atoms/carousel/use-carousel.ts"
@@ -335,7 +338,7 @@
         "./atoms/carousel/carousel.tsx"
       ],
       "@/components/ui/carousel.styles": [
-        "./atoms/carousel/carousel.styles.unistyles.ts"
+        "./atoms/carousel/carousel.styles.uniwind.ts"
       ],
       "@/components/ui/use-search-bar": [
         "./molecules/search-bar/use-search-bar.ts"
@@ -344,10 +347,7 @@
         "./molecules/search-bar/search-bar.tsx"
       ],
       "@/components/ui/search-bar.styles": [
-        "./molecules/search-bar/search-bar.styles.unistyles.ts"
-      ],
-      "@/components/ui/search-bar-colors": [
-        "./molecules/search-bar/search-bar-colors.ts"
+        "./molecules/search-bar/search-bar.styles.uniwind.ts"
       ],
       "@/components/ui/use-attachment": [
         "./molecules/attachment/use-attachment.ts"
@@ -356,7 +356,7 @@
         "./molecules/attachment/attachment.tsx"
       ],
       "@/components/ui/attachment.styles": [
-        "./molecules/attachment/attachment.styles.unistyles.ts"
+        "./molecules/attachment/attachment.styles.uniwind.ts"
       ],
       "@/components/ui/use-date-picker": [
         "./molecules/date-picker/use-date-picker.ts"
@@ -365,7 +365,7 @@
         "./molecules/date-picker/date-picker.tsx"
       ],
       "@/components/ui/date-picker.styles": [
-        "./molecules/date-picker/date-picker.styles.unistyles.ts"
+        "./molecules/date-picker/date-picker.styles.uniwind.ts"
       ],
       "@/components/ui/use-passcode": [
         "./organisms/passcode/use-passcode.ts"
@@ -374,103 +374,103 @@
         "./organisms/passcode/passcode.tsx"
       ],
       "@/components/ui/passcode.styles": [
-        "./organisms/passcode/passcode.styles.unistyles.ts"
+        "./organisms/passcode/passcode.styles.uniwind.ts"
       ],
       "@/components/ui/app-bar": [
         "./templates/app-bar/app-bar.tsx"
       ],
       "@/components/ui/app-bar.styles": [
-        "./templates/app-bar/app-bar.styles.unistyles.ts"
+        "./templates/app-bar/app-bar.styles.uniwind.ts"
       ],
       "@/components/ui/tool-bar": [
         "./templates/tool-bar/tool-bar.tsx"
       ],
       "@/components/ui/tool-bar.styles": [
-        "./templates/tool-bar/tool-bar.styles.unistyles.ts"
+        "./templates/tool-bar/tool-bar.styles.uniwind.ts"
       ],
       "@/components/ui/bottom-tab-bar": [
         "./templates/bottom-tab-bar/bottom-tab-bar.tsx"
       ],
       "@/components/ui/bottom-tab-bar.styles": [
-        "./templates/bottom-tab-bar/bottom-tab-bar.styles.unistyles.ts"
+        "./templates/bottom-tab-bar/bottom-tab-bar.styles.uniwind.ts"
       ],
       "@/components/ui/tab": [
         "./templates/tab/tab.tsx"
       ],
       "@/components/ui/tab.styles": [
-        "./templates/tab/tab.styles.unistyles.ts"
+        "./templates/tab/tab.styles.uniwind.tsx"
       ],
       "@/components/ui/scaffold": [
         "./templates/scaffold/scaffold.tsx"
       ],
       "@/components/ui/scaffold.styles": [
-        "./templates/scaffold/scaffold.styles.unistyles.ts"
+        "./templates/scaffold/scaffold.styles.uniwind.ts"
       ],
       "@/components/compositions/product-card": [
         "./compositions/product-card/product-card.tsx"
       ],
       "@/components/compositions/product-card.styles": [
-        "./compositions/product-card/product-card.styles.unistyles.ts"
+        "./compositions/product-card/product-card.styles.uniwind.ts"
       ],
       "@/components/compositions/product-card-spotlight": [
         "./compositions/product-card-spotlight/product-card-spotlight.tsx"
       ],
       "@/components/compositions/product-card-spotlight.styles": [
-        "./compositions/product-card-spotlight/product-card-spotlight.styles.unistyles.ts"
+        "./compositions/product-card-spotlight/product-card-spotlight.styles.uniwind.ts"
       ],
       "@/components/compositions/recipe-card": [
         "./compositions/recipe-card/recipe-card.tsx"
       ],
       "@/components/compositions/recipe-card.styles": [
-        "./compositions/recipe-card/recipe-card.styles.unistyles.ts"
+        "./compositions/recipe-card/recipe-card.styles.uniwind.ts"
       ],
       "@/components/compositions/listing-card": [
         "./compositions/listing-card/listing-card.tsx"
       ],
       "@/components/compositions/listing-card.styles": [
-        "./compositions/listing-card/listing-card.styles.unistyles.ts"
+        "./compositions/listing-card/listing-card.styles.uniwind.ts"
       ],
       "@/components/compositions/listing-card-detailed": [
         "./compositions/listing-card-detailed/listing-card-detailed.tsx"
       ],
       "@/components/compositions/listing-card-detailed.styles": [
-        "./compositions/listing-card-detailed/listing-card-detailed.styles.unistyles.ts"
+        "./compositions/listing-card-detailed/listing-card-detailed.styles.uniwind.ts"
       ],
       "@/components/compositions/listing-card-overlay": [
         "./compositions/listing-card-overlay/listing-card-overlay.tsx"
       ],
       "@/components/compositions/listing-card-overlay.styles": [
-        "./compositions/listing-card-overlay/listing-card-overlay.styles.unistyles.ts"
+        "./compositions/listing-card-overlay/listing-card-overlay.styles.uniwind.ts"
       ],
       "@/components/compositions/listing-card-overlay-detailed": [
         "./compositions/listing-card-overlay-detailed/listing-card-overlay-detailed.tsx"
       ],
       "@/components/compositions/listing-card-overlay-detailed.styles": [
-        "./compositions/listing-card-overlay-detailed/listing-card-overlay-detailed.styles.unistyles.ts"
+        "./compositions/listing-card-overlay-detailed/listing-card-overlay-detailed.styles.uniwind.ts"
       ],
       "@/components/compositions/listing-card-booking": [
         "./compositions/listing-card-booking/listing-card-booking.tsx"
       ],
       "@/components/compositions/listing-card-booking.styles": [
-        "./compositions/listing-card-booking/listing-card-booking.styles.unistyles.ts"
+        "./compositions/listing-card-booking/listing-card-booking.styles.uniwind.ts"
       ],
       "@/components/compositions/profile-card": [
         "./compositions/profile-card/profile-card.tsx"
       ],
       "@/components/compositions/profile-card.styles": [
-        "./compositions/profile-card/profile-card.styles.unistyles.ts"
+        "./compositions/profile-card/profile-card.styles.uniwind.ts"
       ],
       "@/components/compositions/article-card": [
         "./compositions/article-card/article-card.tsx"
       ],
       "@/components/compositions/article-card.styles": [
-        "./compositions/article-card/article-card.styles.unistyles.ts"
+        "./compositions/article-card/article-card.styles.uniwind.ts"
       ],
       "@/components/compositions/event-card": [
         "./compositions/event-card/event-card.tsx"
       ],
       "@/components/compositions/event-card.styles": [
-        "./compositions/event-card/event-card.styles.unistyles.ts"
+        "./compositions/event-card/event-card.styles.uniwind.ts"
       ],
       "@/components/compositions/settings-item": [
         "./compositions/settings-item/settings-item.tsx"
@@ -479,115 +479,115 @@
         "./compositions/track-item/track-item.tsx"
       ],
       "@/components/compositions/track-item.styles": [
-        "./compositions/track-item/track-item.styles.unistyles.ts"
+        "./compositions/track-item/track-item.styles.uniwind.ts"
       ],
       "@/components/compositions/conversation-item": [
         "./compositions/conversation-item/conversation-item.tsx"
       ],
       "@/components/compositions/conversation-item.styles": [
-        "./compositions/conversation-item/conversation-item.styles.unistyles.ts"
+        "./compositions/conversation-item/conversation-item.styles.uniwind.ts"
       ],
       "@/components/compositions/notification-item": [
         "./compositions/notification-item/notification-item.tsx"
       ],
       "@/components/compositions/notification-item.styles": [
-        "./compositions/notification-item/notification-item.styles.unistyles.ts"
+        "./compositions/notification-item/notification-item.styles.uniwind.ts"
       ],
       "@/components/compositions/offer-card": [
         "./compositions/offer-card/offer-card.tsx"
       ],
       "@/components/compositions/offer-card.styles": [
-        "./compositions/offer-card/offer-card.styles.unistyles.ts"
+        "./compositions/offer-card/offer-card.styles.uniwind.ts"
       ],
       "@/components/compositions/pricing-card": [
         "./compositions/pricing-card/pricing-card.tsx"
       ],
       "@/components/compositions/pricing-card.styles": [
-        "./compositions/pricing-card/pricing-card.styles.unistyles.ts"
+        "./compositions/pricing-card/pricing-card.styles.uniwind.ts"
       ],
       "@/components/compositions/pricing-card-compact": [
         "./compositions/pricing-card-compact/pricing-card-compact.tsx"
       ],
       "@/components/compositions/pricing-card-compact.styles": [
-        "./compositions/pricing-card-compact/pricing-card-compact.styles.unistyles.ts"
+        "./compositions/pricing-card-compact/pricing-card-compact.styles.uniwind.ts"
       ],
       "@/components/compositions/pricing-card-toggle": [
         "./compositions/pricing-card-toggle/pricing-card-toggle.tsx"
       ],
       "@/components/compositions/pricing-card-toggle.styles": [
-        "./compositions/pricing-card-toggle/pricing-card-toggle.styles.unistyles.ts"
+        "./compositions/pricing-card-toggle/pricing-card-toggle.styles.uniwind.ts"
       ],
       "@/components/compositions/pricing-card-horizontal": [
         "./compositions/pricing-card-horizontal/pricing-card-horizontal.tsx"
       ],
       "@/components/compositions/pricing-card-horizontal.styles": [
-        "./compositions/pricing-card-horizontal/pricing-card-horizontal.styles.unistyles.ts"
+        "./compositions/pricing-card-horizontal/pricing-card-horizontal.styles.uniwind.ts"
       ],
       "@/components/compositions/pricing-card-hero": [
         "./compositions/pricing-card-hero/pricing-card-hero.tsx"
       ],
       "@/components/compositions/pricing-card-hero.styles": [
-        "./compositions/pricing-card-hero/pricing-card-hero.styles.unistyles.ts"
+        "./compositions/pricing-card-hero/pricing-card-hero.styles.uniwind.ts"
       ],
       "@/components/compositions/pricing-card-tile": [
         "./compositions/pricing-card-tile/pricing-card-tile.tsx"
       ],
       "@/components/compositions/pricing-card-tile.styles": [
-        "./compositions/pricing-card-tile/pricing-card-tile.styles.unistyles.ts"
+        "./compositions/pricing-card-tile/pricing-card-tile.styles.uniwind.ts"
       ],
       "@/components/compositions/stats-card": [
         "./compositions/stats-card/stats-card.tsx"
       ],
       "@/components/compositions/stats-card.styles": [
-        "./compositions/stats-card/stats-card.styles.unistyles.ts"
+        "./compositions/stats-card/stats-card.styles.uniwind.ts"
       ],
       "@/components/compositions/stats-card-sparkline": [
         "./compositions/stats-card-sparkline/stats-card-sparkline.tsx"
       ],
       "@/components/compositions/stats-card-sparkline.styles": [
-        "./compositions/stats-card-sparkline/stats-card-sparkline.styles.unistyles.ts"
+        "./compositions/stats-card-sparkline/stats-card-sparkline.styles.uniwind.ts"
       ],
       "@/components/compositions/stats-card-progress": [
         "./compositions/stats-card-progress/stats-card-progress.tsx"
       ],
       "@/components/compositions/stats-card-progress.styles": [
-        "./compositions/stats-card-progress/stats-card-progress.styles.unistyles.ts"
+        "./compositions/stats-card-progress/stats-card-progress.styles.uniwind.ts"
       ],
       "@/components/compositions/stats-card-inline": [
         "./compositions/stats-card-inline/stats-card-inline.tsx"
       ],
       "@/components/compositions/stats-card-inline.styles": [
-        "./compositions/stats-card-inline/stats-card-inline.styles.unistyles.ts"
+        "./compositions/stats-card-inline/stats-card-inline.styles.uniwind.ts"
       ],
       "@/components/compositions/stats-card-ring": [
         "./compositions/stats-card-ring/stats-card-ring.tsx"
       ],
       "@/components/compositions/stats-card-ring.styles": [
-        "./compositions/stats-card-ring/stats-card-ring.styles.unistyles.ts"
+        "./compositions/stats-card-ring/stats-card-ring.styles.uniwind.ts"
       ],
       "@/components/compositions/search-result-item": [
         "./compositions/search-result-item/search-result-item.tsx"
       ],
       "@/components/compositions/search-result-item.styles": [
-        "./compositions/search-result-item/search-result-item.styles.unistyles.ts"
+        "./compositions/search-result-item/search-result-item.styles.uniwind.ts"
       ],
       "@/components/compositions/search-app-bar": [
         "./compositions/search-app-bar/search-app-bar.tsx"
       ],
       "@/components/compositions/search-app-bar.styles": [
-        "./compositions/search-app-bar/search-app-bar.styles.unistyles.ts"
+        "./compositions/search-app-bar/search-app-bar.styles.uniwind.ts"
       ],
       "@/components/compositions/profile-app-bar": [
         "./compositions/profile-app-bar/profile-app-bar.tsx"
       ],
       "@/components/compositions/profile-app-bar.styles": [
-        "./compositions/profile-app-bar/profile-app-bar.styles.unistyles.ts"
+        "./compositions/profile-app-bar/profile-app-bar.styles.uniwind.ts"
       ],
       "@/components/blocks/settings-section": [
         "./blocks/settings-section/settings-section.tsx"
       ],
       "@/components/blocks/settings-section.styles": [
-        "./blocks/settings-section/settings-section.styles.unistyles.ts"
+        "./blocks/settings-section/settings-section.styles.uniwind.ts"
       ]
     }
   },
@@ -602,17 +602,13 @@
     "**/*.stylesheet.ts",
     "**/*.stylesheet.tsx",
     "**/*.stylesheet.d.ts",
+    "**/unistyles/**",
+    "**/*.unistyles.ts",
+    "**/*.unistyles.tsx",
+    "**/*.unistyles.d.ts",
     "**/nativewind/**",
     "**/*.nativewind.ts",
     "**/*.nativewind.tsx",
-    "**/*.nativewind.d.ts",
-    "**/uniwind/**",
-    "**/*.uniwind.ts",
-    "**/*.uniwind.tsx",
-    "**/*.uniwind.d.ts",
-    "**/tailwind/**",
-    "**/*.tailwind.ts",
-    "**/*.tailwind.tsx",
-    "**/*.tailwind.d.ts"
+    "**/*.nativewind.d.ts"
   ]
 }

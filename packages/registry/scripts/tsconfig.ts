@@ -2,13 +2,18 @@
 // Each alias import (`@/components/ui/text`) is mapped to the registry file it will be copied from,
 // following the same rules as the CLI: the item folder and the variant folder are flattened.
 //
-// `stylesheet` goes to tsconfig.json, the file editors read. Other variants get tsconfig.<variant>.json.
+// One config per styling, tsconfig.<styling>.json: the same alias points to a different file in each
+// one. NativeWind and Uniwind each read their own files, and the `tailwind` folder of the theme,
+// which they share. tsconfig.json only references them: an editor looks through
+// the list for the project that includes the file it opens, so `button.styles.uniwind.tsx` gets the
+// aliases and the types of Uniwind, and a file they all share those of the first one. It lists no
+// file of its own, which is what lets it reference projects that aren't `composite`.
 //
 // The theme's components.ts is a template that `axiom add` fills. `@/theme/components` points to
 // .generated/components.ts instead, with the tokens of every registry item registered.
 //
 //   bun scripts/tsconfig.ts
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { basename, dirname, extname, join, relative } from "node:path";
 
 import { readRegistry } from "../../cli/src/registry.ts";
@@ -16,7 +21,11 @@ import { registerTokens, tokenEntries } from "../../cli/src/tokens.ts";
 import {
 	ALIAS_OF,
 	DEFAULT_ALIASES,
+	STYLINGS,
 	VARIANTS,
+	VARIANTS_OF,
+	stripVariant,
+	variantOf,
 	type RegistryFile,
 } from "../../cli/src/types.ts";
 
@@ -33,6 +42,8 @@ const GENERATED_COMPONENTS = `${GENERATED_DIR}/index.ts`;
 // The theme's components/index.ts imports each tokens file as `./<component>`, the name it takes
 // once copied. Relative imports can't be remapped by tsconfig paths, so the folder is mirrored
 // here: one stub per component, re-exporting the registry file it will be copied from.
+// Emptied first, so an item that left the registry leaves no stub behind.
+rmSync(join(root, GENERATED_DIR), { recursive: true, force: true });
 mkdirSync(join(root, GENERATED_DIR), { recursive: true });
 writeFileSync(
 	join(root, GENERATED_COMPONENTS),
@@ -74,7 +85,7 @@ function itemRoot(item: (typeof registry.items)[number]): string | undefined {
 	return dirs.sort((a, b) => a.length - b.length)[0];
 }
 
-for (const variant of VARIANTS) {
+for (const styling of STYLINGS) {
 	const paths: Record<string, string[]> = {};
 	const covered = new Set<string>();
 	const uncovered = new Set<string>();
@@ -82,7 +93,8 @@ for (const variant of VARIANTS) {
 
 	for (const item of registry.items) {
 		const root = itemRoot(item);
-		if (item.variants && !item.variants[variant]) {
+		const variant = variantOf(item, styling);
+		if (item.variants && !variant) {
 			if (root) uncovered.add(root);
 			continue;
 		}
@@ -94,12 +106,14 @@ for (const variant of VARIANTS) {
 		const [navigationSource] = Object.values(item.navigationSources ?? {});
 		const files = [
 			...(item.files ?? []),
-			...(item.variants?.[variant]?.files ?? []),
+			...((variant && item.variants?.[variant]?.files) || []),
 			...(iconSource?.files ?? []),
 			...(navigationSource?.files ?? []),
 		];
 		for (const file of files) {
 			const path = pathOf(file);
+			// The theme's CSS and its Tailwind preset aren't imported by any source.
+			if (!/\.tsx?$/.test(path)) continue;
 			count++;
 
 			// A tokens file is addressed through the theme, and only by the generated aggregator.
@@ -109,22 +123,27 @@ for (const variant of VARIANTS) {
 			const as = typeof file === "string" ? undefined : file.as;
 			const within = as
 				? as.slice(0, -extname(as).length)
-				: basename(path, extname(path));
+				: stripVariant(basename(path, extname(path)));
 			// `index` files are imported through the folder itself (`@/theme`, `@/theme/components`).
 			const key = within.replace(/(^|\/)index$/, "");
 			paths[key ? `${alias}/${key}` : alias] = [`./${path}`];
 		}
 	}
 
-	if (!registry.items.some((item) => item.variants?.[variant])) continue;
 	// The theme's components/index.ts is a template that `axiom add` fills; the generated one has
 	// every registry item's tokens registered.
 	paths["@/theme/components"] = [`./${GENERATED_COMPONENTS}`];
 
 	// Every file of the variant, listed in registry.json or not, so editors never fall back to a config without paths.
-	const otherVariants = VARIANTS.filter((other) => other !== variant).map(
-		(other) => `**/${other}/**`,
-	);
+	// A variant's file is either in its folder or named after it (`button.styles.unistyles.tsx`).
+	const otherVariants = VARIANTS.filter(
+		(other) => !VARIANTS_OF[styling].includes(other),
+	).flatMap((other) => [
+		`**/${other}/**`,
+		`**/*.${other}.ts`,
+		`**/*.${other}.tsx`,
+		`**/*.${other}.d.ts`,
+	]);
 	// An item that doesn't offer the variant yet isn't part of it: its shared files import aliases
 	// this config doesn't map, so the whole folder stays out.
 	const missing = [...uncovered]
@@ -138,16 +157,31 @@ for (const variant of VARIANTS) {
 		.map((dir) => `${dir}/**`);
 	const tsconfig = {
 		extends: "./tsconfig.base.json",
-		compilerOptions: { paths },
+		// `./button.styles` resolves to `button.styles.<variant>.tsx`.
+		compilerOptions: { moduleSuffixes: [`.${styling}`, ""], paths },
 		include: ["**/*.ts", "**/*.tsx"],
 		exclude: ["node_modules", "scripts", ...otherVariants, ...missing],
 	};
 
-	const file =
-		variant === "stylesheet" ? "tsconfig.json" : `tsconfig.${variant}.json`;
+	const file = `tsconfig.${styling}.json`;
 	writeFileSync(
 		join(root, file),
 		`// Generated by scripts/tsconfig.ts from registry.json. Don't edit.\n${JSON.stringify(tsconfig, null, 2)}\n`,
 	);
 	console.log(`wrote ${file} (${count} files mapped)`);
 }
+
+writeFileSync(
+	join(root, "tsconfig.json"),
+	`// Generated by scripts/tsconfig.ts. Don't edit.\n${JSON.stringify(
+		{
+			files: [],
+			references: STYLINGS.map((styling) => ({
+				path: `./tsconfig.${styling}.json`,
+			})),
+		},
+		null,
+		2,
+	)}\n`,
+);
+console.log("wrote tsconfig.json");

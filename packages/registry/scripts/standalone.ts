@@ -8,35 +8,27 @@ import { join } from "node:path";
 
 import { readRegistry } from "../../cli/src/registry.ts";
 import { buildStandalone } from "../../cli/src/standalone.ts";
-import { VARIANTS, type Styling, type Variant } from "../../cli/src/types.ts";
+import { STYLINGS, isCssStyling, variantOf } from "../../cli/src/types.ts";
 
 const root = join(import.meta.dirname, "..");
 const registry = readRegistry(root);
 const out = join(root, ".generated/standalone");
 
-// One styling per variant is enough: the ones sharing a variant get the same files.
-const STYLING: Record<Variant, Styling> = {
-	stylesheet: "stylesheet",
-	unistyles: "unistyles",
-	tailwind: "nativewind",
-};
-
 rmSync(out, { recursive: true, force: true });
 
 let failed = false;
-for (const variant of VARIANTS) {
-	if (!registry.items.some((item) => item.variants?.[variant])) continue;
+for (const variant of STYLINGS) {
 	const dir = join(out, variant);
 	let count = 0;
 
 	for (const item of registry.items) {
 		if (item.type === "foundations") continue;
-		if (item.variants && !item.variants[variant]) continue;
+		if (item.variants && !variantOf(item, variant)) continue;
 
 		let result;
 		try {
 			result = buildStandalone(registry, root, item.name, {
-				styling: STYLING[variant],
+				styling: variant,
 				icons: "expo-symbols",
 			});
 		} catch (error) {
@@ -62,8 +54,10 @@ for (const variant of VARIANTS) {
 				compilerOptions: { paths: {} },
 				include: ["*.ts", "*.tsx"],
 				// The `className` NativeWind and Uniwind add to React Native's props.
-				...(variant === "tailwind" && {
-					files: ["../../../foundations/theme/tailwind/tailwind-env.d.ts"],
+				...(isCssStyling(variant) && {
+					files: [
+						`../../../foundations/theme/tailwind/tailwind-env.${variant}.d.ts`,
+					],
 				}),
 			},
 			null,

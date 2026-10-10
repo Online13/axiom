@@ -1,7 +1,8 @@
 // Checks that every styling variant of an item exposes the same API as `stylesheet`.
 //
-// For each file of a variant folder (`atoms/card/unistyles/card.tsx`), the file at the same path in
-// the `stylesheet` folder is the reference. Both must export the same names, every exported `*Props`
+// A file named after its variant (`button.styles.unistyles.tsx`) is compared with its `.stylesheet`
+// sibling, and a file of a variant folder (`foundations/theme/unistyles/index.ts`) with the file at
+// the same path in the `stylesheet` folder. Both must export the same names, every exported `*Props`
 // type must have the same props with the same optionality, and every exported component the same
 // static parts (`Card.Header`). Prop types are not compared: style types differ between variants.
 // Files only one variant has (the theme's `use-theme.ts` / `unistyles.ts`) are skipped, and the
@@ -14,7 +15,12 @@ import { existsSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 import ts from "typescript";
 
-import { VARIANTS, type Variant } from "../../cli/src/types.ts";
+import {
+	STYLINGS,
+	VARIANTS_OF,
+	isCssStyling,
+	type Styling,
+} from "../../cli/src/types.ts";
 
 const root = join(import.meta.dirname, "..");
 const REFERENCE = "stylesheet";
@@ -27,10 +33,9 @@ const ALLOWED = new Set([
 	"foundations/theme/tailwind/index.ts: export cx",
 ]);
 
-const configOf = (variant: Variant) =>
-	variant === REFERENCE ? "tsconfig.json" : `tsconfig.${variant}.json`;
+const configOf = (variant: Styling) => `tsconfig.${variant}.json`;
 
-function program(variant: Variant): ts.Program {
+function program(variant: Styling): ts.Program {
 	const path = join(root, configOf(variant));
 	const { config } = ts.readConfigFile(path, ts.sys.readFile);
 	const parsed = ts.parseJsonConfigFileContent(config, ts.sys, root);
@@ -38,12 +43,37 @@ function program(variant: Variant): ts.Program {
 }
 
 // Every `<layer>/<item>/<variant>` folder of the registry, recursively.
-function variantFolders(dir: string, variant: Variant): string[] {
+function variantFolders(dir: string, variant: string): string[] {
 	return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
 		if (!entry.isDirectory() || entry.name.startsWith(".")) return [];
 		const path = join(dir, entry.name);
 		return entry.name === variant ? [path] : variantFolders(path, variant);
 	});
+}
+
+// Every file named after `variant`, with the reference it is compared to.
+function suffixedFiles(variant: string): [file: string, reference: string][] {
+	const suffix = new RegExp(`\\.${variant}(\\.tsx?)$`);
+	return readdirSync(root, { withFileTypes: true, recursive: true })
+		.filter(
+			(entry) =>
+				entry.isFile() &&
+				suffix.test(entry.name) &&
+				!/(^|\/)(node_modules|\.generated)(\/|$)/.test(
+					relative(root, entry.parentPath),
+				),
+		)
+		.map((entry) => {
+			// A styles file is `.ts` or `.tsx` on its own: the reference may have the other extension.
+			const base = join(
+				entry.parentPath,
+				entry.name.replace(suffix, `.${REFERENCE}`),
+			);
+			return [
+				join(entry.parentPath, entry.name),
+				existsSync(`${base}.ts`) ? `${base}.ts` : `${base}.tsx`,
+			];
+		});
 }
 
 function filesIn(dir: string): string[] {
@@ -91,39 +121,47 @@ const reference = program(REFERENCE);
 let failures = 0;
 let compared = 0;
 
-for (const variant of VARIANTS) {
+for (const variant of STYLINGS) {
 	if (variant === REFERENCE || !existsSync(join(root, configOf(variant))))
 		continue;
 	const other = program(variant);
 
-	for (const folder of variantFolders(root, variant)) {
-		const referenceFolder = join(folder, "..", REFERENCE);
-		for (const file of filesIn(folder)) {
-			const referenceFile = join(referenceFolder, relative(folder, file));
-			if (!existsSync(referenceFile)) continue;
-			compared++;
+	const pairs = [
+		// NativeWind and Uniwind also compile the theme's `tailwind` folder, which they share.
+		...VARIANTS_OF[variant].flatMap((source) => [
+			...variantFolders(root, source).flatMap((folder) =>
+				filesIn(folder).map((file): [string, string] => [
+					file,
+					join(folder, "..", REFERENCE, relative(folder, file)),
+				]),
+			),
+			...suffixedFiles(source),
+		]),
+	];
+	for (const [file, referenceFile] of pairs) {
+		if (!existsSync(referenceFile)) continue;
+		compared++;
 
-			const expected = surface(reference, referenceFile);
-			const actual = surface(other, file);
-			const allowed = (line: string) =>
-				ALLOWED.has(`${relative(root, file)}: ${line}`) ||
-				// NativeWind and Uniwind give React Native's props a `className` (and `cssInterop`,
-				// `placeholderClassName`…), so the props built on them have it too.
-				(variant === "tailwind" &&
-					/^\w+Props\.(\w*ClassName|className|cssInterop)\?$/.test(line));
-			const missing = [...expected].filter(
-				(line) => !actual.has(line) && !allowed(line),
-			);
-			const extra = [...actual].filter(
-				(line) => !expected.has(line) && !allowed(line),
-			);
-			if (missing.length === 0 && extra.length === 0) continue;
+		const expected = surface(reference, referenceFile);
+		const actual = surface(other, file);
+		const allowed = (line: string) =>
+			ALLOWED.has(`${relative(root, file)}: ${line}`) ||
+			// NativeWind and Uniwind give React Native's props a `className` (and `cssInterop`,
+			// `placeholderClassName`…), so the props built on them have it too.
+			(isCssStyling(variant) &&
+				/^\w+Props\.(\w*ClassName|className|cssInterop)\?$/.test(line));
+		const missing = [...expected].filter(
+			(line) => !actual.has(line) && !allowed(line),
+		);
+		const extra = [...actual].filter(
+			(line) => !expected.has(line) && !allowed(line),
+		);
+		if (missing.length === 0 && extra.length === 0) continue;
 
-			failures++;
-			console.log(`\n${relative(root, file)} differs from ${REFERENCE}:`);
-			for (const line of missing) console.log(`  - ${line}`);
-			for (const line of extra) console.log(`  + ${line}`);
-		}
+		failures++;
+		console.log(`\n${relative(root, file)} differs from ${REFERENCE}:`);
+		for (const line of missing) console.log(`  - ${line}`);
+		for (const line of extra) console.log(`  + ${line}`);
 	}
 }
 

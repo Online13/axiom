@@ -7,6 +7,7 @@
 	"scripts": {
 		"tsconfig": "bun scripts/tsconfig.ts",
 		"standalone": "bun scripts/standalone.ts",
+		"theme-css": "bun scripts/tsconfig.ts && bun --tsconfig-override tsconfig.stylesheet.json scripts/theme-css.ts",
 		"typecheck": "bun scripts/tsconfig.ts && bun scripts/standalone.ts && bun scripts/typecheck.ts",
 		"parity": "bun scripts/tsconfig.ts && bun scripts/parity.ts"
 	},
@@ -14,6 +15,8 @@
 		"@react-navigation/native": "^7.4.1",
 		"nativewind": "^4.2.7",
 		"react-native-unistyles": "^3.3.0",
-		"typescript": "~6.0.3"
+		"tailwind-merge": "^3.7.0",
+		"typescript": "~6.0.3",
+		"uniwind": "^1.12.2"
 	}
 }

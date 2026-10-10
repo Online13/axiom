@@ -3,9 +3,7 @@
 		{
 			"name": "tokens",
 			"type": "foundations",
-			"files": [
-				"foundations/tokens/tokens.ts"
-			]
+			"files": ["foundations/tokens/tokens.ts"]
 		},
 		{
 			"name": "theme",
@@ -22,9 +20,7 @@
 				},
 				"foundations/theme/theme.ts"
 			],
-			"internalDependencies": [
-				"tokens"
-			],
+			"internalDependencies": ["tokens"],
 			"variants": {
 				"stylesheet": {
 					"files": [
@@ -38,21 +34,31 @@
 						"foundations/theme/unistyles/index.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
 						"foundations/theme/tailwind/use-theme.ts",
 						"foundations/theme/tailwind/cx.ts",
+						"foundations/theme/tailwind/nativewind.css",
+						"foundations/theme/tailwind/nativewind-preset.js",
 						"foundations/theme/tailwind/index.ts"
-					]
+					],
+					"dependencies": ["tailwind-merge"]
+				},
+				"uniwind": {
+					"files": [
+						"foundations/theme/tailwind/use-theme.ts",
+						"foundations/theme/tailwind/cx.ts",
+						"foundations/theme/tailwind/uniwind.css",
+						"foundations/theme/tailwind/index.ts"
+					],
+					"dependencies": ["tailwind-merge"]
 				}
 			}
 		},
 		{
 			"name": "slot",
 			"type": "core",
-			"files": [
-				"core/slot/slot.tsx"
-			]
+			"files": ["core/slot/slot.tsx"]
 		},
 		{
 			"name": "haptics",
@@ -67,56 +73,36 @@
 		{
 			"name": "tappable",
 			"type": "core",
-			"files": [
-				"core/tappable/tappable.tsx"
-			],
-			"internalDependencies": [
-				"haptics",
-				"tokens"
-			]
+			"files": ["core/tappable/tappable.tsx"],
+			"internalDependencies": ["haptics", "tokens"]
 		},
 		{
 			"name": "portal",
 			"type": "core",
 			"standalone": false,
-			"files": [
-				"core/portal/portal.tsx"
-			],
-			"dependencies": [
-				"react-native-teleport"
-			]
+			"files": ["core/portal/portal.tsx"],
+			"dependencies": ["react-native-teleport"]
 		},
 		{
 			"name": "overlay",
 			"type": "core",
-			"files": [
-				"core/overlay/overlay.tsx"
-			],
-			"dependencies": [
-				"react-native-reanimated",
-				"react-native-worklets"
-			]
+			"files": ["core/overlay/overlay.tsx"],
+			"dependencies": ["react-native-reanimated", "react-native-worklets"]
 		},
 		{
 			"name": "overlay-stack",
 			"type": "core",
-			"files": [
-				"core/overlay-stack/overlay-stack.ts"
-			]
+			"files": ["core/overlay-stack/overlay-stack.ts"]
 		},
 		{
 			"name": "use-controllable-state",
 			"type": "hooks",
-			"files": [
-				"hooks/use-controllable-state/use-controllable-state.ts"
-			]
+			"files": ["hooks/use-controllable-state/use-controllable-state.ts"]
 		},
 		{
 			"name": "use-keyboard-visible",
 			"type": "hooks",
-			"files": [
-				"hooks/use-keyboard-visible/use-keyboard-visible.ts"
-			]
+			"files": ["hooks/use-keyboard-visible/use-keyboard-visible.ts"]
 		},
 		{
 			"name": "use-overlay-back-handler",
@@ -127,17 +113,13 @@
 					"files": [
 						"hooks/use-overlay-back-handler/sources/expo-router/use-overlay-back-handler.ts"
 					],
-					"dependencies": [
-						"expo-router"
-					]
+					"dependencies": ["expo-router"]
 				},
 				"react-navigation": {
 					"files": [
 						"hooks/use-overlay-back-handler/sources/react-navigation/use-overlay-back-handler.ts"
 					],
-					"dependencies": [
-						"@react-navigation/native"
-					]
+					"dependencies": ["@react-navigation/native"]
 				},
 				"react-native": {
 					"files": [
@@ -149,74 +131,58 @@
 		{
 			"name": "use-refresh-control",
 			"type": "hooks",
-			"files": [
-				"hooks/use-refresh-control/use-refresh-control.ts"
-			],
+			"files": ["hooks/use-refresh-control/use-refresh-control.ts"],
 			"dependencies": [
 				"react-native-gesture-handler",
 				"react-native-reanimated",
 				"react-native-worklets"
 			],
-			"internalDependencies": [
-				"haptics"
-			]
+			"internalDependencies": ["haptics"]
 		},
 		{
 			"name": "text",
 			"type": "typography",
-			"internalDependencies": [
-				"slot",
-				"theme"
-			],
+			"internalDependencies": ["slot", "theme"],
+			"files": ["typography/text/text.tsx"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"typography/text/stylesheet/text.tsx"
-					]
+					"files": ["typography/text/text.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"typography/text/unistyles/text.tsx"
-					]
+					"files": ["typography/text/text.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"typography/text/tailwind/text.tsx"
-					]
+				"nativewind": {
+					"files": ["typography/text/text.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["typography/text/text.styles.uniwind.ts"]
 				}
 			}
 		},
 		{
 			"name": "title",
 			"type": "typography",
-			"internalDependencies": [
-				"slot",
-				"theme"
-			],
+			"internalDependencies": ["slot", "theme"],
+			"files": ["typography/title/title.tsx"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"typography/title/stylesheet/title.tsx"
-					]
+					"files": ["typography/title/title.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"typography/title/unistyles/title.tsx"
-					]
+					"files": ["typography/title/title.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"typography/title/tailwind/title.tsx"
-					]
+				"nativewind": {
+					"files": ["typography/title/title.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["typography/title/title.styles.uniwind.ts"]
 				}
 			}
 		},
 		{
 			"name": "icon",
 			"type": "atoms",
-			"files": [
-				"atoms/icon/icon-types.ts"
-			],
+			"files": ["atoms/icon/icon-types.ts", "atoms/icon/icon.tsx"],
 			"iconSources": {
 				"expo-symbols": {
 					"files": [
@@ -225,9 +191,7 @@
 							"createOnly": true
 						}
 					],
-					"dependencies": [
-						"expo-symbols"
-					]
+					"dependencies": ["expo-symbols"]
 				},
 				"custom": {
 					"files": [
@@ -238,24 +202,19 @@
 					]
 				}
 			},
-			"internalDependencies": [
-				"theme"
-			],
+			"internalDependencies": ["theme"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/icon/stylesheet/icon.tsx"
-					]
+					"files": ["atoms/icon/icon.styles.stylesheet.tsx"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/icon/unistyles/icon.tsx"
-					]
+					"files": ["atoms/icon/icon.styles.unistyles.tsx"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/icon/tailwind/icon.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/icon/icon.styles.nativewind.tsx"]
+				},
+				"uniwind": {
+					"files": ["atoms/icon/icon.styles.uniwind.tsx"]
 				}
 			}
 		},
@@ -263,62 +222,52 @@
 			"name": "button",
 			"type": "atoms",
 			"tokens": "atoms/button/button-tokens.ts",
-			"internalDependencies": [
-				"icon",
-				"slot",
-				"tappable",
-				"text",
-				"theme"
-			],
+			"cssTokens": {
+				"nativewind": "atoms/button/button-tokens.nativewind.css",
+				"uniwind": "atoms/button/button-tokens.uniwind.css"
+			},
+			"internalDependencies": ["icon", "slot", "tappable", "text", "theme"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/button/stylesheet/button.tsx"
-					]
+					"files": ["atoms/button/button.styles.stylesheet.tsx"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/button/unistyles/button.tsx"
-					]
+					"files": ["atoms/button/button.styles.unistyles.tsx"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/button/tailwind/button.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/button/button.styles.nativewind.tsx"]
+				},
+				"uniwind": {
+					"files": ["atoms/button/button.styles.uniwind.tsx"]
 				}
 			},
-			"files": [
-				"atoms/button/button-tokens.ts"
-			]
+			"files": ["atoms/button/button-tokens.ts", "atoms/button/button.tsx"]
 		},
 		{
 			"name": "icon-button",
 			"type": "atoms",
 			"tokens": "atoms/icon-button/icon-button-tokens.ts",
+			"cssTokens": {
+				"nativewind": "atoms/icon-button/icon-button-tokens.nativewind.css",
+				"uniwind": "atoms/icon-button/icon-button-tokens.uniwind.css"
+			},
 			"files": [
-				"atoms/icon-button/icon-button-tokens.ts"
+				"atoms/icon-button/icon-button-tokens.ts",
+				"atoms/icon-button/icon-button.tsx"
 			],
-			"internalDependencies": [
-				"badge",
-				"icon",
-				"tappable",
-				"theme"
-			],
+			"internalDependencies": ["badge", "icon", "tappable", "theme"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/icon-button/stylesheet/icon-button.tsx"
-					]
+					"files": ["atoms/icon-button/icon-button.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/icon-button/unistyles/icon-button.tsx"
-					]
+					"files": ["atoms/icon-button/icon-button.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/icon-button/tailwind/icon-button.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/icon-button/icon-button.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/icon-button/icon-button.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -326,34 +275,39 @@
 			"name": "floating-button",
 			"type": "atoms",
 			"tokens": "atoms/floating-button/floating-button-tokens.ts",
+			"cssTokens": {
+				"nativewind": "atoms/floating-button/floating-button-tokens.nativewind.css",
+				"uniwind": "atoms/floating-button/floating-button-tokens.uniwind.css"
+			},
 			"files": [
 				"atoms/floating-button/floating-button-tokens.ts",
-				"atoms/floating-button/use-floating-button.ts"
+				"atoms/floating-button/use-floating-button.ts",
+				"atoms/floating-button/floating-button.tsx"
 			],
 			"dependencies": [
 				"react-native-reanimated",
 				"react-native-safe-area-context"
 			],
-			"internalDependencies": [
-				"icon",
-				"tappable",
-				"text",
-				"theme"
-			],
+			"internalDependencies": ["icon", "tappable", "text", "theme"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"atoms/floating-button/stylesheet/floating-button.tsx"
+						"atoms/floating-button/floating-button.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"atoms/floating-button/unistyles/floating-button.tsx"
+						"atoms/floating-button/floating-button.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"atoms/floating-button/tailwind/floating-button.tsx"
+						"atoms/floating-button/floating-button.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"atoms/floating-button/floating-button.styles.uniwind.ts"
 					]
 				}
 			}
@@ -364,11 +318,10 @@
 			"tokens": "atoms/switch/switch-tokens.ts",
 			"files": [
 				"atoms/switch/switch-tokens.ts",
-				"atoms/switch/use-switch.ts"
+				"atoms/switch/use-switch.ts",
+				"atoms/switch/switch.tsx"
 			],
-			"dependencies": [
-				"react-native-reanimated"
-			],
+			"dependencies": ["react-native-reanimated"],
 			"internalDependencies": [
 				"haptics",
 				"tappable",
@@ -377,19 +330,16 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/switch/stylesheet/switch.tsx"
-					]
+					"files": ["atoms/switch/switch.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/switch/unistyles/switch.tsx"
-					]
+					"files": ["atoms/switch/switch.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/switch/tailwind/switch.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/switch/switch.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/switch/switch.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -397,13 +347,15 @@
 			"name": "checkbox",
 			"type": "atoms",
 			"tokens": "atoms/checkbox/checkbox-tokens.ts",
+			"cssTokens": {
+				"nativewind": "atoms/checkbox/checkbox-tokens.nativewind.css",
+				"uniwind": "atoms/checkbox/checkbox-tokens.uniwind.css"
+			},
 			"files": [
-				"atoms/checkbox/checkbox-tokens.ts"
+				"atoms/checkbox/checkbox-tokens.ts",
+				"atoms/checkbox/checkbox.tsx"
 			],
-			"requiredIcons": [
-				"check",
-				"minus"
-			],
+			"requiredIcons": ["check", "minus"],
 			"internalDependencies": [
 				"haptics",
 				"icon",
@@ -414,19 +366,16 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/checkbox/stylesheet/checkbox.tsx"
-					]
+					"files": ["atoms/checkbox/checkbox.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/checkbox/unistyles/checkbox.tsx"
-					]
+					"files": ["atoms/checkbox/checkbox.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/checkbox/tailwind/checkbox.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/checkbox/checkbox.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/checkbox/checkbox.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -434,9 +383,11 @@
 			"name": "radio",
 			"type": "atoms",
 			"tokens": "atoms/radio/radio-tokens.ts",
-			"files": [
-				"atoms/radio/radio-tokens.ts"
-			],
+			"cssTokens": {
+				"nativewind": "atoms/radio/radio-tokens.nativewind.css",
+				"uniwind": "atoms/radio/radio-tokens.uniwind.css"
+			},
+			"files": ["atoms/radio/radio-tokens.ts", "atoms/radio/radio.tsx"],
 			"internalDependencies": [
 				"haptics",
 				"tappable",
@@ -446,19 +397,16 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/radio/stylesheet/radio.tsx"
-					]
+					"files": ["atoms/radio/radio.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/radio/unistyles/radio.tsx"
-					]
+					"files": ["atoms/radio/radio.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/radio/tailwind/radio.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/radio/radio.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/radio/radio.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -468,7 +416,8 @@
 			"tokens": "atoms/segmented-control/segmented-control-tokens.ts",
 			"files": [
 				"atoms/segmented-control/segmented-control-tokens.ts",
-				"atoms/segmented-control/use-segmented-control.ts"
+				"atoms/segmented-control/use-segmented-control.ts",
+				"atoms/segmented-control/segmented-control.tsx"
 			],
 			"dependencies": [
 				"react-native-gesture-handler",
@@ -486,17 +435,22 @@
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"atoms/segmented-control/stylesheet/segmented-control.tsx"
+						"atoms/segmented-control/segmented-control.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"atoms/segmented-control/unistyles/segmented-control.tsx"
+						"atoms/segmented-control/segmented-control.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"atoms/segmented-control/tailwind/segmented-control.tsx"
+						"atoms/segmented-control/segmented-control.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"atoms/segmented-control/segmented-control.styles.uniwind.ts"
 					]
 				}
 			}
@@ -507,33 +461,27 @@
 			"tokens": "atoms/slider/slider-tokens.ts",
 			"files": [
 				"atoms/slider/slider-tokens.ts",
-				"atoms/slider/use-slider.ts"
+				"atoms/slider/use-slider.ts",
+				"atoms/slider/slider.tsx"
 			],
 			"dependencies": [
 				"react-native-gesture-handler",
 				"react-native-reanimated",
 				"react-native-worklets"
 			],
-			"internalDependencies": [
-				"haptics",
-				"theme",
-				"use-controllable-state"
-			],
+			"internalDependencies": ["haptics", "theme", "use-controllable-state"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/slider/stylesheet/slider.tsx"
-					]
+					"files": ["atoms/slider/slider.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/slider/unistyles/slider.tsx"
-					]
+					"files": ["atoms/slider/slider.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/slider/tailwind/slider.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/slider/slider.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/slider/slider.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -541,32 +489,44 @@
 			"name": "input",
 			"type": "atoms",
 			"tokens": "atoms/input/input-tokens.ts",
+			"cssTokens": {
+				"nativewind": "atoms/input/input-tokens.nativewind.css",
+				"uniwind": "atoms/input/input-tokens.uniwind.css"
+			},
 			"files": [
 				"atoms/input/input-tokens.ts",
-				"atoms/input/use-input.ts"
+				"atoms/input/use-input.ts",
+				"atoms/input/input.tsx",
+				"atoms/input/field.tsx"
 			],
-			"internalDependencies": [
-				"text",
-				"theme",
-				"use-controllable-state"
-			],
+			"internalDependencies": ["text", "theme", "use-controllable-state"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"atoms/input/stylesheet/input.tsx",
-						"atoms/input/stylesheet/field.tsx"
+						"atoms/input/input.styles.stylesheet.ts",
+						"atoms/input/field.styles.stylesheet.ts",
+						"atoms/input/input-colors.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"atoms/input/unistyles/input.tsx",
-						"atoms/input/unistyles/field.tsx"
+						"atoms/input/input.styles.unistyles.ts",
+						"atoms/input/field.styles.unistyles.ts",
+						"atoms/input/input-colors.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"atoms/input/tailwind/input.tsx",
-						"atoms/input/tailwind/field.tsx"
+						"atoms/input/input.styles.nativewind.ts",
+						"atoms/input/field.styles.nativewind.ts",
+						"atoms/input/input-classes.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"atoms/input/input.styles.uniwind.ts",
+						"atoms/input/field.styles.uniwind.ts",
+						"atoms/input/input-classes.uniwind.ts"
 					]
 				}
 			}
@@ -574,26 +534,20 @@
 		{
 			"name": "text-area",
 			"type": "atoms",
-			"internalDependencies": [
-				"input",
-				"text",
-				"theme"
-			],
+			"internalDependencies": ["input", "text", "theme"],
+			"files": ["atoms/text-area/text-area.tsx"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/text-area/stylesheet/text-area.tsx"
-					]
+					"files": ["atoms/text-area/text-area.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/text-area/unistyles/text-area.tsx"
-					]
+					"files": ["atoms/text-area/text-area.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/text-area/tailwind/text-area.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/text-area/text-area.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/text-area/text-area.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -601,9 +555,14 @@
 			"name": "input-group",
 			"type": "atoms",
 			"tokens": "atoms/input-group/input-group-tokens.ts",
+			"cssTokens": {
+				"nativewind": "atoms/input-group/input-group-tokens.nativewind.css",
+				"uniwind": "atoms/input-group/input-group-tokens.uniwind.css"
+			},
 			"files": [
 				"atoms/input-group/input-group-tokens.ts",
-				"atoms/input-group/use-input-group.ts"
+				"atoms/input-group/use-input-group.ts",
+				"atoms/input-group/input-group.tsx"
 			],
 			"internalDependencies": [
 				"button",
@@ -614,19 +573,16 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/input-group/stylesheet/input-group.tsx"
-					]
+					"files": ["atoms/input-group/input-group.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/input-group/unistyles/input-group.tsx"
-					]
+					"files": ["atoms/input-group/input-group.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/input-group/tailwind/input-group.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/input-group/input-group.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/input-group/input-group.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -634,13 +590,16 @@
 			"name": "input-otp",
 			"type": "atoms",
 			"tokens": "atoms/input-otp/input-otp-tokens.ts",
+			"cssTokens": {
+				"nativewind": "atoms/input-otp/input-otp-tokens.nativewind.css",
+				"uniwind": "atoms/input-otp/input-otp-tokens.uniwind.css"
+			},
 			"files": [
 				"atoms/input-otp/input-otp-tokens.ts",
-				"atoms/input-otp/use-input-otp.ts"
+				"atoms/input-otp/use-input-otp.ts",
+				"atoms/input-otp/input-otp.tsx"
 			],
-			"dependencies": [
-				"react-native-reanimated"
-			],
+			"dependencies": ["react-native-reanimated"],
 			"internalDependencies": [
 				"haptics",
 				"text",
@@ -649,19 +608,16 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/input-otp/stylesheet/input-otp.tsx"
-					]
+					"files": ["atoms/input-otp/input-otp.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/input-otp/unistyles/input-otp.tsx"
-					]
+					"files": ["atoms/input-otp/input-otp.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/input-otp/tailwind/input-otp.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/input-otp/input-otp.styles.nativewind.tsx"]
+				},
+				"uniwind": {
+					"files": ["atoms/input-otp/input-otp.styles.uniwind.tsx"]
 				}
 			}
 		},
@@ -669,9 +625,14 @@
 			"name": "bottom-sheet",
 			"type": "atoms",
 			"tokens": "atoms/bottom-sheet/bottom-sheet-tokens.ts",
+			"cssTokens": {
+				"nativewind": "atoms/bottom-sheet/bottom-sheet-tokens.nativewind.css",
+				"uniwind": "atoms/bottom-sheet/bottom-sheet-tokens.uniwind.css"
+			},
 			"files": [
 				"atoms/bottom-sheet/bottom-sheet-tokens.ts",
 				"atoms/bottom-sheet/bottom-sheet-root.tsx",
+				"atoms/bottom-sheet/bottom-sheet.tsx",
 				"atoms/bottom-sheet/use-bottom-sheet.ts"
 			],
 			"dependencies": [
@@ -696,75 +657,60 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/bottom-sheet/stylesheet/bottom-sheet.tsx"
-					]
+					"files": ["atoms/bottom-sheet/bottom-sheet.styles.stylesheet.ts"]
 				},
 				"unistyles": {
+					"files": ["atoms/bottom-sheet/bottom-sheet.styles.unistyles.ts"]
+				},
+				"nativewind": {
 					"files": [
-						"atoms/bottom-sheet/unistyles/bottom-sheet.tsx"
+						"atoms/bottom-sheet/bottom-sheet.styles.nativewind.tsx"
 					]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/bottom-sheet/tailwind/bottom-sheet.tsx"
-					]
+				"uniwind": {
+					"files": ["atoms/bottom-sheet/bottom-sheet.styles.uniwind.tsx"]
 				}
 			},
-			"requiredIcons": [
-				"close"
-			]
+			"requiredIcons": ["close"]
 		},
 		{
 			"name": "separator",
 			"type": "atoms",
-			"internalDependencies": [
-				"text",
-				"theme"
-			],
+			"internalDependencies": ["text", "theme"],
+			"files": ["atoms/separator/separator.tsx"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/separator/stylesheet/separator.tsx"
-					]
+					"files": ["atoms/separator/separator.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/separator/unistyles/separator.tsx"
-					]
+					"files": ["atoms/separator/separator.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/separator/tailwind/separator.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/separator/separator.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/separator/separator.styles.uniwind.ts"]
 				}
 			}
 		},
 		{
 			"name": "spinner",
 			"type": "atoms",
-			"dependencies": [
-				"react-native-reanimated"
-			],
-			"internalDependencies": [
-				"text",
-				"theme"
-			],
+			"dependencies": ["react-native-reanimated"],
+			"internalDependencies": ["text", "theme"],
+			"files": ["atoms/spinner/spinner.tsx"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/spinner/stylesheet/spinner.tsx"
-					]
+					"files": ["atoms/spinner/spinner.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/spinner/unistyles/spinner.tsx"
-					]
+					"files": ["atoms/spinner/spinner.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/spinner/tailwind/spinner.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/spinner/spinner.styles.nativewind.tsx"]
+				},
+				"uniwind": {
+					"files": ["atoms/spinner/spinner.styles.uniwind.tsx"]
 				}
 			}
 		},
@@ -774,30 +720,23 @@
 			"tokens": "atoms/skeleton/skeleton-tokens.ts",
 			"files": [
 				"atoms/skeleton/skeleton-tokens.ts",
-				"atoms/skeleton/use-skeleton.ts"
+				"atoms/skeleton/use-skeleton.ts",
+				"atoms/skeleton/skeleton.tsx"
 			],
-			"dependencies": [
-				"react-native-reanimated"
-			],
-			"internalDependencies": [
-				"text",
-				"theme"
-			],
+			"dependencies": ["react-native-reanimated"],
+			"internalDependencies": ["text", "theme"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/skeleton/stylesheet/skeleton.tsx"
-					]
+					"files": ["atoms/skeleton/skeleton.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/skeleton/unistyles/skeleton.tsx"
-					]
+					"files": ["atoms/skeleton/skeleton.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/skeleton/tailwind/skeleton.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/skeleton/skeleton.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/skeleton/skeleton.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -805,29 +744,24 @@
 			"name": "badge",
 			"type": "atoms",
 			"tokens": "atoms/badge/badge-tokens.ts",
-			"files": [
-				"atoms/badge/badge-tokens.ts"
-			],
-			"internalDependencies": [
-				"icon",
-				"text",
-				"theme"
-			],
+			"cssTokens": {
+				"nativewind": "atoms/badge/badge-tokens.nativewind.css",
+				"uniwind": "atoms/badge/badge-tokens.uniwind.css"
+			},
+			"files": ["atoms/badge/badge-tokens.ts", "atoms/badge/badge.tsx"],
+			"internalDependencies": ["icon", "text", "theme"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/badge/stylesheet/badge.tsx"
-					]
+					"files": ["atoms/badge/badge.styles.stylesheet.tsx"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/badge/unistyles/badge.tsx"
-					]
+					"files": ["atoms/badge/badge.styles.unistyles.tsx"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/badge/tailwind/badge.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/badge/badge.styles.nativewind.tsx"]
+				},
+				"uniwind": {
+					"files": ["atoms/badge/badge.styles.uniwind.tsx"]
 				}
 			}
 		},
@@ -835,28 +769,24 @@
 			"name": "avatar",
 			"type": "atoms",
 			"tokens": "atoms/avatar/avatar-tokens.ts",
-			"files": [
-				"atoms/avatar/avatar-tokens.ts"
-			],
-			"internalDependencies": [
-				"text",
-				"theme"
-			],
+			"cssTokens": {
+				"nativewind": "atoms/avatar/avatar-tokens.nativewind.css",
+				"uniwind": "atoms/avatar/avatar-tokens.uniwind.css"
+			},
+			"files": ["atoms/avatar/avatar-tokens.ts", "atoms/avatar/avatar.tsx"],
+			"internalDependencies": ["text", "theme"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/avatar/stylesheet/avatar.tsx"
-					]
+					"files": ["atoms/avatar/avatar.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/avatar/unistyles/avatar.tsx"
-					]
+					"files": ["atoms/avatar/avatar.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/avatar/tailwind/avatar.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/avatar/avatar.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/avatar/avatar.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -864,12 +794,12 @@
 			"name": "chip",
 			"type": "atoms",
 			"tokens": "atoms/chip/chip-tokens.ts",
-			"files": [
-				"atoms/chip/chip-tokens.ts"
-			],
-			"requiredIcons": [
-				"close"
-			],
+			"cssTokens": {
+				"nativewind": "atoms/chip/chip-tokens.nativewind.css",
+				"uniwind": "atoms/chip/chip-tokens.uniwind.css"
+			},
+			"files": ["atoms/chip/chip-tokens.ts", "atoms/chip/chip.tsx"],
+			"requiredIcons": ["close"],
 			"internalDependencies": [
 				"haptics",
 				"icon",
@@ -879,19 +809,16 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/chip/stylesheet/chip.tsx"
-					]
+					"files": ["atoms/chip/chip.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/chip/unistyles/chip.tsx"
-					]
+					"files": ["atoms/chip/chip.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/chip/tailwind/chip.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/chip/chip.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/chip/chip.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -899,30 +826,24 @@
 			"name": "card",
 			"type": "atoms",
 			"tokens": "atoms/card/card-tokens.ts",
-			"files": [
-				"atoms/card/card-tokens.ts"
-			],
-			"internalDependencies": [
-				"tappable",
-				"text",
-				"theme",
-				"title"
-			],
+			"cssTokens": {
+				"nativewind": "atoms/card/card-tokens.nativewind.css",
+				"uniwind": "atoms/card/card-tokens.uniwind.css"
+			},
+			"files": ["atoms/card/card-tokens.ts", "atoms/card/card.tsx"],
+			"internalDependencies": ["tappable", "text", "theme", "title"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/card/stylesheet/card.tsx"
-					]
+					"files": ["atoms/card/card.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/card/unistyles/card.tsx"
-					]
+					"files": ["atoms/card/card.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/card/tailwind/card.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/card/card.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/card/card.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -930,9 +851,11 @@
 			"name": "item",
 			"type": "atoms",
 			"tokens": "atoms/item/item-tokens.ts",
-			"files": [
-				"atoms/item/item-tokens.ts"
-			],
+			"cssTokens": {
+				"nativewind": "atoms/item/item-tokens.nativewind.css",
+				"uniwind": "atoms/item/item-tokens.uniwind.css"
+			},
+			"files": ["atoms/item/item-tokens.ts", "atoms/item/item.tsx"],
 			"internalDependencies": [
 				"haptics",
 				"slot",
@@ -942,46 +865,36 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/item/stylesheet/item.tsx"
-					]
+					"files": ["atoms/item/item.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/item/unistyles/item.tsx"
-					]
+					"files": ["atoms/item/item.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/item/tailwind/item.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/item/item.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/item/item.styles.uniwind.ts"]
 				}
 			}
 		},
 		{
 			"name": "option-item",
 			"type": "atoms",
-			"internalDependencies": [
-				"icon",
-				"item",
-				"text",
-				"theme"
-			],
+			"internalDependencies": ["icon", "item", "text", "theme"],
+			"files": ["atoms/option-item/option-item.tsx"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/option-item/stylesheet/option-item.tsx"
-					]
+					"files": ["atoms/option-item/option-item.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/option-item/unistyles/option-item.tsx"
-					]
+					"files": ["atoms/option-item/option-item.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/option-item/tailwind/option-item.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/option-item/option-item.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/option-item/option-item.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -989,30 +902,24 @@
 			"name": "empty",
 			"type": "atoms",
 			"tokens": "atoms/empty/empty-tokens.ts",
-			"files": [
-				"atoms/empty/empty-tokens.ts"
-			],
-			"internalDependencies": [
-				"icon",
-				"text",
-				"theme",
-				"title"
-			],
+			"cssTokens": {
+				"nativewind": "atoms/empty/empty-tokens.nativewind.css",
+				"uniwind": "atoms/empty/empty-tokens.uniwind.css"
+			},
+			"files": ["atoms/empty/empty-tokens.ts", "atoms/empty/empty.tsx"],
+			"internalDependencies": ["icon", "text", "theme", "title"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/empty/stylesheet/empty.tsx"
-					]
+					"files": ["atoms/empty/empty.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/empty/unistyles/empty.tsx"
-					]
+					"files": ["atoms/empty/empty.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/empty/tailwind/empty.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/empty/empty.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/empty/empty.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -1020,16 +927,12 @@
 			"name": "alert",
 			"type": "atoms",
 			"tokens": "atoms/alert/alert-tokens.ts",
-			"files": [
-				"atoms/alert/alert-tokens.ts"
-			],
-			"requiredIcons": [
-				"info",
-				"success",
-				"warning",
-				"error",
-				"close"
-			],
+			"cssTokens": {
+				"nativewind": "atoms/alert/alert-tokens.nativewind.css",
+				"uniwind": "atoms/alert/alert-tokens.uniwind.css"
+			},
+			"files": ["atoms/alert/alert-tokens.ts", "atoms/alert/alert.tsx"],
+			"requiredIcons": ["info", "success", "warning", "error", "close"],
 			"internalDependencies": [
 				"icon",
 				"icon-button",
@@ -1039,44 +942,36 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/alert/stylesheet/alert.tsx"
-					]
+					"files": ["atoms/alert/alert.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/alert/unistyles/alert.tsx"
-					]
+					"files": ["atoms/alert/alert.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/alert/tailwind/alert.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/alert/alert.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/alert/alert.styles.uniwind.ts"]
 				}
 			}
 		},
 		{
 			"name": "button-group",
 			"type": "atoms",
-			"internalDependencies": [
-				"button",
-				"theme"
-			],
+			"internalDependencies": ["button", "theme"],
+			"files": ["atoms/button-group/button-group.tsx"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/button-group/stylesheet/button-group.tsx"
-					]
+					"files": ["atoms/button-group/button-group.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/button-group/unistyles/button-group.tsx"
-					]
+					"files": ["atoms/button-group/button-group.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/button-group/tailwind/button-group.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/button-group/button-group.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/button-group/button-group.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -1084,15 +979,11 @@
 			"name": "accordion",
 			"type": "atoms",
 			"files": [
-				"atoms/accordion/use-accordion.ts"
+				"atoms/accordion/use-accordion.ts",
+				"atoms/accordion/accordion.tsx"
 			],
-			"requiredIcons": [
-				"chevron-down"
-			],
-			"dependencies": [
-				"react-native-reanimated",
-				"react-native-worklets"
-			],
+			"requiredIcons": ["chevron-down"],
+			"dependencies": ["react-native-reanimated", "react-native-worklets"],
 			"internalDependencies": [
 				"icon",
 				"tappable",
@@ -1102,19 +993,16 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/accordion/stylesheet/accordion.tsx"
-					]
+					"files": ["atoms/accordion/accordion.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/accordion/unistyles/accordion.tsx"
-					]
+					"files": ["atoms/accordion/accordion.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/accordion/tailwind/accordion.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/accordion/accordion.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/accordion/accordion.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -1122,14 +1010,16 @@
 			"name": "dialog",
 			"type": "atoms",
 			"tokens": "atoms/dialog/dialog-tokens.ts",
+			"cssTokens": {
+				"nativewind": "atoms/dialog/dialog-tokens.nativewind.css",
+				"uniwind": "atoms/dialog/dialog-tokens.uniwind.css"
+			},
 			"files": [
 				"atoms/dialog/dialog-tokens.ts",
-				"atoms/dialog/use-dialog.ts"
+				"atoms/dialog/use-dialog.ts",
+				"atoms/dialog/dialog.tsx"
 			],
-			"dependencies": [
-				"react-native-reanimated",
-				"react-native-worklets"
-			],
+			"dependencies": ["react-native-reanimated", "react-native-worklets"],
 			"internalDependencies": [
 				"button",
 				"overlay",
@@ -1145,48 +1035,39 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/dialog/stylesheet/dialog.tsx"
-					]
+					"files": ["atoms/dialog/dialog.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/dialog/unistyles/dialog.tsx"
-					]
+					"files": ["atoms/dialog/dialog.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/dialog/tailwind/dialog.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/dialog/dialog.styles.nativewind.tsx"]
+				},
+				"uniwind": {
+					"files": ["atoms/dialog/dialog.styles.uniwind.tsx"]
 				}
 			}
 		},
 		{
 			"name": "context-menu",
 			"type": "atoms",
-			"files": [
-				"atoms/context-menu/context-menu.tsx"
-			],
-			"internalDependencies": [
-				"haptics",
-				"menu",
-				"slot",
-				"tappable"
-			]
+			"files": ["atoms/context-menu/context-menu.tsx"],
+			"internalDependencies": ["haptics", "menu", "slot", "tappable"]
 		},
 		{
 			"name": "menu",
 			"type": "atoms",
 			"tokens": "atoms/menu/menu-tokens.ts",
+			"cssTokens": {
+				"nativewind": "atoms/menu/menu-tokens.nativewind.css",
+				"uniwind": "atoms/menu/menu-tokens.uniwind.css"
+			},
 			"files": [
 				"atoms/menu/menu-tokens.ts",
-				"atoms/menu/use-menu.ts"
+				"atoms/menu/use-menu.ts",
+				"atoms/menu/menu.tsx"
 			],
-			"requiredIcons": [
-				"arrow-left",
-				"check",
-				"chevron-right"
-			],
+			"requiredIcons": ["arrow-left", "check", "chevron-right"],
 			"dependencies": [
 				"react-native-reanimated",
 				"react-native-safe-area-context",
@@ -1207,19 +1088,16 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/menu/stylesheet/menu.tsx"
-					]
+					"files": ["atoms/menu/menu.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/menu/unistyles/menu.tsx"
-					]
+					"files": ["atoms/menu/menu.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/menu/tailwind/menu.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/menu/menu.styles.nativewind.tsx"]
+				},
+				"uniwind": {
+					"files": ["atoms/menu/menu.styles.uniwind.tsx"]
 				}
 			}
 		},
@@ -1227,15 +1105,16 @@
 			"name": "toast",
 			"type": "atoms",
 			"tokens": "atoms/toast/toast-tokens.ts",
+			"cssTokens": {
+				"nativewind": "atoms/toast/toast-tokens.nativewind.css",
+				"uniwind": "atoms/toast/toast-tokens.uniwind.css"
+			},
 			"files": [
 				"atoms/toast/toast-tokens.ts",
-				"atoms/toast/use-toast.ts"
+				"atoms/toast/use-toast.ts",
+				"atoms/toast/toast.tsx"
 			],
-			"requiredIcons": [
-				"success",
-				"error",
-				"info"
-			],
+			"requiredIcons": ["success", "error", "info"],
 			"dependencies": [
 				"react-native-gesture-handler",
 				"react-native-reanimated",
@@ -1251,22 +1130,19 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/toast/stylesheet/toast.tsx"
-					],
-					"dependencies": [
-						"react-native-safe-area-context"
-					]
+					"files": ["atoms/toast/toast.styles.stylesheet.ts"],
+					"dependencies": ["react-native-safe-area-context"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/toast/unistyles/toast.tsx"
-					]
+					"files": ["atoms/toast/toast.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/toast/tailwind/toast.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/toast/toast.styles.nativewind.ts"],
+					"dependencies": ["react-native-safe-area-context"]
+				},
+				"uniwind": {
+					"files": ["atoms/toast/toast.styles.uniwind.ts"],
+					"dependencies": ["react-native-safe-area-context"]
 				}
 			}
 		},
@@ -1274,9 +1150,14 @@
 			"name": "snackbar",
 			"type": "atoms",
 			"tokens": "atoms/snackbar/snackbar-tokens.ts",
+			"cssTokens": {
+				"nativewind": "atoms/snackbar/snackbar-tokens.nativewind.css",
+				"uniwind": "atoms/snackbar/snackbar-tokens.uniwind.css"
+			},
 			"files": [
 				"atoms/snackbar/snackbar-tokens.ts",
-				"atoms/snackbar/use-snackbar.ts"
+				"atoms/snackbar/use-snackbar.ts",
+				"atoms/snackbar/snackbar.tsx"
 			],
 			"dependencies": [
 				"react-native-gesture-handler",
@@ -1292,22 +1173,19 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/snackbar/stylesheet/snackbar.tsx"
-					],
-					"dependencies": [
-						"react-native-safe-area-context"
-					]
+					"files": ["atoms/snackbar/snackbar.styles.stylesheet.ts"],
+					"dependencies": ["react-native-safe-area-context"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/snackbar/unistyles/snackbar.tsx"
-					]
+					"files": ["atoms/snackbar/snackbar.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/snackbar/tailwind/snackbar.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/snackbar/snackbar.styles.nativewind.tsx"],
+					"dependencies": ["react-native-safe-area-context"]
+				},
+				"uniwind": {
+					"files": ["atoms/snackbar/snackbar.styles.uniwind.tsx"],
+					"dependencies": ["react-native-safe-area-context"]
 				}
 			}
 		},
@@ -1315,14 +1193,16 @@
 			"name": "calendar",
 			"type": "atoms",
 			"tokens": "atoms/calendar/calendar-tokens.ts",
+			"cssTokens": {
+				"nativewind": "atoms/calendar/calendar-tokens.nativewind.css",
+				"uniwind": "atoms/calendar/calendar-tokens.uniwind.css"
+			},
 			"files": [
 				"atoms/calendar/calendar-tokens.ts",
-				"atoms/calendar/use-calendar.ts"
+				"atoms/calendar/use-calendar.ts",
+				"atoms/calendar/calendar.tsx"
 			],
-			"requiredIcons": [
-				"chevron-left",
-				"chevron-right"
-			],
+			"requiredIcons": ["chevron-left", "chevron-right"],
 			"dependencies": [
 				"react-native-gesture-handler",
 				"react-native-worklets"
@@ -1336,19 +1216,16 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/calendar/stylesheet/calendar.tsx"
-					]
+					"files": ["atoms/calendar/calendar.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/calendar/unistyles/calendar.tsx"
-					]
+					"files": ["atoms/calendar/calendar.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/calendar/tailwind/calendar.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/calendar/calendar.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/calendar/calendar.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -1356,30 +1233,23 @@
 			"name": "carousel",
 			"type": "atoms",
 			"files": [
-				"atoms/carousel/use-carousel.ts"
+				"atoms/carousel/use-carousel.ts",
+				"atoms/carousel/carousel.tsx"
 			],
-			"dependencies": [
-				"react-native-reanimated"
-			],
-			"internalDependencies": [
-				"haptics",
-				"theme"
-			],
+			"dependencies": ["react-native-reanimated"],
+			"internalDependencies": ["haptics", "theme"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"atoms/carousel/stylesheet/carousel.tsx"
-					]
+					"files": ["atoms/carousel/carousel.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"atoms/carousel/unistyles/carousel.tsx"
-					]
+					"files": ["atoms/carousel/carousel.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"atoms/carousel/tailwind/carousel.tsx"
-					]
+				"nativewind": {
+					"files": ["atoms/carousel/carousel.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["atoms/carousel/carousel.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -1387,14 +1257,16 @@
 			"name": "search-bar",
 			"type": "molecules",
 			"tokens": "molecules/search-bar/search-bar-tokens.ts",
+			"cssTokens": {
+				"nativewind": "molecules/search-bar/search-bar-tokens.nativewind.css",
+				"uniwind": "molecules/search-bar/search-bar-tokens.uniwind.css"
+			},
 			"files": [
 				"molecules/search-bar/search-bar-tokens.ts",
-				"molecules/search-bar/use-search-bar.ts"
+				"molecules/search-bar/use-search-bar.ts",
+				"molecules/search-bar/search-bar.tsx"
 			],
-			"requiredIcons": [
-				"search",
-				"close"
-			],
+			"requiredIcons": ["search", "close"],
 			"internalDependencies": [
 				"icon",
 				"spinner",
@@ -1406,18 +1278,21 @@
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"molecules/search-bar/stylesheet/search-bar.tsx"
+						"molecules/search-bar/search-bar.styles.stylesheet.ts",
+						"molecules/search-bar/search-bar-colors.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"molecules/search-bar/unistyles/search-bar.tsx"
+						"molecules/search-bar/search-bar.styles.unistyles.ts",
+						"molecules/search-bar/search-bar-colors.ts"
 					]
 				},
-				"tailwind": {
-					"files": [
-						"molecules/search-bar/tailwind/search-bar.tsx"
-					]
+				"nativewind": {
+					"files": ["molecules/search-bar/search-bar.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["molecules/search-bar/search-bar.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -1425,17 +1300,16 @@
 			"name": "attachment",
 			"type": "molecules",
 			"tokens": "molecules/attachment/attachment-tokens.ts",
+			"cssTokens": {
+				"nativewind": "molecules/attachment/attachment-tokens.nativewind.css",
+				"uniwind": "molecules/attachment/attachment-tokens.uniwind.css"
+			},
 			"files": [
 				"molecules/attachment/attachment-tokens.ts",
-				"molecules/attachment/use-attachment.ts"
+				"molecules/attachment/use-attachment.ts",
+				"molecules/attachment/attachment.tsx"
 			],
-			"requiredIcons": [
-				"close",
-				"error",
-				"file",
-				"image",
-				"refresh"
-			],
+			"requiredIcons": ["close", "error", "file", "image", "refresh"],
 			"internalDependencies": [
 				"icon",
 				"icon-button",
@@ -1446,19 +1320,16 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"molecules/attachment/stylesheet/attachment.tsx"
-					]
+					"files": ["molecules/attachment/attachment.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"molecules/attachment/unistyles/attachment.tsx"
-					]
+					"files": ["molecules/attachment/attachment.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"molecules/attachment/tailwind/attachment.tsx"
-					]
+				"nativewind": {
+					"files": ["molecules/attachment/attachment.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["molecules/attachment/attachment.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -1466,11 +1337,10 @@
 			"name": "date-picker",
 			"type": "molecules",
 			"files": [
-				"molecules/date-picker/use-date-picker.ts"
+				"molecules/date-picker/use-date-picker.ts",
+				"molecules/date-picker/date-picker.tsx"
 			],
-			"requiredIcons": [
-				"calendar"
-			],
+			"requiredIcons": ["calendar"],
 			"internalDependencies": [
 				"bottom-sheet",
 				"button",
@@ -1486,18 +1356,21 @@
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"molecules/date-picker/stylesheet/date-picker.tsx"
+						"molecules/date-picker/date-picker.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"molecules/date-picker/unistyles/date-picker.tsx"
+						"molecules/date-picker/date-picker.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"molecules/date-picker/tailwind/date-picker.tsx"
+						"molecules/date-picker/date-picker.styles.nativewind.ts"
 					]
+				},
+				"uniwind": {
+					"files": ["molecules/date-picker/date-picker.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -1505,17 +1378,17 @@
 			"name": "passcode",
 			"type": "organisms",
 			"tokens": "organisms/passcode/passcode-tokens.ts",
+			"cssTokens": {
+				"nativewind": "organisms/passcode/passcode-tokens.nativewind.css",
+				"uniwind": "organisms/passcode/passcode-tokens.uniwind.css"
+			},
 			"files": [
 				"organisms/passcode/passcode-tokens.ts",
-				"organisms/passcode/use-passcode.ts"
+				"organisms/passcode/use-passcode.ts",
+				"organisms/passcode/passcode.tsx"
 			],
-			"requiredIcons": [
-				"backspace",
-				"biometrics"
-			],
-			"dependencies": [
-				"react-native-reanimated"
-			],
+			"requiredIcons": ["backspace", "biometrics"],
+			"dependencies": ["react-native-reanimated"],
 			"internalDependencies": [
 				"haptics",
 				"icon",
@@ -1526,19 +1399,16 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"organisms/passcode/stylesheet/passcode.tsx"
-					]
+					"files": ["organisms/passcode/passcode.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"organisms/passcode/unistyles/passcode.tsx"
-					]
+					"files": ["organisms/passcode/passcode.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"organisms/passcode/tailwind/passcode.tsx"
-					]
+				"nativewind": {
+					"files": ["organisms/passcode/passcode.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["organisms/passcode/passcode.styles.uniwind.ts"]
 				}
 			}
 		},
@@ -1546,32 +1416,30 @@
 			"name": "app-bar",
 			"type": "templates",
 			"tokens": "templates/app-bar/app-bar-tokens.ts",
+			"cssTokens": {
+				"nativewind": "templates/app-bar/app-bar-tokens.nativewind.css",
+				"uniwind": "templates/app-bar/app-bar-tokens.uniwind.css"
+			},
 			"files": [
-				"templates/app-bar/app-bar-tokens.ts"
+				"templates/app-bar/app-bar-tokens.ts",
+				"templates/app-bar/app-bar.tsx"
 			],
-			"internalDependencies": [
-				"text",
-				"title",
-				"theme"
-			],
+			"internalDependencies": ["text", "title", "theme"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"templates/app-bar/stylesheet/app-bar.tsx"
-					],
-					"dependencies": [
-						"react-native-safe-area-context"
-					]
+					"files": ["templates/app-bar/app-bar.styles.stylesheet.ts"],
+					"dependencies": ["react-native-safe-area-context"]
 				},
 				"unistyles": {
-					"files": [
-						"templates/app-bar/unistyles/app-bar.tsx"
-					]
+					"files": ["templates/app-bar/app-bar.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"templates/app-bar/tailwind/app-bar.tsx"
-					]
+				"nativewind": {
+					"files": ["templates/app-bar/app-bar.styles.nativewind.ts"],
+					"dependencies": ["react-native-safe-area-context"]
+				},
+				"uniwind": {
+					"files": ["templates/app-bar/app-bar.styles.uniwind.ts"],
+					"dependencies": ["react-native-safe-area-context"]
 				}
 			}
 		},
@@ -1579,33 +1447,30 @@
 			"name": "tool-bar",
 			"type": "templates",
 			"tokens": "templates/tool-bar/tool-bar-tokens.ts",
+			"cssTokens": {
+				"nativewind": "templates/tool-bar/tool-bar-tokens.nativewind.css",
+				"uniwind": "templates/tool-bar/tool-bar-tokens.uniwind.css"
+			},
 			"files": [
-				"templates/tool-bar/tool-bar-tokens.ts"
+				"templates/tool-bar/tool-bar-tokens.ts",
+				"templates/tool-bar/tool-bar.tsx"
 			],
-			"internalDependencies": [
-				"icon",
-				"tappable",
-				"text",
-				"theme"
-			],
+			"internalDependencies": ["icon", "tappable", "text", "theme"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"templates/tool-bar/stylesheet/tool-bar.tsx"
-					],
-					"dependencies": [
-						"react-native-safe-area-context"
-					]
+					"files": ["templates/tool-bar/tool-bar.styles.stylesheet.ts"],
+					"dependencies": ["react-native-safe-area-context"]
 				},
 				"unistyles": {
-					"files": [
-						"templates/tool-bar/unistyles/tool-bar.tsx"
-					]
+					"files": ["templates/tool-bar/tool-bar.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"templates/tool-bar/tailwind/tool-bar.tsx"
-					]
+				"nativewind": {
+					"files": ["templates/tool-bar/tool-bar.styles.nativewind.ts"],
+					"dependencies": ["react-native-safe-area-context"]
+				},
+				"uniwind": {
+					"files": ["templates/tool-bar/tool-bar.styles.uniwind.ts"],
+					"dependencies": ["react-native-safe-area-context"]
 				}
 			}
 		},
@@ -1613,8 +1478,13 @@
 			"name": "bottom-tab-bar",
 			"type": "templates",
 			"tokens": "templates/bottom-tab-bar/bottom-tab-bar-tokens.ts",
+			"cssTokens": {
+				"nativewind": "templates/bottom-tab-bar/bottom-tab-bar-tokens.nativewind.css",
+				"uniwind": "templates/bottom-tab-bar/bottom-tab-bar-tokens.uniwind.css"
+			},
 			"files": [
-				"templates/bottom-tab-bar/bottom-tab-bar-tokens.ts"
+				"templates/bottom-tab-bar/bottom-tab-bar-tokens.ts",
+				"templates/bottom-tab-bar/bottom-tab-bar.tsx"
 			],
 			"internalDependencies": [
 				"badge",
@@ -1628,21 +1498,26 @@
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"templates/bottom-tab-bar/stylesheet/bottom-tab-bar.tsx"
+						"templates/bottom-tab-bar/bottom-tab-bar.styles.stylesheet.ts"
 					],
-					"dependencies": [
-						"react-native-safe-area-context"
-					]
+					"dependencies": ["react-native-safe-area-context"]
 				},
 				"unistyles": {
 					"files": [
-						"templates/bottom-tab-bar/unistyles/bottom-tab-bar.tsx"
+						"templates/bottom-tab-bar/bottom-tab-bar.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"templates/bottom-tab-bar/tailwind/bottom-tab-bar.tsx"
-					]
+						"templates/bottom-tab-bar/bottom-tab-bar.styles.nativewind.ts"
+					],
+					"dependencies": ["react-native-safe-area-context"]
+				},
+				"uniwind": {
+					"files": [
+						"templates/bottom-tab-bar/bottom-tab-bar.styles.uniwind.ts"
+					],
+					"dependencies": ["react-native-safe-area-context"]
 				}
 			}
 		},
@@ -1650,12 +1525,12 @@
 			"name": "tab",
 			"type": "templates",
 			"tokens": "templates/tab/tab-tokens.ts",
-			"files": [
-				"templates/tab/tab-tokens.ts"
-			],
-			"dependencies": [
-				"react-native-reanimated"
-			],
+			"cssTokens": {
+				"nativewind": "templates/tab/tab-tokens.nativewind.css",
+				"uniwind": "templates/tab/tab-tokens.uniwind.css"
+			},
+			"files": ["templates/tab/tab-tokens.ts", "templates/tab/tab.tsx"],
+			"dependencies": ["react-native-reanimated"],
 			"internalDependencies": [
 				"badge",
 				"haptics",
@@ -1667,76 +1542,67 @@
 			],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"templates/tab/stylesheet/tab.tsx"
-					]
+					"files": ["templates/tab/tab.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"templates/tab/unistyles/tab.tsx"
-					]
+					"files": ["templates/tab/tab.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"templates/tab/tailwind/tab.tsx"
-					]
+				"nativewind": {
+					"files": ["templates/tab/tab.styles.nativewind.tsx"]
+				},
+				"uniwind": {
+					"files": ["templates/tab/tab.styles.uniwind.tsx"]
 				}
 			}
 		},
 		{
 			"name": "scaffold",
 			"type": "templates",
-			"files": [],
+			"files": ["templates/scaffold/scaffold.tsx"],
 			"dependencies": [
 				"react-native-keyboard-controller",
 				"react-native-safe-area-context"
 			],
-			"internalDependencies": [
-				"app-bar",
-				"theme"
-			],
+			"internalDependencies": ["app-bar", "theme"],
 			"variants": {
 				"stylesheet": {
-					"files": [
-						"templates/scaffold/stylesheet/scaffold.tsx"
-					]
+					"files": ["templates/scaffold/scaffold.styles.stylesheet.ts"]
 				},
 				"unistyles": {
-					"files": [
-						"templates/scaffold/unistyles/scaffold.tsx"
-					]
+					"files": ["templates/scaffold/scaffold.styles.unistyles.ts"]
 				},
-				"tailwind": {
-					"files": [
-						"templates/scaffold/tailwind/scaffold.tsx"
-					]
+				"nativewind": {
+					"files": ["templates/scaffold/scaffold.styles.nativewind.ts"]
+				},
+				"uniwind": {
+					"files": ["templates/scaffold/scaffold.styles.uniwind.ts"]
 				}
 			}
 		},
 		{
 			"name": "product-card",
 			"type": "compositions",
-			"internalDependencies": [
-				"badge",
-				"button",
-				"card",
-				"text",
-				"theme"
-			],
+			"internalDependencies": ["badge", "button", "card", "text", "theme"],
+			"files": ["compositions/product-card/product-card.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/product-card/stylesheet/product-card.tsx"
+						"compositions/product-card/product-card.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/product-card/unistyles/product-card.tsx"
+						"compositions/product-card/product-card.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/product-card/tailwind/product-card.tsx"
+						"compositions/product-card/product-card.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/product-card/product-card.styles.uniwind.ts"
 					]
 				}
 			}
@@ -1752,20 +1618,28 @@
 				"theme",
 				"title"
 			],
+			"files": [
+				"compositions/product-card-spotlight/product-card-spotlight.tsx"
+			],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/product-card-spotlight/stylesheet/product-card-spotlight.tsx"
+						"compositions/product-card-spotlight/product-card-spotlight.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/product-card-spotlight/unistyles/product-card-spotlight.tsx"
+						"compositions/product-card-spotlight/product-card-spotlight.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/product-card-spotlight/tailwind/product-card-spotlight.tsx"
+						"compositions/product-card-spotlight/product-card-spotlight.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/product-card-spotlight/product-card-spotlight.styles.uniwind.ts"
 					]
 				}
 			}
@@ -1783,20 +1657,26 @@
 				"text",
 				"theme"
 			],
+			"files": ["compositions/recipe-card/recipe-card.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/recipe-card/stylesheet/recipe-card.tsx"
+						"compositions/recipe-card/recipe-card.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/recipe-card/unistyles/recipe-card.tsx"
+						"compositions/recipe-card/recipe-card.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/recipe-card/tailwind/recipe-card.tsx"
+						"compositions/recipe-card/recipe-card.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/recipe-card/recipe-card.styles.uniwind.ts"
 					]
 				}
 			}
@@ -1813,20 +1693,26 @@
 				"theme",
 				"title"
 			],
+			"files": ["compositions/listing-card/listing-card.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/listing-card/stylesheet/listing-card.tsx"
+						"compositions/listing-card/listing-card.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/listing-card/unistyles/listing-card.tsx"
+						"compositions/listing-card/listing-card.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/listing-card/tailwind/listing-card.tsx"
+						"compositions/listing-card/listing-card.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/listing-card/listing-card.styles.uniwind.ts"
 					]
 				}
 			}
@@ -1845,20 +1731,28 @@
 				"theme",
 				"title"
 			],
+			"files": [
+				"compositions/listing-card-detailed/listing-card-detailed.tsx"
+			],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/listing-card-detailed/stylesheet/listing-card-detailed.tsx"
+						"compositions/listing-card-detailed/listing-card-detailed.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/listing-card-detailed/unistyles/listing-card-detailed.tsx"
+						"compositions/listing-card-detailed/listing-card-detailed.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/listing-card-detailed/tailwind/listing-card-detailed.tsx"
+						"compositions/listing-card-detailed/listing-card-detailed.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/listing-card-detailed/listing-card-detailed.styles.uniwind.ts"
 					]
 				}
 			}
@@ -1875,20 +1769,28 @@
 				"theme",
 				"title"
 			],
+			"files": [
+				"compositions/listing-card-overlay/listing-card-overlay.tsx"
+			],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/listing-card-overlay/stylesheet/listing-card-overlay.tsx"
+						"compositions/listing-card-overlay/listing-card-overlay.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/listing-card-overlay/unistyles/listing-card-overlay.tsx"
+						"compositions/listing-card-overlay/listing-card-overlay.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/listing-card-overlay/tailwind/listing-card-overlay.tsx"
+						"compositions/listing-card-overlay/listing-card-overlay.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/listing-card-overlay/listing-card-overlay.styles.uniwind.ts"
 					]
 				}
 			}
@@ -1906,20 +1808,28 @@
 				"theme",
 				"title"
 			],
+			"files": [
+				"compositions/listing-card-overlay-detailed/listing-card-overlay-detailed.tsx"
+			],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/listing-card-overlay-detailed/stylesheet/listing-card-overlay-detailed.tsx"
+						"compositions/listing-card-overlay-detailed/listing-card-overlay-detailed.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/listing-card-overlay-detailed/unistyles/listing-card-overlay-detailed.tsx"
+						"compositions/listing-card-overlay-detailed/listing-card-overlay-detailed.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/listing-card-overlay-detailed/tailwind/listing-card-overlay-detailed.tsx"
+						"compositions/listing-card-overlay-detailed/listing-card-overlay-detailed.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/listing-card-overlay-detailed/listing-card-overlay-detailed.styles.uniwind.ts"
 					]
 				}
 			}
@@ -1937,20 +1847,28 @@
 				"theme",
 				"title"
 			],
+			"files": [
+				"compositions/listing-card-booking/listing-card-booking.tsx"
+			],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/listing-card-booking/stylesheet/listing-card-booking.tsx"
+						"compositions/listing-card-booking/listing-card-booking.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/listing-card-booking/unistyles/listing-card-booking.tsx"
+						"compositions/listing-card-booking/listing-card-booking.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/listing-card-booking/tailwind/listing-card-booking.tsx"
+						"compositions/listing-card-booking/listing-card-booking.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/listing-card-booking/listing-card-booking.styles.uniwind.ts"
 					]
 				}
 			}
@@ -1967,20 +1885,26 @@
 				"theme",
 				"title"
 			],
+			"files": ["compositions/profile-card/profile-card.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/profile-card/stylesheet/profile-card.tsx"
+						"compositions/profile-card/profile-card.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/profile-card/unistyles/profile-card.tsx"
+						"compositions/profile-card/profile-card.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/profile-card/tailwind/profile-card.tsx"
+						"compositions/profile-card/profile-card.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/profile-card/profile-card.styles.uniwind.ts"
 					]
 				}
 			}
@@ -1988,27 +1912,27 @@
 		{
 			"name": "article-card",
 			"type": "compositions",
-			"internalDependencies": [
-				"avatar",
-				"card",
-				"text",
-				"theme",
-				"title"
-			],
+			"internalDependencies": ["avatar", "card", "text", "theme", "title"],
+			"files": ["compositions/article-card/article-card.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/article-card/stylesheet/article-card.tsx"
+						"compositions/article-card/article-card.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/article-card/unistyles/article-card.tsx"
+						"compositions/article-card/article-card.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/article-card/tailwind/article-card.tsx"
+						"compositions/article-card/article-card.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/article-card/article-card.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2025,30 +1949,32 @@
 				"theme",
 				"title"
 			],
+			"files": ["compositions/event-card/event-card.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/event-card/stylesheet/event-card.tsx"
+						"compositions/event-card/event-card.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/event-card/unistyles/event-card.tsx"
+						"compositions/event-card/event-card.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/event-card/tailwind/event-card.tsx"
+						"compositions/event-card/event-card.styles.nativewind.ts"
 					]
+				},
+				"uniwind": {
+					"files": ["compositions/event-card/event-card.styles.uniwind.ts"]
 				}
 			}
 		},
 		{
 			"name": "settings-item",
 			"type": "compositions",
-			"requiredIcons": [
-				"chevron-right"
-			],
+			"requiredIcons": ["chevron-right"],
 			"internalDependencies": [
 				"icon",
 				"item",
@@ -2056,30 +1982,12 @@
 				"text",
 				"use-controllable-state"
 			],
-			"variants": {
-				"stylesheet": {
-					"files": [
-						"compositions/settings-item/stylesheet/settings-item.tsx"
-					]
-				},
-				"unistyles": {
-					"files": [
-						"compositions/settings-item/unistyles/settings-item.tsx"
-					]
-				},
-				"tailwind": {
-					"files": [
-						"compositions/settings-item/tailwind/settings-item.tsx"
-					]
-				}
-			}
+			"files": ["compositions/settings-item/settings-item.tsx"]
 		},
 		{
 			"name": "track-item",
 			"type": "compositions",
-			"requiredIcons": [
-				"more"
-			],
+			"requiredIcons": ["more"],
 			"internalDependencies": [
 				"badge",
 				"icon-button",
@@ -2087,48 +1995,52 @@
 				"text",
 				"theme"
 			],
+			"files": ["compositions/track-item/track-item.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/track-item/stylesheet/track-item.tsx"
+						"compositions/track-item/track-item.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/track-item/unistyles/track-item.tsx"
+						"compositions/track-item/track-item.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/track-item/tailwind/track-item.tsx"
+						"compositions/track-item/track-item.styles.nativewind.ts"
 					]
+				},
+				"uniwind": {
+					"files": ["compositions/track-item/track-item.styles.uniwind.ts"]
 				}
 			}
 		},
 		{
 			"name": "conversation-item",
 			"type": "compositions",
-			"internalDependencies": [
-				"avatar",
-				"badge",
-				"item",
-				"text",
-				"theme"
-			],
+			"internalDependencies": ["avatar", "badge", "item", "text", "theme"],
+			"files": ["compositions/conversation-item/conversation-item.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/conversation-item/stylesheet/conversation-item.tsx"
+						"compositions/conversation-item/conversation-item.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/conversation-item/unistyles/conversation-item.tsx"
+						"compositions/conversation-item/conversation-item.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/conversation-item/tailwind/conversation-item.tsx"
+						"compositions/conversation-item/conversation-item.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/conversation-item/conversation-item.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2145,20 +2057,26 @@
 				"text",
 				"theme"
 			],
+			"files": ["compositions/notification-item/notification-item.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/notification-item/stylesheet/notification-item.tsx"
+						"compositions/notification-item/notification-item.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/notification-item/unistyles/notification-item.tsx"
+						"compositions/notification-item/notification-item.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/notification-item/tailwind/notification-item.tsx"
+						"compositions/notification-item/notification-item.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/notification-item/notification-item.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2166,9 +2084,7 @@
 		{
 			"name": "offer-card",
 			"type": "compositions",
-			"requiredIcons": [
-				"check"
-			],
+			"requiredIcons": ["check"],
 			"internalDependencies": [
 				"badge",
 				"button",
@@ -2178,30 +2094,32 @@
 				"theme",
 				"title"
 			],
+			"files": ["compositions/offer-card/offer-card.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/offer-card/stylesheet/offer-card.tsx"
+						"compositions/offer-card/offer-card.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/offer-card/unistyles/offer-card.tsx"
+						"compositions/offer-card/offer-card.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/offer-card/tailwind/offer-card.tsx"
+						"compositions/offer-card/offer-card.styles.nativewind.ts"
 					]
+				},
+				"uniwind": {
+					"files": ["compositions/offer-card/offer-card.styles.uniwind.ts"]
 				}
 			}
 		},
 		{
 			"name": "pricing-card",
 			"type": "compositions",
-			"requiredIcons": [
-				"check"
-			],
+			"requiredIcons": ["check"],
 			"internalDependencies": [
 				"badge",
 				"button",
@@ -2211,20 +2129,26 @@
 				"theme",
 				"title"
 			],
+			"files": ["compositions/pricing-card/pricing-card.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/pricing-card/stylesheet/pricing-card.tsx"
+						"compositions/pricing-card/pricing-card.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/pricing-card/unistyles/pricing-card.tsx"
+						"compositions/pricing-card/pricing-card.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/pricing-card/tailwind/pricing-card.tsx"
+						"compositions/pricing-card/pricing-card.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/pricing-card/pricing-card.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2232,27 +2156,29 @@
 		{
 			"name": "pricing-card-compact",
 			"type": "compositions",
-			"internalDependencies": [
-				"badge",
-				"radio",
-				"text",
-				"theme",
-				"title"
+			"internalDependencies": ["badge", "radio", "text", "theme", "title"],
+			"files": [
+				"compositions/pricing-card-compact/pricing-card-compact.tsx"
 			],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/pricing-card-compact/stylesheet/pricing-card-compact.tsx"
+						"compositions/pricing-card-compact/pricing-card-compact.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/pricing-card-compact/unistyles/pricing-card-compact.tsx"
+						"compositions/pricing-card-compact/pricing-card-compact.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/pricing-card-compact/tailwind/pricing-card-compact.tsx"
+						"compositions/pricing-card-compact/pricing-card-compact.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/pricing-card-compact/pricing-card-compact.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2260,9 +2186,7 @@
 		{
 			"name": "pricing-card-toggle",
 			"type": "compositions",
-			"requiredIcons": [
-				"check"
-			],
+			"requiredIcons": ["check"],
 			"internalDependencies": [
 				"badge",
 				"button",
@@ -2274,20 +2198,26 @@
 				"title",
 				"use-controllable-state"
 			],
+			"files": ["compositions/pricing-card-toggle/pricing-card-toggle.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/pricing-card-toggle/stylesheet/pricing-card-toggle.tsx"
+						"compositions/pricing-card-toggle/pricing-card-toggle.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/pricing-card-toggle/unistyles/pricing-card-toggle.tsx"
+						"compositions/pricing-card-toggle/pricing-card-toggle.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/pricing-card-toggle/tailwind/pricing-card-toggle.tsx"
+						"compositions/pricing-card-toggle/pricing-card-toggle.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/pricing-card-toggle/pricing-card-toggle.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2295,9 +2225,7 @@
 		{
 			"name": "pricing-card-horizontal",
 			"type": "compositions",
-			"requiredIcons": [
-				"check"
-			],
+			"requiredIcons": ["check"],
 			"internalDependencies": [
 				"badge",
 				"button",
@@ -2307,20 +2235,28 @@
 				"theme",
 				"title"
 			],
+			"files": [
+				"compositions/pricing-card-horizontal/pricing-card-horizontal.tsx"
+			],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/pricing-card-horizontal/stylesheet/pricing-card-horizontal.tsx"
+						"compositions/pricing-card-horizontal/pricing-card-horizontal.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/pricing-card-horizontal/unistyles/pricing-card-horizontal.tsx"
+						"compositions/pricing-card-horizontal/pricing-card-horizontal.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/pricing-card-horizontal/tailwind/pricing-card-horizontal.tsx"
+						"compositions/pricing-card-horizontal/pricing-card-horizontal.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/pricing-card-horizontal/pricing-card-horizontal.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2328,9 +2264,7 @@
 		{
 			"name": "pricing-card-hero",
 			"type": "compositions",
-			"requiredIcons": [
-				"check"
-			],
+			"requiredIcons": ["check"],
 			"internalDependencies": [
 				"badge",
 				"button",
@@ -2340,20 +2274,26 @@
 				"theme",
 				"title"
 			],
+			"files": ["compositions/pricing-card-hero/pricing-card-hero.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/pricing-card-hero/stylesheet/pricing-card-hero.tsx"
+						"compositions/pricing-card-hero/pricing-card-hero.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/pricing-card-hero/unistyles/pricing-card-hero.tsx"
+						"compositions/pricing-card-hero/pricing-card-hero.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/pricing-card-hero/tailwind/pricing-card-hero.tsx"
+						"compositions/pricing-card-hero/pricing-card-hero.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/pricing-card-hero/pricing-card-hero.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2361,27 +2301,27 @@
 		{
 			"name": "pricing-card-tile",
 			"type": "compositions",
-			"internalDependencies": [
-				"badge",
-				"radio",
-				"text",
-				"theme",
-				"title"
-			],
+			"internalDependencies": ["badge", "radio", "text", "theme", "title"],
+			"files": ["compositions/pricing-card-tile/pricing-card-tile.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/pricing-card-tile/stylesheet/pricing-card-tile.tsx"
+						"compositions/pricing-card-tile/pricing-card-tile.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/pricing-card-tile/unistyles/pricing-card-tile.tsx"
+						"compositions/pricing-card-tile/pricing-card-tile.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/pricing-card-tile/tailwind/pricing-card-tile.tsx"
+						"compositions/pricing-card-tile/pricing-card-tile.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/pricing-card-tile/pricing-card-tile.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2397,30 +2337,32 @@
 				"theme",
 				"title"
 			],
+			"files": ["compositions/stats-card/stats-card.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/stats-card/stylesheet/stats-card.tsx"
+						"compositions/stats-card/stats-card.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/stats-card/unistyles/stats-card.tsx"
+						"compositions/stats-card/stats-card.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/stats-card/tailwind/stats-card.tsx"
+						"compositions/stats-card/stats-card.styles.nativewind.ts"
 					]
+				},
+				"uniwind": {
+					"files": ["compositions/stats-card/stats-card.styles.uniwind.ts"]
 				}
 			}
 		},
 		{
 			"name": "stats-card-sparkline",
 			"type": "compositions",
-			"dependencies": [
-				"react-native-svg"
-			],
+			"dependencies": ["react-native-svg"],
 			"internalDependencies": [
 				"badge",
 				"card",
@@ -2429,20 +2371,28 @@
 				"theme",
 				"title"
 			],
+			"files": [
+				"compositions/stats-card-sparkline/stats-card-sparkline.tsx"
+			],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/stats-card-sparkline/stylesheet/stats-card-sparkline.tsx"
+						"compositions/stats-card-sparkline/stats-card-sparkline.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/stats-card-sparkline/unistyles/stats-card-sparkline.tsx"
+						"compositions/stats-card-sparkline/stats-card-sparkline.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/stats-card-sparkline/tailwind/stats-card-sparkline.tsx"
+						"compositions/stats-card-sparkline/stats-card-sparkline.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/stats-card-sparkline/stats-card-sparkline.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2450,27 +2400,27 @@
 		{
 			"name": "stats-card-progress",
 			"type": "compositions",
-			"internalDependencies": [
-				"card",
-				"icon",
-				"text",
-				"theme",
-				"title"
-			],
+			"internalDependencies": ["card", "icon", "text", "theme", "title"],
+			"files": ["compositions/stats-card-progress/stats-card-progress.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/stats-card-progress/stylesheet/stats-card-progress.tsx"
+						"compositions/stats-card-progress/stats-card-progress.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/stats-card-progress/unistyles/stats-card-progress.tsx"
+						"compositions/stats-card-progress/stats-card-progress.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/stats-card-progress/tailwind/stats-card-progress.tsx"
+						"compositions/stats-card-progress/stats-card-progress.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/stats-card-progress/stats-card-progress.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2486,20 +2436,26 @@
 				"theme",
 				"title"
 			],
+			"files": ["compositions/stats-card-inline/stats-card-inline.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/stats-card-inline/stylesheet/stats-card-inline.tsx"
+						"compositions/stats-card-inline/stats-card-inline.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/stats-card-inline/unistyles/stats-card-inline.tsx"
+						"compositions/stats-card-inline/stats-card-inline.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/stats-card-inline/tailwind/stats-card-inline.tsx"
+						"compositions/stats-card-inline/stats-card-inline.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/stats-card-inline/stats-card-inline.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2507,29 +2463,28 @@
 		{
 			"name": "stats-card-ring",
 			"type": "compositions",
-			"dependencies": [
-				"react-native-svg"
-			],
-			"internalDependencies": [
-				"card",
-				"text",
-				"theme",
-				"title"
-			],
+			"dependencies": ["react-native-svg"],
+			"internalDependencies": ["card", "text", "theme", "title"],
+			"files": ["compositions/stats-card-ring/stats-card-ring.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/stats-card-ring/stylesheet/stats-card-ring.tsx"
+						"compositions/stats-card-ring/stats-card-ring.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/stats-card-ring/unistyles/stats-card-ring.tsx"
+						"compositions/stats-card-ring/stats-card-ring.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/stats-card-ring/tailwind/stats-card-ring.tsx"
+						"compositions/stats-card-ring/stats-card-ring.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/stats-card-ring/stats-card-ring.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2537,9 +2492,7 @@
 		{
 			"name": "search-result-item",
 			"type": "compositions",
-			"requiredIcons": [
-				"chevron-right"
-			],
+			"requiredIcons": ["chevron-right"],
 			"internalDependencies": [
 				"icon",
 				"icon-button",
@@ -2547,20 +2500,26 @@
 				"text",
 				"theme"
 			],
+			"files": ["compositions/search-result-item/search-result-item.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/search-result-item/stylesheet/search-result-item.tsx"
+						"compositions/search-result-item/search-result-item.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/search-result-item/unistyles/search-result-item.tsx"
+						"compositions/search-result-item/search-result-item.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/search-result-item/tailwind/search-result-item.tsx"
+						"compositions/search-result-item/search-result-item.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/search-result-item/search-result-item.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2568,13 +2527,8 @@
 		{
 			"name": "search-app-bar",
 			"type": "compositions",
-			"requiredIcons": [
-				"arrow-left",
-				"close"
-			],
-			"dependencies": [
-				"react-native-reanimated"
-			],
+			"requiredIcons": ["arrow-left", "close"],
+			"dependencies": ["react-native-reanimated"],
 			"internalDependencies": [
 				"app-bar",
 				"icon-button",
@@ -2584,20 +2538,26 @@
 				"text",
 				"theme"
 			],
+			"files": ["compositions/search-app-bar/search-app-bar.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/search-app-bar/stylesheet/search-app-bar.tsx"
+						"compositions/search-app-bar/search-app-bar.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/search-app-bar/unistyles/search-app-bar.tsx"
+						"compositions/search-app-bar/search-app-bar.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/search-app-bar/tailwind/search-app-bar.tsx"
+						"compositions/search-app-bar/search-app-bar.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/search-app-bar/search-app-bar.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2613,20 +2573,26 @@
 				"theme",
 				"title"
 			],
+			"files": ["compositions/profile-app-bar/profile-app-bar.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"compositions/profile-app-bar/stylesheet/profile-app-bar.tsx"
+						"compositions/profile-app-bar/profile-app-bar.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"compositions/profile-app-bar/unistyles/profile-app-bar.tsx"
+						"compositions/profile-app-bar/profile-app-bar.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"compositions/profile-app-bar/tailwind/profile-app-bar.tsx"
+						"compositions/profile-app-bar/profile-app-bar.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"compositions/profile-app-bar/profile-app-bar.styles.uniwind.ts"
 					]
 				}
 			}
@@ -2634,25 +2600,27 @@
 		{
 			"name": "settings-section",
 			"type": "blocks",
-			"internalDependencies": [
-				"settings-item",
-				"text",
-				"theme"
-			],
+			"internalDependencies": ["settings-item", "text", "theme"],
+			"files": ["blocks/settings-section/settings-section.tsx"],
 			"variants": {
 				"stylesheet": {
 					"files": [
-						"blocks/settings-section/stylesheet/settings-section.tsx"
+						"blocks/settings-section/settings-section.styles.stylesheet.ts"
 					]
 				},
 				"unistyles": {
 					"files": [
-						"blocks/settings-section/unistyles/settings-section.tsx"
+						"blocks/settings-section/settings-section.styles.unistyles.ts"
 					]
 				},
-				"tailwind": {
+				"nativewind": {
 					"files": [
-						"blocks/settings-section/tailwind/settings-section.tsx"
+						"blocks/settings-section/settings-section.styles.nativewind.ts"
+					]
+				},
+				"uniwind": {
+					"files": [
+						"blocks/settings-section/settings-section.styles.uniwind.ts"
 					]
 				}
 			}
