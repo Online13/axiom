@@ -1,8 +1,10 @@
 import {
 	createContext,
 	use,
+	useCallback,
 	useEffect,
 	useImperativeHandle,
+	useLayoutEffect,
 	useRef,
 	useState,
 	type Ref,
@@ -48,6 +50,15 @@ export type UseCarouselOptions = {
 	ref?: Ref<CarouselRef>;
 };
 
+/** A stable function that always calls the latest `fn`, for callbacks read after the render that made them. */
+function useLatestCallback<A extends unknown[], R>(fn: (...args: A) => R) {
+	const latest = useRef(fn);
+	useLayoutEffect(() => {
+		latest.current = fn;
+	});
+	return useCallback((...args: A) => latest.current(...args), []);
+}
+
 /** Scroll position, active index, snapping and the imperative API, shared by every styling variant. */
 export function useCarouselRoot({
 	count,
@@ -84,15 +95,18 @@ export function useCarouselRoot({
 		},
 	});
 
-	const scrollToIndex = (next: number, animated = true) => {
-		const target = Math.max(0, Math.min(next, count - 1));
-		listRef.current?.scrollToOffset({
-			offset: target * interval,
-			animated: animated && !reduceMotion,
-		});
-		// Programmatic scrolls don't always end with a momentum event.
-		settle(target * interval);
-	};
+	// Stable: the autoplay timer and the effect below keep it across renders.
+	const scrollToIndex = useLatestCallback(
+		(next: number, animated: boolean = true) => {
+			const target = Math.max(0, Math.min(next, count - 1));
+			listRef.current?.scrollToOffset({
+				offset: target * interval,
+				animated: animated && !reduceMotion,
+			});
+			// Programmatic scrolls don't always end with a momentum event.
+			settle(target * interval);
+		},
+	);
 
 	function settle(offset: number, bySwipe = false) {
 		const next = Math.max(
@@ -110,10 +124,10 @@ export function useCarouselRoot({
 		event: NativeSyntheticEvent<NativeScrollEvent>,
 	) => settle(event.nativeEvent.contentOffset.x, true);
 
-	// A controlled index moves the list.
+	// A controlled index moves the list, again when the item size changes.
 	useEffect(() => {
 		if (controlledIndex !== undefined) scrollToIndex(controlledIndex);
-	}, [controlledIndex, interval]);
+	}, [controlledIndex, interval, scrollToIndex]);
 
 	useImperativeHandle(ref, () => ({
 		scrollToIndex,
@@ -205,13 +219,7 @@ export function useCarouselAutoPlay({
 	interval,
 	loop = false,
 }: UseCarouselAutoPlayOptions) {
-	const {
-		count,
-		interval: step,
-		activeRef,
-		touching,
-		scrollToIndex,
-	} = useCarousel();
+	const { count, activeRef, touching, scrollToIndex } = useCarousel();
 	const reduceMotion = useReducedMotion();
 
 	useEffect(() => {
@@ -223,9 +231,15 @@ export function useCarouselAutoPlay({
 			scrollToIndex(last ? 0 : activeRef.current + 1);
 		}, interval);
 		return () => clearInterval(timer);
-		// `scrollToIndex` is a new function on each render but only changes meaning with the item
-		// size: the timer restarts on `step`, not on every render.
-	}, [interval, loop, reduceMotion, count, step]);
+	}, [
+		interval,
+		loop,
+		reduceMotion,
+		count,
+		activeRef,
+		touching,
+		scrollToIndex,
+	]);
 }
 
 /** −1 before the center, 0 centered, 1 after. */

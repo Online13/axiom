@@ -174,10 +174,12 @@ export function useBottomSheetContent({
 	});
 
 	const wasOpen = useRef(false);
+	// A string, compared by value: `snapPositions` is a new array on every render.
 	const positionsKey = snapPositions.join(",");
 
 	useEffect(() => {
-		positions.set(snapPositions);
+		const snaps = positionsKey.split(",").map(Number);
+		positions.set(snaps);
 		closed.set(closedPosition);
 		canDismiss.set(dismissible);
 		followsKeyboard.set(keyboardBehavior !== "none");
@@ -191,7 +193,7 @@ export function useBottomSheetContent({
 				translateY.set(closedPosition);
 				wasOpen.current = true;
 			}
-			translateY.set(withSpring(snapPositions[index], SPRING));
+			translateY.set(withSpring(snaps[index], SPRING));
 		} else if (wasOpen.current) {
 			wasOpen.current = false;
 			if (KeyboardController.isVisible()) KeyboardController.dismiss();
@@ -201,7 +203,6 @@ export function useBottomSheetContent({
 				}),
 			);
 		}
-		// `positionsKey` stands for `snapPositions`, which is a new array on every render.
 	}, [
 		open,
 		mounted,
@@ -215,11 +216,20 @@ export function useBottomSheetContent({
 		insets.bottom,
 		maxHeight,
 		sheetHeight,
+		positions,
+		closed,
+		canDismiss,
+		followsKeyboard,
+		safeBottom,
+		topLimit,
+		isReady,
+		translateY,
+		onClosed,
 	]);
 
 	useEffect(() => {
 		coveredScale.set(withSpring(stackScale ** depth, SPRING));
-	}, [depth, stackScale]);
+	}, [depth, stackScale, coveredScale]);
 
 	// `extend`: go to the highest snap point when the keyboard opens.
 	const highestIndex = snapPositions.indexOf(Math.min(...snapPositions));

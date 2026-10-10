@@ -77,7 +77,8 @@ export function useSlider<T extends SliderValue>({
 
 	const range = Array.isArray(current);
 	const values = range ? (current as [number, number]) : [current as number];
-	const valuesKey = values.join(",");
+	// Numbers, compared by value: a controlled range is a new tuple on every render.
+	const [low, high] = values;
 
 	const [width, setWidth] = useState(0);
 	const trackWidth = useSharedValue(0);
@@ -86,17 +87,16 @@ export function useSlider<T extends SliderValue>({
 	const active = useSharedValue(-1);
 	const start = useSharedValue(0);
 
-	const toPixels = (v: number) =>
-		max === min ? 0 : ((v - min) / (max - min)) * width;
-
 	// Follows the value when nobody is dragging: the first layout, a controlled change, an accessibility action.
 	useEffect(() => {
 		if (!width || active.get() !== -1) return;
-		thumbs.set(values.map(toPixels));
-		emitted.set(values);
+		const next = range ? [low, high] : [low];
+		const toPixels = (v: number) =>
+			max === min ? 0 : ((v - min) / (max - min)) * width;
+		thumbs.set(next.map(toPixels));
+		emitted.set(next);
 		trackWidth.set(width);
-		// `valuesKey` stands for `values`.
-	}, [valuesKey, width, min, max]);
+	}, [range, low, high, width, min, max, active, thumbs, emitted, trackWidth]);
 
 	const ticks =
 		step > 0 && (max - min) / step <= 50

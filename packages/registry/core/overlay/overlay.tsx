@@ -1,4 +1,10 @@
-import { useEffect, useState } from "react";
+import {
+	useCallback,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from "react";
 import {
 	Pressable,
 	StyleSheet,
@@ -32,6 +38,15 @@ export type OverlayProps = {
 	style?: StyleProp<ViewStyle>;
 };
 
+/** A stable function that always calls the latest `fn`, for callbacks read after the render that made them. */
+function useLatestCallback<A extends unknown[], R>(fn: (...args: A) => R) {
+	const latest = useRef(fn);
+	useLayoutEffect(() => {
+		latest.current = fn;
+	});
+	return useCallback((...args: A) => latest.current(...args), []);
+}
+
 /**
  * Backdrop behind sheets, dialogs and menus. Fills its parent: render it in a `Portal`.
  * Reanimated skips the fade when Reduce Motion is on.
@@ -52,14 +67,17 @@ export function Overlay({
 
 	const timed = useSharedValue(0);
 
-	useEffect(() => {
-		if (!mounted) return;
+	const driven = progress !== undefined;
+	// Read when the exit ends, so a new `onExited` doesn't restart the animation.
+	const exited = useLatestCallback(() => onExited?.());
 
-		// With `progress`, the owner animates and unmounts the overlay.
-		if (progress) {
-			if (!visible) onExited?.();
-			return;
-		}
+	// With `progress`, the owner animates and unmounts the overlay.
+	useEffect(() => {
+		if (mounted && driven && !visible) exited();
+	}, [mounted, driven, visible, exited]);
+
+	useEffect(() => {
+		if (!mounted || driven) return;
 
 		if (visible) {
 			timed.set(withTiming(1, { duration }));
@@ -68,15 +86,14 @@ export function Overlay({
 
 		const finish = () => {
 			setMounted(false);
-			onExited?.();
+			exited();
 		};
 		timed.set(
 			withTiming(0, { duration }, (finished) => {
 				if (finished) scheduleOnRN(finish);
 			}),
 		);
-		// Only `visible` starts an animation; the callbacks are read when it runs.
-	}, [visible, mounted]);
+	}, [mounted, driven, visible, duration, timed, exited]);
 
 	const animatedStyle = useAnimatedStyle(() => ({
 		opacity: (progress ? progress.get() : timed.get()) * opacity,

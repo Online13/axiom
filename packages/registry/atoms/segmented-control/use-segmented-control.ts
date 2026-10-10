@@ -82,20 +82,17 @@ export function useSegmentedControl({
 	);
 
 	// Equal segments: computed from the track, which always has its final width when it reports it.
-	const segmentWidth = (trackWidth - inset * 2) / segments.length;
-	const layouts = fullWidth
-		? trackWidth > 0
-			? segments.map((_, i) => ({
-					x: inset + i * segmentWidth,
-					width: segmentWidth,
-				}))
-			: []
-		: measuredLayouts;
-	const measured =
-		layouts.length === segments.length && layouts.every(Boolean);
-	const layoutsKey = layouts
-		.map((layout) => (layout ? `${layout.x}:${layout.width}` : ""))
-		.join(",");
+	const count = segments.length;
+	const layouts = useMemo(() => {
+		if (!fullWidth) return measuredLayouts;
+		if (trackWidth <= 0) return [];
+		const segmentWidth = (trackWidth - inset * 2) / count;
+		return Array.from({ length: count }, (_, i) => ({
+			x: inset + i * segmentWidth,
+			width: segmentWidth,
+		}));
+	}, [fullWidth, measuredLayouts, trackWidth, inset, count]);
+	const measured = layouts.length === count && layouts.every(Boolean);
 
 	const indicatorX = useSharedValue(0);
 	const indicatorWidth = useSharedValue(0);
@@ -117,10 +114,9 @@ export function useSegmentedControl({
 			animate ? withTiming(target.width, TIMING) : target.width,
 		);
 		visible.set(1);
-		// `layoutsKey` stands for `layouts`, a new array on every render in full width.
 	}, [
 		measured,
-		layoutsKey,
+		layouts,
 		selectedIndex,
 		indicatorX,
 		indicatorWidth,
@@ -158,8 +154,11 @@ export function useSegmentedControl({
 	const drop = useLatestCallback(selectIndex);
 
 	// Dragging the indicator: it follows the finger, then lands on the nearest enabled segment.
-	const enabled = segments.map((segment) => !segment.disabled && !disabled);
-	const enabledKey = enabled.join(",");
+	// One character per segment: a string is compared by value, so the gesture is only rebuilt when
+	// a segment is enabled or disabled.
+	const enabled = segments
+		.map((segment) => (segment.disabled || disabled ? "0" : "1"))
+		.join("");
 	const gesture = useMemo(
 		() =>
 			Gesture.Pan()
@@ -183,7 +182,7 @@ export function useSegmentedControl({
 					const center = indicatorX.get() + indicatorWidth.get() / 2;
 					let nearest = -1;
 					layout.forEach((segment, i) => {
-						if (!enabled[i]) return;
+						if (enabled[i] !== "1") return;
 						const distance = Math.abs(
 							segment.x + segment.width / 2 - center,
 						);
@@ -204,8 +203,7 @@ export function useSegmentedControl({
 					indicatorWidth.set(withTiming(layout[nearest].width, TIMING));
 					scheduleOnRN(drop, nearest);
 				}),
-		// Rebuilt when the enabled segments change; `enabledKey` stands for `enabled`.
-		[disabled, enabledKey, drop],
+		[disabled, enabled, drop, positions, indicatorX, indicatorWidth],
 	);
 
 	const indicatorStyle = useAnimatedStyle(() => ({

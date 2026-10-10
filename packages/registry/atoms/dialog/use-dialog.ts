@@ -1,4 +1,12 @@
-import { createContext, use, useEffect, useState } from "react";
+import {
+	createContext,
+	use,
+	useCallback,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from "react";
 import {
 	useAnimatedStyle,
 	useSharedValue,
@@ -49,6 +57,15 @@ export type UseDialogContentOptions = {
 	onDismiss?: () => void;
 };
 
+/** A stable function that always calls the latest `fn`, for callbacks read after the render that made them. */
+function useLatestCallback<A extends unknown[], R>(fn: (...args: A) => R) {
+	const latest = useRef(fn);
+	useLayoutEffect(() => {
+		latest.current = fn;
+	});
+	return useCallback((...args: A) => latest.current(...args), []);
+}
+
 /** Mounting, enter and exit animation and back button of the dialog surface, shared by every styling variant. */
 export function useDialogContent({
 	dismissible = true,
@@ -62,6 +79,11 @@ export function useDialogContent({
 
 	const progress = useSharedValue(0);
 	const close = () => setOpen(false);
+	// Read when the exit ends, so a new `onDismiss` doesn't restart the animation.
+	const finish = useLatestCallback(() => {
+		setMounted(false);
+		onDismiss?.();
+	});
 
 	useOverlayBackHandler(open && isTop, dismissible ? close : undefined);
 
@@ -71,18 +93,13 @@ export function useDialogContent({
 			progress.set(withTiming(1, { duration: DURATION }));
 			return;
 		}
-		const finish = () => {
-			setMounted(false);
-			onDismiss?.();
-		};
 		// Reanimated jumps to the end when Reduce Motion is on.
 		progress.set(
 			withTiming(0, { duration: DURATION }, (finished) => {
 				if (finished) scheduleOnRN(finish);
 			}),
 		);
-		// Only `open` starts an animation; `onDismiss` is read when it ends.
-	}, [open, mounted]);
+	}, [open, mounted, progress, finish]);
 
 	const surfaceStyle = useAnimatedStyle(() => ({
 		opacity: progress.get(),

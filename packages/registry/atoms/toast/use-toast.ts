@@ -245,8 +245,7 @@ export function useToastItem({
 			.onFinalize(() => {
 				scheduleOnRN(setTouching, false);
 			});
-		// `drag` is a shared value: a stable reference.
-	}, [id, swipeToDismiss]);
+	}, [id, swipeToDismiss, drag]);
 
 	const animatedStyle = useAnimatedStyle(() => ({
 		opacity: progress.get(),

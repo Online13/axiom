@@ -200,8 +200,7 @@ export function useSnackbarItem(data: SnackbarData, swipeToDismiss: boolean) {
 			.onFinalize(() => {
 				scheduleOnRN(setTouching, false);
 			});
-		// Shared values are stable references.
-	}, [id, swipeToDismiss, screenWidth]);
+	}, [id, swipeToDismiss, screenWidth, axis, dragX, dragY]);
 
 	const animatedStyle = useAnimatedStyle(() => ({
 		// A horizontal drag fades the snackbar as it leaves.

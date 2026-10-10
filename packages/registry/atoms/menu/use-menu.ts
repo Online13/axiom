@@ -1,7 +1,9 @@
 import {
 	createContext,
 	use,
+	useCallback,
 	useEffect,
+	useLayoutEffect,
 	useRef,
 	useState,
 	type ReactNode,
@@ -105,6 +107,15 @@ export type UseMenuContentOptions = {
 	margin: number;
 };
 
+/** A stable function that always calls the latest `fn`, for callbacks read after the render that made them. */
+function useLatestCallback<A extends unknown[], R>(fn: (...args: A) => R) {
+	const latest = useRef(fn);
+	useLayoutEffect(() => {
+		latest.current = fn;
+	});
+	return useCallback((...args: A) => latest.current(...args), []);
+}
+
 /** Position next to the trigger, inside the safe area, and the enter and exit animation. */
 export function useMenuContent({
 	placement = "auto",
@@ -127,16 +138,21 @@ export function useMenuContent({
 
 	useOverlayBackHandler(menu.open && isTop, () => menu.setOpen(false));
 
+	const open = menu.open;
+	const hasHeight = height !== null;
+	// Read when the exit ends: the menu context is a new object on every render.
+	const finish = useLatestCallback(() => {
+		setMounted(false);
+		setHeight(null);
+		menu.flush();
+	});
+
+	// Only `open` and the first measure start an animation.
 	useEffect(() => {
 		if (!mounted) return;
-		const finish = () => {
-			setMounted(false);
-			setHeight(null);
-			menu.flush();
-		};
-		if (!menu.open) {
+		if (!open) {
 			// Closed before it was measured: nothing to animate.
-			if (height === null) finish();
+			if (!hasHeight) finish();
 			else
 				progress.set(
 					withTiming(0, { duration: 150 }, (finished) => {
@@ -145,7 +161,7 @@ export function useMenuContent({
 				);
 			return;
 		}
-		if (height !== null)
+		if (hasHeight)
 			progress.set(
 				withSpring(1, {
 					stiffness: 500,
@@ -153,8 +169,7 @@ export function useMenuContent({
 					mass: 1,
 				}),
 			);
-		// Only `open` and the first measure start an animation.
-	}, [menu.open, mounted, height === null]);
+	}, [open, mounted, hasHeight, progress, finish]);
 
 	const anchor = menu.anchor ?? {
 		x: screenWidth / 2,
