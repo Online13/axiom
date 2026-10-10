@@ -380,12 +380,21 @@ export function useBottomSheetContent({
 		);
 	});
 
-	const sheetStyle = useAnimatedStyle(() => ({
-		transform: [
-			{ translateY: translateY.get() - keyboardLift.get() },
-			{ scale: coveredScale.get() },
-		],
-	}));
+	const sheetStyle = useAnimatedStyle(
+		() => ({
+			transform: [
+				{
+					// Until the sheet is measured, it has a placeholder height and `translateY` is still
+					// where the last close left it: keep it off screen rather than show that frame.
+					translateY: isReady.get()
+						? translateY.get() - keyboardLift.get()
+						: screenHeight,
+				},
+				{ scale: coveredScale.get() },
+			],
+		}),
+		[screenHeight],
+	);
 
 	// Keeps the footer at the bottom of the screen at every snap point, and lets it leave with the sheet.
 	const footerStyle = useAnimatedStyle(() => ({
