@@ -147,17 +147,39 @@ The file goes where its layer's alias resolves in `tsconfig.json`: `@/components
 
 Components that render through a portal (Dialog, Menu, Bottom Sheet, Toast, Snackbar) aren't available standalone yet: a portal needs a host mounted at the root of the app.
 
-## fetch
+## sync
 
 ```npm
-npx axiom fetch
+npx axiom sync
 ```
 
-Copies every item listed in `items` in `axiom.json`. Use it to set up a project with the same items as another one, or to restore files that were deleted.
+Brings your project in line with `items` in `axiom.json`. Use it to set up a project with the same items as another one, to restore files that were deleted, or to update what you copied. It needs an `axiom.json`.
 
-For each item, `fetch` runs the same steps as `add`: it copies the variant for your `styling`, resolves internal dependencies, and installs missing npm packages. Files already in your project are skipped, so your changes are kept.
+For each item, `sync` runs the same steps as `add`: it copies the variant for your `styling`, resolves internal dependencies, and installs missing npm packages. Files missing from your project are written. Then, when files differ from the registry, it asks two questions:
 
-`fetch` isn't an update command. To get a newer version of a component, run `add` again and confirm the overwrite.
+1. Which levels you keep as they are. All of them are checked by default, so pressing Enter overwrites nothing.
+2. Which differing files of the other levels to overwrite. All of them are checked by default.
+
+| Level        | What it covers                                                        |
+| ------------ | --------------------------------------------------------------------- |
+| `core`       | The core primitives and the hooks                                     |
+| `theme`      | The theme folder: tokens, and each component's tokens                 |
+| `components` | Primitives, compositions and blocks                                   |
+
+Files your project owns once created, like the icon registry, are never overwritten.
+
+Two options answer the questions for you:
+
+```npm
+npx axiom sync --keep core,theme --overwrite
+```
+
+- `--keep` takes the levels to keep, separated by commas, or `none`.
+- `--overwrite` replaces every differing file of the other levels without asking which.
+
+Without a terminal to ask in, what no option decides is kept: `sync` alone only writes missing files, and `--keep` without `--overwrite` lists the files it left alone.
+
+A component you update can rely on a token or a core primitive newer than the one you kept. Typecheck after a partial update.
 
 ## Configuration
 

@@ -1,6 +1,6 @@
 ---
 title: Styling
-description: "One component, three styling variants. Axiom adapts to the tool your project already uses."
+description: "One component, four styling variants. Axiom adapts to the tool your project already uses."
 ---
 
 <StylingTools />
@@ -11,12 +11,13 @@ Axiom doesn't come with its own styling syntax. Each component exists in several
 | ------------ | ------------------------- | ------------------------- |
 | `stylesheet` | React Native `StyleSheet` | none                      |
 | `unistyles`  | react-native-unistyles    | `react-native-unistyles`  |
-| `tailwind`   | NativeWind or Uniwind     | `nativewind` or `uniwind` |
+| `nativewind` | NativeWind 4 (Tailwind 3) | `nativewind`              |
+| `uniwind`    | Uniwind (Tailwind 4)      | `uniwind`                 |
 
-NativeWind and Uniwind share the `tailwind` variant. Component classes are identical; only the setup differs (config, Babel or Metro plugin, supported Tailwind versions). `init` installs the tool's package; set it up following the NativeWind or Uniwind guide.
+NativeWind and Uniwind each have their variant. The class names are almost always the same; what differs is the setup (config, Babel or Metro plugin, Tailwind version) and how a component gives a color to an icon or a spinner. `init` installs the tool's package; set it up following the NativeWind or Uniwind guide, then [import the Axiom theme](#the-theme-in-each-variant).
 
 <Callout title="Rollout">
-	All three variants ship for every component, compositions and blocks
+	All four variants ship for every component, compositions and blocks
 	included.
 </Callout>
 
@@ -24,7 +25,8 @@ NativeWind and Uniwind share the `tailwind` variant. Component classes are ident
 
 - **`stylesheet`** if you don't use a styling library, or want zero extra dependencies. It needs no global provider.
 - **`unistyles`** if your project already uses Unistyles.
-- **`tailwind`** if your project uses NativeWind or Uniwind.
+- **`nativewind`** if your project uses NativeWind.
+- **`uniwind`** if your project uses Uniwind.
 
 You choose once, at `npx axiom init`. The choice is stored in `axiom.json` and every `add` copies that variant.
 
@@ -33,24 +35,24 @@ You choose once, at `npx axiom init`. The choice is stored in `axiom.json` and e
 What makes a component useful on mobile (state, gestures, animation, accessibility, touch targets) doesn't depend on the styling tool. It is written once and shared by every variant.
 
 ```text
-Behavior (shared)              Style (per variant)
-─────────────────              ───────────────────
-core/    Tappable, Overlay…    stylesheet/  StyleSheet.create + useTheme
-hooks/   useSwitch, useSlider… unistyles/   StyleSheet.create((theme) => …)
-                               tailwind/    useTheme in style + className
+Shared                          Styles (per variant)
+──────                          ────────────────────
+core/    Tappable, Overlay…     stylesheet   StyleSheet.create + useTheme
+hooks/   useSwitch, useSlider…  unistyles    StyleSheet.create((theme) => …)
+the component: structure,       nativewind   className, from the Tailwind theme
+states and accessibility        uniwind      className, from the Tailwind theme
 ```
 
 - Non-trivial logic lives in `core/`, `hooks/` or a hook next to the component.
-- A variant file only renders and styles. It never reimplements a behavior.
-- Components without logic (Badge, Separator…) are just one file per variant.
-- Every variant is written by hand, so it stays readable and easy to change. Nothing is generated from a shared source.
+- The component itself (its elements, states and accessibility) is written once too. Only its styles are written per variant, by hand.
+- A variant never reimplements a behavior.
 
-You only receive the shared behavior and the file for your variant, side by side:
+In your project there is one variant, so you get one file: the CLI writes the component and the styles of your variant together, the way you would write them by hand. Nothing in it reads a variant at runtime.
 
 ```text
 components/ui/switch/
 ├── use-switch.ts   # shared behavior
-├── switch.tsx      # your variant
+├── switch.tsx      # the component, with the styles of your variant
 └── index.ts        # so "@/components/ui/switch" resolves here
 ```
 
@@ -84,19 +86,31 @@ StyleSheet.configure({
 });
 ```
 
-```tsx tab="tailwind"
-// The same hook as `stylesheet`: values go in `style`, `className` keeps theme-free layout.
-import { useColorScheme } from "react-native";
+```css tab="nativewind"
+/* global.css: colors, radius, sizes and typography become Tailwind names
+   (`bg-primary`, `rounded-md`, `text-callout`), with a light and a dark value. */
+@import "./theme/nativewind.css";
 
-export function useTheme() {
-	return useColorScheme() === "dark" ? dark : light;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-// Joins class names, skipping falsy ones.
-export function cx(...classes: (string | false | null | undefined)[]) {
-	return classes.filter(Boolean).join(" ");
-}
+/* And in tailwind.config.js:
+   presets: [require("nativewind/preset"), require("./theme/nativewind-preset")] */
 ```
+
+```css tab="uniwind"
+/* global.css: colors, radius, sizes and typography become Tailwind names
+   (`bg-primary`, `rounded-md`, `text-callout`), with a light and a dark value. */
+@import "tailwindcss";
+@import "uniwind";
+
+@import "./theme/uniwind.css";
+/* The tokens of each component, listed by `axiom add`. */
+@import "./theme/components/index.css";
+```
+
+With NativeWind and Uniwind the theme is CSS: the files above are copied into your theme folder, and you import them once. `useTheme()` is still there, the same hook as `stylesheet`, for the few values a class can't give. The theme also exports `cx`, which joins class names and lets the last class that sets a property win.
 
 See [Foundations](/docs/foundations) for the contracts.
 
@@ -104,19 +118,23 @@ See [Foundations](/docs/foundations) for the contracts.
 
 The variants don't only differ in syntax:
 
-|                              | `stylesheet`                 | `unistyles`        | `tailwind`                                  |
-| ---------------------------- | ---------------------------- | ------------------ | ------------------------------------------- |
-| Theme access                 | `useTheme()`                 | built in           | `useTheme()`, read in `style`               |
-| Variants (`size`, `variant`) | style objects picked by hand | native `variants`  | values picked by hand in `style`            |
-| Dark mode                    | `useColorScheme`             | adaptive themes    | `useColorScheme`, through `useTheme()`      |
-| Theme-free layout            | `StyleSheet.create`          | `StyleSheet.create` | `className`                                 |
-| Animated styles (Reanimated) | animated `style`             | animated `style`   | animated `style` (animated views take no `className`) |
+|                              | `stylesheet`                 | `unistyles`         | `nativewind` and `uniwind`                            |
+| ---------------------------- | ---------------------------- | ------------------- | ----------------------------------------------------- |
+| Theme access                 | `useTheme()`                 | built in            | class names (`bg-primary`, `bg-button-solid`)         |
+| Variants (`size`, `variant`) | style objects picked by hand | native `variants`   | classes picked from a table                           |
+| Dark mode                    | `useColorScheme`             | adaptive themes     | CSS variables with a light and a dark value           |
+| Component tokens             | `theme/components/<name>.ts` | `theme/components/<name>.ts` | `theme/components/<name>.css`                |
+| Animated styles (Reanimated) | animated `style`             | animated `style`    | animated `style` (animated views take no `className`) |
 
-### Why `tailwind` keeps values in `style`
+### What the Tailwind variants put in classes
 
-- **No rem-based utilities.** A rem is 14px in NativeWind and 16px in Uniwind, so `p-4` would not give the same size in both. Spacing, radius and type sizes come from the tokens.
-- **Colors come from the component tokens**, the same ones the other variants read. There is one source, no colors to copy into a Tailwind config, and the classes stay identical in NativeWind and Uniwind.
-- **Your `className` is added to the component's own.** The root writes `cx("its classes", className)`. Two utilities that set the same property don't override each other by order, so to replace one of the component's values, pass `style`: it always wins.
+- **Colors, radius, sizes and typography are classes.** They are written whole (`bg-button-solid`, `active:bg-button-solid-pressed`), so Tailwind finds them, and they follow light and dark without `dark:`.
+- **Each component has its own names.** `bg-button-solid` comes from `theme/components/button.css`, generated from the same tokens the other variants read. Edit that file to restyle the component.
+- **Sizes outside the spacing scale are in pixels.** A rem is 14px in NativeWind and 16px in Uniwind, so a size the tokens don't name is written `h-[24px]`.
+- **Your `className` wins.** A component writes `cx("its classes", className)`, and of two classes that set the same property the last one is kept: `className="bg-highlight"` replaces the component's background.
+- **`style` keeps what no class can say**: a number the device or the caller gives (a safe-area inset, a width), and colors a prop wants as a value, like the stroke of an SVG path.
+
+Switch, Slider, Segmented Control and Skeleton animate their colors, so in these two variants they still read their tokens from `useTheme().components`, in TypeScript.
 
 ## Same contract everywhere
 
@@ -126,7 +144,7 @@ For a given component, every variant has:
 - the same behavior and accessibility;
 - the same look with the default theme.
 
-The one exception is each tool's natural extension: every variant accepts `style`, and `tailwind` also accepts `className`.
+The one exception is each tool's natural extension: every variant accepts `style`, and `nativewind` and `uniwind` also accept `className`.
 
 Parity is checked in the demo app and in CI.
 

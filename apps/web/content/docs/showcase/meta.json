@@ -1,5 +1,4 @@
 {
 	"title": "Showcase",
-	"root": true,
 	"pages": ["index", "demo", "noty"]
 }

@@ -39,7 +39,7 @@ Switch between the default and the custom button below. The checkbox and the swi
 The layer also:
 
 - puts every component color in one file, instead of spread across dozens of components;
-- keeps the `stylesheet`, `unistyles` and `tailwind` variants identical, since all three read the same value.
+- keeps the `stylesheet`, `unistyles`, `nativewind` and `uniwind` variants identical, since all four take the same value.
 
 ## What goes in
 
@@ -86,6 +86,18 @@ export type ButtonTokens = {
 ```
 
 `States` comes from the theme: `default` is complete, every other state is a `Partial` of it. `radius` sits next to the variants, since every variant shares it.
+
+A component reads its colors with `stateColors`, from the same file. It starts from `default`, then applies each state the component is in, in the order they are listed:
+
+```ts
+const colors = stateColors(
+	theme.components.chip[variant],
+	selected && "selected",
+	disabled && "disabled",
+);
+```
+
+A selected, disabled chip keeps the background of `selected` and takes the text color of `disabled`.
 
 ## One file per component, inside the theme
 
@@ -314,14 +326,14 @@ const styles = StyleSheet.create((theme) => ({
 }));
 ```
 
-```tsx title="tailwind"
-const theme = useTheme();
-
-<Pressable
-	className="flex-row items-center"
-	style={{ backgroundColor: theme.components.button.solid.default.background }}
-/>;
+```tsx title="nativewind and uniwind"
+// `bg-button-solid` is `solid.default.background`, declared in theme/components/button.css.
+<Pressable className="flex-row items-center bg-button-solid active:bg-button-solid-pressed" />;
 ```
+
+With NativeWind and Uniwind, a component's tokens are CSS: each one becomes a Tailwind name. `solid.pressed.background` of the button is `--color-button-solid-pressed`, so `bg-button-solid-pressed`; a `foreground` gives `text-button-solid-foreground`, and `radius` gives `rounded-button`. Each one points to a theme color, so it follows light and dark.
+
+Switch, Slider, Segmented Control and Skeleton animate their colors, so they keep their tokens in TypeScript in every variant.
 
 ## Customizing
 
@@ -338,11 +350,20 @@ solid: {
 },
 ```
 
+With NativeWind or Uniwind, the same change goes in the CSS file:
+
+```css title="theme/components/button.css — blue pill buttons"
+--radius-button: var(--radius-full);
+--color-button-solid: var(--color-content-link);
+--color-button-solid-foreground: var(--color-content-inverse);
+--color-button-solid-pressed: var(--color-content-link);
+```
+
 Pick the layer that matches the scope of the change:
 
 | You want to change                               | Edit                                       |
 | ------------------------------------------------ | ------------------------------------------ |
-| One component                                    | Its tokens file (`theme/components/button.ts`) |
+| One component                                    | Its tokens file (`theme/components/button.ts`, or `button.css` with NativeWind and Uniwind) |
 | Every action (buttons, selected and checked controls) | [`primary`](/docs/foundations/colors#primary) |
 | A role across the app (every border, every link) | [`ThemeColors`](/docs/foundations/colors)       |
 | The brand hue or a step everywhere               | The [palette](/docs/foundations/tokens/palette) |

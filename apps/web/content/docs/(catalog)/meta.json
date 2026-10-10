@@ -1,8 +1,8 @@
 {
-	"title": "API Reference",
+	"title": "Catalog",
 	"root": true,
 	"pages": [
-		"api-reference",
+		"catalog",
 		"---Components---",
 		"components",
 		"(primitives)/components",
@@ -11,9 +11,6 @@
 		"---Hooks---",
 		"...hooks",
 		"---Core---",
-		"...core",
-		"---CLI---",
-		"cli",
-		"configuration"
+		"...core"
 	]
 }

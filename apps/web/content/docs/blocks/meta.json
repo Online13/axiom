@@ -1,12 +1,4 @@
 {
 	"title": "Blocks",
-	"pages": [
-		"settings-section",
-		"---Planned---",
-		"authentication",
-		"onboarding",
-		"monetization",
-		"profile",
-		"commerce"
-	]
+	"pages": ["settings-section"]
 }

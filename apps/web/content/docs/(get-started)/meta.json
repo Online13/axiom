@@ -5,7 +5,13 @@
 		"index",
 		"getting-started",
 		"styling",
+		"---Tooling---",
+		"cli",
+		"configuration",
+		"---Guides---",
+		"../integrations",
 		"---Project---",
+		"../showcase",
 		"roadmap"
 	]
 }

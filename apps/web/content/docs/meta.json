@@ -1,11 +1,9 @@
 {
 	"pages": [
 		"(get-started)",
-		"(api-reference)",
+		"(catalog)",
 		"(theming)",
 		"(experiences)",
-		"integrations",
-		"agent",
-		"showcase"
+		"agent"
 	]
 }

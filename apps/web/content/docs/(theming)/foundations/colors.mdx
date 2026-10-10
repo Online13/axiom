@@ -203,9 +203,10 @@ The names match the conventions of each styling tool:
 | ------------ | -------------------------------------------------------------------------------- |
 | `stylesheet` | `light` / `dark` objects picked by a `useTheme()` hook based on `useColorScheme` |
 | `unistyles`  | Registered as adaptive themes                                                    |
-| `tailwind`   | Same as `stylesheet`: `useTheme()` follows the system scheme, values go in `style` |
+| `nativewind` | Tailwind names (`bg-primary`, `text-content-muted`) from `theme/nativewind.css` and its preset |
+| `uniwind`    | Tailwind names (`bg-primary`, `text-content-muted`) from `theme/uniwind.css`     |
 
-The `stylesheet` and `tailwind` variants follow the system color scheme without a global provider. Add a provider only if you want to force a theme manually.
+In `nativewind` and `uniwind`, each color is a CSS variable with a light and a dark value, so a class follows the scheme without `dark:`. The `stylesheet`, `nativewind` and `uniwind` variants follow the system color scheme without a global provider. Add a provider only if you want to force a theme manually.
 
 ## Customizing
 
