@@ -16,7 +16,11 @@ import {
 	type NativeScrollEvent,
 	type NativeSyntheticEvent,
 } from "react-native";
-import {
+import Animated, {
+	Extrapolation,
+	interpolate,
+	useAnimatedRef,
+	useAnimatedScrollHandler,
 	useAnimatedStyle,
 	useReducedMotion,
 	useSharedValue,
@@ -57,6 +61,9 @@ function useTab({
 		onChange: onValueChange,
 	});
 	const [layouts, setLayouts] = useState<Record<string, TabLayout>>({});
+	const [panelLayouts, setPanelLayouts] = useState<Record<string, TabLayout>>(
+		{},
+	);
 	const [listViewport, setListViewport] = useState(0);
 	const [listContentWidth, setListContentWidth] = useState(0);
 
@@ -66,6 +73,23 @@ function useTab({
 	const indicatorWidth = useSharedValue(0);
 	const indicatorReady = useSharedValue(false);
 	const selectedLayout = layouts[value];
+
+	// In a pager, the indicator follows the scroll: each panel's offset maps to its tab's frame.
+	const pagerOffset = useSharedValue(0);
+	const stops = Object.entries(panelLayouts)
+		.flatMap(([item, panel]) => {
+			const layout = layouts[item];
+			return layout ? [{ offset: panel.x, ...layout }] : [];
+		})
+		.sort((a, b) => a.offset - b.offset);
+	const track =
+		stops.length > 1
+			? {
+					offsets: stops.map((stop) => stop.offset),
+					xs: stops.map((stop) => stop.x),
+					widths: stops.map((stop) => stop.width),
+				}
+			: null;
 
 	useEffect(() => {
 		if (!selectedLayout) return;
@@ -103,6 +127,17 @@ function useTab({
 	return {
 		value,
 		listRef,
+		pagerOffset,
+		panelLayouts,
+		onPanelLayout: (item: string, event: LayoutChangeEvent) => {
+			const { x, width } = event.nativeEvent.layout;
+			setPanelLayouts((current) => {
+				const known = current[item];
+				return known?.x === x && known.width === width
+					? current
+					: { ...current, [item]: { x, width } };
+			});
+		},
 		// Taps and swipes between panels both land here.
 		select: (next: string) => {
 			if (hapticKind && next !== value) haptic(hapticKind);
@@ -120,11 +155,35 @@ function useTab({
 		onListLayout: (event: LayoutChangeEvent) =>
 			setListViewport(event.nativeEvent.layout.width),
 		onListContentSizeChange: (width: number) => setListContentWidth(width),
-		indicatorStyle: useAnimatedStyle(() => ({
-			opacity: indicatorReady.get() ? 1 : 0,
-			width: indicatorWidth.get(),
-			transform: [{ translateX: indicatorX.get() }],
-		})),
+		indicatorStyle: useAnimatedStyle(() => {
+			if (!track)
+				return {
+					opacity: indicatorReady.get() ? 1 : 0,
+					width: indicatorWidth.get(),
+					transform: [{ translateX: indicatorX.get() }],
+				};
+
+			const offset = pagerOffset.get();
+			return {
+				opacity: 1,
+				width: interpolate(
+					offset,
+					track.offsets,
+					track.widths,
+					Extrapolation.CLAMP,
+				),
+				transform: [
+					{
+						translateX: interpolate(
+							offset,
+							track.offsets,
+							track.xs,
+							Extrapolation.CLAMP,
+						),
+					},
+				],
+			};
+		}),
 	};
 }
 
@@ -355,7 +414,11 @@ function TabContent({ children, ...props }: TabContentProps) {
 	);
 }
 
-export type TabPagerProps = ComponentPropsWithRef<typeof ScrollView>;
+// The pager's scroll drives the indicator, on the UI thread: it keeps `onScroll`.
+export type TabPagerProps = Omit<
+	ComponentPropsWithRef<typeof ScrollView>,
+	"onScroll"
+>;
 
 function TabPager({
 	children,
@@ -367,16 +430,26 @@ function TabPager({
 	const styles = useTabStyles();
 	const tab = useTabContext();
 	const [pageWidth, setPageWidth] = useState(0);
-	const [panelLayouts, setPanelLayouts] = useState<Record<string, TabLayout>>(
-		{},
-	);
-	const pagerRef = useRef<ScrollView>(null);
+	const { panelLayouts, pagerOffset } = tab;
+	const pagerRef = useAnimatedRef<Animated.ScrollView>();
+	const positioned = useRef(false);
 	const selectedLayout = panelLayouts[tab.value];
 
 	useEffect(() => {
 		if (!selectedLayout) return;
-		pagerRef.current?.scrollTo({ x: selectedLayout.x, animated: true });
-	}, [selectedLayout]);
+		// The first scroll places the pager: the indicator, which follows it, doesn't slide in.
+		pagerRef.current?.scrollTo({
+			x: selectedLayout.x,
+			animated: positioned.current,
+		});
+		positioned.current = true;
+	}, [pagerRef, selectedLayout]);
+
+	const scrollHandler = useAnimatedScrollHandler({
+		onScroll: (event) => {
+			pagerOffset.set(event.contentOffset.x);
+		},
+	});
 
 	const handleLayout = (event: LayoutChangeEvent) => {
 		setPageWidth(event.nativeEvent.layout.width);
@@ -397,32 +470,24 @@ function TabPager({
 		if (closest) tab.select(closest[0]);
 		onMomentumScrollEnd?.(event);
 	};
-	const handlePanelLayout = (value: string, event: LayoutChangeEvent) => {
-		const { x, width } = event.nativeEvent.layout;
-		setPanelLayouts((current) => {
-			const known = current[value];
-			return known?.x === x && known.width === width
-				? current
-				: { ...current, [value]: { x, width } };
-		});
-	};
-
 	return (
 		<TabContentContext
-			value={{ paged: true, pageWidth, onPanelLayout: handlePanelLayout }}
+			value={{ paged: true, pageWidth, onPanelLayout: tab.onPanelLayout }}
 		>
-			<ScrollView
+			<Animated.ScrollView
+				scrollEventThrottle={16}
 				{...props}
-				ref={mergeRefs(pagerRef, ref)}
+				ref={mergeRefs(pagerRef, ref as Ref<Animated.ScrollView>)}
 				horizontal
 				pagingEnabled
 				showsHorizontalScrollIndicator={false}
 				onLayout={handleLayout}
 				onMomentumScrollEnd={handleMomentumScrollEnd}
+				onScroll={scrollHandler}
 				{...styles.pager(props)}
 			>
 				{children}
-			</ScrollView>
+			</Animated.ScrollView>
 		</TabContentContext>
 	);
 }
