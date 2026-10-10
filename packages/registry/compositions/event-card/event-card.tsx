@@ -1,0 +1,162 @@
+import {
+	View,
+	type ImageSourcePropType,
+	type StyleProp,
+	type ViewStyle,
+} from "react-native";
+
+import { Avatar } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
+import type { IconName } from "@/components/ui/icons";
+import { Text } from "@/components/ui/text";
+import { Title } from "@/components/ui/title";
+
+import { useEventCardStyles } from "./event-card.styles";
+
+export type EventDetail = {
+	/** An icon of your registry: add `time`, `location`… to `icons.tsx` first. */
+	icon?: IconName;
+	/** Already formatted: "Sat · 7:00 PM", "Brooklyn Steel". */
+	label: string;
+};
+
+export type EventAttendee = {
+	name: string;
+	/** Without it, the avatar shows the initials of `name`. */
+	avatar?: ImageSourcePropType;
+};
+
+export type EventCardProps = {
+	title: string;
+	image: ImageSourcePropType;
+	/** Shown as a month and day tile on the photo, in the device's locale. */
+	date: Date;
+	/** Time, place: one line each. */
+	details?: EventDetail[];
+	/** The first `SHOWN_ATTENDEES` are shown as avatars; the count covers the rest. */
+	attendees?: EventAttendee[];
+	/** Total shown in "124 going". Defaults to the number of `attendees`. */
+	attendeeCount?: number;
+	/** After the count: "124 going". */
+	attendeeLabel?: string;
+	actionLabel?: string;
+	/** Shows the action button, next to the attendees. */
+	onAction?: () => void;
+	/** Makes the whole card pressable, to open the event. The button keeps its own press. */
+	onPress?: () => void;
+	style?: StyleProp<ViewStyle>;
+};
+
+// Avatars shown before the count. Change it here: the card never hides more than this.
+const SHOWN_ATTENDEES = 3;
+
+/** Designed for a vertical feed: it takes the full width of its list, one event per row. */
+export function EventCard({
+	title,
+	image,
+	date,
+	details,
+	attendees,
+	attendeeCount = attendees?.length ?? 0,
+	attendeeLabel = "going",
+	actionLabel = "Get tickets",
+	onAction,
+	onPress,
+	style,
+}: EventCardProps) {
+	const styles = useEventCardStyles();
+	const month = date.toLocaleDateString(undefined, { month: "short" });
+	const fullDate = date.toLocaleDateString(undefined, {
+		weekday: "long",
+		month: "long",
+		day: "numeric",
+	});
+
+	return (
+		<Card
+			variant="elevated"
+			onPress={onPress}
+			accessibilityLabel={onPress ? `${title}, ${fullDate}` : undefined}
+			style={style}
+		>
+			<Card.Media source={image} aspectRatio={16 / 9}>
+				<View accessible accessibilityLabel={fullDate} {...styles.date}>
+					<Text
+						variant="caption"
+						color="link"
+						weight="semibold"
+						{...styles.month}
+					>
+						{month}
+					</Text>
+					<Title variant="headingSm">{date.getDate()}</Title>
+				</View>
+			</Card.Media>
+			<Card.Header {...styles.header}>
+				<Title variant="headingSm" numberOfLines={2}>
+					{title}
+				</Title>
+				{details?.map((detail, index) => (
+					<View key={index} {...styles.detail}>
+						{detail.icon ? (
+							<Icon name={detail.icon} size="sm" color="muted" />
+						) : null}
+						<Text
+							variant="bodySm"
+							color="muted"
+							numberOfLines={1}
+							{...styles.grow}
+						>
+							{detail.label}
+						</Text>
+					</View>
+				))}
+			</Card.Header>
+			{attendeeCount > 0 || onAction ? (
+				<Card.Footer {...styles.footer}>
+					<View {...styles.attendees}>
+						{attendees?.length ? (
+							<Avatar.Group>
+								{attendees
+									.slice(0, SHOWN_ATTENDEES)
+									.map((attendee, index) => (
+										<Avatar
+											key={index}
+											size="sm"
+											source={attendee.avatar}
+											name={attendee.name}
+											colorFromName
+										/>
+									))}
+							</Avatar.Group>
+						) : null}
+						{attendeeCount > 0 ? (
+							<Text
+								variant="footnote"
+								color="muted"
+								numberOfLines={1}
+								{...styles.grow}
+							>
+								<Text weight="semibold" color="default">
+									{attendeeCount}
+								</Text>
+								{` ${attendeeLabel}`}
+							</Text>
+						) : null}
+					</View>
+					{onAction ? (
+						<Button
+							size="sm"
+							onPress={onAction}
+							accessibilityLabel={`${actionLabel}, ${title}`}
+						>
+							{actionLabel}
+						</Button>
+					) : null}
+				</Card.Footer>
+			) : null}
+		</Card>
+	);
+}

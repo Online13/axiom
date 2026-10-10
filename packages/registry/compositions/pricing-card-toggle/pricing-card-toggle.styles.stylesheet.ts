@@ -1,0 +1,48 @@
+import { StyleSheet, type StyleProp, type ViewStyle } from "react-native";
+
+import { useTheme } from "@/theme";
+
+export function usePricingCardToggleStyles() {
+	const { tokens, colors } = useTheme();
+
+	return {
+		card: (featured: boolean, style: StyleProp<ViewStyle>) => ({
+			style: [
+				featured
+					? { borderWidth: 2, borderColor: colors.primary.default }
+					: undefined,
+				style,
+			],
+		}),
+		header: { style: { gap: tokens.spacing[3] } },
+		plan: { style: { gap: tokens.spacing[2] } },
+		row: { style: [styles.row, { gap: tokens.spacing[2] }] },
+		prices: { style: [styles.price, { gap: tokens.spacing[2] }] },
+		price: { style: [styles.price, { gap: tokens.spacing[1] }] },
+		struck: { style: styles.struck },
+		center: { style: styles.center },
+		features: { style: { gap: tokens.spacing[2] } },
+		grow: { style: styles.grow },
+	};
+}
+
+const styles = StyleSheet.create({
+	row: {
+		flexDirection: "row",
+		alignItems: "center",
+	},
+	price: {
+		flexDirection: "row",
+		alignItems: "baseline",
+		flexWrap: "wrap",
+	},
+	struck: {
+		textDecorationLine: "line-through",
+	},
+	center: {
+		alignSelf: "center",
+	},
+	grow: {
+		flex: 1,
+	},
+});
