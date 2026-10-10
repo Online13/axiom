@@ -127,6 +127,7 @@ export const DatePickerContext = createContext<DatePickerContextValue | null>(
 
 export function useDatePickerContext() {
 	const context = use(DatePickerContext);
-	if (!context) throw new Error("This part must be rendered inside <DatePicker>.");
+	if (!context)
+		throw new Error("This part must be rendered inside <DatePicker>.");
 	return context;
 }
