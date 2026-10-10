@@ -14,10 +14,11 @@ import { dark, light, type Theme } from "./theme";
  *
  * To switch schemes at runtime, call `UnistylesRuntime.setTheme('light' | 'dark')`.
  */
-type AxiomThemes = { light: Theme; dark: Theme };
-
 declare module "react-native-unistyles" {
-	export interface UnistylesThemes extends AxiomThemes {}
+	export interface UnistylesThemes {
+		light: Theme;
+		dark: Theme;
+	}
 }
 
 // Noty is light-only: its dark palette mirrors the light one, so following the system scheme

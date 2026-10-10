@@ -121,8 +121,9 @@ const SEED: Note[] = [
 	},
 ];
 
-// Starts empty to show the empty state. Set to `SEED` to bring the sample notes back.
-let notes: Note[] = [];
+// Starts empty to show the empty state. Set to `true` to bring the sample notes back.
+const SEEDED: boolean = false;
+let notes: Note[] = SEEDED ? SEED : [];
 
 const listeners = new Set<() => void>();
 
