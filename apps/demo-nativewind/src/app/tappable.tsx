@@ -6,17 +6,16 @@ import { Switch } from "@/components/ui/switch";
 import { Text } from "@/components/ui/text";
 import { Label, Panel, Row, Section } from "@/demo/section";
 import { Screen } from "@/demo/screen";
-import { useTheme } from "@/theme";
+import { cx, useTheme } from "@/theme";
 
 export default function TappableScreen() {
-	const { tokens, colors, components } = useTheme();
+	const { tokens, colors } = useTheme();
 	const [disabled, setDisabled] = useState(false);
 	const [showAreas, setShowAreas] = useState(true);
 	const [log, setLog] = useState<string[]>([]);
 
 	const record = (entry: string) =>
 		setLog((entries) => [entry, ...entries].slice(0, 5));
-	const outline = components.button.outline;
 
 	return (
 		<Screen>
@@ -49,23 +48,13 @@ export default function TappableScreen() {
 					haptic="light"
 					onPress={() => record("onPress")}
 					onLongPress={() => record("onLongPress")}
-					style={({ pressed }) => {
-						const state = {
-							...outline.default,
-							...(disabled
-								? outline.disabled
-								: pressed
-									? outline.pressed
-									: undefined),
-						};
-						return {
-							padding: tokens.spacing[4],
-							borderRadius: tokens.radius.lg,
-							borderWidth: 1,
-							borderColor: state.border,
-							backgroundColor: state.background,
-						};
-					}}
+					// The colors of the outline button, from its CSS tokens.
+					className={cx(
+						"rounded-lg border p-4",
+						disabled
+							? "border-button-outline-border-disabled bg-button-outline-disabled"
+							: "border-button-outline-border bg-button-outline active:bg-button-outline-pressed",
+					)}
 				>
 					{({ pressed }) => (
 						<Text color={disabled ? "disabled" : "default"}>

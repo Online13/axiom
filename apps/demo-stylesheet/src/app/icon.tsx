@@ -1,7 +1,11 @@
 import { View } from "react-native";
 
-import { Icon, type IconColor } from "@/components/ui/icon";
-import { icons, type IconName } from "@/components/ui/icon";
+import {
+	Icon,
+	icons,
+	type IconColor,
+	type IconName,
+} from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { Label, Panel, Row, Section } from "@/demo/section";
 import { Screen } from "@/demo/screen";

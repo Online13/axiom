@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "uniwind";
 
+/* The Axiom theme: colors, radius, sizes and typography as Tailwind names. */
+@import "./theme/uniwind.css";
+/* The tokens of each component, listed by `axiom add`. */
+@import "./theme/components/index.css";
+
 /* Tailwind 4 skips .gitignore'd files, and the Axiom CLI copies the components into ignored folders. */
 @source "./components";
 @source "./theme";

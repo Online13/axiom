@@ -114,9 +114,8 @@ export default function AboutScreen() {
 							<Text variant="bodySm" color="muted">
 								Every screen here is built with the components of the
 								registry, including this app&apos;s own bars and tabs.
-								Styling comes from the Tailwind variant through{" "}
-								{STYLING}; the same demo exists for StyleSheet,
-								Unistyles and {OTHER_TAILWIND}.
+								Styling comes from the {STYLING} variant; the same demo
+								exists for StyleSheet, Unistyles and {OTHER_TAILWIND}.
 							</Text>
 							<Separator />
 							<Fact label="Components" value={`${SCREENS.length}`} />

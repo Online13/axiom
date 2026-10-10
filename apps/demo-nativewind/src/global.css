@@ -1,3 +1,6 @@
+/* The colors of the Axiom theme, for light and dark. */
+@import "./theme/nativewind.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
