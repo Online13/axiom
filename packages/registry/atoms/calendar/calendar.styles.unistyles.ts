@@ -16,6 +16,11 @@ type Styled = { style?: StyleProp<ViewStyle> };
 
 const CELL = 40;
 
+type DayColors = Theme["components"]["calendar"]["day"]["default"];
+
+// A month asks for the same few combinations of states over and over, twice per day.
+const dayColorsCache = new WeakMap<Theme["components"], DayColors[]>();
+
 // Later states win, in this order. A selected day keeps its color while it is pressed.
 function dayColors(
 	components: Theme["components"],
@@ -26,16 +31,24 @@ function dayColors(
 	selected: boolean,
 	disabled: boolean,
 ) {
-	const states = components.calendar.day;
-	return stateColors(
-		states,
+	const key =
+		(today ? 1 : 0) |
+		(outside ? 2 : 0) |
+		(inRange ? 4 : 0) |
+		(pressed ? 8 : 0) |
+		(selected ? 16 : 0) |
+		(disabled ? 32 : 0);
+	let cached = dayColorsCache.get(components);
+	if (!cached) dayColorsCache.set(components, (cached = []));
+	return (cached[key] ??= stateColors(
+		components.calendar.day,
 		today && "today",
 		outside && "outside",
 		inRange && "inRange",
 		pressed && !selected && "pressed",
 		selected && "selected",
 		disabled && "disabled",
-	);
+	));
 }
 
 export function useCalendarStyles() {

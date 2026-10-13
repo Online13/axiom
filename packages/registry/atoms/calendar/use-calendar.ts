@@ -1,4 +1,11 @@
-import { createContext, use } from "react";
+import {
+	createContext,
+	use,
+	useCallback,
+	useLayoutEffect,
+	useMemo,
+	useRef,
+} from "react";
 
 import { useControllableState } from "@/hooks/use-controllable-state";
 
@@ -59,6 +66,15 @@ export const dayKey = (date: Date) =>
 export const daysBetween = (a: Date, b: Date) =>
 	Math.round((startOfDay(b).getTime() - startOfDay(a).getTime()) / DAY);
 
+/** A stable function that always calls the latest `fn`, so a day doesn't render again for it. */
+function useLatestCallback<A extends unknown[], R>(fn: (...args: A) => R) {
+	const latest = useRef(fn);
+	useLayoutEffect(() => {
+		latest.current = fn;
+	});
+	return useCallback((...args: A) => latest.current(...args), []);
+}
+
 function localeWeekStart(locale: string | undefined): Weekday {
 	try {
 		// `getWeekInfo` is missing from some engines and from the TypeScript lib.
@@ -112,19 +128,35 @@ export function useCalendarState({
 		onChange: onMonthChange,
 	});
 
-	const firstDay = weekStartsOn ?? localeWeekStart(locale);
+	// One formatter for the whole grid: `Intl` is slow on Android, a formatter per day even more.
+	const formatDay = useMemo(() => {
+		const formatter = new Intl.DateTimeFormat(locale, {
+			weekday: "long",
+			day: "numeric",
+			month: "long",
+		});
+		return (date: Date) => formatter.format(date);
+	}, [locale]);
+
+	const firstDay = useMemo(
+		() => weekStartsOn ?? localeWeekStart(locale),
+		[weekStartsOn, locale],
+	);
 	const today = startOfDay(new Date());
 	const canGoPrev =
 		!minDate || addMonths(displayed, -1) >= startOfMonth(minDate);
 	const canGoNext =
 		!maxDate || addMonths(displayed, 1) <= startOfMonth(maxDate);
 
-	const setMonth = (next: Date) => {
+	const setMonth = useLatestCallback((next: Date) => {
 		const target = startOfMonth(next);
 		if (minDate && target < startOfMonth(minDate)) return;
 		if (maxDate && target > startOfMonth(maxDate)) return;
 		if (target.getTime() !== displayed.getTime()) setDisplayed(target);
-	};
+	});
+	const goToPrev = useLatestCallback(() => setMonth(addMonths(displayed, -1)));
+	const goToNext = useLatestCallback(() => setMonth(addMonths(displayed, 1)));
+	const goToToday = useLatestCallback(() => setMonth(new Date()));
 
 	const range =
 		mode === "range" &&
@@ -163,7 +195,7 @@ export function useCalendarState({
 		);
 	};
 
-	const select = (date: Date) => {
+	const select = useLatestCallback((date: Date) => {
 		if (isDisabled(date)) return;
 		if (mode === "single") {
 			setSelection(date);
@@ -181,7 +213,7 @@ export function useCalendarState({
 			setSelection({ from: range.from, to: date });
 		}
 		if (date.getMonth() !== displayed.getMonth()) setMonth(date);
-	};
+	});
 
 	/** Days of the displayed month, padded to whole weeks. */
 	const weeks = (count: "fit" | "fixed" | number): DayState[][] => {
@@ -220,13 +252,16 @@ export function useCalendarState({
 		);
 	};
 
-	const weekdays = (format: "short" | "narrow") => {
-		const formatter = new Intl.DateTimeFormat(locale, { weekday: format });
-		// 2023-01-01 is a Sunday.
-		return Array.from({ length: 7 }, (_, i) =>
-			formatter.format(new Date(2023, 0, 1 + ((firstDay + i) % 7))),
-		);
-	};
+	const weekdays = useCallback(
+		(format: "short" | "narrow") => {
+			const formatter = new Intl.DateTimeFormat(locale, { weekday: format });
+			// 2023-01-01 is a Sunday.
+			return Array.from({ length: 7 }, (_, i) =>
+				formatter.format(new Date(2023, 0, 1 + ((firstDay + i) % 7))),
+			);
+		},
+		[locale, firstDay],
+	);
 
 	return {
 		mode,
@@ -237,11 +272,13 @@ export function useCalendarState({
 		select,
 		canGoPrev,
 		canGoNext,
-		goToPrev: () => setMonth(addMonths(displayed, -1)),
-		goToNext: () => setMonth(addMonths(displayed, 1)),
-		goToToday: () => setMonth(today),
+		goToPrev,
+		goToNext,
+		goToToday,
 		weeks,
 		weekdays,
+		/** A day written in full, such as "Monday 3 June": what a day announces. */
+		formatDay,
 	};
 }
 

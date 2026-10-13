@@ -59,15 +59,24 @@ export function Tappable({
 	...props
 }: TappableProps) {
 	const disabled = disabledProp === true;
+	// Stays null while the target is large enough: measuring it then costs a render for nothing.
 	const [size, setSize] = useState<Size | null>(null);
+	const measured = minTouchTarget && hitSlop === undefined;
 
 	const handleLayout = (event: LayoutChangeEvent) => {
-		const { width, height } = event.nativeEvent.layout;
-		setSize((previous) =>
-			previous?.width === width && previous.height === height
-				? previous
-				: { width, height },
-		);
+		if (measured) {
+			const { width, height } = event.nativeEvent.layout;
+			const next =
+				width >= metrics.touchTarget && height >= metrics.touchTarget
+					? null
+					: { width, height };
+			setSize((previous) =>
+				previous?.width === next?.width &&
+				previous?.height === next?.height
+					? previous
+					: next,
+			);
+		}
 		onLayout?.(event);
 	};
 
@@ -78,7 +87,7 @@ export function Tappable({
 	};
 
 	const computedHitSlop =
-		hitSlop ?? (minTouchTarget && size ? touchTargetSlop(size) : undefined);
+		hitSlop ?? (measured && size ? touchTargetSlop(size) : undefined);
 
 	// The scale goes first so a `transform` of its own in `style` replaces it rather than fighting it.
 	const resolveStyle = (pressed: boolean): StyleProp<ViewStyle> => {
@@ -96,7 +105,7 @@ export function Tappable({
 			delayLongPress={delayLongPress}
 			accessibilityRole={accessibilityRole}
 			accessibilityState={{ ...accessibilityState, disabled }}
-			onLayout={handleLayout}
+			onLayout={measured || onLayout ? handleLayout : undefined}
 			onPressIn={handlePressIn}
 			// A style that doesn't depend on the press stays a plain style.
 			style={

@@ -1,5 +1,6 @@
 import {
 	createContext,
+	memo,
 	use,
 	useMemo,
 	type ComponentPropsWithRef,
@@ -109,12 +110,17 @@ function CalendarTitle({
 }: CalendarTitleProps) {
 	const styles = useCalendarStyles();
 	const { month, locale } = useCalendar();
-	const label = new Intl.DateTimeFormat(
-		locale,
-		format === "month"
-			? { month: "long" }
-			: { month: "long", year: "numeric" },
-	).format(month);
+	const formatter = useMemo(
+		() =>
+			new Intl.DateTimeFormat(
+				locale,
+				format === "month"
+					? { month: "long" }
+					: { month: "long", year: "numeric" },
+			),
+		[locale, format],
+	);
+	const label = formatter.format(month);
 
 	return (
 		// Announces the new month after navigation.
@@ -238,6 +244,7 @@ function CalendarWeekdays({
 }: CalendarWeekdaysProps) {
 	const styles = useCalendarStyles();
 	const { weekdays } = useCalendar();
+	const names = useMemo(() => weekdays(format), [weekdays, format]);
 
 	return (
 		<View
@@ -246,7 +253,7 @@ function CalendarWeekdays({
 			accessibilityElementsHidden
 			importantForAccessibility="no-hide-descendants"
 		>
-			{weekdays(format).map((name, i) => (
+			{names.map((name, i) => (
 				<View key={i} {...styles.cell}>
 					<Text
 						variant="caption"
@@ -283,10 +290,11 @@ function CalendarDays({
 
 	return (
 		<View {...props}>
-			{calendar.weeks(weeks).map((week) => (
-				<View key={week[0].key} {...styles.week}>
-					{week.map((day) => (
-						<View key={day.key} {...styles.cell}>
+			{/* Keyed by position, so a new month updates the cells in place. */}
+			{calendar.weeks(weeks).map((week, row) => (
+				<View key={row} {...styles.week}>
+					{week.map((day, column) => (
+						<View key={column} {...styles.cell}>
 							{day.isOutside && !showOutsideDays ? null : children ? (
 								children(day)
 							) : (
@@ -300,7 +308,11 @@ function CalendarDays({
 	);
 }
 
-const DayContext = createContext<{ selected: boolean } | null>(null);
+// Whether the day around a `Calendar.Dot` is selected.
+const DayContext = createContext(false);
+
+// A day is 40pt wide in a cell of 44pt at least: the slop is known, so no day measures itself.
+const DAY_HIT_SLOP = 2;
 
 export type CalendarDayProps = Omit<
 	ComponentPropsWithRef<typeof View>,
@@ -319,8 +331,7 @@ function CalendarDay({
 	...props
 }: CalendarDayProps) {
 	const styles = useCalendarStyles();
-	const { select, locale } = useCalendar();
-	const selected = day.isSelected;
+	const { select, formatDay } = useCalendar();
 	const inRangeBand =
 		day.isInRange ||
 		((day.isRangeStart || day.isRangeEnd) &&
@@ -328,51 +339,85 @@ function CalendarDay({
 	const hasEnd = day.isRangeStart && inRangeBand;
 	const hasStart = day.isRangeEnd && inRangeBand;
 
-	const label = new Intl.DateTimeFormat(locale, {
-		weekday: "long",
-		day: "numeric",
-		month: "long",
-	}).format(day.date);
-
 	return (
 		<View {...props} {...styles.dayCell(props)}>
 			{/* The range band runs behind the days, cut in half on its first and last day. */}
 			{inRangeBand ? <View {...styles.band(hasEnd, hasStart)} /> : null}
-			<Tappable
+			<DayButton
+				time={day.date.getTime()}
+				formatDay={formatDay}
+				today={day.isToday}
+				outside={day.isOutside}
+				inRange={day.isInRange}
+				selected={day.isSelected}
 				disabled={disabled}
-				accessibilityLabel={selected ? `${label}, selected` : label}
-				accessibilityState={{ selected }}
-				onPress={() => select(day.date)}
-				{...styles.day(
-					day.isToday,
-					day.isOutside,
-					day.isInRange,
-					selected,
-					disabled,
-				)}
+				onSelect={select}
 			>
-				{({ pressed }) => (
-					<DayContext value={{ selected }}>
-						<Text
-							maxFontSizeMultiplier={MAX_FONT_SCALE.fixed}
-							{...styles.dayText(
-								day.isToday,
-								day.isOutside,
-								day.isInRange,
-								pressed,
-								selected,
-								disabled,
-							)}
-						>
-							{day.date.getDate()}
-						</Text>
-						{children ? <View {...styles.under}>{children}</View> : null}
-					</DayContext>
-				)}
-			</Tappable>
+				{children}
+			</DayButton>
 		</View>
 	);
 }
+
+type DayButtonProps = {
+	/** The day as a timestamp: a `Date` would be a new object on every render. */
+	time: number;
+	formatDay: (date: Date) => string;
+	today: boolean;
+	outside: boolean;
+	inRange: boolean;
+	selected: boolean;
+	disabled: boolean;
+	onSelect: (date: Date) => void;
+	children?: ReactNode;
+};
+
+// Takes plain values only, so a press on one day renders the days that change and no other.
+const DayButton = memo(function DayButton({
+	time,
+	formatDay,
+	today,
+	outside,
+	inRange,
+	selected,
+	disabled,
+	onSelect,
+	children,
+}: DayButtonProps) {
+	const styles = useCalendarStyles();
+	const date = new Date(time);
+	const label = formatDay(date);
+
+	return (
+		<Tappable
+			disabled={disabled}
+			hitSlop={DAY_HIT_SLOP}
+			accessibilityLabel={selected ? `${label}, selected` : label}
+			accessibilityState={{ selected }}
+			onPress={() => onSelect(date)}
+			{...styles.day(today, outside, inRange, selected, disabled)}
+		>
+			{({ pressed }) => (
+				<DayContext value={selected}>
+					<Text
+						maxFontSizeMultiplier={MAX_FONT_SCALE.fixed}
+						{...styles.dayText(
+							today,
+							outside,
+							inRange,
+							pressed,
+							selected,
+							disabled,
+						)}
+					>
+						{date.getDate()}
+					</Text>
+					{children ? <View {...styles.under}>{children}</View> : null}
+				</DayContext>
+			)}
+		</Tappable>
+	);
+});
 
 /** A small dot under the day number, for days with events. */
 export type CalendarDotProps = Omit<
@@ -385,11 +430,9 @@ export type CalendarDotProps = Omit<
 
 function CalendarDot({ color, ...props }: CalendarDotProps) {
 	const styles = useCalendarStyles();
-	const day = use(DayContext);
+	const selected = use(DayContext);
 
-	return (
-		<View {...props} {...styles.dot(day?.selected ?? false, color, props)} />
-	);
+	return <View {...props} {...styles.dot(selected, color, props)} />;
 }
 
 export const Calendar = {

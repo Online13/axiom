@@ -22,10 +22,15 @@ import { Label, Panel, Section } from "@/demo/section";
 import { Screen } from "@/demo/screen";
 import { useTheme } from "@/theme";
 
+// Built once: a formatter per render is slow on Android.
+const DAY_MONTH = new Intl.DateTimeFormat(undefined, {
+	day: "numeric",
+	month: "short",
+});
+const MONTH = new Intl.DateTimeFormat(undefined, { month: "long" });
+
 const format = (date: Date | undefined) =>
-	date
-		? date.toLocaleDateString(undefined, { day: "numeric", month: "short" })
-		: "…";
+	date ? DAY_MONTH.format(date) : "…";
 
 const SLIDES = Array.from({ length: 6 }, (_, i) => ({
 	id: String(i),
@@ -139,9 +144,7 @@ export default function CalendarScreen() {
 								{(visibleMonth) => (
 									<View style={{ alignItems: "center" }}>
 										<Text variant="bodyLg" weight="bold">
-											{visibleMonth.toLocaleDateString(undefined, {
-												month: "long",
-											})}
+											{MONTH.format(visibleMonth)}
 										</Text>
 									</View>
 								)}
