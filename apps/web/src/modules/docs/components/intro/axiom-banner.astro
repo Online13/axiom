@@ -1,8 +1,10 @@
 ---
 // Banner for the introduction: the logo and tagline on one side, the system drawn as a stack of layers on the other,
-// over a board of circuit traces. Everything is SVG and HTML; the art follows the resolved docs theme.
+// over the brand ribbons of the landing. Everything is SVG and HTML; the art follows the resolved docs theme.
 // Foundations sit at the bottom, Blocks on top, the same order as the proof chain described on the page.
 import { Logo } from "../../../brand/Logo";
+import Ribbons from "../../../brand/Ribbons.astro";
+import { BANNER_HEIGHT, BANNER_WIDTH, bannerRibbons } from "../../../brand/ribbons";
 
 const layers = ["Foundations", "Primitives", "Compositions", "Blocks"];
 
@@ -13,57 +15,17 @@ const stackHeight = (layers.length - 1) * gap + 238;
 const plane = "0,111 245,0 467,121 223,238";
 // Labels run along the front-right edge, from the front corner toward the right corner.
 const edgeAngle = (Math.atan2(121 - 238, 467 - 223) * 180) / Math.PI;
-
-// Circuit traces on a 1672×941 board. Corners are rounded with a quarter arc.
-const traces = [
-	"M208 238 H313 Q329 238 329 222 V0",
-	"M267 165 H525 Q541 165 541 181 V941",
-	"M175 265 V382 Q175 398 159 398 H0",
-	"M0 630 H56",
-	"M147 630 H243 Q259 630 259 646 V715",
-	"M259 750 V662 M277 735 H700 Q728 735 728 763 V941",
-	"M259 678 H390 Q406 678 406 694 V941",
-	"M0 480 H150 Q175 480 175 505 V941",
-	"M1421 138 H1570 Q1586 138 1586 154 V244",
-	"M1500 0 V180 Q1500 200 1520 200 H1672",
-	"M1611 545 H1520 Q1502 545 1502 563 V645",
-	"M1519 660 H1600 Q1618 660 1618 642 V558",
-	"M1502 679 V941",
-];
-
-// [x, y, size, light?]
-const pads: [number, number, number, boolean][] = [
-	[117, 170, 92, true],
-	[222, 128, 45, false],
-	[63, 266, 45, false],
-	[56, 583, 92, false],
-	[241, 715, 36, false],
-	[1387, 120, 34, false],
-	[1570, 244, 35, true],
-	[1611, 514, 43, false],
-	[1485, 645, 34, true],
-];
-
-const gridX = [117, 210, 1405, 1540];
-const gridY = [168, 250, 480, 630, 735];
 ---
 
 <figure class="not-prose axb" aria-label="Axiom: build mobile experiences, not isolated components. From foundations to blocks.">
 <div class="axb__frame">
-	<svg class="axb__board" viewBox="0 0 1672 941" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-		<g class="axb__grid">
-			{gridX.map((x) => <line x1={x} y1="0" x2={x} y2="941" />)}
-			{gridY.map((y) => <line x1="0" y1={y} x2="1672" y2={y} />)}
-		</g>
-		<g class="axb__traces">{traces.map((d) => <path d={d} />)}</g>
-		<g>
-			{
-				pads.map(([x, y, s, light]) => (
-					<rect x={x} y={y} width={s} height={s} rx={s * 0.12} class={light ? "axb__pad axb__pad--light" : "axb__pad"} />
-				))
-			}
-		</g>
-	</svg>
+	<Ribbons
+		id="axb"
+		class="axb__ribbons"
+		viewBox={`0 0 ${BANNER_WIDTH} ${BANNER_HEIGHT}`}
+		preserveAspectRatio="xMidYMid slice"
+		ribbons={bannerRibbons}
+	/>
 
 	<div class="axb__copy">
 		<Logo className="axb__logo" />
@@ -93,9 +55,6 @@ const gridY = [168, 250, 480, 630, 735];
 		--axb-bg: var(--color-fd-background);
 		--axb-ink: var(--color-fd-foreground);
 		--axb-muted: var(--color-fd-muted-foreground);
-		--axb-line: color-mix(in srgb, var(--axb-ink) 26%, transparent);
-		--axb-grid: color-mix(in srgb, var(--axb-ink) 7%, transparent);
-		--axb-pad: var(--color-fd-ring);
 		container-type: inline-size;
 		margin: 0 0 2.5rem;
 		overflow: hidden;
@@ -110,30 +69,11 @@ const gridY = [168, 250, 480, 630, 735];
 		aspect-ratio: 16 / 9;
 	}
 
-	.axb__board {
+	.axb :global(.axb__ribbons) {
 		position: absolute;
 		inset: 0;
 		width: 100%;
 		height: 100%;
-	}
-
-	.axb__grid line {
-		stroke: var(--axb-grid);
-		stroke-dasharray: 4 6;
-	}
-
-	.axb__traces path {
-		fill: none;
-		stroke: var(--axb-line);
-		stroke-width: 1.2;
-	}
-
-	.axb__pad {
-		fill: var(--axb-pad);
-	}
-
-	.axb__pad--light {
-		fill: var(--axb-ink);
 	}
 
 	.axb__copy {
