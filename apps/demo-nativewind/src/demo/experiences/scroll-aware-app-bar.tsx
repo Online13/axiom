@@ -28,8 +28,7 @@ const PARAGRAPHS = [
 ];
 
 export default function ScrollAwareAppBarScreen() {
-	const { tokens, colors, components } = useTheme();
-	const barColors = components.appBar.default.default;
+	const { tokens, colors } = useTheme();
 
 	const offset = useSharedValue(0);
 	const elevation = useDerivedValue(() =>
@@ -61,16 +60,14 @@ export default function ScrollAwareAppBarScreen() {
 						{/* The bar's own surface, faded in as content passes under it. */}
 						<Animated.View
 							pointerEvents="none"
-							style={[
-								StyleSheet.absoluteFill,
-								{
-									backgroundColor: barColors.background,
-									borderBottomWidth: tokens.metrics.hairline,
-									borderBottomColor: barColors.border,
-								},
-								surfaceStyle,
-							]}
-						/>
+							style={[StyleSheet.absoluteFill, surfaceStyle]}
+						>
+							{/* An animated view takes style only: the bar's colors are classes on a view inside it. */}
+							<View
+								className="flex-1 border-b-app-bar-border bg-app-bar"
+								style={{ borderBottomWidth: tokens.metrics.hairline }}
+							/>
+						</Animated.View>
 						<AppBar.Row>
 							<BackButton />
 							<AppBar.Center>

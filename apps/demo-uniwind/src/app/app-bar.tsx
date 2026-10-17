@@ -80,8 +80,7 @@ function Actions() {
 }
 
 export default function AppBarScreen() {
-	const { tokens, components } = useTheme();
-	const barColors = components.appBar.default.default;
+	const { tokens } = useTheme();
 	const [elevation, setElevation] = useState(1);
 	const [bordered, setBordered] = useState(true);
 	const [query, setQuery] = useState("");
@@ -214,12 +213,10 @@ export default function AppBarScreen() {
 					>
 						<View
 							pointerEvents="none"
-							className="absolute inset-0"
+							className="absolute inset-0 border-b-app-bar-border bg-app-bar"
 							style={{
 								opacity: elevation,
-								backgroundColor: barColors.background,
 								borderBottomWidth: tokens.metrics.hairline,
-								borderBottomColor: barColors.border,
 							}}
 						/>
 						<AppBar.Row>
