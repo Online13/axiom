@@ -160,7 +160,7 @@ for (const styling of STYLINGS) {
 		// `./button.styles` resolves to `button.styles.<variant>.tsx`.
 		compilerOptions: { moduleSuffixes: [`.${styling}`, ""], paths },
 		include: ["**/*.ts", "**/*.tsx"],
-		exclude: ["node_modules", "scripts", ...otherVariants, ...missing],
+		exclude: ["node_modules", "scripts", "tests", ...otherVariants, ...missing],
 	};
 
 	const file = `tsconfig.${styling}.json`;
