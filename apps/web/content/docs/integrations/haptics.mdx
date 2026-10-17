@@ -50,7 +50,10 @@ Since the file is yours, the components keep working with no library installed: 
 
 ## Integration
 
-### 1. Install a library
+<Steps>
+<Step>
+
+### Install a library
 
 Any library that can play an impact, a selection and a notification works. The two most used:
 
@@ -64,7 +67,10 @@ npm install react-native-haptic-feedback
 
 `expo-haptics` works in Expo Go. `react-native-haptic-feedback` has native code, so it needs a development build or `pod install` in a bare app.
 
-### 2. Wire `haptic()`
+</Step>
+<Step>
+
+### Wire `haptic()`
 
 Replace the body of `haptic()` with the calls of your library. Map each kind once:
 
@@ -113,11 +119,17 @@ export function haptic(kind: HapticKind): void {
 
 That's the whole integration. Every component in the first two groups now plays its haptic.
 
-### 3. Test on a device
+</Step>
+<Step>
+
+### Test on a device
 
 The iOS Simulator and most Android emulators play nothing. Run a development build on a phone, flip a [Switch](/docs/components/switch) and drag a [Slider](/docs/components/slider) with a `step`: you should feel a bump, then a tick per step.
 
 If nothing plays on iOS, check Settings › Sounds & Haptics › System Haptics. iOS respects it for every app.
+
+</Step>
+</Steps>
 
 ## Per component
 

@@ -1,0 +1,130 @@
+---
+title: Why Axiom?
+description: "Why Axiom is a registry of mobile components you copy, and what that changes for the app you build."
+---
+
+React Native has never lacked UI kits. Most of them are good at drawing a screen. The trouble starts later, at the moment your app has to stop looking like the kit and start behaving like your product. Axiom is built around that moment.
+
+## The usual path
+
+Picking a component library feels like a shortcut, and for the first few screens it is. Then the requests come in. The designer wants the button to shrink slightly when pressed. Product wants the bottom sheet to stop at half height before going full screen. QA reports that the close icon is too small to hit with a thumb.
+
+With a package, each of those is a negotiation with code you don't own. You look for a prop. If there isn't one, you wrap the component, override its styles from the outside, or fork the package and maintain the fork. Every upgrade becomes a small risk, because the thing you patched around can change under you.
+
+The other path is to write everything yourself. You keep full control, and you pay for it in weeks: the theme, the button, the input, the sheet that follows the finger, the tab bar that respects the home indicator, the form that stays above the keyboard. Then the next project starts and you write it all again, slightly differently.
+
+Axiom takes a third path: you get the work already done, and you own it.
+
+## You own the code
+
+`npx axiom add button` doesn't install a dependency. It writes a file into your project:
+
+<Files>
+	<Folder name="components/ui">
+		<File name="button.tsx" note="yours now" />
+		<File name="text.tsx" />
+		<File name="icons.tsx" />
+	</Folder>
+</Files>
+
+There is no `node_modules/axiom` to work around. When the designer asks for a new variant, you open `button.tsx` and add it, the same way you would edit any other file in your app:
+
+```tsx title="components/ui/button.tsx"
+export type ButtonVariant =
+	| "solid"
+	| "outline"
+	| "ghost"
+	| "destructive"
+	| "brand"; // added for the checkout screen
+```
+
+The code is written to be read. A component is a plain React Native file with its styles next to it, and the logic it shares with other components lives in small, named pieces (`Tappable`, `Portal`, `useSwitch`) that you can open too. No layer of abstraction stands between you and the `View` that gets rendered.
+
+Updates don't happen to you. [`axiom sync`](/docs/cli#sync) shows you which files differ from the registry and overwrites only what you choose. Pressing Enter keeps everything as it is.
+
+## Built for a phone, not adapted to one
+
+Most of the time spent on a mobile UI goes into things you can't see in a screenshot. Is the target big enough for a thumb? Does the sheet follow the finger and settle where it should? Does the Android back button close the dialog instead of leaving the screen? Is the last row of the list hidden behind the home indicator?
+
+Axiom answers these questions inside the components, so you don't have to answer them again on every screen. Take a small icon button. It's 32pt wide, which is fine for the eye and too small for a thumb. `Tappable`, the press primitive under every pressable component, measures it and extends the area that accepts the press to 44pt:
+
+```ts
+hitSlop = Math.max(0, (touchTarget - size) / 2);
+```
+
+You don't write that line. You don't even need to know it exists, until the day you want to change it, and then it's in your project.
+
+The same goes for larger pieces. This is a complete bottom sheet, with two snap points:
+
+```tsx
+import { BottomSheet } from "@/components/ui/bottom-sheet";
+
+<BottomSheet.Root>
+	<BottomSheet.Trigger asChild>
+		<Button>Share</Button>
+	</BottomSheet.Trigger>
+	<BottomSheet.Content snapPoints={["50%", "90%"]}>
+		<BottomSheet.Handle />
+		<BottomSheet.Header title="Share" />
+		{/* content */}
+	</BottomSheet.Content>
+</BottomSheet.Root>;
+```
+
+The drag runs on the UI thread. A swipe down, a press on the backdrop and the Android back action all close it, and report it through `onOpenChange`. The content stays clear of the safe areas. None of that shows up in the snippet, which is the point.
+
+Accessibility follows the same rule. Roles, labels, states and touch targets are part of what a component is, reviewed with the rest, not a pass that comes after.
+
+## Pieces that fit together
+
+A component that does everything through props ends up with forty of them, and the forty-first is always the one you need. Axiom prefers small parts that compose. The bottom sheet above is a `Root`, a `Trigger`, a `Content`, a `Handle` and a `Header`: you place them where you want, leave out the ones you don't need, and put your own components between them.
+
+That is also how the catalog is organized. Each level is made from the one before it:
+
+```text
+Foundations → Primitives → Compositions → Blocks
+tokens        Button       ProductCard     SettingsSection
+theme         Item         SettingsItem    Onboarding
+              Card         SearchAppBar
+```
+
+A [composition](/docs/compositions) like `SettingsItem` is an `Item` with an icon, a value and a switch, assembled the way you would assemble it yourself. When none of them fits your screen, you build your own from the same primitives, and it looks like it belongs.
+
+## It fits the app you already have
+
+Adopting Axiom doesn't mean adopting a stack.
+
+- **Your styling tool.** Every component exists for `StyleSheet`, Unistyles, NativeWind and Uniwind. You choose once at `init`, and the files you get are written in that tool, the way you would have written them. See [Styling](/docs/styling).
+- **One piece, or fifty.** Adding a component brings what it depends on and nothing else.
+- **Even without the system.** If your app already has a design system and you only want one piece, `--standalone` writes it as a single file with no theme to install:
+
+```npm
+npx axiom add tab --standalone
+```
+
+The behavior stays: touch targets, gestures, states, safe areas. The look is yours to match.
+
+## Fast without help
+
+Axiom code is app code, so it runs under whatever your app runs. It memoizes explicitly and keeps animations on the UI thread. When your app turns on the React Compiler, the code is written so the compiler can optimize it, but nothing depends on it: an app without the compiler runs it just as well.
+
+Dependencies follow the same discipline. Each one ends up in your app, so each one has to solve a hard problem, such as gestures or animations on the UI thread. None is there to save a few lines.
+
+## Ready for coding agents
+
+More and more screens are written with an agent in the loop. A registry of plain files is easy for an agent to read and change, and Axiom gives it more than files: a [local MCP server](/docs/agent/mcp) to search the catalog and plan with your configuration, [`doctor`](/docs/agent/doctor) to check imports and dependencies after an `add`, and stable `testID`s so it can [tap through a flow](/docs/agent/verify) on iOS and Android to confirm it works. See the [agent overview](/docs/agent).
+
+## When Axiom isn't the right fit
+
+Owning the code means maintaining it. If you want a library that stays a black box and upgrades itself with a version bump, a package will suit you better. Axiom is also a mobile system: if your main target is the web, a web-first library will serve you better than one adapted from a phone.
+
+If you want a foundation that already feels right on a phone, and that you can change down to the last line, start here.
+
+<Cards>
+	<Card title="Getting Started" href="/docs/getting-started">
+		Your first component on screen in three commands.
+	</Card>
+	<Card title="Styling" href="/docs/styling">
+		One component, four styling variants.
+	</Card>
+</Cards>

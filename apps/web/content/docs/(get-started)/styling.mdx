@@ -34,14 +34,18 @@ You choose once, at `npx axiom init`. The choice is stored in `axiom.json` and e
 
 What makes a component useful on mobile (state, gestures, animation, accessibility, touch targets) doesn't depend on the styling tool. It is written once and shared by every variant.
 
-```text
-Shared                          Styles (per variant)
-──────                          ────────────────────
-core/    Tappable, Overlay…     stylesheet   StyleSheet.create + useTheme
-hooks/   useSwitch, useSlider…  unistyles    StyleSheet.create((theme) => …)
-the component: structure,       nativewind   className, from the Tailwind theme
-states and accessibility        uniwind      className, from the Tailwind theme
-```
+<Files title="In the registry">
+	<Folder name="core" note="shared: Tappable, Overlay…" open={false} />
+	<Folder name="hooks" note="shared: useControllableState…" open={false} />
+	<Folder name="atoms/switch">
+		<File name="use-switch.ts" note="shared behavior" />
+		<File name="switch.tsx" note="shared: structure, states and accessibility" />
+		<File name="switch.styles.stylesheet.ts" note="StyleSheet.create + useTheme" />
+		<File name="switch.styles.unistyles.ts" note="StyleSheet.create((theme) => …)" />
+		<File name="switch.styles.nativewind.ts" note="className, from the Tailwind theme" />
+		<File name="switch.styles.uniwind.ts" note="className, from the Tailwind theme" />
+	</Folder>
+</Files>
 
 - Non-trivial logic lives in `core/`, `hooks/` or a hook next to the component.
 - The component itself (its elements, states and accessibility) is written once too. Only its styles are written per variant, by hand.
@@ -49,12 +53,13 @@ states and accessibility        uniwind      className, from the Tailwind theme
 
 In your project there is one variant, so you get one file: the CLI writes the component and the styles of your variant together, the way you would write them by hand. Nothing in it reads a variant at runtime.
 
-```text
-components/ui/switch/
-├── use-switch.ts   # shared behavior
-├── switch.tsx      # the component, with the styles of your variant
-└── index.ts        # so "@/components/ui/switch" resolves here
-```
+<Files>
+	<Folder name="components/ui/switch">
+		<File name="use-switch.ts" note="shared behavior" />
+		<File name="switch.tsx" note="the component, with the styles of your variant" />
+		<File name="index.ts" note='so "@/components/ui/switch" resolves here' />
+	</Folder>
+</Files>
 
 A component without shared behavior is a single file: `components/ui/badge.tsx`.
 

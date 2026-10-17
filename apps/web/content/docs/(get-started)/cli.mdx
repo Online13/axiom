@@ -91,15 +91,17 @@ npx axiom add button         # → components/ui/button.tsx
 npx axiom add bottom-sheet   # → components/ui/bottom-sheet/
 ```
 
-```text
-components/ui/
-├── button.tsx
-└── bottom-sheet/
-    ├── bottom-sheet.tsx
-    ├── bottom-sheet-root.tsx
-    ├── use-bottom-sheet.ts
-    └── index.ts          # so "@/components/ui/bottom-sheet" resolves here
-```
+<Files>
+	<Folder name="components/ui">
+		<File name="button.tsx" />
+		<Folder name="bottom-sheet">
+			<File name="bottom-sheet.tsx" />
+			<File name="bottom-sheet-root.tsx" />
+			<File name="use-bottom-sheet.ts" />
+			<File name="index.ts" note='so "@/components/ui/bottom-sheet" resolves here' />
+		</Folder>
+	</Folder>
+</Files>
 
 Either way you import it the same: `import { BottomSheet } from "@/components/ui/bottom-sheet"`. Its [tokens](/docs/foundations/component-tokens) go to `theme/components/`, not here.
 

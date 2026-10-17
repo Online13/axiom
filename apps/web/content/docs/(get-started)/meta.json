@@ -3,6 +3,7 @@
 	"root": true,
 	"pages": [
 		"index",
+		"why-axiom",
 		"getting-started",
 		"styling",
 		"---Tooling---",

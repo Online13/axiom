@@ -11,7 +11,10 @@ description: "Your first Axiom component on screen in three commands."
 
 All you need is an Expo or React Native app. Run these at its root.
 
-## 1. Initialize
+<Steps>
+<Step>
+
+### Initialize
 
 ```npm
 npx axiom init
@@ -30,7 +33,10 @@ Pick the styling tool you already use:
 
 That's the only question. `init` copies the theme and the headless core, fixes your `tsconfig.json` aliases if needed, and saves your choices in `axiom.json`.
 
-## 2. Add a component
+</Step>
+<Step>
+
+### Add a component
 
 ```npm
 npx axiom add button
@@ -38,7 +44,10 @@ npx axiom add button
 
 The button lands in `components/ui/button.tsx`, in the variant that matches your styling, with anything it depends on.
 
-## 3. Use it
+</Step>
+<Step>
+
+### Use it
 
 ```tsx
 import { Button } from "@/components/ui/button";
@@ -49,6 +58,9 @@ export function SaveButton() {
 ```
 
 Run your app. The button is there, and the file is yours: open it and change whatever you want.
+
+</Step>
+</Steps>
 
 ## Keep going
 

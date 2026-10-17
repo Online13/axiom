@@ -140,24 +140,30 @@ A component that copies a single file lands as that file. One that copies severa
 
 A component and the styles of your variant are written as one file. `add button bottom-sheet` gives:
 
-```text
-components/
-├── core/
-│   ├── overlay.tsx
-│   └── portal.tsx
-└── ui/
-    ├── button.tsx
-    └── bottom-sheet/
-        ├── bottom-sheet.tsx
-        ├── bottom-sheet-root.tsx
-        ├── use-bottom-sheet.ts
-        └── index.ts
-theme/
-└── components/
-    ├── index.ts
-    ├── button.ts
-    └── bottom-sheet.ts
-```
+<Files>
+	<Folder name="components">
+		<Folder name="core">
+			<File name="overlay.tsx" />
+			<File name="portal.tsx" />
+		</Folder>
+		<Folder name="ui">
+			<File name="button.tsx" />
+			<Folder name="bottom-sheet">
+				<File name="bottom-sheet.tsx" />
+				<File name="bottom-sheet-root.tsx" />
+				<File name="use-bottom-sheet.ts" />
+				<File name="index.ts" />
+			</Folder>
+		</Folder>
+	</Folder>
+	<Folder name="theme">
+		<Folder name="components">
+			<File name="index.ts" />
+			<File name="button.ts" />
+			<File name="bottom-sheet.ts" />
+		</Folder>
+	</Folder>
+</Files>
 
 A hook used by a single component, like `use-bottom-sheet.ts`, stays next to that component. Only items from the hooks layer, like `use-refresh-control`, go to `aliases.hooks`.
 
