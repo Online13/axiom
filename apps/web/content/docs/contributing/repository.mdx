@@ -1,0 +1,67 @@
+---
+title: Repository
+description: "The layers of Axiom, the folders of the monorepo, and where a new piece belongs."
+---
+
+## Folders
+
+The repository is a Bun workspace. Only the CLI is meant to be published: nothing in the registry is ever imported as a package.
+
+<Files>
+	<Folder name="axiom">
+		<Folder name="packages">
+			<Folder name="registry" note="source of every item, and registry.json" />
+			<Folder name="cli" note="the axiom command: init, add, sync" />
+		</Folder>
+		<Folder name="apps">
+			<Folder name="web" note="landing page and documentation" />
+			<Folder name="demo-stylesheet" note="one Expo demo per styling tool" />
+			<Folder name="demo-unistyles" />
+			<Folder name="demo-nativewind" />
+			<Folder name="demo-uniwind" />
+		</Folder>
+		<Folder name="examples" note="complete apps built with Axiom" />
+		<Folder name="docs" note="internal specification (in French)" />
+	</Folder>
+</Files>
+
+## Layers
+
+Every item belongs to a layer, and the layer decides its folder in the registry and its alias in the user's app.
+
+| Layer        | Registry folders                                        | Alias in the app            |
+| ------------ | ------------------------------------------------------- | --------------------------- |
+| Foundations  | `foundations`, `core`, `hooks`                          | `@/theme`, `@/components/core`, `@/hooks` |
+| Primitives   | `typography`, `atoms`, `molecules`, `organisms`, `templates` | `@/components/ui`      |
+| Compositions | `compositions`                                          | `@/components/compositions` |
+| Blocks       | `blocks`                                                | `@/components/blocks`       |
+
+Atomic Design only sorts the primitives. When a primitive doesn't fit one level cleanly, pick the one that best describes its responsibility and say why in the pull request.
+
+Behaviors and patterns are a second axis: they describe interaction, not a UI element. Depending on its size, a pattern ends up shipped as a primitive, a composition, a block or a hook.
+
+## Dependencies point down
+
+```txt noCopy
+Blocks
+  ↓
+Patterns
+  ↓
+Compositions
+  ↓
+Behaviors, Primitives
+  ↓
+Foundations
+```
+
+A higher layer may import a lower one, never the reverse. An atom doesn't know about a composition, and foundations don't know about any component. There are no circular dependencies between items.
+
+## Where does my piece go?
+
+- **It renders something generic and reusable**, like a button or an input: a primitive.
+- **It assembles existing primitives into a ready-made interface**, like a product card: a composition. It adds no abstraction and no tokens of its own.
+- **It's a whole section of an app**, like a settings section: a block.
+- **It's interaction logic with no look of its own**, like dragging or dismissing: a hook in `hooks`.
+- **It's shared by many components and has no look**, like slots, portals or pressable surfaces: `core`.
+
+Every external npm dependency ends up in the user's app. Add one only when it solves a hard problem well, such as gestures or animations on the UI thread.

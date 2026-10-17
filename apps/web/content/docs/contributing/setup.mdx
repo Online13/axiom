@@ -1,0 +1,78 @@
+---
+title: Setup
+description: "Clone the repository, run the docs and a demo app, and run the checks."
+---
+
+## Prerequisites
+
+- [Git](https://git-scm.com/)
+- [Bun](https://bun.sh/), the package manager of the monorepo (`bun.lock` is committed)
+- [Node.js](https://nodejs.org/) `>=22.12.0`, required by the Astro site
+- For the demo apps: Android Studio (Android SDK and JDK) for Android, Xcode on macOS for iOS
+
+<Steps>
+<Step>
+
+### Install
+
+```bash
+git clone git@github.com:Online13/axiom.git
+cd axiom
+bun install
+```
+
+The repository installs dependencies hoisted (`bunfig.toml`). In isolated mode Bun put several copies of `expo` in the demos, which Expo doesn't support. The consequence is one React version for the whole repository, the one Expo pins.
+
+</Step>
+<Step>
+
+### Run the documentation
+
+```bash
+bun web dev     # http://localhost:4321
+bun web build   # check that every page compiles
+```
+
+</Step>
+<Step>
+
+### Run a demo app
+
+The demos are [development builds](https://docs.expo.dev/develop/development-builds/introduction/), not Expo Go: Unistyles ships native code Expo Go doesn't have. Build once, then JavaScript changes reload through Metro.
+
+```bash
+cd apps/demo-stylesheet
+bun android            # build and install on a phone over USB (first time)
+bun run axiom:watch    # copy registry files again on every change
+bun start              # Metro, with the QR code
+```
+
+The same goes for `demo-unistyles`, `demo-nativewind` and `demo-uniwind`. Each has its own app id (`dev.axiom.demo.<styling>`), so the four install side by side.
+
+Build again only after adding a library with native code, changing `app.json` or upgrading the Expo SDK.
+
+<Callout type="warn" title="Edit the registry, not the demo">
+	`src/theme`, `src/hooks` and `src/components` in a demo are written by the
+	CLI and ignored by git. A change made there is lost at the next copy. Edit
+	the file in `packages/registry`, and `axiom:watch` copies it over.
+</Callout>
+
+</Step>
+</Steps>
+
+## Run the checks
+
+These are the same commands CI runs on a pull request.
+
+| What changed        | Command                                                       |
+| ------------------- | ------------------------------------------------------------- |
+| `packages/registry` | `bun run --cwd packages/registry typecheck`                   |
+|                     | `bun run --cwd packages/registry parity`                      |
+| `packages/cli`      | `bun run --cwd packages/cli typecheck`                        |
+|                     | `bun run --cwd packages/cli test`                             |
+| A demo app          | `bunx tsc --noEmit` and `bunx expo-doctor` in its folder      |
+| A component         | `bun demo:stylesheet test`                                    |
+| `apps/web`          | `bun web build`                                               |
+| Anything            | `bun run lint`                                                |
+
+Rendering and gestures can't be checked by a command: try your change on a real phone, on iOS and Android when you can. [Testing](/docs/contributing/testing) explains what each check covers.

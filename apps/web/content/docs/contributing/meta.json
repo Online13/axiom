@@ -1,0 +1,16 @@
+{
+	"title": "Contributing",
+	"root": true,
+	"pages": [
+		"index",
+		"setup",
+		"---How it works---",
+		"repository",
+		"registry-to-app",
+		"---Guides---",
+		"adding-a-component",
+		"testing",
+		"writing-docs",
+		"pull-requests"
+	]
+}

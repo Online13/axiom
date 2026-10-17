@@ -1,0 +1,51 @@
+---
+title: Pull requests
+description: "What a good pull request looks like, how commits are written, and what review checks."
+---
+
+## A good pull request
+
+- stays focused on one change;
+- explains why the change is needed, not only what it does;
+- avoids unrelated refactors and formatting changes;
+- passes CI;
+- includes screenshots or videos for any visual or interaction change, on iOS and Android when relevant;
+- links the related issue.
+
+A change to a component comes with a [component test](/docs/contributing/testing#component-tests) for what it changes. Also say in the pull request what you checked on a device: which demo, which platform, which states.
+
+## What CI runs
+
+Each workflow runs when the files it covers change.
+
+| Workflow   | Runs                                                                      |
+| ---------- | ------------------------------------------------------------------------- |
+| `lint`     | `bun run lint`                                                            |
+| `registry` | the registry typecheck in every styling, and `parity`                     |
+| `cli`      | the CLI typecheck and tests                                               |
+| `apps`     | for each demo: copy the components, `tsc --noEmit`, the component tests (stylesheet demo), and an `expo export` for Android and iOS |
+
+## Commit messages
+
+The history uses [Conventional Commits](https://www.conventionalcommits.org/), with the part of the repository as scope:
+
+```txt noCopy
+feat(registry): add the tag component
+fix(cli): keep user-edited files on sync
+docs(web): add the contributing tab
+chore(apps): refresh the demo screens
+```
+
+## Review
+
+Review may ask for changes about:
+
+- consistency with the design principles;
+- API design;
+- the layer the code was placed in;
+- accessibility;
+- performance;
+- behavior on a real device;
+- scope.
+
+A pull request can be technically correct and still not fit Axiom's direction. When that happens, the review explains why. Opening an issue first is the best way to avoid it.

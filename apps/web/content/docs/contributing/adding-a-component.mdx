@@ -1,0 +1,193 @@
+---
+title: Adding a component
+description: "From the issue to the pull request: every file a new component needs."
+---
+
+This guide adds a primitive called `tag` to the atoms. Compositions, blocks and hooks follow the same steps, minus the ones marked as primitives only.
+
+<Callout title="Open an issue first">
+	Describe the component, its API and why an existing one can't do the job.
+	A pull request can be correct and still not fit Axiom's direction: agreeing
+	first avoids that.
+</Callout>
+
+<Steps>
+<Step>
+
+### Check it's needed
+
+
+Before writing a component, ask whether it can be built by composing existing ones. Adding a prop to an existing component comes second, and a new component last. Read the [design principles](https://github.com/Online13/axiom/blob/main/DESIGN_PRINCIPLES.md).
+
+</Step>
+<Step>
+
+### Create the folder
+
+
+<Files>
+	<Folder name="packages/registry/atoms/tag">
+		<File name="tag.tsx" />
+		<File name="tag.styles.stylesheet.ts" />
+		<File name="tag.styles.unistyles.ts" />
+		<File name="tag.styles.nativewind.ts" />
+		<File name="tag.styles.uniwind.ts" />
+		<File name="tag-tokens.ts" note="only if the component has colors" />
+		<File name="use-tag.ts" note="only if it has behavior worth separating" />
+	</Folder>
+</Files>
+
+A component no styling changes, like a composition built only from primitives, has no styles file at all.
+
+</Step>
+<Step>
+
+### Write the component
+
+
+`tag.tsx` holds the props, the state, the accessibility and the structure. Start from a component of the same shape and keep its conventions.
+
+For a primitive, the props are the root element's props plus the component's own, and the rest is spread on the root **before** the props the component controls:
+
+```tsx title="tag.tsx"
+import type { ComponentPropsWithRef } from "react";
+import { View } from "react-native";
+
+import { Text } from "@/components/ui/text";
+
+import { useTagStyles } from "./tag.styles";
+
+export type TagProps = Omit<ComponentPropsWithRef<typeof View>, "children"> & {
+	label: string;
+	selected?: boolean;
+};
+
+export function Tag({ label, selected = false, ...props }: TagProps) {
+	const styles = useTagStyles();
+
+	return (
+		<View
+			{...props}
+			accessibilityRole="text"
+			accessibilityState={{ selected }}
+			{...styles.root(selected, props)}
+		>
+			<Text {...styles.label(selected)}>{label}</Text>
+		</View>
+	);
+}
+```
+
+- Controlled and uncontrolled state go through `useControllableState`. An effect never copies a prop into state.
+- When the caller can pass a handler you also need (`onLayout`, a `ref`), call both: `composeRefs` from `@/components/core/slot` merges refs.
+- Keep `useCallback` and `useMemo` where they matter. Axiom code must run well without the React Compiler.
+- Compound components expose their parts as statics: `Card.Header`, `Tab.List`. Each part renders its children where they're written.
+
+</Step>
+<Step>
+
+### Write the four styles files
+
+
+Write `tag.styles.stylesheet.ts` first, then the other three with the same exported names. Keep to the [styles file contract](/docs/contributing/registry-to-app#the-styles-file-contract): one `useTagStyles` function, a returned object, one entry per element, no block bodies.
+
+</Step>
+<Step>
+
+### Add the tokens
+
+
+If the component has colors, `tag-tokens.ts` exports `tagTokens(colors, tokens)`, mapping theme roles to the component's roles. Never hardcode a color or a size: read tokens.
+
+Don't register it in `foundations/theme/components/index.ts`: that file is a template the CLI fills in the user's project.
+
+</Step>
+<Step>
+
+### Declare it in `registry.json`
+
+
+```json
+{
+	"name": "tag",
+	"type": "atoms",
+	"tokens": "atoms/tag/tag-tokens.ts",
+	"cssTokens": {
+		"nativewind": "atoms/tag/tag-tokens.nativewind.css",
+		"uniwind": "atoms/tag/tag-tokens.uniwind.css"
+	},
+	"files": ["atoms/tag/tag-tokens.ts", "atoms/tag/tag.tsx"],
+	"dependencies": [],
+	"internalDependencies": ["text", "theme"],
+	"variants": {
+		"stylesheet": { "files": ["atoms/tag/tag.styles.stylesheet.ts"] },
+		"unistyles": { "files": ["atoms/tag/tag.styles.unistyles.ts"] },
+		"nativewind": { "files": ["atoms/tag/tag.styles.nativewind.ts"] },
+		"uniwind": { "files": ["atoms/tag/tag.styles.uniwind.ts"] }
+	}
+}
+```
+
+- `dependencies` lists npm packages, `internalDependencies` other Axiom items. List only what the files import directly: the CLI resolves the rest.
+- An icon the component renders itself goes in `requiredIcons`.
+- A file the user fills once copied is declared `{ "path": "…", "createOnly": true }`.
+
+</Step>
+<Step>
+
+### Generate and check
+
+
+From `packages/registry`:
+
+```bash
+bun run theme-css   # writes tag-tokens.nativewind.css and tag-tokens.uniwind.css
+bun run typecheck   # every styling, and the standalone form
+bun run parity      # the four styles files expose the same API
+```
+
+Commit the generated CSS files.
+
+</Step>
+<Step>
+
+### Add a demo screen
+
+Each demo has one screen per component. In every `apps/demo-*`:
+
+1. add `tag` to the `items` of `axiom.json`, then run `bun run axiom add tag`;
+2. add `src/app/tag.tsx`, the screen, built with the `Screen` and `Section` helpers of `src/demo`;
+3. add an entry to `SCREENS` in `src/demo/screens.ts`.
+
+The four demos show the same screen: the same rendering is expected in each. Try it on a phone, in light and dark, on iOS and Android when you can, with a screen reader for a minute. Then run `bunx tsc --noEmit` and `bunx expo-doctor` in each demo.
+
+</Step>
+<Step>
+
+### Test it
+
+Add `apps/demo-stylesheet/test/tag.test.tsx`: render the tag, query it by its role and label, and check what it reports. One test per behavior the API promises. See [Testing](/docs/contributing/testing).
+
+```bash
+bun demo:stylesheet test
+```
+
+</Step>
+<Step>
+
+### Write its page
+
+Every component needs a page in `apps/web/content/docs`. See [Writing docs](/docs/contributing/writing-docs).
+
+</Step>
+</Steps>
+
+## Before you open the pull request
+
+- **API:** small, predictable props, consistent with existing components.
+- **Composition:** can it be combined with other pieces instead of growing props?
+- **Theming:** every color and size comes from tokens.
+- **Accessibility:** role, label, states, touch targets sized for a finger.
+- **Touch states:** pressed, disabled and focused are handled.
+- **Platforms:** checked on iOS and Android.
+- **Behaviors and gestures:** interruptible, safe on fast repeated input and on unmount mid-animation, with an alternative to gesture-only actions.

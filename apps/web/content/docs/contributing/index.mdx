@@ -1,0 +1,51 @@
+---
+title: Contributing
+description: "How Axiom is built, and how to add to it."
+---
+
+Axiom isn't a package you install. It's a registry of source files and a CLI that copies them into an app. Contributing to Axiom mostly means writing files for that registry, and making sure the CLI turns them into code that reads as if it had been written by hand.
+
+This section is the reference for that work. Read it in order the first time.
+
+## The whole system in one line
+
+```txt title="From a source file to a user's app" noCopy
+packages/registry  ──axiom add──▶  app/components/ui/button.tsx
+  button.tsx                         one file, written for the app's styling,
+  button.styles.<styling>.ts         imports rewritten for where it landed
+  button-tokens.ts
+  registry.json
+```
+
+- **`packages/registry`** holds every item: components, hooks, the theme, the headless core. Each one is written once, with a small styles file per styling tool.
+- **`packages/cli`** reads `registry.json`, resolves what an item needs, and writes it into the app for the app's styling tool.
+- **`apps/demo-*`** are four Expo apps, one per styling tool. They get their components through the CLI, exactly like a user project.
+- **`apps/web`** is this site: the landing page and the documentation.
+
+## Before you write code
+
+Axiom is in early development. For anything beyond a small fix, such as a new component, a new pattern, an API change or a new dependency, open an issue first. Agreeing on the direction before writing code saves both sides time.
+
+Two documents at the root of the repository explain how decisions are made:
+
+- [`DESIGN_PRINCIPLES.md`](https://github.com/Online13/axiom/blob/main/DESIGN_PRINCIPLES.md): mobile first, composition over configuration, code the user owns, intentional dependencies, accessibility as part of the contract.
+- [`ARCHITECTURE.md`](https://github.com/Online13/axiom/blob/main/ARCHITECTURE.md): the layers, and which way dependencies point.
+
+## What you can contribute
+
+Components, behaviors, patterns, foundations, documentation, tooling, tests and examples. Look for the `good first issue` and `help wanted` labels on GitHub, or open an issue describing what you'd like to work on.
+
+<Cards>
+	<Card title="Set up the repository" href="/docs/contributing/setup">
+		Install, run the docs and a demo app, run the checks.
+	</Card>
+	<Card title="Repository" href="/docs/contributing/repository">
+		Layers, folders, and where a new piece belongs.
+	</Card>
+	<Card title="From registry to app" href="/docs/contributing/registry-to-app">
+		How one source file becomes code for four styling tools.
+	</Card>
+	<Card title="Adding a component" href="/docs/contributing/adding-a-component">
+		The step-by-step guide, from the issue to the pull request.
+	</Card>
+</Cards>

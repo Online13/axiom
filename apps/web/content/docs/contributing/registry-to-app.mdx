@@ -1,0 +1,157 @@
+---
+title: From registry to app
+description: "How one source file becomes the code of four styling tools, and the rules that make it work."
+---
+
+A component is written once in `packages/registry`. When a user runs `axiom add`, the CLI writes it into their app for their styling tool: StyleSheet, Unistyles, NativeWind or Uniwind. The result is one file that looks written by hand for that tool, with no trace of the other three.
+
+This page explains what you write, what the CLI does with it, and the rules your files have to keep so it can.
+
+## What you write
+
+<Files>
+	<Folder name="packages/registry/atoms/badge">
+		<File name="badge.tsx" note="structure, states, accessibility: shared" />
+		<File name="badge.styles.stylesheet.tsx" note="what differs, once per styling" />
+		<File name="badge.styles.unistyles.tsx" />
+		<File name="badge.styles.nativewind.tsx" />
+		<File name="badge.styles.uniwind.tsx" />
+		<File name="badge-tokens.ts" note="component tokens: the colors of each variant" />
+		<File name="badge-tokens.nativewind.css" note="generated from badge-tokens.ts" />
+		<File name="badge-tokens.uniwind.css" note="generated from badge-tokens.ts" />
+	</Folder>
+</Files>
+
+- **`badge.tsx`** holds everything the four stylings share: props, state, accessibility, structure. It imports `./badge.styles` and calls one hook, `useBadgeStyles()`.
+- **`badge.styles.<styling>.tsx`** holds only what differs: a `style` object for StyleSheet and Unistyles, class names for NativeWind and Uniwind.
+- **`badge-tokens.ts`** maps theme colors to the component's roles. It's the only token file you edit: `bun run theme-css` writes the two CSS files from it.
+- **`registry.json`** lists the item: its files, its npm dependencies, the other items it needs.
+
+Write every file as it will look **in the user's project**. Import other items through the default aliases (`@/theme`, `@/components/core`, `@/components/ui`…). Import files of the same item with a relative path (`../use-switch`): the CLI rewrites it to `./use-switch`.
+
+## What the CLI does with it
+
+```txt title="axiom add badge" noCopy
+1. resolve    badge  →  badge, icon, text, theme, …   (internalDependencies, recursively)
+2. plan       pick the files of the app's styling, give each one a destination
+3. rewrite    point every import to where the other files landed
+4. inline     merge badge.tsx and badge.styles.<styling>.tsx into one file
+5. write      only now, and only the files that changed
+6. tokens     register badge in the theme (TypeScript or CSS)
+7. install    the npm packages the copied files need
+```
+
+Steps 1 to 4 run on every file before anything is written, so a failure leaves the app untouched. The code lives in `packages/cli/src`, and [`packages/cli/docs`](https://github.com/Online13/axiom/tree/main/packages/cli/docs) follows `axiom add button` through it function by function.
+
+### Inlining a styles file
+
+Inlining is the step that makes the result look handwritten. The CLI replaces the call to the hook with its statements, and every `{...styles.x(…)}` with the expression the entry returns. Simplified:
+
+<CodeBlockTabs defaultValue="source">
+<CodeBlockTabsList>
+<CodeBlockTabsTrigger value="source">In the registry</CodeBlockTabsTrigger>
+<CodeBlockTabsTrigger value="stylesheet">stylesheet</CodeBlockTabsTrigger>
+<CodeBlockTabsTrigger value="uniwind">uniwind</CodeBlockTabsTrigger>
+</CodeBlockTabsList>
+<CodeBlockTab value="source">
+
+```tsx title="tag.tsx"
+import { useTagStyles } from "./tag.styles";
+
+export function Tag({ label, selected }: TagProps) {
+	const styles = useTagStyles();
+	return (
+		<View {...styles.root(selected)}>
+			<Text {...styles.label}>{label}</Text>
+		</View>
+	);
+}
+```
+
+</CodeBlockTab>
+<CodeBlockTab value="stylesheet">
+
+```tsx title="components/ui/tag.tsx"
+export function Tag({ label, selected }: TagProps) {
+	const { components } = useTheme();
+	return (
+		<View
+			style={[
+				styles.root,
+				{ backgroundColor: components.tag.background },
+				selected && { backgroundColor: components.tag.selected },
+			]}
+		>
+			<Text style={styles.label}>{label}</Text>
+		</View>
+	);
+}
+
+const styles = StyleSheet.create({ … });
+```
+
+</CodeBlockTab>
+<CodeBlockTab value="uniwind">
+
+```tsx title="components/ui/tag.tsx"
+export function Tag({ label, selected }: TagProps) {
+	return (
+		<View className={cx("rounded-full px-3 bg-tag", selected && "bg-tag-selected")}>
+			<Text className="text-tag-foreground">{label}</Text>
+		</View>
+	);
+}
+```
+
+</CodeBlockTab>
+</CodeBlockTabs>
+
+## The styles file contract
+
+The CLI can only inline a styles file that keeps these rules. It refuses one that breaks them, and says why.
+
+- It declares one `use<Item>Styles` function. Its parameters have the names of the variables it's called with.
+- The function ends by returning an object, one entry per styled element. Its other statements (`const { tokens } = useTheme()`) are copied into each component that calls it, minus the ones that component doesn't reach.
+- An entry is an expression, or an arrow function returning one. No block body: logic that needs statements goes in a function of the file.
+- An entry spread on an element is an object of its props: `{ style }` or `{ className }`. One that merges the caller's props takes them by name: `header: ({ style }) => ({ style: [styles.header, style] })`.
+- An element that takes its color as a prop, like an icon, is exported by the styles file (`BadgeIcon`). Unistyles wraps it with `withUnistyles`; the other stylings export it as is.
+- With NativeWind and Uniwind, entries are whole class names (`bg-button-solid`, `active:bg-button-solid-pressed`), picked from tables indexed by variant, size and state. A state lists what it changes, and the last class setting a property wins.
+- `className` never uses a rem-based size outside the spacing scale: a rem is 14px in NativeWind and 16px in Uniwind. Write `h-[24px]`.
+
+NativeWind and Uniwind each have their file because they pass a color to a prop differently (`cssInterop` for one, `withUniwind` and `colorClassName` for the other). When nothing differs, the two files are the same.
+
+The full contract, with every edge case, is in the [registry README](https://github.com/Online13/axiom/blob/main/packages/registry/README.md#one-component-one-styles-file-per-variant).
+
+## Tokens
+
+Colors go through three levels: raw palette, semantic theme roles (`colors.primary.default`), then component tokens (`badge.neutral.default.background`). A component reads only its own tokens, so an app restyles it in one place.
+
+```txt noCopy
+badge-tokens.ts ──bun run theme-css──▶ badge-tokens.nativewind.css
+                                       badge-tokens.uniwind.css
+```
+
+- With StyleSheet and Unistyles, the CLI copies `badge-tokens.ts` to the app's `theme/components/badge.ts` and registers it between the `// axiom:…` markers of `theme/components/index.ts`.
+- With NativeWind and Uniwind, it copies the CSS instead: `--color-badge-neutral` becomes the class `bg-badge-neutral`, and each variable points to a theme color, so it follows light and dark without `dark:`.
+
+Run `bun run theme-css` in `packages/registry` after changing a token, a theme color or a `*-tokens.ts`, and commit the generated files.
+
+A few components (`switch`, `slider`, `segmented-control`, `skeleton`) keep their tokens in TypeScript with every styling: an animation interpolates their colors, which no class can express.
+
+## How the registry checks itself
+
+The registry has no app around it, so aliases don't resolve on their own. `scripts/tsconfig.ts` reads `registry.json` and writes one `tsconfig.<styling>.json` per styling, mapping every alias to its registry file the way the CLI maps it in a project. `moduleSuffixes` resolves `./badge.styles` to the file of that styling.
+
+| Command             | Checks                                                                    |
+| ------------------- | ------------------------------------------------------------------------- |
+| `bun run typecheck` | every item in each styling, and the standalone form of every item         |
+| `bun run parity`    | each styles file exports the same API as its `.stylesheet` sibling        |
+| `bun run tsconfig`  | regenerates the configs, after you edit `registry.json`                   |
+
+A file that isn't listed in `registry.json` has no alias: importing it fails the typecheck. Never edit the generated `tsconfig.*.json` files.
+
+## Standalone
+
+`axiom add <item> --standalone` writes an item as one self-contained file, for an app with its own design system: dependencies inlined, the theme resolved to values, no Axiom import left. There is nothing to write per item. It only works because items follow the conventions above: the theme read through `useTheme()`, tokens files exporting `<item>Tokens`, other items imported through aliases.
+
+An item that can't work alone, like `portal`, declares `"standalone": false`.

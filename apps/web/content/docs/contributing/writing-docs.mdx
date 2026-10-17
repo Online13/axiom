@@ -1,0 +1,129 @@
+---
+title: Writing docs
+description: "Add a page to this site, place it in the sidebar, and give it a preview."
+---
+
+The site is one Astro app in `apps/web`: the landing page at `/`, and the [Fumadocs](https://fumadocs.dev) documentation at `/docs`. Pages are MDX files in `apps/web/content/docs`.
+
+<Files>
+	<Folder name="apps/web">
+		<Folder name="content/docs" note="the pages, and a meta.json per folder" />
+		<Folder name="src/modules/docs/components" note="the components pages can use" />
+		<Folder name="src/pages/docs" note="[...slug].astro registers those components" />
+	</Folder>
+</Files>
+
+<Steps>
+<Step>
+
+### Start the site
+
+```bash
+bun web dev     # http://localhost:4321/docs
+```
+
+Pages reload as you save them.
+
+</Step>
+<Step>
+
+### Create the page
+
+Create an `.mdx` file with a title and a one-line description. The file name is the URL.
+
+```mdx title="content/docs/(catalog)/(primitives)/components/(atoms)/(display)/tag.mdx"
+---
+title: Tag
+description: "Short label for a category or a filter."
+---
+```
+
+A page with only its frontmatter shows an "Available soon" notice instead of a blank screen.
+
+</Step>
+<Step>
+
+### Place it in the sidebar
+
+Each folder has a `meta.json` listing its pages in order. A page that isn't listed doesn't appear.
+
+```json title="meta.json"
+{
+	"title": "Contributing",
+	"root": true,
+	"pages": ["index", "setup", "---How it works---", "repository"]
+}
+```
+
+- `"root": true` makes the folder a tab, like this one.
+- `"---Label---"` starts a section in the sidebar.
+- `"...folder"` inlines a folder's pages, `"../folder"` links a folder from elsewhere.
+- A folder in parentheses, like `(catalog)`, groups pages without adding to their URL.
+
+</Step>
+<Step>
+
+### Write the content
+
+A component page follows the order of the existing ones, such as [Switch](/docs/components/switch):
+
+1. a `PhonePreview` showing the component in a realistic screen;
+2. **Installation**, the `npx axiom add` command;
+3. **Usage**, the shortest working example;
+4. **Props**, one table row per prop, with its type, default and what it does;
+5. examples of the common cases, and the component's tokens.
+
+Previews are static HTML drawn with the `ax-*` classes of `src/modules/docs/styles/preview.css`: they show the component, they don't run React Native. Glyphs come from `<Glyph name="…" />`.
+
+</Step>
+<Step>
+
+### Build
+
+```bash
+bun web build
+```
+
+Every page must compile. Open yours in light and dark, and at phone width.
+
+</Step>
+</Steps>
+
+## Components available in MDX
+
+Fumadocs gives `Callout`, `Cards`, `Card` and code blocks (a `npm` code block shows the command for every package manager). The rest is registered in `src/pages/docs/[...slug].astro`: previews, token tables, state machines for behaviors and patterns, variant tabs, and these two.
+
+**Steps**, for a procedure the reader follows in order. Each `<Step>` starts with a `###` heading and gets the next number:
+
+```mdx
+<Steps>
+<Step>
+
+### Install
+
+…
+
+</Step>
+</Steps>
+```
+
+**Files**, for a file tree. Folders fold and unfold; `open={false}` starts one folded, and `note` adds a comment:
+
+```mdx
+<Files>
+	<Folder name="components/ui">
+		<File name="button.tsx" note="yours now" />
+	</Folder>
+</Files>
+```
+
+Never draw a tree with `├──` in a code block.
+
+To add a component, put it in `src/modules/docs/components/<topic>/` and register it in the `components` map of `[...slug].astro`.
+
+## Style
+
+- Documentation is written in English. Only the internal specification in `/docs`, at the root of the repository, is in French.
+- Explain what the reader can do and why, in short sentences. Lead with the example.
+- A state transition, in a behavior or a pattern, is shown with the interactive state machine, not described in a paragraph.
+- Any change to a public API updates its page in the same pull request.

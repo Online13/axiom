@@ -1,0 +1,47 @@
+---
+title: Testing
+description: "How to check that a component behaves, and that the code the CLI generates from it is right."
+---
+
+Axiom code is checked at two levels. Each catches what the one before can't.
+
+| Level             | Checks                                                         | Where                     |
+| ----------------- | -------------------------------------------------------------- | ------------------------- |
+| Generated code    | the CLI writes every item, for every styling, and it compiles | `packages/cli`, `packages/registry`, the demos |
+| On a device       | it looks and feels right on iOS and Android                    | the demo apps             |
+
+CI runs the first one on every pull request.
+
+## Generated code
+
+A component is never used as it sits in the registry: the CLI rewrites its imports and merges its styles file into it. These checks prove that what it writes is right.
+
+| Command                                     | Checks                                                                                                   |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `bun run --cwd packages/cli test`           | `init`, `add` and `sync` on throwaway apps. One test copies **every item** of the registry with each styling and checks every import resolves. |
+| `bun run --cwd packages/registry typecheck` | every item compiles in each of the four stylings, and so does its standalone form                        |
+| `bun run --cwd packages/registry parity`    | the four styles files of an item export the same API                                                     |
+| `bunx tsc --noEmit` in a demo               | the code the CLI wrote into a real Expo app compiles                                                     |
+| `bunx expo export` in a demo                | Metro bundles it for Android and iOS, Babel plugins included                                             |
+
+To check the output by eye, copy an item into a demo and read the file the CLI wrote:
+
+```bash
+cd apps/demo-uniwind
+bun run axiom add badge
+```
+
+`src/components/ui/badge.tsx` is what a Uniwind user gets. It should read as if it had been written by hand for Uniwind.
+
+The CLI tests are explained one by one in [`packages/cli/test/docs`](https://github.com/Online13/axiom/tree/main/packages/cli/test/docs).
+
+## On a device
+
+Open the component's screen in a demo, on a phone:
+
+- in light and dark;
+- on iOS and Android when you can;
+- with VoiceOver or TalkBack for a minute;
+- interrupting every gesture halfway, and pressing fast and repeatedly.
+
+Say in the pull request what you checked, with a screenshot or a video for any visual change.
