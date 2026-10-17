@@ -3,14 +3,15 @@ title: Testing
 description: "How to check that a component behaves, and that the code the CLI generates from it is right."
 ---
 
-Axiom code is checked at two levels. Each catches what the one before can't.
+Axiom code is checked at three levels. Each catches what the one before can't.
 
 | Level             | Checks                                                         | Where                     |
 | ----------------- | -------------------------------------------------------------- | ------------------------- |
 | Generated code    | the CLI writes every item, for every styling, and it compiles | `packages/cli`, `packages/registry`, the demos |
+| Component tests   | a copied component behaves the way its API promises            | `packages/registry/tests` |
 | On a device       | it looks and feels right on iOS and Android                    | the demo apps             |
 
-CI runs the first one on every pull request.
+CI runs the first two on every pull request.
 
 ## Generated code
 
@@ -34,6 +35,120 @@ bun run axiom add badge
 `src/components/ui/badge.tsx` is what a Uniwind user gets. It should read as if it had been written by hand for Uniwind.
 
 The CLI tests are explained one by one in [`packages/cli/test/docs`](https://github.com/Online13/axiom/tree/main/packages/cli/test/docs).
+
+## Component tests
+
+Component tests render a component with [Jest](https://jestjs.io), [`jest-expo`](https://docs.expo.dev/develop/unit-testing/) and [React Native Testing Library](https://callstack.github.io/react-native-testing-library/), then use it like a person would: find it by its role and label, press it, check what it reports.
+
+The tests belong to the registry, in `packages/registry/tests`. The registry source can't run on its own: a component is split from its styles files, and it imports `@/theme` and other paths that only exist once the CLI has copied it into a project set up for one styling. That project is a demo. Each demo's `test` script first brings its copy in line with the registry (`axiom sync --keep none --overwrite`), then runs Jest: the tests always check what the CLI copies today, in all four stylings.
+
+<Files>
+	<Folder name="packages/registry/tests" note="one suite, run by every demo">
+		<File name="setup.ts" note="runs before every test file" />
+		<File name="resolver.cjs" note="resolves packages from the demo running the tests" />
+		<File name="jest.d.ts" note="Jest's types for TypeScript 6" />
+		<Folder name="__mocks__" note="global mocks of native libraries">
+			<File name="expo-haptics.ts" />
+			<File name="react-native-reanimated.ts" />
+			<File name="react-native-safe-area-context.ts" />
+			<File name="react-native-keyboard-controller.ts" />
+			<File name="react-native-teleport.ts" />
+		</Folder>
+		<Folder name="utils" note="helpers shared by the tests" />
+		<Folder name="core" note="slot, tappable, overlay…" open={false} />
+		<Folder name="hooks" note="use-controllable-state, use-refresh-control…" open={false} />
+		<Folder name="components">
+			<Folder name="button">
+				<File name="button.test.tsx" />
+				<File name="button-scenarios.md" note="what the test covers, and what is checked on a device" />
+			</Folder>
+		</Folder>
+		<Folder name="compositions" open={false} />
+		<Folder name="blocks" open={false} />
+	</Folder>
+	<Folder name="apps/demo-unistyles/test">
+		<File name="setup.ts" note="the Unistyles mocks and themes, after the shared setup" />
+	</Folder>
+</Files>
+
+- One folder per item, named like it in the registry, in the folder of its layer: `core`, `hooks`, `components`, `compositions`, `blocks`.
+- Next to each test, `<item>-scenarios.md` lists in plain words the scenarios the test covers, and those left to a device. Read it to know what an item promises; update it with the test.
+- A mock used by a single test stays in its folder. A mock every test needs goes in `__mocks__`: Jest applies a file there to the package of the same name on its own.
+
+```bash
+bun demo:stylesheet test             # every test
+bun demo:stylesheet test switch      # the files matching "switch"
+bun demo:stylesheet test --watch
+bun demo:uniwind test                # the same tests, against the Uniwind code
+```
+
+`test` copies the registry into the demo before running Jest, so a change to an item is tested without a separate sync. It overwrites any copied file that differs from the registry: an edit made by hand in a demo's copy is lost.
+
+### How the demos run one suite
+
+Each demo's `package.json` points Jest at `../../packages/registry/tests` (`roots`), and `tsconfig.json` includes it, so `bunx tsc --noEmit` checks the tests against that demo's code. `@/components/ui/button` resolves to the demo's own copy.
+
+A demo can have its own copy of a package (`expo-router`, `expo`) next to the hoisted one. `resolver.cjs` resolves what a test imports from the demo running it, so the test and the component share one instance, with the same React contexts.
+
+The Unistyles demo adds its own `test/setup.ts`. When a styling can't be tested the same way, the test says so: `utils/styling.ts` reads the demo's styling, and `testWithInsets` skips the safe-area tests with Unistyles, whose mock fixes the insets at 0.
+
+### The mocks
+
+Jest runs in Node: native libraries are replaced by the mocks they ship for Jest, with the gaps that would make a test lie filled in `__mocks__`.
+
+| Library                            | What the mock does                                                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `react-native-reanimated`          | Its own mock, with a shared value that lives as long as the component, `makeMutable`, `useReducedMotion` (off, a test can turn it on) and a scroll handler that routes events by `eventName`. Animations end at once. |
+| `expo-haptics`                     | Records each haptic, so a test checks which one an interaction plays.                                 |
+| `react-native-safe-area-context`   | Its own mock: insets are 0, unless the test renders in `withInsets(...)`.                             |
+| `react-native-keyboard-controller` | Its own mock.                                                                                          |
+| `react-native-teleport`            | Its own mock: a `Portal` renders its content in place, where queries find it.                         |
+| `react-native-gesture-handler`     | Its `jestSetup`, in `setup.ts`.                                                                        |
+
+### The helpers
+
+| Helper                          | Use                                                                                                |
+| ------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `advance(ms)`                   | Moves fake time and flushes what it triggers, the end of an animation included.                   |
+| `pressIn` / `pressOut`          | Holds a press, to check the pressed state halfway.                                                 |
+| `layout(element, size)`         | Reports the size an element was laid out at.                                                       |
+| `placeInWindow(rect)`           | Gives views a position on screen, where a menu reads its trigger's.                                |
+| `withInsets(insets)`            | A `wrapper` with safe-area insets, like a phone with a notch.                                      |
+| `spyOnBackButton()`             | Presses the Android back button. Restore it with `restoreBackButton()`, never `jest.restoreAllMocks()`, which would strip the global mocks. |
+
+Gestures beyond a press are fired with `fireGestureHandler` from `react-native-gesture-handler/jest-utils`, on a gesture attached to a mounted `GestureDetector`. The slider, segmented control, sheet, toast and snackbar tests do it through their hook.
+
+### Write a test
+
+```tsx title="packages/registry/tests/components/switch/switch.test.tsx"
+import { render, screen, userEvent } from "@testing-library/react-native";
+
+import { Switch } from "@/components/ui/switch";
+
+jest.useFakeTimers();
+
+test("flips on press and reports the new value", async () => {
+	const user = userEvent.setup();
+	const onValueChange = jest.fn();
+	await render(<Switch onValueChange={onValueChange} accessibilityLabel="Wi-Fi" />);
+
+	const toggle = screen.getByRole("switch", { name: "Wi-Fi" });
+	await user.press(toggle);
+
+	expect(onValueChange).toHaveBeenCalledWith(true);
+	expect(toggle).toBeChecked();
+});
+```
+
+- Query by role and accessible name (`getByRole("switch", { name: "Wi-Fi" })`). If a component can't be found that way, a screen reader can't find it either: that's a bug in the component, not in the test. A container such as a `radiogroup` or a `menu` isn't an accessible element: find it by its label or test ID.
+- Interact with `userEvent`, which plays the whole press sequence. `render`, `rerender`, `fireEvent` and `act` are awaited.
+- Assert what the user and the caller see: the callback, the checked, disabled or busy state, the text on screen, what is announced. A style only when it is a number every styling passes as a style, such as a safe-area inset.
+- Test what the API promises, and the edge cases a contributor could break: controlled and uncontrolled values, `disabled`, bounds, timers, what a closing overlay does with its action.
+- Make sure the test can fail: break the behavior in the copied file, run the test, put the file back.
+
+### What they don't cover
+
+Animations end at once and nothing is drawn: an animated style, layout and the feel of a gesture are checked on a device. Each scenarios file lists what is left to it.
 
 ## On a device
 

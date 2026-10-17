@@ -166,10 +166,13 @@ The four demos show the same screen: the same rendering is expected in each. Try
 
 ### Test it
 
-Add `apps/demo-stylesheet/test/tag.test.tsx`: render the tag, query it by its role and label, and check what it reports. One test per behavior the API promises. See [Testing](/docs/contributing/testing).
+Add `packages/registry/tests/components/tag/tag.test.tsx`: render the tag, query it by its role and label, and check what it reports. One test per behavior the API promises. Next to it, `tag-scenarios.md` lists those scenarios in plain words, and what is left to a device. See [Testing](/docs/contributing/testing).
+
+The demos run the same tests on their own copy, so run them in each styling:
 
 ```bash
-bun demo:stylesheet test
+bun demo:stylesheet test tag
+bun demo:uniwind test tag
 ```
 
 </Step>
