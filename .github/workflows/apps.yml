@@ -1,11 +1,13 @@
 name: Apps
 
-# Typechecks each Expo app and bundles its JavaScript for Android and iOS with Metro, so a demo that
-# no longer builds fails here instead of on a device.
+# Typechecks each Expo app, runs the registry tests (packages/registry/tests) on the copied components, and bundles its JavaScript for Android and
+# iOS with Metro, so a demo that no longer builds fails here instead of on a device.
 on:
   pull_request:
     paths:
       - apps/demo-*/**
+      - packages/registry/**
+      - packages/cli/**
       - examples/**
       - bun.lock
       - .github/workflows/apps.yml
@@ -13,6 +15,8 @@ on:
     branches: [main]
     paths:
       - apps/demo-*/**
+      - packages/registry/**
+      - packages/cli/**
       - examples/**
       - bun.lock
       - .github/workflows/apps.yml
@@ -45,11 +49,17 @@ jobs:
       # Registry items are gitignored in the demos: copy the ones axiom.json lists, as a fresh clone would.
       - name: Fetch registry items
         working-directory: ${{ matrix.app }}
-        run: bun run axiom fetch --no-install
+        run: bun run axiom sync --no-install
 
       - name: Typecheck
         working-directory: ${{ matrix.app }}
         run: bunx tsc --noEmit
+
+      # Component tests render the copied components and drive them like a user, in every styling.
+      - name: Test components
+        if: startsWith(matrix.app, 'apps/demo-')
+        working-directory: ${{ matrix.app }}
+        run: bun run test --ci
 
       - name: Bundle
         working-directory: ${{ matrix.app }}
