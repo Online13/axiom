@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { generateOGImage } from "fumadocs-ui/og/takumi";
+import { pageImage } from "../../../../modules/brand/og";
 import { source } from "@docs/lib/source";
 
 export function getStaticPaths() {
@@ -17,10 +17,5 @@ export const GET: APIRoute = ({ params }) => {
 
 	if (!page) return new Response(undefined, { status: 404 });
 
-	return generateOGImage({
-		title: page.data.title,
-		description: page.data.description,
-		site: "Astro",
-		format: "webp",
-	});
+	return pageImage({ title: page.data.title, description: page.data.description });
 };

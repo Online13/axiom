@@ -2,6 +2,7 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
+import sitemap from "@astrojs/sitemap";
 import { unified } from "@astrojs/markdown-remark";
 import tailwindcss from "@tailwindcss/vite";
 import {
@@ -26,6 +27,8 @@ const rehypePlugins = [rehypeCode];
 const env = loadEnv("dev", process.cwd(), "");
 
 export default defineConfig({
+	// Production origin: canonical URLs, Open Graph images and the sitemap are built against it.
+	site: "https://axiom.nekena-rayane.com",
 	server: { port: env.PORT ? Number(env.PORT) : 4321 },
 	markdown: {
 		processor: unified({
@@ -35,6 +38,7 @@ export default defineConfig({
 	},
 	integrations: [
 		react(),
+		sitemap(),
 		mdx({
 			extendMarkdownConfig: true,
 			syntaxHighlight: false,

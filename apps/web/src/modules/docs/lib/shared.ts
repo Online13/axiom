@@ -5,7 +5,7 @@ export const docsImageRoute = "/og/docs";
 const getImageUrl = createGetUrl(docsImageRoute);
 
 export function getPageImageUrl(page: { slugs: string[]; locale?: string }) {
-	const segments = [...page.slugs, "image.webp"];
+	const segments = [...page.slugs, "image.png"];
 
 	return { segments, url: getImageUrl(segments, page.locale) };
 }

@@ -12,9 +12,27 @@ import OpenSource from '@landing/components/sections/OpenSource.astro';
 import Inspirations from '@landing/components/sections/Inspirations.astro';
 import Footer from '@landing/components/sections/Footer.astro';
 import Bento from '@landing/components/sections/bento/Bento.astro';
+import { githubUrl } from '@landing/lib/links';
+
+const site = Astro.site!.href;
+const jsonLd = {
+	'@graph': [
+		{ '@type': 'WebSite', name: 'Axiom', url: site },
+		{
+			'@type': 'SoftwareSourceCode',
+			name: 'Axiom',
+			description: 'A mobile-first component registry for React Native & Expo. Copy the source, own the code.',
+			url: site,
+			codeRepository: githubUrl,
+			programmingLanguage: 'TypeScript',
+			runtimePlatform: ['React Native', 'Expo'],
+			license: 'https://opensource.org/licenses/MIT',
+		},
+	],
+};
 ---
 
-<Base>
+<Base jsonLd={jsonLd}>
 	<Nav />
 	<main>
 		<Hero />

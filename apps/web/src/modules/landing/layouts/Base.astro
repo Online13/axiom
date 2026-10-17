@@ -2,15 +2,20 @@
 import '../styles/global.css';
 import Backdrop from '../components/Backdrop.astro';
 import ThemeScript from '../../brand/ThemeScript.astro';
+import Seo from '../../brand/Seo.astro';
 
 interface Props {
 	title?: string;
 	description?: string;
+	noindex?: boolean;
+	jsonLd?: Record<string, unknown>;
 }
 
 const {
 	title = 'Axiom - The mobile UI kit for React Native & Expo',
 	description = 'Real, complete mobile UI for React Native & Expo. Copy the source, own the code.',
+	noindex,
+	jsonLd,
 } = Astro.props;
 ---
 
@@ -19,7 +24,6 @@ const {
 		<ThemeScript />
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="description" content={description} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
@@ -29,7 +33,7 @@ const {
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&family=Outfit:wght@500&family=Figtree:wght@400;600&family=Plus+Jakarta+Sans:wght@400;600&display=swap"
 		/>
-		<title>{title}</title>
+		<Seo title={title} description={description} noindex={noindex} jsonLd={jsonLd} />
 	</head>
 	<body>
 		<Backdrop />

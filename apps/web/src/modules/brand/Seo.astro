@@ -1,0 +1,52 @@
+---
+/*
+ * The head tags search engines and link previews read: title, description, canonical URL,
+ * Open Graph and Twitter cards, and optional JSON-LD. Every layout renders it in <head>.
+ * URLs are absolute against `site` (astro.config.mjs).
+ */
+interface Props {
+	title: string;
+	description: string;
+	/** Path of the 1200×630 preview image (og.tsx). Defaults to the site banner. */
+	image?: string;
+	type?: 'website' | 'article';
+	/** Keeps the page out of search results (the 404). */
+	noindex?: boolean;
+	/** Structured data (schema.org), without the @context. */
+	jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, image = '/og.png', type = 'website', noindex = false, jsonLd } = Astro.props;
+
+// Directory pages are served with a trailing slash, the one URL the sitemap lists too.
+const path = /\.[a-z0-9]+$/i.test(Astro.url.pathname) || Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const canonical = new URL(path, Astro.site).href;
+const imageUrl = new URL(image, Astro.site).href;
+// JSON is safe in a script element once `<` can't close it.
+const structuredData = jsonLd && JSON.stringify({ '@context': 'https://schema.org', ...jsonLd }).replace(/</g, '\\u003c');
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+{noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+<link rel="sitemap" href="/sitemap-index.xml" />
+<meta name="theme-color" content="#0b1016" />
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content="Axiom" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={title} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+
+{structuredData && <script type="application/ld+json" is:inline set:html={structuredData} />}

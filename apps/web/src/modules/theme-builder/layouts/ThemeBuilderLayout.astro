@@ -6,6 +6,7 @@ import "@docs/styles/preview.css";
 import "../styles/theme-builder.css";
 import "../styles/design-system.css";
 import ThemeScript from "../../brand/ThemeScript.astro";
+import Seo from "../../brand/Seo.astro";
 
 interface Props {
 	title?: string;
@@ -23,7 +24,6 @@ const {
 		<meta charset="utf-8" />
 		<ThemeScript />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="description" content={description} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
@@ -35,7 +35,7 @@ const {
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
 		/>
-		<title>{title}</title>
+		<Seo title={title} description={description} />
 	</head>
 	<body>
 		<slot />
