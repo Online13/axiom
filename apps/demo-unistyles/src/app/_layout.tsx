@@ -20,6 +20,7 @@ export default function RootLayout() {
 						screenOptions={{
 							headerShown: false,
 							contentStyle: styles.screen,
+							animation: 'slide_from_right'
 						}}
 					/>
 					<ThemeButton />
