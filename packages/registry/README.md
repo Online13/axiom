@@ -5,6 +5,7 @@ The source of everything Axiom copies into a project. Nothing here is published 
 ```text
 registry/
 ├── registry.json          # manifest: one entry per item
+├── tests/                 # component tests, run by every demo on its copy
 └── <layer>/<item>/
     ├── <item>.tsx                    # structure, states, accessibility: shared
     ├── <item>.styles.<styling>.ts(x) # what differs, once per styling
@@ -151,7 +152,15 @@ Aliases don't resolve in this folder on their own, since each file lands somewhe
 
 The generated files cover every `.ts` and `.tsx` of their variant, but only files listed in `registry.json` get an alias: importing an unlisted file fails. Don't edit them. Run `bun run tsconfig` after changing `registry.json` (the editor picks up the new aliases), or `bun run typecheck`.
 
-Rendering and behavior are still checked in a demo app (`apps/demo-*`).
+## Tests
+
+Rendering and behavior are tested in `tests`, one folder per item with its `<item>.test.tsx` and `<item>-scenarios.md`. The code here can't run on its own, so the demos run the tests: each demo's `test` script copies the registry into it, then runs Jest on that copy.
+
+```bash
+bun demo:stylesheet test   # or demo:unistyles, demo:nativewind, demo:uniwind
+```
+
+`tests` is left out of the generated tsconfig files: each demo typechecks it against its own copy. The [Testing](../../apps/web/content/docs/contributing/testing.mdx) page explains how the suite is organized.
 
 ## Manifest entry
 

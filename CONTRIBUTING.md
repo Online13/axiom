@@ -114,7 +114,7 @@ An arbitrary arrangement of components is not a pattern. Build on existing compo
 
 ## Tests
 
-The repository has no test infrastructure yet. When it exists, significant changes must include appropriate tests. Until then, describe in the pull request how you checked your change.
+Component tests run with Jest and React Native Testing Library in every demo, against the code the CLI copied there (`bun demo:stylesheet test`, `bun demo:uniwind test`, …). The tests live once in `packages/registry/tests`, and each demo's `test` script copies the registry before running them. A change to an item comes with a test for what it changes, and its `<item>-scenarios.md` updated. Describe in the pull request what you checked on a device. The [Testing](./apps/web/content/docs/contributing/testing.mdx) page of the docs explains every check.
 
 ## Documentation
 

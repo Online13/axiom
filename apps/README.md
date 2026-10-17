@@ -10,6 +10,8 @@ Applications in the monorepo. Each folder is a standalone Bun workspace with its
 | [demo-nativewind](demo-nativewind/) | Demo app, `nativewind` variant | Expo + NativeWind |
 | [demo-uniwind](demo-uniwind/)       | Demo app, `uniwind` variant    | Expo + Uniwind    |
 
+Each demo also runs the registry's component tests (`packages/registry/tests`) on its copy of the components: `bun run test` copies the registry first. See [Testing](web/content/docs/contributing/testing.mdx).
+
 ## web
 
 The website serves the presentation page at `/` and the documentation at `/docs`. The documentation covers:

@@ -148,7 +148,7 @@ axiom/
 │   ├── demo-nativewind/
 │   └── demo-uniwind/
 ├── packages/
-│   ├── registry/          # source of every item, and registry.json
+│   ├── registry/          # source of every item, registry.json, and the component tests
 │   └── cli/               # the axiom CLI
 ├── bunfig.toml            # hoisted installs, required by the Expo apps
 └── package.json           # workspaces and app shortcuts
@@ -156,7 +156,7 @@ axiom/
 
 - **`apps/web`.** The Astro website. It serves the landing page at `/` and the Fumadocs pages at `/docs`. Documentation content lives in `apps/web/content/docs`. See [its README](./apps/web/README.md).
 - **`apps/demo-*`.** Expo apps, one per styling tool. Each one is set up like a user project: it has an `axiom.json` and gets its components through the CLI.
-- **`packages/registry`.** The code copied into projects. Nothing imports it directly. See [its README](./packages/registry/README.md).
+- **`packages/registry`.** The code copied into projects. Nothing imports it directly. Its `tests` folder holds the component tests, which every demo runs on its fresh copy of the items. See [its README](./packages/registry/README.md).
 - **`packages/cli`.** The command that reads the registry and copies items into a project.
 
 See [apps/README.md](./apps/README.md) for how the apps run.
