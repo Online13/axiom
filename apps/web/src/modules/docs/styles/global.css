@@ -159,6 +159,39 @@
 
 html {
 	scrollbar-gutter: stable;
+	scroll-behavior: smooth;
+}
+
+/* Caret after the search trigger's typed hint (search-trigger.tsx). */
+.docs-search-caret {
+	display: inline-block;
+	width: 1px;
+	height: 1em;
+	margin-inline-start: 1px;
+	vertical-align: -0.125em;
+	background: currentColor;
+	animation: docs-search-caret 1s steps(1) infinite;
+}
+
+@keyframes docs-search-caret {
+	50% {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	.docs-search-caret {
+		display: none;
+	}
+}
+
+/* Anchored headings stop below the sticky banner, header, tabs and TOC bar (Fumadocs' scroll-m-28 is too short). */
+#nd-page [id] {
+	scroll-margin-top: calc(var(--fd-docs-row-3) + 1.5rem);
 }
 
 body {
@@ -223,6 +256,21 @@ h1,
 h2,
 h3 {
 	letter-spacing: -0.03em;
+}
+
+/* Sidebar items: the active one only changes color, hover is a plain grey wash. */
+:is(#nd-sidebar, #nd-sidebar-mobile) a[data-active="true"] {
+	background-color: transparent;
+	color: var(--docs-accent);
+}
+
+:is(#nd-sidebar, #nd-sidebar-mobile) :is(a, button):hover {
+	background-color: color-mix(in oklab, var(--color-fd-foreground) 6%, transparent);
+	color: var(--color-fd-foreground);
+}
+
+:is(#nd-sidebar, #nd-sidebar-mobile) a[data-active="true"]:hover {
+	color: var(--docs-accent);
 }
 
 /* Sidebar separators read like the landing's mono eyebrows. */

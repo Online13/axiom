@@ -1,0 +1,41 @@
+---
+// A file tree. Folders are native <details>, so they fold without hydration: MDX components render
+// as static HTML in Astro.
+//
+//   <Files>
+//     <Folder name="components/ui">
+//       <File name="button.tsx" note="yours now" />
+//     </Folder>
+//   </Files>
+interface Props {
+  title?: string;
+}
+
+const { title } = Astro.props;
+---
+
+<figure class="file-tree not-prose my-4 overflow-x-auto rounded-xl border bg-fd-card text-fd-card-foreground">
+  {
+    title && (
+      <figcaption class="border-b px-4 py-2 text-xs text-fd-muted-foreground">
+        {title}
+      </figcaption>
+    )
+  }
+  <div class="p-2 font-mono text-[0.8125rem] leading-6">
+    <slot />
+  </div>
+</figure>
+
+<style is:global>
+  .file-tree summary {
+    list-style: none;
+  }
+  .file-tree summary::-webkit-details-marker {
+    display: none;
+  }
+  /* Only the folder's own chevron: a closed folder inside an open one keeps its own. */
+  .file-tree details[open] > summary > .file-tree-chevron {
+    transform: rotate(90deg);
+  }
+</style>

@@ -10,7 +10,9 @@ import { RootProvider } from "fumadocs-ui/provider/astro";
 import { Banner } from "fumadocs-ui/components/banner";
 import type { AstroProviderProps } from "fumadocs-core/framework/astro";
 import type { GetLayoutTabsOptions } from "fumadocs-ui/layouts/shared";
+import { SearchTrigger } from "fumadocs-ui/layouts/shared/slots/search-trigger";
 import SearchDialog from "./search";
+import { TypedSearchTrigger } from "./search-trigger";
 import { Logo } from "../../brand/Logo";
 import { ThemeSwitcher } from "../../brand/ThemeSwitcher";
 
@@ -97,7 +99,10 @@ export function Docs({
 			<DocsLayout
 				tree={tree}
 				containerProps={{ onClickCapture: preventActiveFolderNavigation }}
-				slots={{ themeSwitch: DocsThemeSwitch }}
+				slots={{
+					themeSwitch: DocsThemeSwitch,
+					searchTrigger: { sm: SearchTrigger, full: TypedSearchTrigger },
+				}}
 				// Collapsing is desktop-only; the mobile drawer trigger stays.
 				sidebar={{ collapsible: false }}
 				// Root folders become tabs; 'navbar' puts them on their own row under the header.

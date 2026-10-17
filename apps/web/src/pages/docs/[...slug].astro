@@ -6,6 +6,7 @@ import CodeBlockTabs from "@docs/components/code-block-tabs/code-block-tabs.astr
 import CodeBlockTabsList from "@docs/components/code-block-tabs/code-block-tabs-list.astro";
 import CodeBlockTabsTrigger from "@docs/components/code-block-tabs/code-block-tabs-trigger.astro";
 import CodeBlockTab from "@docs/components/code-block-tabs/code-block-tab.astro";
+import CodeBlockCopy from "@docs/components/code-block-copy/code-block-copy.astro";
 import VariantTabs from "@docs/components/variant-tabs/variant-tabs.astro";
 import VariantPanel from "@docs/components/variant-tabs/variant-panel.astro";
 import PaletteGrid from "@docs/components/tokens/palette-grid.astro";
@@ -108,11 +109,17 @@ import ShowcaseScreens from "@docs/components/showcase/showcase-screens.astro";
 import PhaseTimeline from "@docs/components/roadmap/phase-timeline.astro";
 import PhaseChecklist from "@docs/components/roadmap/phase-checklist.astro";
 import StateTag from "@docs/components/roadmap/state-tag.astro";
+import Files from "@docs/components/files/files.astro";
+import Folder from "@docs/components/files/folder.astro";
+import File from "@docs/components/files/file.astro";
+import Steps from "@docs/components/steps/steps.astro";
+import Step from "@docs/components/steps/step.astro";
 import "@docs/styles/global.css";
 import "@docs/styles/preview.css";
 import { source } from "@docs/lib/source";
 import { getPageImageUrl } from "@docs/lib/shared";
 import Layout from "@docs/components/layout.astro";
+import Seo from "../../modules/brand/Seo.astro";
 import type { TOCItemType } from "fumadocs-core/toc";
 
 interface Props {
@@ -133,7 +140,8 @@ const { Content, headings } = await render(page);
 const slugs =
 	typeof Astro.params.slug === "string" ? Astro.params.slug.split("/") : [];
 const docsPage = source.getPage(slugs)!;
-const image = getPageImageUrl(docsPage).url;
+// The introduction shows the banner, so it shares the site's banner preview.
+const image = slugs.length === 0 ? "/og.png" : getPageImageUrl(docsPage).url;
 // Pages that only have frontmatter so far show a placeholder instead of a blank screen.
 const isEmpty = !page.body?.trim();
 const Callout = defaultMdxComponents.Callout;
@@ -144,14 +152,28 @@ const toc: TOCItemType[] = headings.map((heading) => ({
 	url: "#" + heading.slug,
 }));
 const publicPathname = Astro.url.pathname;
+const description =
+	page.data.description ??
+	"Mobile-first React Native & Expo components you copy into your app and own.";
 ---
 
 <Layout>
 	<PreviewTheme />
-	<title>{page.data.title}</title>
-	<meta name="title" content={page.data.title} />
-	<meta name="description" content={page.data.description} />
-	<meta property="og:image" content={image} />
+	<Seo
+		slot="head"
+		title={`${page.data.title} · Axiom`}
+		description={description}
+		image={image}
+		type="article"
+		jsonLd={{
+			"@type": "TechArticle",
+			headline: page.data.title,
+			description,
+			image: new URL(image, Astro.site).href,
+			url: new URL(publicPathname, Astro.site).href,
+			isPartOf: { "@type": "WebSite", name: "Axiom", url: Astro.site!.href },
+		}}
+	/>
 	<Docs
 		tree={source.getPageTree()}
 		pathname={publicPathname}
@@ -276,11 +298,17 @@ const publicPathname = Astro.url.pathname;
 					PhaseTimeline,
 					PhaseChecklist,
 					StateTag,
+					Files,
+					Folder,
+					File,
+					Steps,
+					Step,
 					ShowcaseGrid,
 					ShowcaseCard,
 					ShowcaseScreens,
 				}}
 			/>
 		</div>
+		<CodeBlockCopy />
 	</Docs>
 </Layout>

@@ -7,6 +7,7 @@ import { unified } from "@astrojs/markdown-remark";
 import tailwindcss from "@tailwindcss/vite";
 import {
 	rehypeCode,
+	rehypeCodeDefaultOptions,
 	remarkCodeTab,
 	remarkHeading,
 	remarkNpm,
@@ -22,8 +23,36 @@ const remarkPlugins = [
 	[remarkStructure, { exportAs: "structuredData" }],
 ];
 
+const { parseMetaString } = rehypeCodeDefaultOptions;
+
+// Terminal commands (```npm blocks come out as bash) and terminal output (title="Terminal")
+// read as a prompt, not a file: no line numbers.
+const terminalLangs = new Set(["bash", "sh", "shell", "zsh", "console", "powershell"]);
+
+/** @param {string} meta @param {import("hast").Element} pre */
+function isTerminal(meta, pre) {
+	if (/\btitle=["']?Terminal\b/.test(meta)) return true;
+	const code = pre.children[0];
+	const classes = code?.type === "element" ? code.properties.className : undefined;
+	return Array.isArray(classes) && classes.some((name) => terminalLangs.has(String(name).replace("language-", "")));
+}
+
 /** @type {import("astro").RehypePlugins} */
-const rehypePlugins = [rehypeCode];
+const rehypePlugins = [
+	[
+		rehypeCode,
+		{
+			// Same VS Code themes as the landing's code (OwnershipCard).
+			themes: { light: "light-plus", dark: "dark-plus" },
+			// Code blocks get line numbers, like an editor (fumadocs' `lineNumbers` meta, made the default).
+			/** @type {NonNullable<typeof parseMetaString>} */
+			parseMetaString: (meta, node, tree) => ({
+				...parseMetaString?.(meta, node, tree),
+				...(!isTerminal(meta, node) && { "data-line-numbers": true }),
+			}),
+		},
+	],
+];
 const env = loadEnv("dev", process.cwd(), "");
 
 export default defineConfig({

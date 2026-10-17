@@ -1,0 +1,69 @@
+---
+// fumadocs' React CodeBlock renders without hydration in Astro, so its copy button has no handler.
+// This script copies the block's code and swaps the clipboard icon for a check for a moment.
+---
+
+<template id="code-block-copy-check">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M20 6 9 17l-5-5"></path>
+  </svg>
+</template>
+
+<script>
+  const resetDelay = 1500;
+  const timers = new WeakMap<HTMLButtonElement, number>();
+  const icons = new WeakMap<HTMLButtonElement, Element>();
+
+  function codeOf(figure: Element): string {
+    const pre = figure.querySelector('pre');
+    if (!pre) return '';
+    const clone = pre.cloneNode(true) as HTMLElement;
+    for (const node of clone.querySelectorAll('.nd-copy-ignore')) node.replaceWith('\n');
+    return clone.textContent ?? '';
+  }
+
+  function showCopied(button: HTMLButtonElement) {
+    const check = document.querySelector<HTMLTemplateElement>('#code-block-copy-check');
+    const icon = icons.get(button) ?? button.querySelector('svg');
+    if (!icon || !check) return;
+
+    icons.set(button, icon);
+    button.replaceChildren(check.content.cloneNode(true));
+    button.dataset.checked = '';
+    button.setAttribute('aria-label', 'Copied Text');
+
+    clearTimeout(timers.get(button));
+    timers.set(
+      button,
+      window.setTimeout(() => {
+        button.replaceChildren(icon);
+        delete button.dataset.checked;
+        button.setAttribute('aria-label', 'Copy Text');
+      }, resetDelay),
+    );
+  }
+
+  document.addEventListener('click', async (event) => {
+    const button = (event.target as Element).closest<HTMLButtonElement>(
+      'figure.shiki button[aria-label="Copy Text"], figure.shiki button[data-checked]',
+    );
+    const figure = button?.closest('figure.shiki');
+    if (!button || !figure) return;
+
+    try {
+      await navigator.clipboard.writeText(codeOf(figure));
+      showCopied(button);
+    } catch {}
+  });
+</script>
