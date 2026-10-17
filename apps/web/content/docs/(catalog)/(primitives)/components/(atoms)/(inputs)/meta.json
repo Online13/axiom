@@ -1,0 +1,4 @@
+{
+	"title": "Inputs",
+	"pages": ["input", "input-group", "input-otp", "text-area", "switch", "checkbox", "radio", "slider", "segmented-control"]
+}

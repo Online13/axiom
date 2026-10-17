@@ -1,0 +1,4 @@
+{
+	"title": "Feedback",
+	"pages": ["spinner", "skeleton", "alert", "toast", "snackbar"]
+}

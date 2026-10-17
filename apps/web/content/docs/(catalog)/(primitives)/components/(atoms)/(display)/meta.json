@@ -1,0 +1,4 @@
+{
+	"title": "Display",
+	"pages": ["avatar", "badge", "chip", "card", "icon", "separator", "empty", "calendar", "carousel"]
+}
