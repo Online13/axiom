@@ -1,0 +1,11 @@
+{
+	"title": "Core",
+	"root": true,
+	"pages": [
+		"index",
+		"slot",
+		"portal",
+		"overlay",
+		"tappable"
+	]
+}

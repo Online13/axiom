@@ -1,16 +1,11 @@
 {
-	"title": "Catalog",
+	"title": "Components",
 	"root": true,
 	"pages": [
 		"catalog",
-		"---Components---",
 		"components",
 		"(primitives)/components",
 		"../compositions",
-		"../blocks",
-		"---Hooks---",
-		"...hooks",
-		"---Core---",
-		"...core"
+		"../blocks"
 	]
 }

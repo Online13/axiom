@@ -2,6 +2,8 @@
 	"pages": [
 		"(get-started)",
 		"(catalog)",
+		"hooks",
+		"core",
 		"(theming)",
 		"(experiences)",
 		"agent"
