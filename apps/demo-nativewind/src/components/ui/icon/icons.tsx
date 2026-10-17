@@ -76,6 +76,14 @@ export const icons = {
 	people: symbol("person.2", "group"),
 	revenue: symbol("chart.line.uptrend.xyaxis", "trending_up"),
 	time: symbol("clock", "schedule"),
+	// Demo only: the home screen.
+	home: symbol("house", "home"),
+	open: symbol("arrow.up.right", "arrow_outward"),
+	customize: symbol("paintpalette", "palette"),
+	tap: symbol("hand.tap", "touch_app"),
+	form: symbol("list.bullet.rectangle", "list_alt"),
+	layers: symbol("square.stack", "layers"),
+	controls: symbol("slider.horizontal.3", "toggle_on"),
 } satisfies IconRegistry;
 
 export type IconName = keyof typeof icons;

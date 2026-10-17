@@ -14,7 +14,13 @@ type Destination = {
 };
 
 const DESTINATIONS: Destination[] = [
-	{ name: "components", href: "/", label: "Components", icon: "file" },
+	{ name: "home", href: "/", label: "Home", icon: "home" },
+	{
+		name: "components",
+		href: "/components",
+		label: "Components",
+		icon: "file",
+	},
 	{
 		name: "experience",
 		href: "/experience",
@@ -37,7 +43,7 @@ function AppTabBar() {
 		<BottomTabBar
 			// The demo screens sit on `subtle`: the bars take that background instead of the darker default.
 			style={{ backgroundColor: colors.background.subtle }}
-			value={active?.name ?? "components"}
+			value={active?.name ?? "home"}
 			onValueChange={(name) => {
 				const destination = DESTINATIONS.find((item) => item.name === name);
 				if (destination) router.navigate(destination.href as Href);
