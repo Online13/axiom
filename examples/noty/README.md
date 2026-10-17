@@ -1,56 +1,25 @@
-# Welcome to your Expo app 👋
+# Noty
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Notes and simple todos built with Axiom: write fast, tick things off, swipe away what's done. It shows how a real app looks once Axiom's components are copied in and owned by the project.
 
-## Get started
+Noty uses the `unistyles` variant. Unlike the demo apps, its copied components are committed: `src/theme`, `src/hooks` and `src/components` are the app's own code, refreshed from the registry when needed. The items it uses are listed in `axiom.json`.
 
-1. Install dependencies
+## Run it
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+From the repository root, after `bun install`:
 
 ```bash
-npm run reset-project
+bun example:noty android   # build and install the development build (first time)
+bun example:noty ios       # same on iOS, from macOS with Xcode
+bun example:noty start     # start Metro
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+The app is a [development build](https://docs.expo.dev/develop/development-builds/introduction/), not Expo Go: Unistyles ships native code.
 
-### Other setup steps
+To refresh a component from the registry:
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```bash
+bun example:noty axiom add <item> --overwrite
+```
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+See the [Noty page](https://axiom.nekena-rayane.com/docs/showcase/noty/) in the showcase.

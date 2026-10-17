@@ -137,7 +137,7 @@ import { Tab } from "@/components/ui/tab";
 
 | Prop             | Type              | Default | Description                                                                         |
 | ---------------- | ----------------- | ------- | ----------------------------------------------------------------------------------- |
-| ScrollView props | `ScrollViewProps` | —       | Passed to the pager. Internal layout and momentum handlers are composed with yours. |
+| ScrollView props | `ScrollViewProps` | —       | Passed to the pager, except `onScroll`. Internal layout and momentum handlers are composed with yours. |
 
 ### Tab.Panel
 
@@ -147,7 +147,7 @@ import { Tab } from "@/components/ui/tab";
 | `children` | `ReactNode` | —       | Content shown while that tab is selected.                              |
 | View props | `ViewProps` | —       | Passed to the panel `View`. Its layout handler is composed with yours. |
 
-The indicator travels on a spring, and lands without animating the first time: it has nothing to travel from until the items have been measured. Reduced motion moves it without animation.
+The indicator travels on a spring, and lands without animating the first time: it has nothing to travel from until the items have been measured. Reduced motion moves it without animation. Inside a `Tab.Pager`, the indicator follows the finger instead: its position and width track the pager's scroll on the UI thread.
 
 `Tab` sets the tab list, tab and selected accessibility roles. Panels are optional. Without `Tab.Content` or `Tab.Pager`, the screen can render its content elsewhere from the selected value.
 
@@ -179,7 +179,7 @@ Use `Tab.Pager` when the panels contain peer views such as feeds, inboxes or ord
 
 The pager needs a bounded width and height. It uses the native `ScrollView` paging behavior, measures each panel at runtime and updates the selected value when scrolling settles. Pressing a tab scrolls to the measured position of its panel. Off-screen panels stay hidden from the screen reader.
 
-`Tab.Pager` passes its props to the underlying `ScrollView`, so `scrollEnabled`, `decelerationRate`, keyboard behavior and scroll callbacks remain configurable.
+`Tab.Pager` passes its props to the underlying `ScrollView`, so `scrollEnabled`, `decelerationRate`, keyboard behavior and the momentum callbacks remain configurable. `onScroll` is the exception: the pager's scroll drives the indicator, so it keeps that handler for itself.
 
 ## Use cases
 

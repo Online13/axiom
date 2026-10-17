@@ -43,6 +43,7 @@ The demos are [development builds](https://docs.expo.dev/develop/development-bui
 ```bash
 cd apps/demo-stylesheet
 bun android            # build and install on a phone over USB (first time)
+bun ios                # or on iOS, from macOS with Xcode
 bun run axiom:watch    # copy registry files again on every change
 bun start              # Metro, with the QR code
 ```
@@ -50,6 +51,13 @@ bun start              # Metro, with the QR code
 The same goes for `demo-unistyles`, `demo-nativewind` and `demo-uniwind`. Each has its own app id (`dev.axiom.demo.<styling>`), so the four install side by side.
 
 Build again only after adding a library with native code, changing `app.json` or upgrading the Expo SDK.
+
+<Callout title="No Mac for iOS">
+	Without macOS, `bun run sim:ios up --app <styling>` builds a demo on a GitHub
+	macOS runner and streams an iOS Simulator to your browser. It needs `gh`
+	authenticated and your commit pushed. See
+	[`apps/NATIVE_SIM.md`](https://github.com/Online13/axiom/blob/main/apps/NATIVE_SIM.md).
+</Callout>
 
 <Callout type="warn" title="Edit the registry, not the demo">
 	`src/theme`, `src/hooks` and `src/components` in a demo are written by the

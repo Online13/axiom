@@ -10,6 +10,8 @@ Applications in the monorepo. Each folder is a standalone Bun workspace with its
 | [demo-nativewind](demo-nativewind/) | Demo app, `nativewind` variant | Expo + NativeWind |
 | [demo-uniwind](demo-uniwind/)       | Demo app, `uniwind` variant    | Expo + Uniwind    |
 
+Complete apps built with Axiom, such as [Noty](../examples/noty/), live in [`examples`](../examples/).
+
 Each demo also runs the registry's component tests (`packages/registry/tests`) on its copy of the components: `bun run test` copies the registry first. See [Testing](web/content/docs/contributing/testing.mdx).
 
 ## web
@@ -20,22 +22,25 @@ The website serves the presentation page at `/` and the documentation at `/docs`
 - a page for each component, with preview, API and usage;
 - the source code to copy into your project, alongside the `npx axiom add` CLI.
 
-Content comes from the spec in [`/docs`](../docs/README.md).
+The pages are MDX files in [`web/content/docs`](web/content/docs/), published at [axiom.nekena-rayane.com/docs](https://axiom.nekena-rayane.com/docs/).
 
 ## Demo apps
 
 Four Expo apps, one per styling tool, with the same screens. Each is set up like a user project: it has an `axiom.json` and receives components from [`packages/registry`](../packages/registry) through the CLI. Files the CLI copies (`src/theme`, `src/hooks`, `src/components`) are ignored by git. Edit them in the registry.
 
 ```bash
-bun demo:stylesheet axiom add <item>   # copy an item and its internal dependencies
-bun demo:stylesheet axiom:watch        # copy again on every registry change
-bun demo:stylesheet android            # build and install the development build (first time)
-bun demo:stylesheet start              # start Metro, then open the app
+bun demo:stylesheet axiom sync --no-install   # copy every item of axiom.json (fresh clone)
+bun demo:stylesheet axiom add <item>          # copy an item and its internal dependencies
+bun demo:stylesheet axiom:watch               # copy again on every registry change
+bun demo:stylesheet android                   # build and install the development build (first time)
+bun demo:stylesheet ios                       # same on iOS, from macOS
+bun demo:stylesheet start                     # start Metro, then open the app
+bun demo:stylesheet test                      # run the component tests
 ```
 
 Same for `demo:unistyles`, `demo:nativewind` and `demo:uniwind`. These shortcuts use `bun run --cwd apps/demo-<variant>`, which keeps Expo's interactive terminal and QR code. `bun run --filter` doesn't, so the demos don't use it.
 
-The demos don't use Expo Go. Each one is a [development build](https://docs.expo.dev/develop/development-builds/introduction/): the app is compiled from the project with `expo-dev-client`, so it includes native code Expo Go lacks, such as Unistyles. `bun android` compiles it locally (Android Studio required, phone plugged in over USB with debugging on) and `bun ios` does the same on macOS.
+The demos don't use Expo Go. Each one is a [development build](https://docs.expo.dev/develop/development-builds/introduction/): the app is compiled from the project with `expo-dev-client`, so it includes native code Expo Go lacks, such as Unistyles. `bun android` compiles it locally (Android Studio required, phone plugged in over USB with debugging on, or an emulator) and `bun ios` does the same on macOS. Without a Mac, use the iOS simulator in the browser below.
 
 Build again only after adding a library with native code, changing `app.json` or upgrading the Expo SDK. JavaScript changes reload through Metro.
 

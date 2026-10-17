@@ -185,4 +185,4 @@ bun demo:stylesheet test   # or demo:unistyles, demo:nativewind, demo:uniwind
 }
 ```
 
-The full rules are in [`docs/architecture/registry.md`](../../docs/architecture/registry.md).
+[From the registry to an app](https://axiom.nekena-rayane.com/docs/contributing/registry-to-app/) follows an item from this folder to a project, and [Adding a component](https://axiom.nekena-rayane.com/docs/contributing/adding-a-component/) walks through a new one.

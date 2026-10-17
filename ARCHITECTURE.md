@@ -137,7 +137,7 @@ The CLI lives in `packages/cli`. Its `add` command copies files, rewrites import
 
 ## Repository structure
 
-The repository is a Bun workspace monorepo. The workspaces are `apps/*` and `packages/*`.
+The repository is a Bun workspace monorepo. The workspaces are `apps/*`, `packages/*` and `examples/*`.
 
 ```text
 axiom/
@@ -150,6 +150,10 @@ axiom/
 ├── packages/
 │   ├── registry/          # source of every item, registry.json, and the component tests
 │   └── cli/               # the axiom CLI
+├── examples/
+│   └── noty/              # a complete app built with Axiom
+├── scripts/
+│   └── native-sim.mjs     # streams a demo's iOS simulator from GitHub Actions
 ├── bunfig.toml            # hoisted installs, required by the Expo apps
 └── package.json           # workspaces and app shortcuts
 ```
@@ -157,7 +161,8 @@ axiom/
 - **`apps/web`.** The Astro website. It serves the landing page at `/` and the Fumadocs pages at `/docs`. Documentation content lives in `apps/web/content/docs`. See [its README](./apps/web/README.md).
 - **`apps/demo-*`.** Expo apps, one per styling tool. Each one is set up like a user project: it has an `axiom.json` and gets its components through the CLI.
 - **`packages/registry`.** The code copied into projects. Nothing imports it directly. Its `tests` folder holds the component tests, which every demo runs on its fresh copy of the items. See [its README](./packages/registry/README.md).
-- **`packages/cli`.** The command that reads the registry and copies items into a project.
+- **`packages/cli`.** The command that reads the registry and copies items into a project. See [its docs](./packages/cli/docs/README.md).
+- **`examples`.** Complete apps built with Axiom, set up like a user project. [Noty](./examples/noty/) uses the `unistyles` variant.
 
 See [apps/README.md](./apps/README.md) for how the apps run.
 

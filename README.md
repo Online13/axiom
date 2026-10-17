@@ -47,30 +47,51 @@ _A preview of a real mobile flow built with Axiom will be added here._
 
 ## Current state
 
-| Part               | Location                                   | Status                                        |
-| ------------------ | ------------------------------------------ | --------------------------------------------- |
-| Website            | [`apps/web`](./apps/web)                   | Astro landing and Fumadocs documentation      |
-| Demo apps          | [`apps`](./apps)                           | Four Expo apps, one per styling tool          |
-| Registry           | [`packages/registry`](./packages/registry) | Source for foundations, components, and hooks |
-| CLI                | [`packages/cli`](./packages/cli)           | Copies selected registry items into an app    |
+| Part      | Location                                   | Status                                                      |
+| --------- | ------------------------------------------ | ----------------------------------------------------------- |
+| Website   | [`apps/web`](./apps/web)                   | Astro landing and Fumadocs documentation                    |
+| Demo apps | [`apps`](./apps)                           | Four Expo apps, one per styling tool                        |
+| Registry  | [`packages/registry`](./packages/registry) | Source of the foundations, components, hooks and tests      |
+| CLI       | [`packages/cli`](./packages/cli)           | `init`, `add` and `sync`: copies registry items into an app |
+| Examples  | [`examples`](./examples)                   | Complete apps built with Axiom                              |
 
-The registry currently lists 88 items, each styled for StyleSheet, Unistyles, NativeWind and Uniwind. Each demo app shows them with one of these tools. See [apps/README.md](./apps/README.md) for the workspace layout.
+The registry lists 88 items. The 75 with styling variants are written for StyleSheet, Unistyles, NativeWind and Uniwind, and each demo app shows them with one of these tools. The documentation is online at [axiom.nekena-rayane.com/docs](https://axiom.nekena-rayane.com/docs/).
 
 ## Running locally
 
-```bash
-bun install
-bun web dev       # landing and documentation → http://localhost:4321
+You need [Bun](https://bun.sh/) and [Node.js](https://nodejs.org/) `>=22.12.0`.
 
-bun demo:stylesheet android   # build and install the demo app, see apps/README.md
-bun demo:stylesheet start     # start Metro
+```bash
+git clone git@github.com:Online13/axiom.git
+cd axiom
+bun install
+bun web dev   # landing and documentation → http://localhost:4321
 ```
 
-More details in [`apps/README.md`](./apps/README.md).
+The demo apps are [development builds](https://docs.expo.dev/develop/development-builds/introduction/), not Expo Go, so they compile on your machine: Android Studio for Android, Xcode on macOS for iOS. Their components are copied from the registry by the CLI and ignored by Git, so copy them first:
 
-## Test a demo on iOS
+```bash
+bun demo:stylesheet axiom sync --no-install   # copy the items listed in axiom.json
+bun demo:stylesheet android                   # build and install on Android (first time)
+bun demo:stylesheet ios                       # or on iOS, from macOS
+bun demo:stylesheet start                     # start Metro
+```
 
-The `native-sim` workflow builds one of the demo apps on a GitHub macOS runner and streams an iOS Simulator to your browser. Authenticate `gh`, then commit and push your changes to `main` before starting a session:
+The same commands work with `demo:unistyles`, `demo:nativewind` and `demo:uniwind`. Build again only after adding a native library, changing `app.json` or upgrading Expo; JavaScript changes reload through Metro.
+
+While you edit `packages/registry`, `bun demo:stylesheet axiom:watch` copies each change into the demo. Before opening a pull request:
+
+```bash
+bun demo:stylesheet test   # component tests, on the demo's copy of the registry
+bun run lint
+bun web build
+```
+
+More details in [`apps/README.md`](./apps/README.md) and in the [setup guide](https://axiom.nekena-rayane.com/docs/contributing/setup/).
+
+## Test on iOS without a Mac
+
+Building for iOS needs Xcode, so it only works on macOS. Without a Mac, use the `native-sim` workflow: it builds a demo app on a GitHub macOS runner and streams an iOS Simulator to your browser. Authenticate `gh`, then commit and push your changes to `main`, since the runner builds the published commit:
 
 ```bash
 gh auth login                                    # once, if gh is not connected
@@ -83,13 +104,13 @@ bun run sim:ios down --app unistyles             # stop the session
 
 ## Learn more
 
+- [Documentation](https://axiom.nekena-rayane.com/docs/)
 - [Design Principles](./DESIGN_PRINCIPLES.md): how Axiom makes decisions
 - [Architecture](./ARCHITECTURE.md): how the system and the repository are organized
-- [Contributing](./CONTRIBUTING.md): how to set up the project and open a pull request
 
 ## Contributing
 
-Contributions are welcome. Start with [CONTRIBUTING.md](./CONTRIBUTING.md).
+Contributions are welcome. Start with the [contributing guide](https://axiom.nekena-rayane.com/docs/contributing/): setup, how the registry reaches an app, adding a component, testing and pull requests. [CONTRIBUTING.md](./CONTRIBUTING.md) has the short version.
 
 ## License
 

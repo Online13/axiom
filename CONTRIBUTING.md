@@ -1,6 +1,6 @@
 # Contributing to Axiom
 
-Thanks for your interest in Axiom. This guide covers setting up the repository, finding something to work on, and opening a pull request.
+Thanks for your interest in Axiom. This guide covers setting up the repository, finding something to work on, and opening a pull request. The [contributing guide](https://axiom.nekena-rayane.com/docs/contributing/) in the documentation goes further: how the registry reaches an app, adding a component, testing and writing docs.
 
 Axiom is in early development. The repository contains the documentation site, the landing page, four demo apps, an 88-entry registry and a CLI with `add`, `init` and `sync`. The 75 entries with styling variants are written for `stylesheet`, `unistyles`, `nativewind` and `uniwind`.
 
@@ -19,7 +19,7 @@ For anything beyond a small fix, such as a new component, a new pattern, an API 
 - [Bun](https://bun.sh/), the package manager for the monorepo (`bun.lock` is committed)
 - [Node.js](https://nodejs.org/) `>=22.12.0`, required by the Astro app (see `apps/web/package.json`)
 
-The demo apps run as [development builds](https://docs.expo.dev/develop/development-builds/introduction/), compiled on your machine. For Android you need Android Studio (Android SDK and JDK), and for iOS you need Xcode on macOS.
+The demo apps run as [development builds](https://docs.expo.dev/develop/development-builds/introduction/), compiled on your machine. For Android you need Android Studio (Android SDK and JDK), and for iOS you need Xcode on macOS. Without a Mac, test on iOS with [native-sim](./apps/NATIVE_SIM.md), which builds a demo on a GitHub macOS runner and streams the simulator to your browser.
 
 ## Local setup
 
@@ -29,33 +29,27 @@ cd axiom
 bun install
 ```
 
-Run the apps from the repository root:
+Run the documentation from the repository root:
 
 ```bash
-bun web dev         # landing and documentation, http://localhost:4321
-bun demo:stylesheet start   # demo app, also demo:unistyles, demo:nativewind, demo:uniwind
+bun web dev     # landing and documentation, http://localhost:4321
+bun web build   # check that every page compiles
 ```
 
-Build them to check your changes compile:
+Components are written in `packages/registry` and copied into the demos by the CLI, so a demo's `src/theme`, `src/hooks` and `src/components` are ignored by Git. Copy them, then build and start a demo:
 
 ```bash
-bun web build
+bun demo:stylesheet axiom sync --no-install   # copy the items listed in axiom.json
+bun demo:stylesheet android                   # or ios, from macOS (first time)
+bun demo:stylesheet start                     # Metro
+bun demo:stylesheet axiom:watch               # copy registry changes as you edit
 ```
 
-See [apps/README.md](./apps/README.md) for details.
-
-Start a demo app from its own folder, so Expo can show the QR code:
-
-```bash
-cd apps/demo-stylesheet
-bun start
-```
-
-Components are written in `packages/registry` and copied into the demos by the CLI. See [repository.md](./docs/architecture/repository.md#les-démos-passent-par-le-cli).
+The same goes for `demo:unistyles`, `demo:nativewind` and `demo:uniwind`. Edit the registry, never the copies in a demo. See [apps/README.md](./apps/README.md) and [From the registry to an app](https://axiom.nekena-rayane.com/docs/contributing/registry-to-app/).
 
 The repo installs dependencies hoisted (`bunfig.toml`), so every app must use the same React version as Expo.
 
-The CLI has tests (`bun run --cwd packages/cli test`), and the registry is typechecked for every variant (`bun run --cwd packages/registry typecheck`). For an app, the minimum check is a successful build. For a demo app, run `bunx tsc --noEmit` and `bunx expo-doctor` in its folder.
+The CLI has tests (`bun run --cwd packages/cli test`), and the registry is typechecked for every variant (`bun run --cwd packages/registry typecheck`). For an app, the minimum check is a successful build. For a demo app, run `bunx tsc --noEmit` and `bunx expo-doctor` in its folder. The [setup page](https://axiom.nekena-rayane.com/docs/contributing/setup/#run-the-checks) lists the check for each part of the repository.
 
 ## Finding something to work on
 

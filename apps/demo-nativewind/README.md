@@ -1,56 +1,25 @@
-# Welcome to your Expo app 👋
+# Axiom demo: NativeWind
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+The Axiom demo app for the `nativewind` styling variant: one screen per component, from the foundations to the templates, then the compositions and the block, with a light / dark switch.
 
-## Get started
+It is set up like a user project. `axiom.json` lists its items, and the CLI copies them from [`packages/registry`](../../packages/registry) into `src/theme`, `src/hooks` and `src/components`. Those copies are ignored by Git: edit the registry, not the demo.
 
-1. Install dependencies
+## Run it
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+From the repository root, after `bun install`:
 
 ```bash
-npm run reset-project
+bun demo:nativewind axiom sync --no-install   # copy the items listed in axiom.json
+bun demo:nativewind android                   # build and install the development build (first time)
+bun demo:nativewind ios                       # same on iOS, from macOS with Xcode
+bun demo:nativewind start                     # start Metro
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+The app is a [development build](https://docs.expo.dev/develop/development-builds/introduction/), not Expo Go. Build again only after adding a native library, changing `app.json` or upgrading Expo. Without a Mac, stream it on iOS with `bun run sim:ios up --app nativewind` (see [native-sim](../NATIVE_SIM.md)).
 
-### Other setup steps
+| Command                           | What it does                                                   |
+| --------------------------------- | -------------------------------------------------------------- |
+| `bun demo:nativewind axiom:watch` | Copies registry changes into the demo as you edit              |
+| `bun demo:nativewind test`        | Copies the registry, then runs the component tests on the copy |
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Its app id is `dev.axiom.demo.nativewind`, so it installs next to the other demos. See [apps/README.md](../README.md) for the four demos together.
