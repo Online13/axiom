@@ -59,6 +59,11 @@ export default defineConfig({
 	// Production origin: canonical URLs, Open Graph images and the sitemap are built against it.
 	site: "https://axiom.nekena-rayane.com",
 	server: { port: env.PORT ? Number(env.PORT) : 4321 },
+	// The compositions and blocks indexes became the gallery, opened on the matching type.
+	redirects: {
+		"/docs/compositions": "/docs/gallery?kind=composition",
+		"/docs/blocks": "/docs/gallery?kind=block",
+	},
 	markdown: {
 		processor: unified({
 			remarkPlugins,

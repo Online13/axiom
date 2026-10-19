@@ -3,9 +3,9 @@
  * The site theme, shared by the landing, the docs and the theme builder.
  * Include it first in each layout's <head>: it runs before paint, so a saved theme never
  * flashes the dark default. It sets on <html>:
- *   data-theme-pref  the choice: dark | light | system | mystery
- *   data-theme       the resolved palette: dark | light | mystery
- *   .dark            for dark and mystery, which the docs' Tailwind `dark:` variant reads
+ *   data-theme-pref  the choice: dark | light | system
+ *   data-theme       the resolved palette: dark | light
+ *   .dark            for dark, which the docs' Tailwind `dark:` variant reads
  * ThemeSwitcher.tsx drives it through `window.axiomTheme`.
  */
 ---
@@ -14,7 +14,7 @@
 	(() => {
 		// Same key next-themes used in the docs, so an existing choice carries over.
 		const KEY = 'theme';
-		const PREFERENCES = ['dark', 'light', 'system', 'mystery'];
+		const PREFERENCES = ['dark', 'light', 'system'];
 		const root = document.documentElement;
 		const light = matchMedia('(prefers-color-scheme: light)');
 		let preference = 'dark';

@@ -1,7 +1,7 @@
 :root {
 	/* Brand palette: Ink 950, Navy 800, React Native Blue 400, Indigo 500, Teal 400, Coral 400. */
-	--ink: #0b1016;
-	--navy: #13202e;
+	--ink: #0a0a0a;
+	--navy: #1a1a1a;
 	--accent: #61dafb;
 	--indigo: #8b5cf6;
 	--teal: #14b8a6;
@@ -11,11 +11,11 @@
 	--fg: #f2f5f8;
 	--muted: #8a97a8;
 	--eyebrow: #c3ccd7;
-	--line: #1f2c3b;
-	--line-soft: #18232f;
-	--surface: #0f1822;
+	--line: #262626;
+	--line-soft: #1c1c1c;
+	--surface: #121212;
 	--surface-raised: var(--navy);
-	--card: #0d141c;
+	--card: #0f0f0f;
 	--grid: #8fb4ff06;
 	--accent-text: var(--accent);
 	/* Text on an accent fill. */
@@ -49,20 +49,6 @@
 	--grid: #00000006;
 	--accent-text: #087ea4;
 	color-scheme: light;
-}
-
-:root[data-theme="mystery"] {
-	--bg: #0c0a18;
-	--fg: #ece8ff;
-	--muted: #8b84b0;
-	--line: #2b2548;
-	--line-soft: #221d3b;
-	--surface: #120f26;
-	--surface-raised: #1a1634;
-	--card: #100d21;
-	--eyebrow: #c9c2ec;
-	--grid: #b9a8ff08;
-	--accent-text: #c4b5fd;
 }
 
 *,

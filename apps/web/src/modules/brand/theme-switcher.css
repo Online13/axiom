@@ -47,8 +47,7 @@
 
 :root[data-theme-pref="dark"] .theme-switch__trigger [data-for="dark"],
 :root[data-theme-pref="light"] .theme-switch__trigger [data-for="light"],
-:root[data-theme-pref="system"] .theme-switch__trigger [data-for="system"],
-:root[data-theme-pref="mystery"] .theme-switch__trigger [data-for="mystery"] {
+:root[data-theme-pref="system"] .theme-switch__trigger [data-for="system"] {
 	display: block;
 }
 

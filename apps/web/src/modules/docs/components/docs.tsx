@@ -4,7 +4,7 @@ import {
 	type DocsPageProps,
 } from "fumadocs-ui/layouts/notebook/page";
 import type { Root } from "fumadocs-core/page-tree";
-import type { MouseEvent, ReactNode } from "react";
+import type { CSSProperties, MouseEvent, ReactNode } from "react";
 import { navigate } from "astro:transitions/client";
 import { RootProvider } from "fumadocs-ui/provider/astro";
 import { Banner } from "fumadocs-ui/components/banner";
@@ -20,6 +20,10 @@ const githubUrl = "https://github.com/Online13/axiom";
 
 // Tabs whose section is not built yet get a "Soon" pill next to their title.
 const soonTabs = new Set(["/docs/agent"]);
+
+// Sections browsed from a grid rather than a tree: no sidebar on desktop, the page takes the width.
+// The mobile drawer stays, it holds the tabs on small screens.
+const noSidebarSections = ["/docs/gallery", "/docs/compositions", "/docs/blocks"];
 
 const tabs: GetLayoutTabsOptions = {
 	transform: (tab) =>
@@ -68,12 +72,16 @@ export function Docs({
 	params: AstroProviderProps["params"];
 	page?: DocsPageProps;
 }) {
+	const noSidebar = noSidebarSections.some(
+		(section) => pathname === section || pathname.startsWith(`${section}/`),
+	);
+
 	return (
 		<RootProvider
 			pathname={pathname}
 			params={params}
 			navigate={navigate}
-			// The site-wide ThemeScript owns the theme (it adds a `mystery` palette next-themes can't express).
+			// The site-wide ThemeScript owns the theme, shared with the landing and the theme builder.
 			theme={{ enabled: false }}
 			search={{ SearchDialog }}
 		>
@@ -98,7 +106,13 @@ export function Docs({
 			</Banner>
 			<DocsLayout
 				tree={tree}
-				containerProps={{ onClickCapture: preventActiveFolderNavigation }}
+				containerProps={{
+					onClickCapture: preventActiveFolderNavigation,
+					...(noSidebar && {
+						"data-no-sidebar": "",
+						style: { "--fd-sidebar-col": "0px" } as CSSProperties,
+					}),
+				}}
 				slots={{
 					themeSwitch: DocsThemeSwitch,
 					searchTrigger: { sm: SearchTrigger, full: TypedSearchTrigger },

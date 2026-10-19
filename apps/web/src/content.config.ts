@@ -7,6 +7,8 @@ const docs = defineCollection({
 		title: z.string(),
 		description: z.string().optional(),
 		icon: z.string().optional(),
+		// Fumadocs full-width page: no table of contents, no max width on the content.
+		full: z.boolean().optional(),
 	}),
 });
 

@@ -1,6 +1,6 @@
-// Single source for the compositions shown in the docs.
-// The catalog (/docs/compositions) and the "Compositions" section of each primitive page read from here,
-// so a composition is declared once and appears in both places.
+// Single source for the compositions and blocks shown in the docs.
+// The gallery (/docs/gallery), the compositions and blocks indexes, and the "Compositions" section of each
+// primitive page read from here, so an item is declared once and appears everywhere.
 
 export type CompositionCategory =
 	| "card"
@@ -57,16 +57,6 @@ export const primitives = {
 
 export type PrimitiveName = keyof typeof primitives;
 
-/** Blocks that use compositions. Keys are registry names. */
-export const blocks = {
-	"settings-section": {
-		name: "Settings Section",
-		href: "/docs/blocks/settings-section",
-	},
-} satisfies Record<string, DocLink>;
-
-export type BlockName = keyof typeof blocks;
-
 export interface Composition {
 	/** Registry name, used by `npx axiom add` and in the URL. */
 	slug: string;
@@ -79,7 +69,6 @@ export interface Composition {
 	/** The primitive it is derived from, listed first in "Built with". */
 	base: PrimitiveName;
 	builtWith: PrimitiveName[];
-	usedIn: BlockName[];
 }
 
 export const compositions: Composition[] = [
@@ -91,7 +80,6 @@ export const compositions: Composition[] = [
 		categories: ["card", "commerce"],
 		base: "card",
 		builtWith: ["card", "text", "badge", "button"],
-		usedIn: [],
 	},
 	{
 		slug: "listing-card",
@@ -101,7 +89,6 @@ export const compositions: Composition[] = [
 		categories: ["card", "commerce"],
 		base: "card",
 		builtWith: ["card", "badge", "separator", "icon", "text", "title", "avatar", "button"],
-		usedIn: [],
 	},
 	{
 		slug: "recipe-card",
@@ -111,7 +98,6 @@ export const compositions: Composition[] = [
 		categories: ["card", "content"],
 		base: "card",
 		builtWith: ["card", "chip", "badge", "separator", "icon", "text", "button"],
-		usedIn: [],
 	},
 	{
 		slug: "profile-card",
@@ -121,7 +107,6 @@ export const compositions: Composition[] = [
 		categories: ["card", "social"],
 		base: "card",
 		builtWith: ["card", "avatar", "title", "text", "separator", "button"],
-		usedIn: [],
 	},
 	{
 		slug: "article-card",
@@ -131,7 +116,6 @@ export const compositions: Composition[] = [
 		categories: ["card", "content"],
 		base: "card",
 		builtWith: ["card", "title", "text", "avatar"],
-		usedIn: [],
 	},
 	{
 		slug: "event-card",
@@ -141,7 +125,6 @@ export const compositions: Composition[] = [
 		categories: ["card", "social"],
 		base: "card",
 		builtWith: ["card", "title", "text", "icon", "avatar", "button"],
-		usedIn: [],
 	},
 	{
 		slug: "settings-item",
@@ -151,7 +134,6 @@ export const compositions: Composition[] = [
 		categories: ["item", "list", "form"],
 		base: "item",
 		builtWith: ["item", "icon", "switch", "text"],
-		usedIn: ["settings-section"],
 	},
 	{
 		slug: "track-item",
@@ -161,7 +143,6 @@ export const compositions: Composition[] = [
 		categories: ["item", "list", "media"],
 		base: "item",
 		builtWith: ["item", "text", "badge", "icon-button"],
-		usedIn: [],
 	},
 	{
 		slug: "conversation-item",
@@ -171,7 +152,6 @@ export const compositions: Composition[] = [
 		categories: ["item", "list", "social"],
 		base: "item",
 		builtWith: ["item", "avatar", "text", "badge"],
-		usedIn: [],
 	},
 	{
 		slug: "notification-item",
@@ -181,7 +161,6 @@ export const compositions: Composition[] = [
 		categories: ["item", "list", "feedback"],
 		base: "item",
 		builtWith: ["item", "avatar", "icon", "text", "badge", "button"],
-		usedIn: [],
 	},
 	{
 		slug: "search-result-item",
@@ -191,7 +170,6 @@ export const compositions: Composition[] = [
 		categories: ["item", "list"],
 		base: "item",
 		builtWith: ["item", "icon", "icon-button", "text"],
-		usedIn: [],
 	},
 	{
 		slug: "offer-card",
@@ -201,7 +179,6 @@ export const compositions: Composition[] = [
 		categories: ["card", "commerce"],
 		base: "card",
 		builtWith: ["card", "badge", "title", "text", "icon", "button"],
-		usedIn: [],
 	},
 	{
 		slug: "pricing-card",
@@ -211,7 +188,6 @@ export const compositions: Composition[] = [
 		categories: ["card", "commerce"],
 		base: "card",
 		builtWith: ["card", "badge", "title", "text", "icon", "button"],
-		usedIn: [],
 	},
 	{
 		slug: "stats-card",
@@ -221,7 +197,6 @@ export const compositions: Composition[] = [
 		categories: ["card", "content"],
 		base: "card",
 		builtWith: ["card", "title", "text", "badge", "icon"],
-		usedIn: [],
 	},
 	{
 		slug: "search-app-bar",
@@ -231,7 +206,6 @@ export const compositions: Composition[] = [
 		categories: ["navigation", "form"],
 		base: "app-bar",
 		builtWith: ["app-bar", "search-bar", "icon-button", "badge"],
-		usedIn: [],
 	},
 	{
 		slug: "profile-app-bar",
@@ -241,11 +215,74 @@ export const compositions: Composition[] = [
 		categories: ["navigation", "social"],
 		base: "app-bar",
 		builtWith: ["app-bar", "avatar", "title", "text", "icon-button", "badge", "tappable"],
-		usedIn: [],
 	},
 ];
 
 export const compositionHref = (slug: string) => `/docs/compositions/${slug}`;
+
+export interface Block {
+	/** Registry name, used by `npx axiom add` and in the URL. */
+	slug: string;
+	name: string;
+	description: string;
+	categories: CompositionCategory[];
+	/** Composition slugs it uses, listed first in "Built with". */
+	compositions: string[];
+	builtWith: PrimitiveName[];
+}
+
+/** Available blocks. Planned ones are listed on /docs/blocks only. */
+export const blocks: Block[] = [
+	{
+		slug: "settings-section",
+		name: "Settings Section",
+		description: "A titled group of Settings Items with a footer note.",
+		categories: ["list", "form"],
+		compositions: ["settings-item"],
+		builtWith: ["text"],
+	},
+];
+
+export const blockHref = (slug: string) => `/docs/blocks/${slug}`;
+
+export type GalleryKind = "composition" | "block";
+
+/** What a gallery card shows, for a composition or a block. */
+export interface GalleryItem {
+	kind: GalleryKind;
+	slug: string;
+	name: string;
+	description: string;
+	href: string;
+	categories: CompositionCategory[];
+	/** Names shown under "Built with". */
+	builtWith: string[];
+}
+
+export const compositionItem = (c: Composition): GalleryItem => ({
+	kind: "composition",
+	slug: c.slug,
+	name: c.name,
+	description: c.description,
+	href: compositionHref(c.slug),
+	categories: c.categories,
+	builtWith: c.builtWith.map((name) => primitives[name].name),
+});
+
+export const blockItem = (b: Block): GalleryItem => ({
+	kind: "block",
+	slug: b.slug,
+	name: b.name,
+	description: b.description,
+	href: blockHref(b.slug),
+	categories: b.categories,
+	builtWith: [
+		...b.compositions.map((slug) => compositions.find((c) => c.slug === slug)?.name ?? slug),
+		...b.builtWith.map((name) => primitives[name].name),
+	],
+});
+
+export const galleryItems: GalleryItem[] = [...compositions.map(compositionItem), ...blocks.map(blockItem)];
 
 /** Compositions that use a primitive, derived one first. */
 export function compositionsBuiltWith(primitive: PrimitiveName): Composition[] {

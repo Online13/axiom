@@ -2,6 +2,7 @@
 	"pages": [
 		"(get-started)",
 		"(catalog)",
+		"(gallery)",
 		"hooks",
 		"core",
 		"(theming)",

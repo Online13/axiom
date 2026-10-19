@@ -88,8 +88,8 @@ import PreviewTheme from "@docs/components/preview/preview-theme.astro";
 import AxiomBanner from "@docs/components/intro/axiom-banner.astro";
 import ComponentLayers from "@docs/components/intro/component-layers.astro";
 import StylingTools from "@docs/components/intro/styling-tools.astro";
-import CompositionCatalog from "@docs/components/compositions/composition-catalog.astro";
-import CompositionGrid from "@docs/components/compositions/composition-grid.astro";
+import GalleryCatalog from "@docs/components/gallery/gallery-catalog.astro";
+import GalleryGrid from "@docs/components/gallery/gallery-grid.astro";
 import ListingCardPreview from "@docs/components/compositions/listing-card-preview.astro";
 import RecipeCardPreview from "@docs/components/compositions/recipe-card-preview.astro";
 import ProfileCardPreview from "@docs/components/compositions/profile-card-preview.astro";
@@ -178,7 +178,7 @@ const description =
 		tree={source.getPageTree()}
 		pathname={publicPathname}
 		params={Astro.params}
-		page={{ toc }}
+		page={{ toc, full: page.data.full }}
 		client:load
 	>
 		<h1 class="font-semibold text-3xl">{page.data.title}</h1>
@@ -280,8 +280,8 @@ const description =
 					AxiomBanner,
 					ComponentLayers,
 					StylingTools,
-					CompositionCatalog,
-					CompositionGrid,
+					GalleryCatalog,
+					GalleryGrid,
 					ListingCardPreview,
 					RecipeCardPreview,
 					ProfileCardPreview,

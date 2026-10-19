@@ -1,0 +1,16 @@
+---
+// Grid of GalleryCard for a primitive page: the compositions built with that primitive, the ones derived from it first.
+import GalleryCard from './gallery-card.astro';
+import { compositionItem, compositionsBuiltWith, type PrimitiveName } from '@docs/data/compositions';
+
+interface Props {
+  primitive: PrimitiveName;
+}
+
+const { primitive } = Astro.props;
+const items = compositionsBuiltWith(primitive).map(compositionItem);
+---
+
+<div class="not-prose my-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+  {items.map((item) => <GalleryCard item={item} />)}
+</div>

@@ -46,6 +46,11 @@
 	--color-fd-ring: #a3a3a3;
 }
 
+/* Gallery sections drop the desktop sidebar (see docs.tsx); the column is already 0 wide. */
+#nd-notebook-layout[data-no-sidebar] [data-sidebar-placeholder] {
+	display: none;
+}
+
 #nd-sidebar {
 	--color-fd-muted: #f2f2f2;
 	--color-fd-secondary: #ebebeb;
@@ -53,54 +58,28 @@
 }
 
 .dark {
-	--color-fd-background: #0b1016;
+	--color-fd-background: #0a0a0a;
 	--color-fd-foreground: #f2f5f8;
-	--color-fd-muted: #0f1822;
+	--color-fd-muted: #121212;
 	--color-fd-muted-foreground: #8a97a8;
-	--color-fd-popover: #0f1822;
+	--color-fd-popover: #121212;
 	--color-fd-popover-foreground: #f2f5f8;
-	--color-fd-card: #0d141c;
+	--color-fd-card: #0f0f0f;
 	--color-fd-card-foreground: #f2f5f8;
-	--color-fd-border: #1f2c3b;
+	--color-fd-border: #262626;
 	--color-fd-primary: #f2f5f8;
-	--color-fd-primary-foreground: #0b1016;
-	--color-fd-secondary: #0f1822;
+	--color-fd-primary-foreground: #0a0a0a;
+	--color-fd-secondary: #121212;
 	--color-fd-secondary-foreground: #f2f5f8;
-	--color-fd-accent: #13202e;
+	--color-fd-accent: #1a1a1a;
 	--color-fd-accent-foreground: #f2f5f8;
-	--color-fd-ring: #3a4d63;
+	--color-fd-ring: #474747;
 }
 
 .dark #nd-sidebar {
-	--color-fd-muted: #0f1822;
-	--color-fd-secondary: #13202e;
+	--color-fd-muted: #121212;
+	--color-fd-secondary: #1a1a1a;
 	--color-fd-muted-foreground: #8a97a8;
-}
-
-/* Mystery: the site's secret palette, a night-violet take on dark. It keeps `.dark` too. */
-:root[data-theme="mystery"] {
-	--color-fd-background: #0c0a18;
-	--color-fd-foreground: #ece8ff;
-	--color-fd-muted: #16122c;
-	--color-fd-muted-foreground: #8b84b0;
-	--color-fd-popover: #120f26;
-	--color-fd-popover-foreground: #ece8ff;
-	--color-fd-card: #120f26;
-	--color-fd-card-foreground: #ece8ff;
-	--color-fd-border: #2b2548;
-	--color-fd-primary: #ece8ff;
-	--color-fd-primary-foreground: #0c0a18;
-	--color-fd-secondary: #16122c;
-	--color-fd-secondary-foreground: #ece8ff;
-	--color-fd-accent: #1f1a3a;
-	--color-fd-accent-foreground: #ece8ff;
-	--color-fd-ring: #5b5287;
-}
-
-:root[data-theme="mystery"] #nd-sidebar {
-	--color-fd-muted: #16122c;
-	--color-fd-secondary: #1f1a3a;
-	--color-fd-muted-foreground: #8b84b0;
 }
 
 /*
@@ -224,6 +203,28 @@ body {
 
 /* Cap the reading column (Fumadocs default 900px). */
 #nd-page > * {
+	max-width: 740px;
+}
+
+/* Full-width pages (`full: true`, the gallery) have no sidebar and no TOC: the page takes the header's
+   container (1440px max, --gutter inside), so its edges line up with the logo and the GitHub button.
+   Fumadocs sizes the page column to its content up to --fd-layout-width, and a grid of cards is narrow
+   content, so the columns are replaced (over the inline template, hence !important) by one that fills the window. */
+#nd-notebook-layout:has(#nd-page[data-full="true"]) {
+	grid-template-columns: 0 0 minmax(0, 1fr) 0 0 !important;
+}
+
+#nd-page[data-full="true"] {
+	padding-inline: calc(max(0px, (100% - var(--container-max)) / 2) + var(--gutter));
+}
+
+#nd-page[data-full="true"] > * {
+	max-width: none;
+}
+
+/* Text keeps the reading column's measure; grids and cards take the full width. */
+#nd-page[data-full="true"] > p,
+#nd-page[data-full="true"] .prose > p {
 	max-width: 740px;
 }
 

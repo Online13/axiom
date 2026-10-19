@@ -1,0 +1,85 @@
+---
+// Link card for a composition or a block: an in-context preview, the name, a short description and what it is built with.
+// Same frame as AtomCard. The preview is drawn at real iOS sizes and shrunk with `zoom`, like PhonePreview.
+// The `data-*` attributes on the link let GalleryCatalog filter and search the cards.
+// Like AtomCard, the preview follows the site theme: the script mirrors the `.dark` class on <html> into `data-scheme`.
+import CompositionPreview from '../compositions/composition-preview.astro';
+import BlockPreview from './block-preview.astro';
+import type { GalleryItem } from '@docs/data/compositions';
+
+interface Props {
+  item: GalleryItem;
+  /** Show "Composition" or "Block" next to the name, for grids that mix both. */
+  showKind?: boolean;
+}
+
+const { item, showKind = false } = Astro.props;
+const search = [item.name, item.description, ...item.builtWith].join(' ').toLowerCase();
+---
+
+<a
+  href={item.href}
+  data-gallery-card
+  data-kind={item.kind}
+  data-categories={item.categories.join(' ')}
+  data-search={search}
+  class="group flex flex-col border bg-fd-card text-fd-card-foreground transition-colors hover:border-fd-ring hover:bg-fd-accent/40"
+>
+  <div class="flex h-40 items-center justify-center overflow-hidden border-b bg-fd-muted/60" aria-hidden="true" data-ax-preview data-gallery-preview data-scheme="light">
+    <div class="ax-screen cmp-screen">
+      {item.kind === 'block' ? <BlockPreview slug={item.slug} /> : <CompositionPreview slug={item.slug} />}
+    </div>
+  </div>
+
+  <div class="flex flex-1 flex-col gap-2 p-3">
+    <div class="flex flex-col gap-1">
+      <div class="flex items-baseline justify-between gap-2">
+        <span class="text-lg font-medium">{item.name}</span>
+        {showKind && <span class="font-mono text-[10px] uppercase tracking-wide text-fd-muted-foreground">{item.kind}</span>}
+      </div>
+      <span class="text-xs text-fd-muted-foreground">{item.description}</span>
+    </div>
+    <ul class="mt-auto flex flex-wrap gap-1" aria-label="Built with">
+      {item.builtWith.map((name) => (
+        <li class="border px-1.5 py-0.5 font-mono text-[10px] leading-4 text-fd-muted-foreground">{name}</li>
+      ))}
+    </ul>
+  </div>
+</a>
+
+<style>
+  /* A short slice of a phone screen in iOS points, scaled down with `zoom`.
+     The percentage width isn't zoomed, so the slice always spans the panel: about 300 to 400pt wide. */
+  .cmp-screen {
+    flex: none;
+    width: 100%;
+    height: 250px;
+    zoom: 0.6;
+    overflow: hidden;
+    border-radius: 0;
+    background: var(--ax-background-default);
+    color: var(--ax-content-default);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 22px;
+    text-align: left;
+  }
+</style>
+
+<script>
+  let observer: MutationObserver | undefined;
+
+  function sync() {
+    const scheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    document.querySelectorAll<HTMLElement>('[data-gallery-preview]').forEach((preview) => {
+      preview.dataset.scheme = scheme;
+    });
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    sync();
+    observer?.disconnect();
+    observer = new MutationObserver(sync);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  });
+</script>

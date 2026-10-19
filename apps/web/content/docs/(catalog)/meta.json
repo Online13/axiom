@@ -4,8 +4,6 @@
 	"pages": [
 		"catalog",
 		"components",
-		"(primitives)/components",
-		"../compositions",
-		"../blocks"
+		"...(primitives)/components"
 	]
 }

@@ -16,8 +16,8 @@ Foundations → Primitives → Compositions → Blocks
 | Kind                                        | What it is                                                             | Examples                                            |
 | ------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------- |
 | [Primitives](#how-primitives-are-organized) | Generic building blocks with an API meant to be reused in many screens | Button, Text, Icon, Input, Item, Card, AppBar, Tabs |
-| [Compositions](/docs/compositions)          | Concrete interfaces assembled from primitives, ready to use            | Product Card, Settings Item                         |
-| [Blocks](/docs/blocks)                      | Complete or near-complete sections of an app                           | Settings Section, onboarding, paywall               |
+| [Compositions](#compositions)               | Concrete interfaces assembled from primitives, ready to use            | Product Card, Settings Item                         |
+| [Blocks](#blocks)                           | Complete or near-complete sections of an app                           | Settings Section, onboarding, paywall               |
 
 Each kind is built from the ones before it. A primitive uses [foundations](/docs/foundations) (tokens, typography, the theme) and the [headless core](/docs/core). A composition uses primitives. A block uses primitives and compositions.
 
@@ -49,7 +49,7 @@ Compositions are distributed code, not documentation snippets. Each one has its 
 npx axiom add settings-item
 ```
 
-The CLI copies the composition and the primitives it uses. From there you change the file like anything else you own. Browse them in the [composition catalog](/docs/compositions).
+The CLI copies the composition and the primitives it uses. From there you change the file like anything else you own. Browse them in the [composition catalog](/docs/gallery?kind=composition).
 
 ### Example or composition?
 
@@ -134,8 +134,8 @@ When a primitive doesn't fit a level cleanly, it goes where its responsibility i
 
 ## Related
 
-- [Compositions](/docs/compositions)
-- [Blocks](/docs/blocks)
+- [Compositions](/docs/gallery?kind=composition)
+- [Blocks](/docs/gallery?kind=block)
 - [Atoms](/docs/components/atoms)
 - [Foundations](/docs/foundations)
 - [Core](/docs/core)

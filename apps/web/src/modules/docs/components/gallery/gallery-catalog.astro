@@ -1,0 +1,169 @@
+---
+// Every composition and block in one grid, as many columns as fit, with a search field, a type filter, category filters and a result count.
+// Categories without an entry stay in the bar with a zero count, so the taxonomy is visible.
+// Filtering is a small vanilla script: it toggles `hidden` on the cards from their `data-*` attributes.
+import GalleryCard from './gallery-card.astro';
+import { compositionCategories, galleryItems } from '@docs/data/compositions';
+
+const kinds = [
+  { id: 'all', label: 'All', count: galleryItems.length },
+  { id: 'composition', label: 'Compositions', count: galleryItems.filter((i) => i.kind === 'composition').length },
+  { id: 'block', label: 'Blocks', count: galleryItems.filter((i) => i.kind === 'block').length },
+];
+
+const categories = [
+  { id: 'all', label: 'All categories', count: galleryItems.length },
+  ...compositionCategories.map((category) => ({
+    ...category,
+    count: galleryItems.filter((i) => i.categories.includes(category.id)).length,
+  })),
+];
+---
+
+<div class="not-prose my-6 flex flex-col gap-4" data-gallery-catalog>
+  <div class="flex flex-col gap-3 md:flex-row">
+    <label class="relative flex min-w-0 flex-1 items-center">
+      <svg
+        class="pointer-events-none absolute left-4 size-5 text-fd-muted-foreground"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </svg>
+      <input
+        type="search"
+        placeholder="Search a card, a row, a component…"
+        aria-label="Search the gallery"
+        autocomplete="off"
+        class="h-12 w-full border bg-fd-background pr-4 pl-12 text-base placeholder:text-fd-muted-foreground focus:border-fd-ring focus:outline-none"
+        data-search-input
+      />
+    </label>
+    <div class="flex h-12 flex-none border p-1 text-sm" role="group" aria-label="Filter by type">
+      {kinds.map((kind) => (
+        <button type="button" class="gal-filter flex-1 px-4 md:flex-none" data-kind-filter={kind.id} aria-pressed={kind.id === 'all' ? 'true' : 'false'}>
+          {kind.label} <span class="tabular-nums opacity-60">{kind.count}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <div class="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+    {categories.map((category) => (
+      <button
+        type="button"
+        class="gal-filter inline-flex h-9 items-center gap-2 border px-3.5 text-sm"
+        data-category-filter={category.id}
+        aria-pressed={category.id === 'all' ? 'true' : 'false'}
+      >
+        {category.label}
+        <span class="tabular-nums opacity-60">{category.count}</span>
+      </button>
+    ))}
+  </div>
+
+  <p class="mt-2 text-sm text-fd-muted-foreground" aria-live="polite" data-result-count>{galleryItems.length} items</p>
+
+  <div class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-3" data-gallery-grid>
+    {galleryItems.map((item) => <GalleryCard item={item} showKind />)}
+  </div>
+
+  <p class="border border-dashed px-4 py-8 text-center text-sm text-fd-muted-foreground" data-empty hidden>
+    Nothing matches these filters yet.
+  </p>
+</div>
+
+<style>
+  [data-gallery-catalog] :global([hidden]) {
+    display: none !important;
+  }
+
+  .gal-filter[aria-pressed='true'] {
+    background: var(--color-fd-foreground);
+    border-color: var(--color-fd-foreground);
+    color: var(--color-fd-background);
+  }
+
+  .gal-filter[aria-pressed='false'] {
+    color: var(--color-fd-muted-foreground);
+  }
+
+  .gal-filter[aria-pressed='false']:hover {
+    color: var(--color-fd-foreground);
+  }
+</style>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-gallery-catalog]').forEach((catalog) => {
+      if (catalog.dataset.ready) return;
+      catalog.dataset.ready = 'true';
+
+      const input = catalog.querySelector<HTMLInputElement>('[data-search-input]')!;
+      const kindButtons = catalog.querySelectorAll<HTMLButtonElement>('[data-kind-filter]');
+      const categoryButtons = catalog.querySelectorAll<HTMLButtonElement>('[data-category-filter]');
+      const cards = catalog.querySelectorAll<HTMLElement>('[data-gallery-card]');
+      const grid = catalog.querySelector<HTMLElement>('[data-gallery-grid]')!;
+      const empty = catalog.querySelector<HTMLElement>('[data-empty]')!;
+      const count = catalog.querySelector<HTMLElement>('[data-result-count]')!;
+
+      // `?kind=composition` or `?kind=block` opens the gallery on one type; /docs/compositions and /docs/blocks redirect here.
+      const url = new URL(location.href);
+      const initialKind = url.searchParams.get('kind');
+      const state = {
+        kind: initialKind === 'composition' || initialKind === 'block' ? initialKind : 'all',
+        category: 'all',
+        query: '',
+      };
+
+      const apply = () => {
+        const words = state.query.toLowerCase().split(/\s+/).filter(Boolean);
+        let visible = 0;
+        cards.forEach((card) => {
+          const search = card.dataset.search ?? '';
+          const match =
+            (state.kind === 'all' || card.dataset.kind === state.kind) &&
+            (state.category === 'all' || (card.dataset.categories ?? '').split(' ').includes(state.category)) &&
+            words.every((word) => search.includes(word));
+          card.hidden = !match;
+          if (match) visible++;
+        });
+        grid.hidden = visible === 0;
+        empty.hidden = visible > 0;
+        count.textContent = `${visible} ${visible === 1 ? 'item' : 'items'}`;
+        kindButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.kindFilter === state.kind)));
+        categoryButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.categoryFilter === state.category)));
+      };
+
+      input.addEventListener('input', () => {
+        state.query = input.value;
+        apply();
+      });
+      kindButtons.forEach((button) =>
+        button.addEventListener('click', () => {
+          state.kind = button.dataset.kindFilter ?? 'all';
+          if (state.kind === 'all') url.searchParams.delete('kind');
+          else url.searchParams.set('kind', state.kind);
+          history.replaceState(history.state, '', url);
+          apply();
+        }),
+      );
+      categoryButtons.forEach((button) =>
+        button.addEventListener('click', () => {
+          state.category = button.dataset.categoryFilter ?? 'all';
+          apply();
+        }),
+      );
+
+      apply();
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

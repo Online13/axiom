@@ -1,0 +1,30 @@
+---
+// Small in-context preview of a block for GalleryCard, drawn with the `.ax-*` classes of preview.css at real iOS sizes.
+// A shorter take on the PhonePreview of the block's page.
+import Glyph from '@docs/components/preview/glyph.astro';
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+---
+
+{slug === 'settings-section' && (
+  <div>
+    <div class="ax-footnote ax-muted ax-semibold" style={{ padding: '16px 16px 8px' }}>Notifications</div>
+    <div class="ax-list" data-variant="plain">
+      <div class="ax-item">
+        <Glyph name="bell" class="ax-muted" />
+        <span class="ax-item-title ax-grow">Push notifications</span>
+        <span class="ax-switch" data-checked />
+      </div>
+      <div class="ax-item">
+        <Glyph name="calendar" class="ax-muted" />
+        <span class="ax-item-title ax-grow">Quiet hours</span>
+        <span class="ax-item-trailing">22:00 – 07:00<Glyph name="chevron-right" size={18} /></span>
+      </div>
+    </div>
+    <div class="ax-footnote ax-muted" style={{ padding: '8px 16px 0' }}>Quiet hours mute every alert.</div>
+  </div>
+)}
